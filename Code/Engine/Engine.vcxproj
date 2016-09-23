@@ -33,7 +33,7 @@
     <ClCompile Include="Input\BinaryReader.cpp" />
     <ClCompile Include="Input\BinaryWriter.cpp" />
     <ClCompile Include="Input\Console.cpp" />
-    <ClCompile Include="Input\InputDevice.cpp" />
+    <ClCompile Include="Input\InputDevices.cpp" />
     <ClCompile Include="Input\InputMap.cpp" />
     <ClCompile Include="Input\InputOutputUtils.cpp" />
     <ClCompile Include="Input\InputSystem.cpp" />
@@ -122,7 +122,7 @@
     <ClInclude Include="Input\BinaryReader.hpp" />
     <ClInclude Include="Input\BinaryWriter.hpp" />
     <ClInclude Include="Input\Console.hpp" />
-    <ClInclude Include="Input\InputDevice.hpp" />
+    <ClInclude Include="Input\InputDevices.hpp" />
     <ClInclude Include="Input\InputMap.hpp" />
     <ClInclude Include="Input\InputOutputUtils.hpp" />
     <ClInclude Include="Input\InputSystem.hpp" />

@@ -6,18 +6,29 @@ class InputMap;
 class InputBase
 {
 public:
-    InputBase(InputMap* o) : owner(o) {}
+    InputBase(InputMap* o) : m_owner(o) {}
 
-    InputMap* owner;
+    InputMap* m_owner;
 };
 
-class InputValue : InputBase
+class InputValue : public InputBase
 {
 public:
-    InputValue(InputMap *owner)
+    InputValue()
+        : InputBase(nullptr),
+        m_currentValue(0.0f),
+        m_previousValue(0.0f) 
+    {
+
+    }
+
+    InputValue(InputMap* owner)
         : InputBase(owner),
         m_currentValue(0.0f),
-        m_previousValue(0.0f) {}
+        m_previousValue(0.0f) 
+    {
+
+    }
 
     inline float GetValue() const { return m_currentValue; }
     inline bool IsDown() const { return (m_currentValue == 1.0f); }
@@ -35,7 +46,7 @@ public:
     Event<const InputValue*> m_OnRelease;
 };
 
-class InputAxis : InputBase
+class InputAxis : public InputBase
 {
 public:
     void AddMapping(InputValue* pos, InputValue* neg);

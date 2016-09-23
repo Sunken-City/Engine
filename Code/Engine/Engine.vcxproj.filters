@@ -281,10 +281,10 @@
     <ClCompile Include="Input\InputMap.cpp">
       <Filter>Engine\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Input\InputDevice.cpp">
+    <ClCompile Include="Input\InputValues.cpp">
       <Filter>Engine\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Input\InputValues.cpp">
+    <ClCompile Include="Input\InputDevices.cpp">
       <Filter>Engine\Input</Filter>
     </ClCompile>
   </ItemGroup>
@@ -544,10 +544,10 @@
     <ClInclude Include="Input\InputMap.hpp">
       <Filter>Engine\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Input\InputDevice.hpp">
+    <ClInclude Include="Input\InputValues.hpp">
       <Filter>Engine\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Input\InputValues.hpp">
+    <ClInclude Include="Input\InputDevices.hpp">
       <Filter>Engine\Input</Filter>
     </ClInclude>
   </ItemGroup>

@@ -14,4 +14,5 @@ public:
     float GetValue(std::string const &name);
 
     std::map<std::string, InputValue*> m_values;
+    void AddInputAxis(const std::string& name, InputValue* positiveInput, InputValue* negativeInput);
 };

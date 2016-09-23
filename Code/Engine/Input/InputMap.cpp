@@ -39,8 +39,13 @@ InputValue* InputMap::FindInputValue(std::string const &name)
     return it->second;
 }
 
-float InputMap::GetValue(std::string const &name)
+float InputMap::GetValue(const std::string& name)
 {
     InputValue* val = FindInputValue(name);
     return (nullptr != val) ? val->GetValue() : 0.0f;
+}
+
+void InputMap::AddInputAxis(const std::string& name, InputValue* positiveInput, InputValue* negativeInput)
+{
+    throw std::logic_error("The method or operation is not implemented.");
 }
