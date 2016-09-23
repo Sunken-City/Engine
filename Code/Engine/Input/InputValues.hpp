@@ -35,12 +35,23 @@ public:
     Event<const InputValue*> m_OnRelease;
 };
 
-// class InputAxis : InputBase
-// {
-// };
-// 
-// // I also have CInputVector2, CInputVector3
-// // A raw thumbstick generates a CInputVector2
+class InputAxis : InputBase
+{
+public:
+    void AddMapping(InputValue* pos, InputValue* neg);
+    void OnValuesChanged(const InputValue*);
+    void SetValue(float positiveValue, float negativeValue);
+    float GetValue() const;
+
+    InputValue m_negativeValue;
+    InputValue m_positiveValue;
+
+    Event<const InputValue*> m_OnChanged;
+};
+
+
+// I also have CInputVector2, CInputVector3
+// A raw thumbstick generates a CInputVector2
 // class InputVector2 : InputBase
 // {
 // public:
@@ -51,6 +62,6 @@ public:
 // 
 //         vec2 get_value() const
 //     {
-//         return vec2(x.get_value(), y.get_value());
+//         return vec2(x.GetValue(), y.GetValue());
 //     }
 // };

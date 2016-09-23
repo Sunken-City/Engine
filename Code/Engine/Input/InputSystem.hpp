@@ -70,9 +70,10 @@ public:
     static InputSystem* instance;
     XInputController* m_controllers[4];
 
-private:
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const int NUM_KEYS = 256;
+
+private:
     static const int NUM_MOUSE_BUTTONS = 3;
     static const int SNAP_BACK_X = 800;
     static const int SNAP_BACK_Y = 600;

@@ -40,3 +40,35 @@ void InputValue::AddMapping(InputValue* v)
 
     v->m_OnChange.RegisterMethod(this, &InputValue::OnChanged);
 }
+
+//--------------------------------------------------------------
+void InputAxis::AddMapping(InputValue* pos, InputValue* neg)
+{
+    pos->m_OnChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
+    neg->m_OnChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
+}
+
+//--------------------------------------------------------------
+void InputAxis::OnValuesChanged(const InputValue*)
+{
+    SetValue(m_positiveValue.GetValue(), m_negativeValue.GetValue());
+}
+
+//--------------------------------------------------------------
+void InputAxis::SetValue(float positiveValue, float negativeValue)
+{
+    // I would like this not to do anything if you're setting it to the same value it already is.
+    if (m_positiveValue.m_currentValue != positiveValue && m_negativeValue.m_currentValue != negativeValue)
+    {
+        m_positiveValue.SetValue(positiveValue);
+        m_negativeValue.SetValue(negativeValue);
+    }
+    m_OnChanged.Trigger(nullptr);
+}
+
+//--------------------------------------------------------------
+float InputAxis::GetValue() const
+{
+    return m_positiveValue.GetValue() - m_negativeValue.GetValue();
+}
+
