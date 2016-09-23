@@ -278,6 +278,15 @@
     <ClCompile Include="Net\UDPIP\NetConnection.cpp">
       <Filter>Engine\Net\UDPIP</Filter>
     </ClCompile>
+    <ClCompile Include="Input\InputMap.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\InputDevice.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\InputValues.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -531,6 +540,15 @@
     </ClInclude>
     <ClInclude Include="Net\UDPIP\NetConnection.hpp">
       <Filter>Engine\Net\UDPIP</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputMap.hpp">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputDevice.hpp">
+      <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputValues.hpp">
+      <Filter>Engine\Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

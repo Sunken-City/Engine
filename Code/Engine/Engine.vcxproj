@@ -33,8 +33,11 @@
     <ClCompile Include="Input\BinaryReader.cpp" />
     <ClCompile Include="Input\BinaryWriter.cpp" />
     <ClCompile Include="Input\Console.cpp" />
+    <ClCompile Include="Input\InputDevice.cpp" />
+    <ClCompile Include="Input\InputMap.cpp" />
     <ClCompile Include="Input\InputOutputUtils.cpp" />
     <ClCompile Include="Input\InputSystem.cpp" />
+    <ClCompile Include="Input\InputValues.cpp" />
     <ClCompile Include="Input\Logging.cpp" />
     <ClCompile Include="Input\XInputController.cpp" />
     <ClCompile Include="Input\XMLUtils.cpp" />
@@ -119,8 +122,11 @@
     <ClInclude Include="Input\BinaryReader.hpp" />
     <ClInclude Include="Input\BinaryWriter.hpp" />
     <ClInclude Include="Input\Console.hpp" />
+    <ClInclude Include="Input\InputDevice.hpp" />
+    <ClInclude Include="Input\InputMap.hpp" />
     <ClInclude Include="Input\InputOutputUtils.hpp" />
     <ClInclude Include="Input\InputSystem.hpp" />
+    <ClInclude Include="Input\InputValues.hpp" />
     <ClInclude Include="Input\Logging.hpp" />
     <ClInclude Include="Input\XInputController.hpp" />
     <ClInclude Include="Input\XMLUtils.hpp" />
