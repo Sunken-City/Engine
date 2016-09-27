@@ -2,22 +2,34 @@
 #include "Engine/Core/Event.hpp"
 
 class InputMap;
+class Vector2;
 
 class InputBase
 {
 public:
-    InputBase(InputMap* o) : owner(o) {}
+    InputBase(InputMap* o) : m_owner(o) {}
 
-    InputMap* owner;
+    InputMap* m_owner;
 };
 
-class InputValue : InputBase
+class InputValue : public InputBase
 {
 public:
-    InputValue(InputMap *owner)
+    InputValue()
+        : InputBase(nullptr),
+        m_currentValue(0.0f),
+        m_previousValue(0.0f) 
+    {
+
+    }
+
+    InputValue(InputMap* owner)
         : InputBase(owner),
         m_currentValue(0.0f),
-        m_previousValue(0.0f) {}
+        m_previousValue(0.0f) 
+    {
+
+    }
 
     inline float GetValue() const { return m_currentValue; }
     inline bool IsDown() const { return (m_currentValue == 1.0f); }
@@ -35,18 +47,34 @@ public:
     Event<const InputValue*> m_OnRelease;
 };
 
-class InputAxis : InputBase
+class InputAxis : public InputBase
 {
 public:
+    InputAxis()
+        : InputBase(nullptr)
+        , m_negativeValue(nullptr)
+        , m_positiveValue(nullptr)
+    {
+
+    }
+
+    InputAxis(InputMap* owner)
+        : InputBase(owner)
+        , m_negativeValue(nullptr)
+        , m_positiveValue(nullptr)
+    {
+
+    }
+
     void AddMapping(InputValue* pos, InputValue* neg);
     void OnValuesChanged(const InputValue*);
     void SetValue(float positiveValue, float negativeValue);
     float GetValue() const;
+    bool HasChanged(float positiveValue, float negativeValue);
 
-    InputValue m_negativeValue;
-    InputValue m_positiveValue;
-
-    Event<const InputValue*> m_OnChanged;
+    InputValue* m_negativeValue;
+    InputValue* m_positiveValue;
+    Event<const InputValue*> m_OnChange;
 };
 
 
@@ -55,13 +83,26 @@ public:
 // class InputVector2 : InputBase
 // {
 // public:
+//     InputVector2()
+//         : InputBase(nullptr)
+//         , x(nullptr)
+//         , y(nullptr)
+//     {
+// 
+//     }
+// 
+//     InputVector2(InputMap* owner)
+//         : InputBase(owner)
+//         , x(owner)
+//         , y(owner)
+//     {
+// 
+//     }
+// 
+//     void AddMapping(InputAxis* x, InputAxis* y);
+//     Vector2 GetValue() const;
+// 
 //     InputAxis x;
 //     InputAxis y;
-// 
-//     void InputVector2
-// 
-//         vec2 get_value() const
-//     {
-//         return vec2(x.GetValue(), y.GetValue());
-//     }
+//     Event<const InputValue*> m_OnChange;
 // };

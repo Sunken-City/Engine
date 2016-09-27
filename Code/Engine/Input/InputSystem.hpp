@@ -1,7 +1,9 @@
 #pragma once
 #include "Engine/Math/Vector2Int.hpp"
+#include "Engine/Core/Event.hpp"
 
 class XInputController;
+class KeyboardInputDevice;
 
 class InputSystem
 {
@@ -69,11 +71,12 @@ public:
     //VARIABLES//////////////////////////////////////////////////////////////////////////
     static InputSystem* instance;
     XInputController* m_controllers[4];
-
+    KeyboardInputDevice* m_keyboardDevice;
+    Event<float> m_OnUpdate;
+    
+private:
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const int NUM_KEYS = 256;
-
-private:
     static const int NUM_MOUSE_BUTTONS = 3;
     static const int SNAP_BACK_X = 800;
     static const int SNAP_BACK_Y = 600;

@@ -1,6 +1,7 @@
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Input/XInputController.hpp"
 #include "Engine/Math/Vector2Int.hpp"
+#include "Engine/Input/InputDevices.hpp"
 
 InputSystem* InputSystem::instance = nullptr;
 
@@ -17,7 +18,9 @@ InputSystem::InputSystem(void* hWnd, int maximumNumberOfControllers /*= 0*/)
 , m_maximumNumControllers(maximumNumberOfControllers)
 , m_lastPressedChar(0x00) //NULL character
 , m_captureCursor(false)
+, m_keyboardDevice(new KeyboardInputDevice())
 {
+    m_OnUpdate.RegisterMethod(m_keyboardDevice, &KeyboardInputDevice::Update);
 	//Only initialize the number of controllers we need for the game.
 	for (int i = 0; i < m_maximumNumControllers; i++)
 	{
@@ -43,6 +46,9 @@ InputSystem::InputSystem(void* hWnd, int maximumNumberOfControllers /*= 0*/)
 //-----------------------------------------------------------------------------------
 InputSystem::~InputSystem()
 {
+    InputSystem::instance->m_OnUpdate.UnregisterMethod(m_keyboardDevice, &KeyboardInputDevice::Update);
+    delete m_keyboardDevice;
+
 	for (int i = 0; i < m_maximumNumControllers; i++)
 	{
 		delete m_controllers[i];
@@ -50,11 +56,11 @@ InputSystem::~InputSystem()
 }
 
 //-----------------------------------------------------------------------------------
-void InputSystem::Update(float deltaTime)
+void InputSystem::Update(float deltaSeconds)
 {
 	for (int i = 0; i < m_maximumNumControllers; i++)
 	{
-		m_controllers[i]->Update(deltaTime);
+		m_controllers[i]->Update(deltaSeconds);
 	}
 
 	HWND hWnd = static_cast<HWND>(m_hWnd);
@@ -75,6 +81,7 @@ void InputSystem::Update(float deltaTime)
 			}
 		}
 	}
+    m_OnUpdate.Trigger(deltaSeconds);
 }
 
 //-----------------------------------------------------------------------------------
@@ -209,6 +216,7 @@ void InputSystem::AdvanceFrameNumber()
 //-----------------------------------------------------------------------------------
 void InputSystem::SetKeyDownStatus(unsigned char keyCode, bool isNowDown)
 {
+    m_keyboardDevice->SetKeyValue(keyCode, isNowDown);
 	//If we are getting a keyboard repeat, ignore it when updating "just pressed" values.
 	if (m_isKeyDown[keyCode] != isNowDown)
 	{
