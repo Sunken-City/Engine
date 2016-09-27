@@ -71,7 +71,7 @@ void Vector2::SetXY(float newX, float NewY)
 }
 
 //-----------------------------------------------------------------------------------
-float Vector2::CalculateMagnitude()
+float Vector2::CalculateMagnitude() const
 {
     return sqrt((x*x) + (y*y));
 }
@@ -96,6 +96,18 @@ Vector2 Vector2::DegreesToDirection(float rotationDegrees, float rotationalOffse
 {
     float degrees = rotationDegrees + rotationalOffset;
     return Vector2(MathUtils::CosDegrees(degrees), MathUtils::SinDegrees(degrees));
+}
+
+//-----------------------------------------------------------------------------------
+float Vector2::Dot(const Vector2& b) const
+{
+    return(x * b.x) + (y * b.y);
+}
+
+//-----------------------------------------------------------------------------------
+float Vector2::Dot(const Vector2& a, const Vector2& b)
+{
+    return(a.x * b.x) + (a.y * b.y);
 }
 
 //-----------------------------------------------------------------------------------

@@ -20,14 +20,16 @@ public:
     void SetXY(float newX, float newY);
 
     //FUNCTIONS//////////////////////////////////////////////////////////////////////////
-    float CalculateMagnitude();
+    float CalculateMagnitude() const;
     float CalculateTheta();
     void Normalize();
+    float Dot(const Vector2& b) const;
 
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
     static Vector2 CalculateCorrectionVector(const Vector2& position, const Vector2& goal);
     static Vector2 GetMidpoint(const Vector2& start, const Vector2& end);
     static Vector2 DegreesToDirection(float rotationDegrees, float rotationalOffset = ZERO_DEGREES_RIGHT);
+    static float Dot(const Vector2& a, const Vector2& b);
 
     //OPERATORS//////////////////////////////////////////////////////////////////////////
     Vector2& operator+=(const Vector2& rhs);

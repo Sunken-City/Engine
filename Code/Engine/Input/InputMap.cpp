@@ -82,6 +82,7 @@ InputAxis* InputMap::AddInputAxis(std::string const &name)
     return axis;
 }
 
+//-----------------------------------------------------------------------------------
 InputAxis* InputMap::AddInputAxis(const std::string& name, InputValue* positiveInput, InputValue* negativeInput)
 {
     InputAxis* axis = AddInputAxis(name);
@@ -89,6 +90,7 @@ InputAxis* InputMap::AddInputAxis(const std::string& name, InputValue* positiveI
     return axis;
 }
 
+//-----------------------------------------------------------------------------------
 InputAxis* InputMap::FindInputAxis(std::string const &name)
 {
     // If we don't find it, create it.
@@ -101,9 +103,22 @@ InputAxis* InputMap::FindInputAxis(std::string const &name)
     return it->second;
 }
 
+//-----------------------------------------------------------------------------------
 Vector2 InputMap::GetVector2(const std::string& xName, const std::string& yName)
 {
     InputAxis* x = FindInputAxis(xName);
     InputAxis* y = FindInputAxis(yName);
     return Vector2(x->GetValue(), y->GetValue());
+}
+
+//-----------------------------------------------------------------------------------
+bool InputMap::IsDown(const std::string& name)
+{
+    return GetValue(name) == 1.0f;
+}
+
+//-----------------------------------------------------------------------------------
+bool InputMap::IsUp(const std::string& name)
+{
+    return GetValue(name) == 0.0f;
 }
