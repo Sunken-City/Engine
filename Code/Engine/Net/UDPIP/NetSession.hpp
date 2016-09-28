@@ -126,6 +126,7 @@ public:
     bool IsRunning();
     bool IsHost();
     bool AmIConnected();
+    bool IsMyConnectionConfirmed();
     static const char* GetErrorCodeCstr(const ErrorCode& code);
     bool IsPartyFull();
     bool IsGuidInUse(const char* guid);

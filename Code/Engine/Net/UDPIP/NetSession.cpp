@@ -795,6 +795,12 @@ bool NetSession::AmIConnected()
 }
 
 //-----------------------------------------------------------------------------------
+bool NetSession::IsMyConnectionConfirmed()
+{
+    return m_myConnection != nullptr && m_myConnection->m_state == NetConnection::State::CONFIRMED;
+}
+
+//-----------------------------------------------------------------------------------
 const char* NetSession::GetErrorCodeCstr(const NetSession::ErrorCode& code)
 {
     switch (code)
