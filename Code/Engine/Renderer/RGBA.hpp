@@ -19,7 +19,8 @@ public:
     static inline unsigned char GetGreen(unsigned int hexColor);
     static inline unsigned char GetBlue(unsigned int hexColor);
     static inline RGBA CreateFromUChars(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
-    static Vector4 RandomVec4();
+    static Vector4 GetRandomVec4();
+    static RGBA GetRandom();
     inline RGBA WithoutAlpha();
     inline unsigned int ToUnsignedInt() const;
     void SetAlphaFloat(float alpha);

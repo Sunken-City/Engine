@@ -29,8 +29,8 @@ NetSession::NetSession()
     , m_connectionCountText(nullptr)
     , m_isListening(true)
 {
-    m_packetChannel.m_additionalLagMilliseconds = Range<double>(150, 1500);
-    m_packetChannel.m_dropRate = 0.0f;
+    m_packetChannel.m_additionalLagMilliseconds = Range<double>(50, 150);
+    m_packetChannel.m_dropRate = 0.1f;
     for (int i = 0; i < MAX_CONNECTIONS; ++i)
     {
         m_allConnections[i] = nullptr;
@@ -232,6 +232,12 @@ size_t NetSession::SendMessagesDirect(sockaddr_in& to, NetMessage** messages, si
 bool NetSession::IsRunning()
 {
     return m_packetChannel.IsBound();
+}
+
+//-----------------------------------------------------------------------------------
+bool NetSession::IsHost()
+{
+    return m_hostConnection && m_hostConnection == m_myConnection;
 }
 
 //-----------------------------------------------------------------------------------

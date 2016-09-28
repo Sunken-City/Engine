@@ -94,7 +94,15 @@ Vector4 RGBA::ToVec4() const
     return Vector4(static_cast<float>(red) / 255.0f, static_cast<float>(green) / 255.0f, static_cast<float>(blue) / 255.0f, static_cast<float>(alpha) / 255.0f);
 }
 
-Vector4 RGBA::RandomVec4()
+//-----------------------------------------------------------------------------------
+Vector4 RGBA::GetRandomVec4()
 {
     return Vector4(MathUtils::GetRandomFloatFromZeroTo(1.0f), MathUtils::GetRandomFloatFromZeroTo(1.0f), MathUtils::GetRandomFloatFromZeroTo(1.0f), 1.0f);
 }
+
+//-----------------------------------------------------------------------------------
+RGBA RGBA::GetRandom()
+{
+    return RGBA(Vector4(MathUtils::GetRandomFloatFromZeroTo(1.0f), MathUtils::GetRandomFloatFromZeroTo(1.0f), MathUtils::GetRandomFloatFromZeroTo(1.0f), 1.0f));
+}
+

@@ -124,6 +124,7 @@ public:
     const NetMessageDefinition* FindDefinition(byte messageType);
     bool CanProcessMessage(const NetSender& from, const NetMessage& msg) const;
     bool IsRunning();
+    bool IsHost();
     bool AmIConnected();
     static const char* GetErrorCodeCstr(const ErrorCode& code);
     bool IsPartyFull();

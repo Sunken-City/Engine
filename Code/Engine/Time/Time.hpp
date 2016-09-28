@@ -8,5 +8,6 @@
 //---------------------------------------------------------------------------
 double GetCurrentTimeSeconds();
 double GetCurrentTimeMilliseconds();
+double GetCurrentTimeAbsoluteSeconds();
 
 #endif
