@@ -24,20 +24,21 @@ SOCKET UDPSocket::CreateUDPSocket(char const *addr,
     // Alright, try to create a SOCKET from this addr info
     SOCKET my_socket = INVALID_SOCKET;
     addrinfo *iter = info_list;
-    while ((iter != nullptr) && (my_socket == INVALID_SOCKET)) {
-
+    while ((iter != nullptr) && (my_socket == INVALID_SOCKET)) 
+    {
         // First, create a socket for this address.
         // family, socktype, and protocol are provided by the addrinfo
         // if you wanted to be manual, for an TCP/IPv4 socket you'd use
         // AF_INET, SOCK_DGRAM, IPPROTO_UDP
         my_socket = socket(iter->ai_family, iter->ai_socktype, iter->ai_protocol);
-        if (my_socket != INVALID_SOCKET) {
+        if (my_socket != INVALID_SOCKET) 
+        {
             // Okay, we were able to create it,
             // Now try to bind it (associates the address (ex: 192.168.1.52:4325) to this 
             // socket so it will receive information for it.
             int result = bind(my_socket, iter->ai_addr, (int)(iter->ai_addrlen));
-            if (SOCKET_ERROR != result) {
-
+            if (SOCKET_ERROR != result) 
+            {
                 // Set it to non-block - since we'll be working with this on our main thread
                 u_long non_blocking = 1;
                 ioctlsocket(my_socket, FIONBIO, &non_blocking);
@@ -48,7 +49,8 @@ SOCKET UDPSocket::CreateUDPSocket(char const *addr,
                     memcpy(out_addr, iter->ai_addr, iter->ai_addrlen);
                 }
             }
-            else {
+            else 
+            {
                 // Cleanup on Fail.
                 closesocket(my_socket);
                 my_socket = INVALID_SOCKET;
