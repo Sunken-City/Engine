@@ -1,6 +1,7 @@
 #ifndef INCLUDED_AUDIO
 #define INCLUDED_AUDIO
 #pragma once
+#undef PlaySound
 
 //---------------------------------------------------------------------------
 #pragma comment( lib, "ThirdParty/fmod/fmodex_vc" ) // Link in the fmodex_vc.lib static library

@@ -40,7 +40,7 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
         m_secondsPerParticle = 0.0f;
         for (unsigned int i = 0; i < definition->m_initialNumParticlesSpawn; ++i)
         {
-            m_particles.emplace_back(*m_position, m_definition);
+            m_particles.emplace_back(*m_position, m_definition, m_rotationDegrees);
         }
     }
 }
@@ -64,6 +64,7 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
         for (unsigned int i = 0; i < definition->m_initialNumParticlesSpawn; ++i)
         {
             m_particles.emplace_back(positionToSpawn, m_definition, m_rotationDegrees);
+            m_particles.back().tint = m_definition->m_initialTintPerParticle;
         }
     }
 }
@@ -93,7 +94,10 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
         particle.velocity += particle.acceleration * deltaSeconds;
 
         particle.age += deltaSeconds;
-        particle.tint.SetAlphaFloat(MathUtils::Clamp(1.0f - MathUtils::RangeMap(particle.age, 0.0f, particle.maxAge, 0.0f, 1.0f)));
+        if (m_definition->m_fadeoutEnabled)
+        {
+            particle.tint.SetAlphaFloat(MathUtils::Clamp(1.0f - MathUtils::RangeMap(particle.age, 0.0f, particle.maxAge, 0.0f, 1.0f)));
+        }
     }
 }
 
@@ -201,6 +205,7 @@ void ParticleEmitter::SpawnParticles(float deltaSeconds)
         while (m_timeSinceLastEmission >= m_secondsPerParticle)
         {
             m_particles.emplace_back(*m_position, m_definition, m_rotationDegrees);
+            m_particles.back().tint = m_definition->m_initialTintPerParticle;
             m_timeSinceLastEmission -= m_secondsPerParticle;
         }
     }

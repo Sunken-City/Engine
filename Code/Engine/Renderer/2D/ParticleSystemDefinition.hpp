@@ -29,6 +29,7 @@ public:
     Range<Vector2> m_initialScalePerParticle;
     Range<Vector2> m_initialVelocity;
     RGBA m_initialTintPerParticle;
+    bool m_fadeoutEnabled;
     const SpriteResource* m_spriteResource;
 };
 
