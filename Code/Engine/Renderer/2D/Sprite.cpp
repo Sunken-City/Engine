@@ -64,3 +64,11 @@ AABB2 Sprite::GetBounds()
     const Vector2 maxs((m_spriteResource->m_virtualSize.x - m_spriteResource->m_pivotPoint.x) * m_scale.x, (m_spriteResource->m_virtualSize.y - m_spriteResource->m_pivotPoint.y) * m_scale.y);
     return AABB2(m_position + mins, m_position + maxs);
 }
+
+//-----------------------------------------------------------------------------------
+AABB2 SpriteResource::GetDefaultBounds() const
+{
+    const Vector2 mins(-m_pivotPoint.x, -m_pivotPoint.y);
+    const Vector2 maxs(m_virtualSize.x - m_pivotPoint.x, m_virtualSize.y - m_pivotPoint.y);
+    return AABB2(mins, maxs);
+}

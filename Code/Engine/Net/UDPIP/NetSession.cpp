@@ -395,7 +395,7 @@ void OnJoinAcceptReceived(const NetSender& sender, NetMessage& msg)
 }
 
 //-----------------------------------------------------------------------------------
-void OnConnectionLeaveReceived(const NetSender& sender, NetMessage& msg)
+void OnConnectionLeaveReceived(const NetSender& sender, NetMessage&)
 {
     sender.session->Disconnect(sender.connection);
 }
@@ -541,7 +541,8 @@ void NetSession::Host(const char* username)
     char portString[MAX_CHARACTERS];
     ASSERT_OR_DIE(m_sessionState == DISCONNECTED, "Wasn't in a valid state before hosting");
     SetSessionState(HOSTING);
-    sockaddr_in localAddress = *(sockaddr_in*)NetSystem::GetLocalHostAddressUDP(itoa(htons(m_packetChannel.GetAddress().sin_port), portString, 10));
+    _itoa_s(htons(m_packetChannel.GetAddress().sin_port), portString, 10);
+    sockaddr_in localAddress = *(sockaddr_in*)NetSystem::GetLocalHostAddressUDP(portString);
     m_hostConnection = CreateConnection(0, username, localAddress);
     m_myConnection = m_hostConnection;
     SetSessionState(CONNECTED);
