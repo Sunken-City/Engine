@@ -3,23 +3,17 @@
 #pragma once
 #undef PlaySound
 
-//---------------------------------------------------------------------------
 #pragma comment( lib, "ThirdParty/fmod/fmodex_vc" ) // Link in the fmodex_vc.lib static library
-
-//---------------------------------------------------------------------------
 #include "ThirdParty/fmod/fmod.hpp"
 #include <string>
 #include <vector>
 #include <map>
 
-
-//---------------------------------------------------------------------------
 typedef unsigned int SoundID;
 typedef void* AudioChannelHandle;
 const unsigned int MISSING_SOUND_ID = 0xffffffff;
 
-
-/////////////////////////////////////////////////////////////////////////////
+//-----------------------------------------------------------------------------------
 class AudioSystem
 {
 public:
@@ -43,10 +37,5 @@ protected:
 	std::vector< FMOD::Sound* >				m_registeredSounds;
 	std::map<SoundID, AudioChannelHandle>	m_channels;
 };
-
-
-//---------------------------------------------------------------------------
-void InitializeAudio();
-
 
 #endif // INCLUDED_AUDIO

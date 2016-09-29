@@ -40,10 +40,6 @@ NetSession::NetSession()
 //-----------------------------------------------------------------------------------
 NetSession::~NetSession()
 {
-    if (Console::instance && GetMyConnectionIndex() != INVALID_CONNECTION_INDEX)
-    {
-        Console::instance->RunCommand(Stringf("bcmd nsdestroyconn %i", GetMyConnectionIndex()));
-    }
     for (uint8_t i = 0; i < MAX_CONNECTIONS; ++i)
     {
         Disconnect(m_allConnections[i]);
@@ -68,6 +64,10 @@ bool NetSession::Start(const char* portNumber)
 //-----------------------------------------------------------------------------------
 void NetSession::Stop()
 {
+    if (m_sessionState == CONNECTED)
+    {
+        Leave();
+    }
     m_packetChannel.Unbind();
     NetworkUpdate.UnregisterMethod(NetSession::instance, &NetSession::Update);
     SetSessionState(State::INVALID);
@@ -182,7 +182,7 @@ void NetSession::ProcessIncomingPacket(NetSender& from, NetPacket& packet)
             }
         }
     }
-    if (from.connection && m_myConnection && m_myConnection->m_index != INVALID_CONNECTION_INDEX)
+    if (GetConnection(packet.m_header.fromConnectionIndex) && m_myConnection && m_myConnection->m_index != INVALID_CONNECTION_INDEX)
     {
         from.connection->MarkPacketReceived(packet);
     }
@@ -395,6 +395,12 @@ void OnJoinAcceptReceived(const NetSender& sender, NetMessage& msg)
 }
 
 //-----------------------------------------------------------------------------------
+void OnConnectionLeaveReceived(const NetSender& sender, NetMessage& msg)
+{
+    sender.session->Disconnect(sender.connection);
+}
+
+//-----------------------------------------------------------------------------------
 void OnJoinDenyReceived(const NetSender& sender, NetMessage& msg)
 {
     if (sender.session->GetSessionState() != NetSession::JOINING)
@@ -557,8 +563,18 @@ void NetSession::Join(const char* username, sockaddr_in& hostAddress)
 void NetSession::Leave()
 {
     ASSERT_OR_DIE(m_sessionState == CONNECTED, "Wasn't connected before leaving");
+    NetMessage leaveMessage(NetMessage::CoreMessageTypes::CONNECTION_LEAVE);
+    for (NetConnection* conn : m_allConnections)
+    {
+        if (conn && conn != m_myConnection)
+        {
+            SendMessageDirect(conn->m_address, leaveMessage);
+        }
+    }
+
     Disconnect(m_myConnection);
     ASSERT_OR_DIE(m_myConnection == nullptr, "Didn't actually disconnect");
+
     SetSessionState(DISCONNECTED);
     OnEnterDisconnectedState();
 }
@@ -896,6 +912,7 @@ CONSOLE_COMMAND(nsinit)
     NetSession::instance->RegisterMessage((uint8_t)NetMessage::JOIN_REQUEST, "joinRequest", &OnJoinRequestReceived, (uint32_t)NetMessage::Option::RELIABLE, (uint32_t)NetMessage::Control::PROCESS_CONNECTIONLESS);
     NetSession::instance->RegisterMessage((uint8_t)NetMessage::JOIN_ACCEPT, "joinAccept", &OnJoinAcceptReceived, (uint32_t)NetMessage::Option::RELIABLE, (uint32_t)NetMessage::Control::NONE);
     NetSession::instance->RegisterMessage((uint8_t)NetMessage::JOIN_DENY, "joinDeny", &OnJoinDenyReceived, (uint32_t)NetMessage::Option::UNRELIABLE, (uint32_t)NetMessage::Control::NONE);
+    NetSession::instance->RegisterMessage((uint8_t)NetMessage::CONNECTION_LEAVE, "connectionLeave", &OnConnectionLeaveReceived, (uint32_t)NetMessage::Option::UNRELIABLE, (uint32_t)NetMessage::Control::PROCESS_CONNECTIONLESS);
 }
 
 //-----------------------------------------------------------------------------------
