@@ -19,7 +19,7 @@ enum ParticleSystemType
 class ParticleEmitterDefinition
 {
 public:
-    ParticleEmitterDefinition();
+    ParticleEmitterDefinition(const SpriteResource* spriteResource);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     Material* m_material;
