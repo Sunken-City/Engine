@@ -6,13 +6,15 @@
 #include "Engine/Renderer/MeshBuilder.hpp"
 #include "Engine/Math/Matrix4x4.hpp"
 #include "ResourceDatabase.hpp"
+#include "../../Math/Vector3.hpp"
 
 //-----------------------------------------------------------------------------------
-Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition* definition, const Vector2& initialVelocity, const Vector2& initialAcceleration)
+Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition* definition, float initialRotationDegrees, const Vector2& initialVelocity, const Vector2& initialAcceleration)
     : position(spawnPosition)
     , velocity(initialVelocity)
     , acceleration(initialAcceleration)
     , age(0.0f)
+    , rotationDegrees(initialRotationDegrees)
 {
     velocity = definition->m_initialVelocity.GetRandom();
     maxAge = definition->m_lifetimePerParticle.GetRandom();
@@ -39,6 +41,29 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
         for (unsigned int i = 0; i < definition->m_initialNumParticlesSpawn; ++i)
         {
             m_particles.emplace_back(*m_position, m_definition);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------------
+ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Vector2 positionToSpawn, float rotationDegrees)
+    : m_definition(definition)
+    , m_emitterAge(0.0f)
+    , m_timeSinceLastEmission(0.0f)
+    , m_isDead(false)
+    , m_rotationDegrees(rotationDegrees)
+{
+    if (definition->m_particlesPerSecond != 0.0f)
+    {
+        m_secondsPerParticle = 1.0f / definition->m_particlesPerSecond;
+        SpawnParticles(m_secondsPerParticle * definition->m_initialNumParticlesSpawn);
+    }
+    else
+    {
+        m_secondsPerParticle = 0.0f;
+        for (unsigned int i = 0; i < definition->m_initialNumParticlesSpawn; ++i)
+        {
+            m_particles.emplace_back(positionToSpawn, m_definition, m_rotationDegrees);
         }
     }
 }
@@ -99,8 +124,11 @@ void ParticleEmitter::CopyParticlesToMesh(Mesh* m_mesh)
         return;
     }
     MeshBuilder builder = MeshBuilder();
+    std::vector<Vertex_Sprite> verts;
+    std::vector<unsigned int> indices;
     for (unsigned int i = 0; i < numParticles; ++i)
     {
+        int currentOffset = i * 4;
         Particle& particle = m_particles[i];
         Vector2 pivotPoint = m_definition->m_spriteResource->m_pivotPoint;
         Vector2 uvMins = m_definition->m_spriteResource->m_uvBounds.mins;
@@ -110,23 +138,58 @@ void ParticleEmitter::CopyParticlesToMesh(Mesh* m_mesh)
         Matrix4x4 rotation = Matrix4x4::IDENTITY;
         Matrix4x4 translation = Matrix4x4::IDENTITY;
 
+        //Make empty spaces in our vector.
+        verts.emplace_back();
+        verts.emplace_back();
+        verts.emplace_back();
+        verts.emplace_back();
+
+        //Calculate the bounding box for our sprite
+        //position, scale, rotation, virtual size
+        verts[0 + currentOffset].position = Vector2(-pivotPoint.x, -pivotPoint.y);
+        verts[1 + currentOffset].position = Vector2(spriteBounds.x - pivotPoint.x, -pivotPoint.y);
+        verts[2 + currentOffset].position = Vector2(-pivotPoint.x, spriteBounds.y - pivotPoint.y);
+        verts[3 + currentOffset].position = Vector2(spriteBounds.x - pivotPoint.x, spriteBounds.y - pivotPoint.y);
+
+        //This is skewed to accomodate for STBI loading in the images the wrong way.
+        verts[0 + currentOffset].uv = Vector2(uvMins.x, uvMaxs.y);
+        verts[1 + currentOffset].uv = uvMaxs;
+        verts[2 + currentOffset].uv = uvMins;
+        verts[3 + currentOffset].uv = Vector2(uvMaxs.x, uvMins.y);
+
+        verts[0 + currentOffset].color = particle.tint;
+        verts[1 + currentOffset].color = particle.tint;
+        verts[2 + currentOffset].color = particle.tint;
+        verts[3 + currentOffset].color = particle.tint;
+
+        //Scale the bounding box
         Matrix4x4::MatrixMakeScale(&scale, Vector3(particle.scale, 0.0f));
-        Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(0.0f));
+
+        //Rotate the bounding box
+        Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(particle.rotationDegrees));
+
+        //Translate the bounding box
         Matrix4x4::MatrixMakeTranslation(&translation, Vector3(particle.position, 0.0f));
+
+        //Apply our transformations
         Matrix4x4 transform = scale * rotation * translation;
+        verts[0 + currentOffset].position = Vector2(Vector4(verts[0 + currentOffset].position, 0, 1) * transform);
+        verts[1 + currentOffset].position = Vector2(Vector4(verts[1 + currentOffset].position, 0, 1) * transform);
+        verts[2 + currentOffset].position = Vector2(Vector4(verts[2 + currentOffset].position, 0, 1) * transform);
+        verts[3 + currentOffset].position = Vector2(Vector4(verts[3 + currentOffset].position, 0, 1) * transform);
 
-        Vector2 bottomLeft(-pivotPoint.x, -pivotPoint.y);
-        Vector2 topRight(spriteBounds.x - pivotPoint.x, spriteBounds.y - pivotPoint.y);
-        
-        bottomLeft = Vector2(Vector4(bottomLeft, 0, 1) * transform);
-        topRight = Vector2(Vector4(topRight, 0, 1) * transform);
-
-        builder.AddTexturedAABB(AABB2(bottomLeft, topRight), uvMins, uvMaxs, particle.tint);
-    }
+        //Update indicies
+        indices.push_back(1 + currentOffset);
+        indices.push_back(2 + currentOffset);
+        indices.push_back(0 + currentOffset);
+        indices.push_back(1 + currentOffset);
+        indices.push_back(3 + currentOffset);
+        indices.push_back(2 + currentOffset);
+    } 
 
     //Copy the vertices into the mesh
     m_mesh->CleanUpRenderObjects();
-    builder.CopyToMesh(m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
+    m_mesh->Init(verts.data(), verts.size(), sizeof(Vertex_Sprite), indices.data(), indices.size(), &Vertex_Sprite::BindMeshToVAO);
 }
 
 //-----------------------------------------------------------------------------------
@@ -137,7 +200,7 @@ void ParticleEmitter::SpawnParticles(float deltaSeconds)
         m_timeSinceLastEmission += deltaSeconds;
         while (m_timeSinceLastEmission >= m_secondsPerParticle)
         {
-            m_particles.emplace_back(*m_position, m_definition);
+            m_particles.emplace_back(*m_position, m_definition, m_rotationDegrees);
             m_timeSinceLastEmission -= m_secondsPerParticle;
         }
     }
@@ -154,6 +217,21 @@ ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer,
     for (const ParticleEmitterDefinition* emitterDefinition : m_definition->m_emitterDefinitions)
     {
         m_emitters.push_back(new ParticleEmitter(emitterDefinition, positionToFollow));
+    }
+    SpriteGameRenderer::instance->RegisterParticleSystem(this);
+}
+
+//-----------------------------------------------------------------------------------
+ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees)
+    : prev(nullptr)
+    , next(nullptr)
+    , m_orderingLayer(orderingLayer)
+    , m_isDead(false)
+    , m_definition(ResourceDatabase::instance->GetParticleSystemResource(systemName))
+{
+    for (const ParticleEmitterDefinition* emitterDefinition : m_definition->m_emitterDefinitions)
+    {
+        m_emitters.push_back(new ParticleEmitter(emitterDefinition, positionToSpawn, rotationDegrees));
     }
     SpriteGameRenderer::instance->RegisterParticleSystem(this);
 }
@@ -205,5 +283,13 @@ void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, un
 {
     //The SpriteGameRenderer cleans up these one-shot systems whenever they're finished playing.
     ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerId, followingPosition);
+    ASSERT_OR_DIE(newSystemToPlay->m_definition->m_type == ONE_SHOT, "Attempted to call PlayOneShotParticleEffect with a looping particle system. PlayOneShotParticleEffect is only used for one-shot particle systems.");
+}
+
+//-----------------------------------------------------------------------------------
+void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerId, Vector2 spawnPosition, float rotationDegrees)
+{
+    //The SpriteGameRenderer cleans up these one-shot systems whenever they're finished playing.
+    ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerId, spawnPosition, rotationDegrees);
     ASSERT_OR_DIE(newSystemToPlay->m_definition->m_type == ONE_SHOT, "Attempted to call PlayOneShotParticleEffect with a looping particle system. PlayOneShotParticleEffect is only used for one-shot particle systems.");
 }

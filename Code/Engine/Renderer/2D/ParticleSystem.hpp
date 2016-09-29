@@ -11,7 +11,7 @@ class ParticleSystemDefinition;
 //-----------------------------------------------------------------------------------
 struct Particle
 {
-    Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition* definition, const Vector2& initalVelocity = Vector2::ZERO, const Vector2& initialAcceleration = Vector2::ZERO);
+    Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition* definition, float rotationDegrees = 0.0f, const Vector2& initalVelocity = Vector2::ZERO, const Vector2& initialAcceleration = Vector2::ZERO);
 
     inline bool IsDead() { return age > maxAge; };
 
@@ -20,6 +20,7 @@ struct Particle
     Vector2 acceleration;
     RGBA tint;
     Vector2 scale;
+    float rotationDegrees;
     float age;
     float maxAge;
 };
@@ -29,6 +30,7 @@ class ParticleEmitter
 {
 public:
     ParticleEmitter(const ParticleEmitterDefinition* definition, Vector2* positionToFollow);
+    ParticleEmitter(const ParticleEmitterDefinition* definition, Vector2 positionToSpawn, float rotationDegrees = 0.0f);
     virtual ~ParticleEmitter() {};
     virtual void Update(float deltaSeconds);
     virtual void UpdateParticles(float deltaSeconds);
@@ -40,6 +42,7 @@ public:
     const ParticleEmitterDefinition* m_definition;
     std::vector<Particle> m_particles;
     Vector2* m_position;
+    float m_rotationDegrees;
     float m_emitterAge;
     float m_timeSinceLastEmission;
     float m_secondsPerParticle;
@@ -51,6 +54,7 @@ class ParticleSystem
 {
 public:
     ParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow);
+    ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees = 0.0f);
     ~ParticleSystem();
     void AddEmitter(ParticleEmitter* emitter);
     void Update(float deltaSeconds);
@@ -59,6 +63,7 @@ public:
     static void DestroyImmediately(ParticleSystem* systemToDestroy);
     static void Destroy(ParticleSystem* systemToDestroy);
     static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, Vector2* followingPosition);
+    static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, Vector2 spawnPosition, float rotationDegrees = 0.0f);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     ParticleSystem* next;
