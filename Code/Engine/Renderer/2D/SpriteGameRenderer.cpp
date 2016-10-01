@@ -204,6 +204,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer)
     {
         Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, m_cameraPosition);
         {
+            //SortSpritesByXY(layer->m_spriteList);
             Sprite* currentSprite = layer->m_spriteList;
             if (currentSprite)
             {
@@ -431,6 +432,15 @@ AABB2 SpriteGameRenderer::GetVirtualBoundsAroundWorldCenter()
 bool SpriteGameRenderer::IsInsideWorldBounds(const Vector2& attemptedPosition)
 {
     return GetVirtualBoundsAroundCameraCenter().IsPointInside(attemptedPosition);
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::SortSpritesByXY(Sprite* spriteList)
+{
+    if (spriteList)
+    {
+        SortInPlace(spriteList, &LowerXYComparison);
+    }
 }
 
 //-----------------------------------------------------------------------------------
