@@ -131,6 +131,7 @@ std::vector<std::string> GetFileNamesInFolder(const std::string& filePathSearchS
 //Modified from http://www.cplusplus.com/forum/general/1796/
 bool FileExists(const std::string& filename)
 {
+#pragma todo("check if Fopen fails here instead")
     std::ifstream ifile(filename);
     return (bool)ifile;
 }

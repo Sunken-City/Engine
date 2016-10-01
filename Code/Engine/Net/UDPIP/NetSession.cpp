@@ -13,10 +13,10 @@ extern Event<float> NetworkUpdate;
 extern Event<> NetworkCleanup;
 
 //-----------------------------------------------------------------------------------
-NetSession::NetSession()
+NetSession::NetSession(float tickRatePerSecond) 
     : m_myConnection(nullptr)
     , m_hostConnection(nullptr)
-    , m_tickRate(1.0f / 20.0f)
+    , m_tickRate(tickRatePerSecond)
     , m_timeLastJoinRequestSent(0.0f)
     , m_timeSinceLastUpdate(0.0f)
     , m_numConnections(0)
@@ -902,7 +902,7 @@ CONSOLE_COMMAND(nsinit)
         return;
     }
 
-    NetSession::instance = new NetSession();
+    NetSession::instance = new NetSession(1.0f/60.0f);
     NetworkCleanup.RegisterMethod(NetSession::instance, &NetSession::Cleanup);
 
     // Setup
