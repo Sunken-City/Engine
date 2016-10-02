@@ -138,9 +138,7 @@ inline bool operator<(SpriteLayer lhs, const SpriteLayer& rhs)
 }
 
 //-----------------------------------------------------------------------------------
-inline bool LowerXYComparison(Sprite* first, Sprite* second)
+inline float LowerXYComparison(Sprite* first, Sprite* second)
 {
-    bool lowerXFirst = first->m_position.x < second->m_position.x;
-    bool lowerYFirst = first->m_position.y < second->m_position.y;
-    return lowerYFirst;
+    return first->m_position.y - second->m_position.y;
 }

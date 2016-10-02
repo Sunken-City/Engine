@@ -46,59 +46,103 @@ unsigned int GetCountInPlace(T* list)
 }
 
 //-----------------------------------------------------------------------------------
+//Returns the first element in the list, which is the list.
 template <typename T>
-void SortInPlace(T*& list, bool(ComparisonFunction)(T* first, T* second))
+T* GetFirst(T* list)
 {
-    bool isFinished = false;
-    unsigned int numNodes = GetCountInPlace(list);
-
-    T* curr = list;
-    for (unsigned int i = 0; i < numNodes; ++i)
-    {
-        for (unsigned int j = i; j < numNodes - 1; ++j)
-        {
-            if (ComparisonFunction(curr, curr->next))
-            {
-                SwapInPlace(curr, curr->next);
-            }
-        }
-        curr = curr->next;
-    }
+    return list;
 }
 
 //-----------------------------------------------------------------------------------
+//Returns the last element in the list, relative to the first.
 template <typename T>
-void SwapInPlace(T* first, T* second)
+T* GetLast(T* list)
 {
-    ASSERT_OR_DIE(first != nullptr && second != nullptr, "Passed in a head or null node to swap");
-
-    //Complete the swap
-    if (AreAdjacentNodes(first, second))
-    {
-        T* tempPtr = first->prev;
-        T* tempPtr2 = second->prev;
-        first->prev = first->next;
-        second->prev = tempPtr;
-        first->next = second->next;
-        second->next = tempPtr2;
-    }
-    else
-    {
-        T* tempPtr = first->next;
-        first->next = second->next;
-        second->next = tempPtr;
-        tempPtr = first->prev;
-        first->prev = second->prev;
-        second->prev = tempPtr;
-    }
-
-    //Amend the surrounding nodes
-    first->prev->next = first;
-    first->next->prev = first;
-    second->prev->next = second;
-    second->next->prev = second;
-
+    return (list) == nullptr ? nullptr : list->prev;
 }
+
+//-----------------------------------------------------------------------------------
+//Return the previous element without looping(so if elem is the first element, then return nullptr).
+template <typename T>
+T* GetPreviousWithoutLooping(T* list, T* element)
+{
+     return ((element == nullptr) || (element == GetFirst(list))) ? nullptr : element->prev;
+}
+
+//------------------------------------------------------------------------
+template <typename T, typename COMPARE>
+T* SortInPlace(T*& list, COMPARE comparisonFunction)
+{
+    T* i = GetFirst(list);
+
+    // Keeps track at which pointer in the list is the end of the sorted
+    // part of this list.  Let's us know when to stop swapping
+    T* sortedLast = nullptr;
+
+    // Keep track if I should early out
+    // as soon as I can move through it without swapping, I know it is sorted.
+    bool swapped = true;
+
+    // If I'm at the last, then I'm basically done (only one element to sort, and no way
+    // that is unsorted.
+    while (swapped && (sortedLast != GetLast(list)))
+    {
+        swapped = false;
+
+        // Get the second to last element
+        T* j = GetLast(list);
+        j = GetPreviousWithoutLooping(list, j);
+
+        while (j != sortedLast) 
+        {
+            // pre-cach the next previous iteration
+            // since j might move around.
+            T* p = GetPreviousWithoutLooping(list, j);
+            T* n = j->next;
+
+            // If this is greater, means j is greater than next (so out of order) 
+            if (comparisonFunction(j, n) > 0) 
+            {
+                //SWAP
+                swapped = true;
+
+                // Different than p, since LLP_LIST_PREV will return NULLPTR if it is at the beginning)
+                T* prev = j->prev;
+                T* next = n->next;
+
+                // Fix up links
+                prev->next = n;
+                n->prev = prev;
+                n->next = j;
+                j->prev = n;
+                j->next = next;
+                next->prev = j;
+
+                // Update list pointer
+                if (list == j) 
+                {
+                    list = n;
+                }
+            }
+
+            // update my iterator
+            j = p;
+        }
+
+        // update our previous pointer
+        if (sortedLast == nullptr) 
+        {
+            sortedLast = GetFirst(list);
+        }
+        else 
+        {
+            sortedLast = sortedLast->next;
+        }
+    }
+
+    return list;
+}
+
 
 //-----------------------------------------------------------------------------------
 template <typename T>

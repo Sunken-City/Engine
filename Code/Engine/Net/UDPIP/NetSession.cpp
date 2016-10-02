@@ -371,7 +371,7 @@ void OnJoinAcceptReceived(const NetSender& sender, NetMessage& msg)
 {
     if (sender.session->GetSessionState() != NetSession::State::JOINING)
     {
-        ERROR_AND_DIE("OnJoinAccept was Received, but we aren't in the joining state!");
+        ERROR_RECOVERABLE("OnJoinAccept was Received, but we aren't in the joining state!");
     }
     //     if (nuonce doesn't match)
     //     {
@@ -405,7 +405,7 @@ void OnJoinDenyReceived(const NetSender& sender, NetMessage& msg)
 {
     if (sender.session->GetSessionState() != NetSession::JOINING)
     {
-        ERROR_AND_DIE("OnJoinDeny was Received, but we aren't in the joining state!");
+        ERROR_RECOVERABLE("OnJoinDeny was Received, but we aren't in the joining state!");
     }
 //     if (nuonce doesn't match)
 //     {
@@ -557,6 +557,7 @@ void NetSession::Join(const char* username, sockaddr_in& hostAddress)
     m_timeLastJoinRequestSent = GetCurrentTimeMilliseconds();
     NetMessage request(NetMessage::CoreMessageTypes::JOIN_REQUEST);
     request.WriteString(username);
+    //m_hostConnection->SendMessage(request);
     SendMessageDirect(hostAddress, request);
 }
 
