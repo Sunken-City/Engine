@@ -2,11 +2,13 @@
 #include "Engine/Input/InputValues.hpp"
 #include "Engine/Math/Vector2.hpp"
 
+//-----------------------------------------------------------------------------------
 InputMap::InputMap()
 {
 
 }
 
+//-----------------------------------------------------------------------------------
 InputMap::~InputMap()
 {
     for (auto valuePair : m_values)
@@ -19,6 +21,7 @@ InputMap::~InputMap()
     }
 }
 
+//-----------------------------------------------------------------------------------
 InputValue* InputMap::AddInputValue(std::string const &name)
 {
     InputValue *val = nullptr;
@@ -38,6 +41,7 @@ InputValue* InputMap::AddInputValue(std::string const &name)
     return val;
 }
 
+//-----------------------------------------------------------------------------------
 InputValue* InputMap::AddInputValue(const std::string& name, InputValue* other)
 {
     InputValue* val = AddInputValue(name);
@@ -45,6 +49,7 @@ InputValue* InputMap::AddInputValue(const std::string& name, InputValue* other)
     return val;
 }
 
+//-----------------------------------------------------------------------------------
 InputValue* InputMap::FindInputValue(std::string const &name)
 {
     // If don't find it, create it.
@@ -57,12 +62,14 @@ InputValue* InputMap::FindInputValue(std::string const &name)
     return it->second;
 }
 
+//-----------------------------------------------------------------------------------
 float InputMap::GetValue(const std::string& name)
 {
     InputValue* val = FindInputValue(name);
     return (nullptr != val) ? val->GetValue() : 0.0f;
 }
 
+//-----------------------------------------------------------------------------------
 InputAxis* InputMap::AddInputAxis(std::string const &name)
 {
     InputAxis* axis = nullptr;
@@ -112,13 +119,29 @@ Vector2 InputMap::GetVector2(const std::string& xName, const std::string& yName)
 }
 
 //-----------------------------------------------------------------------------------
+bool InputMap::WasJustReleased(const std::string& name)
+{
+    InputValue* val = FindInputValue(name);
+    return val->WasJustReleased();
+}
+
+//-----------------------------------------------------------------------------------
+bool InputMap::WasJustPressed(const std::string& name)
+{
+    InputValue* val = FindInputValue(name);
+    return val->WasJustPressed();
+}
+
+//-----------------------------------------------------------------------------------
 bool InputMap::IsDown(const std::string& name)
 {
-    return GetValue(name) == 1.0f;
+    InputValue* val = FindInputValue(name);
+    return val->IsDown();
 }
 
 //-----------------------------------------------------------------------------------
 bool InputMap::IsUp(const std::string& name)
 {
-    return GetValue(name) == 0.0f;
+    InputValue* val = FindInputValue(name);
+    return val->IsUp();
 }

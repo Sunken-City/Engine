@@ -4,6 +4,7 @@
 class InputMap;
 class Vector2;
 
+//-----------------------------------------------------------------------------------
 class InputBase
 {
 public:
@@ -12,6 +13,7 @@ public:
     InputMap* m_owner;
 };
 
+//-----------------------------------------------------------------------------------
 class InputValue : public InputBase
 {
 public:
@@ -36,10 +38,13 @@ public:
     inline bool IsUp() const { return (m_currentValue == 0.0f); }
     inline bool WasDown() const { return (m_previousValue == 1.0f); }
     inline bool WasUp() const { return (m_previousValue == 0.0f); }
+    inline bool WasJustReleased() const { return (m_previousValue == 1.0f && m_currentValue == 0.0f); }
+    inline bool WasJustPressed() const { return (m_previousValue == 0.0f && m_currentValue == 1.0f); }
     void SetValue(const float value);
     void OnChanged(const InputValue* v);
     void AddMapping(InputValue* v);
 
+    //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     float m_previousValue;
     float m_currentValue;
     Event<const InputValue*> m_OnChange;
@@ -47,62 +52,32 @@ public:
     Event<const InputValue*> m_OnRelease;
 };
 
+//-----------------------------------------------------------------------------------
 class InputAxis : public InputBase
 {
 public:
+    //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     InputAxis()
         : InputBase(nullptr)
         , m_negativeValue(nullptr)
         , m_positiveValue(nullptr)
-    {
-
-    }
+    {}
 
     InputAxis(InputMap* owner)
         : InputBase(owner)
         , m_negativeValue(nullptr)
         , m_positiveValue(nullptr)
-    {
+    {}
 
-    }
-
+    //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void AddMapping(InputValue* pos, InputValue* neg);
     void OnValuesChanged(const InputValue*);
     void SetValue(float positiveValue, float negativeValue);
     float GetValue() const;
     bool HasChanged(float positiveValue, float negativeValue);
 
+    //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     InputValue* m_negativeValue;
     InputValue* m_positiveValue;
     Event<const InputValue*> m_OnChange;
 };
-
-
-// I also have CInputVector2, CInputVector3
-// A raw thumbstick generates a CInputVector2
-// class InputVector2 : InputBase
-// {
-// public:
-//     InputVector2()
-//         : InputBase(nullptr)
-//         , x(nullptr)
-//         , y(nullptr)
-//     {
-// 
-//     }
-// 
-//     InputVector2(InputMap* owner)
-//         : InputBase(owner)
-//         , x(owner)
-//         , y(owner)
-//     {
-// 
-//     }
-// 
-//     void AddMapping(InputAxis* x, InputAxis* y);
-//     Vector2 GetValue() const;
-// 
-//     InputAxis x;
-//     InputAxis y;
-//     Event<const InputValue*> m_OnChange;
-// };
