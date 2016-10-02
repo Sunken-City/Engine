@@ -373,10 +373,10 @@ void OnJoinAcceptReceived(const NetSender& sender, NetMessage& msg)
     {
         ERROR_RECOVERABLE("OnJoinAccept was Received, but we aren't in the joining state!");
     }
-    //     if (nuonce doesn't match)
-    //     {
-    //         return;
-    //     }
+//     if (nuonce doesn't match)
+//     {
+//         return;
+//     }
     
     Console::instance->PrintLine(Stringf("Joined the host at %s.", NetSystem::SockAddrToString((sockaddr*)&sender.address)), RGBA::VAPORWAVE);
 #pragma todo("ReadConnectionInfo function would simplify this")
@@ -406,6 +406,7 @@ void OnJoinDenyReceived(const NetSender& sender, NetMessage& msg)
     if (sender.session->GetSessionState() != NetSession::JOINING)
     {
         ERROR_RECOVERABLE("OnJoinDeny was Received, but we aren't in the joining state!");
+        return;
     }
 //     if (nuonce doesn't match)
 //     {
@@ -431,18 +432,22 @@ void OnJoinRequestReceived(const NetSender& sender, NetMessage& msg)
     if (sp->m_myConnection != sp->m_hostConnection)
     {
         sp->SendDeny(NetSession::ErrorCode::JOIN_DENIED_NOT_HOST, sender.address);
+        return;
     }
     if (!sp->m_isListening)
     {
         sp->SendDeny(NetSession::ErrorCode::JOIN_DENIED_NOT_ACCEPTING_NEW_CONNECTIONS, sender.address);
+        return;
     }
     if (sp->IsPartyFull())
     {
         sp->SendDeny(NetSession::ErrorCode::JOIN_DENIED_FULL, sender.address);
+        return;
     }
     if (sp->IsGuidInUse(guid))
     {
         sp->SendDeny(NetSession::ErrorCode::JOIN_DENIED_GUID_IN_USE, sender.address);
+        return;
     }
 
     NetConnection* cp = sp->CreateConnection(sp->GetNextAvailableIndex(), guid, sender.address);
@@ -557,8 +562,8 @@ void NetSession::Join(const char* username, sockaddr_in& hostAddress)
     m_timeLastJoinRequestSent = GetCurrentTimeMilliseconds();
     NetMessage request(NetMessage::CoreMessageTypes::JOIN_REQUEST);
     request.WriteString(username);
-    //m_hostConnection->SendMessage(request);
-    SendMessageDirect(hostAddress, request);
+    m_hostConnection->SendMessage(request);
+    //SendMessageDirect(hostAddress, request);
 }
 
 //-----------------------------------------------------------------------------------
