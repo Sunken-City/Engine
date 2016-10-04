@@ -83,7 +83,7 @@ public:
     inline void EnableLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Enable(); };
     inline void DisableLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Disable(); };
     inline void ToggleLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Toggle(); };
-    void SortSpritesByXY(Sprite* spriteList);
+    void SortSpritesByXY(Sprite*& spriteList);
 
     //SETTERS/////////////////////////////////////////////////////////////////////
     inline void SetClearColor(const RGBA& clearColor) { m_clearColor = clearColor; };
@@ -138,7 +138,7 @@ inline bool operator<(SpriteLayer lhs, const SpriteLayer& rhs)
 }
 
 //-----------------------------------------------------------------------------------
-inline float LowerXYComparison(Sprite* first, Sprite* second)
+inline float LowerYComparison(Sprite* first, Sprite* second)
 {
-    return first->m_position.y - second->m_position.y;
+    return second->m_position.y - first->m_position.y;
 }

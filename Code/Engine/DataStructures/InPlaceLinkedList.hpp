@@ -108,14 +108,17 @@ T* SortInPlace(T*& list, COMPARE comparisonFunction)
                 T *prev = j->prev;
                 T *next = n->next;
 
-                // Fix up links
-                prev->next = n;
-                n->prev = prev;
-                n->next = j;
-                j->prev = n;
-                j->next = next;
-                next->prev = j;
-
+                if (next != j)
+                {
+                    // Fix up links
+                    prev->next = n;
+                    n->prev = prev;
+                    n->next = j;
+                    j->prev = n;
+                    j->next = next;
+                    next->prev = j;
+                }
+                
                 // Update list pointer
                 if (list == j) 
                 {
