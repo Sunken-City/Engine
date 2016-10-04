@@ -69,7 +69,7 @@ void NetSession::Stop()
         Leave();
     }
     m_packetChannel.Unbind();
-    NetworkUpdate.UnregisterMethod(NetSession::instance, &NetSession::Update);
+    NetworkUpdate.UnregisterMethod(this, &NetSession::Update);
     SetSessionState(State::INVALID);
 }
 
@@ -429,6 +429,7 @@ void OnJoinRequestReceived(const NetSender& sender, NetMessage& msg)
 {
     NetSession* sp = sender.session;
     const char* guid = msg.ReadString();
+
     if (sp->m_myConnection != sp->m_hostConnection)
     {
         sp->SendDeny(NetSession::ErrorCode::JOIN_DENIED_NOT_HOST, sender.address);
@@ -446,7 +447,10 @@ void OnJoinRequestReceived(const NetSender& sender, NetMessage& msg)
     }
     if (sp->IsGuidInUse(guid))
     {
-        sp->SendDeny(NetSession::ErrorCode::JOIN_DENIED_GUID_IN_USE, sender.address);
+        if (!sp->HasConnectionFor(sender.address))
+        {
+            sp->SendDeny(NetSession::ErrorCode::JOIN_DENIED_GUID_IN_USE, sender.address);
+        }
         return;
     }
 
@@ -759,6 +763,20 @@ void NetSession::OnEnterDisconnectedState()
     }
     m_myConnection = nullptr;
     m_hostConnection = nullptr;
+}
+
+//-----------------------------------------------------------------------------------
+bool NetSession::HasConnectionFor(const sockaddr_in& address)
+{
+    for (uint8_t i = 0; i < MAX_CONNECTIONS; ++i)
+    {
+        NetConnection* conn = m_allConnections[i];
+        if (conn && NetSystem::SockaddrCompare(address, conn->m_address) == 0)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 //-----------------------------------------------------------------------------------

@@ -138,7 +138,7 @@ public:
     inline State GetSessionState() { return m_sessionState; };
     const char* GetStateCstr(const State& state);
     void OnEnterDisconnectedState();
-
+    bool HasConnectionFor(const sockaddr_in& address);
     //CONSTANTS/////////////////////////////////////////////////////////////////////
     static const uint8_t MAX_CONNECTIONS = 8;
     static const uint8_t INVALID_CONNECTION_INDEX = 255;

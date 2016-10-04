@@ -73,11 +73,9 @@ T* GetPreviousWithoutLooping(T* list, T* element)
 template <typename T, typename COMPARE>
 T* SortInPlace(T*& list, COMPARE comparisonFunction)
 {
-    T* i = GetFirst(list);
-
     // Keeps track at which pointer in the list is the end of the sorted
     // part of this list.  Let's us know when to stop swapping
-    T* sortedLast = nullptr;
+    T *sorted_last = nullptr;
 
     // Keep track if I should early out
     // as soon as I can move through it without swapping, I know it is sorted.
@@ -85,30 +83,30 @@ T* SortInPlace(T*& list, COMPARE comparisonFunction)
 
     // If I'm at the last, then I'm basically done (only one element to sort, and no way
     // that is unsorted.
-    while (swapped && (sortedLast != GetLast(list)))
+    while (swapped && (sorted_last != GetLast(list))) 
     {
         swapped = false;
 
         // Get the second to last element
-        T* j = GetLast(list);
+        T *j = GetLast(list);
         j = GetPreviousWithoutLooping(list, j);
 
-        while (j != sortedLast) 
+        while (j != sorted_last) 
         {
             // pre-cach the next previous iteration
             // since j might move around.
-            T* p = GetPreviousWithoutLooping(list, j);
-            T* n = j->next;
+            T *p = GetPreviousWithoutLooping(list, j);
+            T *n = j->next;
 
             // If this is greater, means j is greater than next (so out of order) 
             if (comparisonFunction(j, n) > 0) 
             {
-                //SWAP
+                // SWAP
                 swapped = true;
 
                 // Different than p, since LLP_LIST_PREV will return NULLPTR if it is at the beginning)
-                T* prev = j->prev;
-                T* next = n->next;
+                T *prev = j->prev;
+                T *next = n->next;
 
                 // Fix up links
                 prev->next = n;
@@ -130,13 +128,13 @@ T* SortInPlace(T*& list, COMPARE comparisonFunction)
         }
 
         // update our previous pointer
-        if (sortedLast == nullptr) 
+        if (sorted_last == nullptr) 
         {
-            sortedLast = GetFirst(list);
+            sorted_last = GetFirst(list);
         }
         else 
         {
-            sortedLast = sortedLast->next;
+            sorted_last = sorted_last->next;
         }
     }
 
