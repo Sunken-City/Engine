@@ -14,9 +14,13 @@ public:
     bool IsPointInside(const Vector2& point) const;
     bool IsPointOnOrInside(const Vector2& point) const;
     bool IsIntersecting(const AABB2& other) const;
+    bool IsIntersecting(const Vector2& position, const float& radius) const;
     Vector2 GetRandomPointInside();
+    float GetWidth() const;
+    float GetHeight() const;
     inline Vector2 GetBottomRight() const { return Vector2(maxs.x, mins.y); };
     inline Vector2 GetTopLeft()  const { return Vector2(mins.x, maxs.y); };
+    inline Vector2 GetCenter() const { return Vector2(maxs.x - GetWidth() / 2.0f, maxs.y - GetHeight() / 1.0f); };
 
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
     static AABB2 GetIntersectingAABB2(const AABB2& first, const AABB2& second);    

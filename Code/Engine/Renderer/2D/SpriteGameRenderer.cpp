@@ -11,6 +11,7 @@
 #include "Engine/Input/Console.hpp"
 #include "Engine/Renderer/Framebuffer.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
+#include "Engine/Time/Time.hpp"
 
 //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
 SpriteGameRenderer* SpriteGameRenderer::instance = nullptr;
@@ -233,6 +234,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer)
         {
             m_effectFBO->Bind();
             currentEffect->SetDiffuseTexture(m_currentFBO->m_colorTargets[0]);
+            currentEffect->SetFloatUniform("gTime", (float)GetCurrentTimeSeconds());
             Renderer::instance->RenderFullScreenEffect(currentEffect);
             Framebuffer* temporaryCurrentPointer = m_currentFBO;
             m_currentFBO = m_effectFBO;
@@ -366,6 +368,25 @@ SpriteLayer* SpriteGameRenderer::CreateOrGetLayer(int layerNumber)
 void SpriteGameRenderer::AddEffectToLayer(Material* effectMaterial, int layerNumber)
 {
     CreateOrGetLayer(layerNumber)->m_effectMaterials.push_back(effectMaterial);
+#pragma todo("This is going to cause a bug if we have multiple copies of the same material.")
+    effectMaterial->SetFloatUniform("gStartTime", (float)GetCurrentTimeSeconds());
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::RemoveEffectFromLayer(Material* effectMaterial, int layerNumber)
+{
+    SpriteLayer* layer = CreateOrGetLayer(layerNumber);
+    if (layer)
+    {
+        for (auto iter = layer->m_effectMaterials.begin(); iter != layer->m_effectMaterials.end(); ++iter)
+        {
+            if (effectMaterial == *iter)
+            {
+                layer->m_effectMaterials.erase(iter);
+                return;
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------------

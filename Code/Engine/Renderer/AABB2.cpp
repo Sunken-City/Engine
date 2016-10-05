@@ -38,6 +38,15 @@ bool AABB2::IsValid(const AABB2& aabb2ToValidate)
 }
 
 //-----------------------------------------------------------------------------------
+bool AABB2::IsIntersecting(const Vector2& position, const float& radius) const
+{
+    Vector2 vectorToCircle = MathUtils::CalcDistanceBetweenPoints(GetCenter(), position);
+    Vector2 clampedPointOnAABB = Vector2(MathUtils::Clamp(vectorToCircle.x, GetWidth()/-2.0f, GetWidth()/2.0f), MathUtils::Clamp(vectorToCircle.y, GetHeight()/-2.0f, GetHeight()/2.0f));
+    float distance = abs((clampedPointOnAABB - position).CalculateMagnitude()) - radius;
+    return distance < 0;
+}
+
+//-----------------------------------------------------------------------------------
 bool AABB2::IsIntersecting(const AABB2& other) const
 {
     return IsValid(GetIntersectingAABB2(*this, other));
@@ -91,4 +100,16 @@ AABB2& AABB2::operator+=(const Vector2& rhs)
     this->mins += rhs;
     this->maxs += rhs;
     return *this;
+}
+
+//-----------------------------------------------------------------------------------
+float AABB2::GetWidth() const
+{
+    return maxs.x - mins.x;
+}
+
+//-----------------------------------------------------------------------------------
+float AABB2::GetHeight() const
+{
+    return maxs.y - mins.y;
 }

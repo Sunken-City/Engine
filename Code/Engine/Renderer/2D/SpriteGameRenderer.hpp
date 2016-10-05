@@ -81,6 +81,7 @@ public:
     void UnregisterSprite(Sprite* sprite);
     SpriteLayer* CreateOrGetLayer(int layerNumber);
     void AddEffectToLayer(Material* effectMaterial, int layerNumber);
+    void RemoveEffectFromLayer(Material* effectMaterial, int layerNumber);
     inline void EnableLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Enable(); };
     inline void DisableLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Disable(); };
     inline void ToggleLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Toggle(); };
