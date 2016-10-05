@@ -48,6 +48,7 @@ public:
 class SpriteGameRenderer
 {
 public:
+    //ENUMS/////////////////////////////////////////////////////////////////////
     enum class Alignment
     {
         CENTER = 0,

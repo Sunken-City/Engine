@@ -95,6 +95,12 @@ Vector4 RGBA::ToVec4() const
 }
 
 //-----------------------------------------------------------------------------------
+RGBA RGBA::GetInverse() const
+{
+    return CreateFromUChars(0xFF - red, 0xFF - green, 0xFF - blue, alpha);
+}
+
+//-----------------------------------------------------------------------------------
 Vector4 RGBA::GetRandomVec4()
 {
     return Vector4(MathUtils::GetRandomFloatFromZeroTo(1.0f), MathUtils::GetRandomFloatFromZeroTo(1.0f), MathUtils::GetRandomFloatFromZeroTo(1.0f), 1.0f);

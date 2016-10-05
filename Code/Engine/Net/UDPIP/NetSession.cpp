@@ -29,8 +29,8 @@ NetSession::NetSession(float tickRatePerSecond)
     , m_connectionCountText(nullptr)
     , m_isListening(true)
 {
-    m_packetChannel.m_additionalLagMilliseconds = Range<double>(50, 150);
-    m_packetChannel.m_dropRate = 0.1f;
+    m_packetChannel.m_additionalLagMilliseconds = 0;//Range<double>(50, 150);
+    m_packetChannel.m_dropRate = 0.0f;//0.1f;
     for (int i = 0; i < MAX_CONNECTIONS; ++i)
     {
         m_allConnections[i] = nullptr;
@@ -935,7 +935,7 @@ CONSOLE_COMMAND(nsinit)
     NetSession::instance->RegisterMessage((uint8_t)NetMessage::HEARTBEAT, "<3", &OnHeartbeatReceived, (uint32_t)NetMessage::Option::RELIABLE, (uint32_t)NetMessage::Control::NONE);
     NetSession::instance->RegisterMessage((uint8_t)NetMessage::INORDER_HEARTBEAT, "Inorder<3", &OnHeartbeatReceived, (uint32_t)NetMessage::Option::RELIABLE | (uint32_t)NetMessage::Option::INORDER, (uint32_t)NetMessage::Control::NONE);
     NetSession::instance->RegisterMessage((uint8_t)NetMessage::JOIN_REQUEST, "joinRequest", &OnJoinRequestReceived, (uint32_t)NetMessage::Option::RELIABLE, (uint32_t)NetMessage::Control::PROCESS_CONNECTIONLESS);
-    NetSession::instance->RegisterMessage((uint8_t)NetMessage::JOIN_ACCEPT, "joinAccept", &OnJoinAcceptReceived, (uint32_t)NetMessage::Option::RELIABLE, (uint32_t)NetMessage::Control::NONE);
+    NetSession::instance->RegisterMessage((uint8_t)NetMessage::JOIN_ACCEPT, "joinAccept", &OnJoinAcceptReceived, (uint32_t)NetMessage::Option::RELIABLE | (uint32_t)NetMessage::Option::INORDER, (uint32_t)NetMessage::Control::NONE);
     NetSession::instance->RegisterMessage((uint8_t)NetMessage::JOIN_DENY, "joinDeny", &OnJoinDenyReceived, (uint32_t)NetMessage::Option::UNRELIABLE, (uint32_t)NetMessage::Control::NONE);
     NetSession::instance->RegisterMessage((uint8_t)NetMessage::CONNECTION_LEAVE, "connectionLeave", &OnConnectionLeaveReceived, (uint32_t)NetMessage::Option::UNRELIABLE, (uint32_t)NetMessage::Control::PROCESS_CONNECTIONLESS);
 }
