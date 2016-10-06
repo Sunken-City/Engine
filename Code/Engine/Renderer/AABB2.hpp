@@ -21,6 +21,7 @@ public:
     inline Vector2 GetBottomRight() const { return Vector2(maxs.x, mins.y); };
     inline Vector2 GetTopLeft()  const { return Vector2(mins.x, maxs.y); };
     inline Vector2 GetCenter() const { return Vector2(maxs.x - GetWidth() / 2.0f, maxs.y - GetHeight() / 1.0f); };
+    Vector2 GetSmallestResolutionVector(const Vector2& pointInside);
 
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
     static AABB2 GetIntersectingAABB2(const AABB2& first, const AABB2& second);    
@@ -29,7 +30,6 @@ public:
 
     //OPERATORS/////////////////////////////////////////////////////////////////////
     AABB2& AABB2::operator+=(const Vector2& rhs);
-
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
     static const AABB2 ZERO_TO_ONE;
 

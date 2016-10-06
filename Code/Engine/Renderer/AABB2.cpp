@@ -51,6 +51,18 @@ bool AABB2::IsIntersecting(const AABB2& other) const
 }
 
 //-----------------------------------------------------------------------------------
+Vector2 AABB2::GetSmallestResolutionVector(const Vector2& pointInside)
+{
+    float dispXMins = mins.x - pointInside.x;
+    float dispXMaxs = maxs.x - pointInside.x;
+    float dispYMins = mins.y - pointInside.y;
+    float dispYMaxs = maxs.y - pointInside.y;
+    bool xMaxsIsSmaller = abs(dispXMaxs) < abs(dispXMins);
+    bool yMaxsIsSmaller = abs(dispYMaxs) < abs(dispYMins);
+    return Vector2(xMaxsIsSmaller ? dispXMaxs : dispXMins, yMaxsIsSmaller ? dispYMaxs : dispYMins);
+}
+
+//-----------------------------------------------------------------------------------
 AABB2 AABB2::GetIntersectingAABB2(const AABB2& first, const AABB2& second)
 {
     float minsX = first.mins.x > second.mins.x ? first.mins.x : second.mins.x;
