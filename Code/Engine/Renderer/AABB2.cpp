@@ -40,10 +40,8 @@ bool AABB2::IsValid(const AABB2& aabb2ToValidate)
 //-----------------------------------------------------------------------------------
 bool AABB2::IsIntersecting(const Vector2& position, const float& radius) const
 {
-    Vector2 vectorToCircle = MathUtils::CalcDistanceBetweenPoints(GetCenter(), position);
-    Vector2 clampedPointOnAABB = Vector2(MathUtils::Clamp(vectorToCircle.x, GetWidth()/-2.0f, GetWidth()/2.0f), MathUtils::Clamp(vectorToCircle.y, GetHeight()/-2.0f, GetHeight()/2.0f));
-    float distance = abs((clampedPointOnAABB - position).CalculateMagnitude()) - radius;
-    return distance < 0;
+    AABB2 minkowskiBox = AABB2(Vector2(mins.x - radius, mins.y - radius), Vector2(maxs.x + radius, maxs.y + radius));
+    return minkowskiBox.IsPointInside(position);
 }
 
 //-----------------------------------------------------------------------------------

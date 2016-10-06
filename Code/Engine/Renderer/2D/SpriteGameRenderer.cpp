@@ -423,6 +423,12 @@ void SpriteGameRenderer::SetCameraPositionInBounds(const Vector2& newCameraPosit
 }
 
 //-----------------------------------------------------------------------------------
+Vector2 SpriteGameRenderer::GetCameraPositionInWorld()
+{
+    return m_cameraPosition * -1.0f;
+}
+
+//-----------------------------------------------------------------------------------
 float SpriteGameRenderer::GetPixelsPerVirtualUnit()
 {
     return (this->m_screenResolution.y / this->m_virtualHeight);
