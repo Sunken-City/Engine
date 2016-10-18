@@ -1,6 +1,6 @@
 #pragma once
-
 #include "Engine/Math/MathUtils.hpp"
+#include <math.h>
 
 class Vector2Int;
 class Vector3;
@@ -23,7 +23,9 @@ public:
     float CalculateMagnitude() const;
     float CalculateTheta();
     void Normalize();
+    Vector2 GetNorm();
     float Dot(const Vector2& b) const;
+    inline float GetDirectionDegreesFromNormalizedVector() const { return MathUtils::RadiansToDegrees(MathUtils::HALF_PI - atan2f(y, x)); };
 
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
     static Vector2 CalculateCorrectionVector(const Vector2& position, const Vector2& goal);

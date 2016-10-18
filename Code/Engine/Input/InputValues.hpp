@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Core/Event.hpp"
+#include "../Math/Vector2.hpp"
 
 class InputMap;
 class Vector2;
@@ -80,4 +81,48 @@ public:
     InputValue* m_negativeValue;
     InputValue* m_positiveValue;
     Event<const InputValue*> m_OnChange;
+};
+
+//-----------------------------------------------------------------------------------
+//Since this system doesn't handle joysticks well, this is a wrapper around 4 fake key inputs that make up a vector joystick.
+//An input axis can get the "key values" from this input type, while this just takes a vector2 and determines what a virtual joystick would be pressing via 4 keys to make that happen
+class InputVector2 : public InputBase
+{
+public:
+    //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
+    InputVector2()
+        : InputBase(nullptr)
+        , m_xPos(new InputValue(nullptr))
+        , m_xNeg(new InputValue(nullptr))
+        , m_yPos(new InputValue(nullptr))
+        , m_yNeg(new InputValue(nullptr))
+    {}
+
+    InputVector2(InputMap* owner)
+        : InputBase(owner)
+        , m_xPos(new InputValue(owner))
+        , m_xNeg(new InputValue(owner))
+        , m_yPos(new InputValue(owner))
+        , m_yNeg(new InputValue(owner))
+    {}
+
+    ~InputVector2()
+    {
+        delete m_xPos;
+        delete m_xNeg;
+        delete m_yPos;
+        delete m_yNeg;
+    }
+
+    //FUNCTIONS/////////////////////////////////////////////////////////////////////
+    void SetValue(const Vector2& inputValue);
+    Vector2 GetValue() const { return m_currentValue; };
+    void SetAxis(float newVal, InputValue* pos, InputValue* neg);
+
+    //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
+    InputValue* m_xPos;
+    InputValue* m_xNeg;
+    InputValue* m_yPos;
+    InputValue* m_yNeg;
+    Vector2 m_currentValue;
 };

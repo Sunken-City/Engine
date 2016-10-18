@@ -24,10 +24,12 @@ public:
     bool IsUp(const std::string& name);
     bool WasJustPressed(const std::string& name);
     bool WasJustReleased(const std::string& name);
-    InputAxis* AddInputAxis(std::string const &name);
+    InputAxis* AddInputAxis(const std::string &name);
+    InputAxis* AddInputAxis(const std::string& name, InputAxis* inputAxis);
     InputAxis* AddInputAxis(const std::string& name, InputValue* positiveInput, InputValue* negativeInput);
     InputAxis* FindInputAxis(std::string const &name);
     Vector2 GetVector2(const std::string& xName, const std::string& yName);
+    void Clear();
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::map<std::string, InputValue*> m_values;

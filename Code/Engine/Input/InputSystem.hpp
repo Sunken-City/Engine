@@ -4,6 +4,7 @@
 
 class XInputController;
 class KeyboardInputDevice;
+class MouseInputDevice;
 
 class InputSystem
 {
@@ -31,6 +32,15 @@ public:
         PERIOD = 0xBE, //VK_OEM_PERIOD
         TILDE = 0xC0, //VK_OEM_3
         NUM_EXTRA_KEYS
+    };
+
+    enum MouseButtons
+    {
+        LEFT_MOUSE_BUTTON = 0,
+        RIGHT_MOUSE_BUTTON,
+        MIDDLE_MOUSE_BUTTON,
+        NUM_BUTTONS
+
     };
 
     //CONSTRUCTORS//////////////////////////////////////////////////////////////////////////
@@ -68,16 +78,20 @@ public:
     void SetLastPressedChar(unsigned char asKey);
     char GetLastPressedChar();
 
+    //CONSTANTS//////////////////////////////////////////////////////////////////////////
+    static const int NUM_KEYS = 256;
+    static const int NUM_MOUSE_BUTTONS = 3;
+
     //VARIABLES//////////////////////////////////////////////////////////////////////////
     static InputSystem* instance;
     XInputController* m_controllers[4];
     KeyboardInputDevice* m_keyboardDevice;
+    MouseInputDevice* m_mouseDevice;
     Event<float> m_OnUpdate;
     
 private:
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
-    static const int NUM_KEYS = 256;
-    static const int NUM_MOUSE_BUTTONS = 3;
+#pragma todo("These need to not be hard-coded, we're gonna have a bad time");
     static const int SNAP_BACK_X = 800;
     static const int SNAP_BACK_Y = 600;
     

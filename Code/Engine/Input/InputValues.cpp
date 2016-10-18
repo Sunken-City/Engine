@@ -72,34 +72,36 @@ bool InputAxis::HasChanged(float positiveValue, float negativeValue)
     return (m_positiveValue->m_currentValue != positiveValue || m_negativeValue->m_currentValue != negativeValue);
 }
 
-// --------------------------------------------------------------
-// void InputVector2::AddMapping(InputAxis* x, InputAxis* y)
-// {
-//     x->m_OnChange.RegisterMethod(this, &InputVector2::OnValuesChanged);
-//     y->m_OnChange.RegisterMethod(this, &InputVector2::OnValuesChanged);
-// }
-// 
-// --------------------------------------------------------------
-// void InputVector2::OnValuesChanged(const InputValue*)
-// {
-//     SetValue(x.GetValue(), y.GetValue());
-// }
-// 
-// --------------------------------------------------------------
-// void InputVector2::SetValue(const float xVal, const float yVal)
-// {
-//     // I would like this not to do anything if you're setting it to the same value it already is.
-//     if (x.GetValue() != xVal || y.GetValue() != yVal)
-//     {
-//         x.SetValue(xVal)
-//         m_positiveValue.SetValue(positiveValue);
-//         m_negativeValue.SetValue(negativeValue);
-//     }
-//     m_OnChange.Trigger(nullptr);
-// }
-// 
-// --------------------------------------------------------------
-// Vector2 InputVector2::GetValue() const
-// {
-//     return Vector2(x.GetValue(), y.GetValue());
-// }
+//-----------------------------------------------------------------------------------
+void InputVector2::SetValue(const Vector2& inputValue)
+{
+    m_currentValue = inputValue;
+    SetAxis(inputValue.x, m_xPos, m_xNeg);
+    SetAxis(inputValue.y, m_yPos, m_yNeg);
+}
+
+//-----------------------------------------------------------------------------------
+void InputVector2::SetAxis(float newVal, InputValue* pos, InputValue* neg)
+{
+    //Set the negative value if negative, positive value if positive
+    if (newVal < 0.0f)
+    {
+        if ((pos->m_currentValue != 0.0f || neg->m_currentValue != -newVal))
+        {
+            pos->SetValue(0.0f);
+            neg->SetValue(-newVal);
+            pos->m_OnChange.Trigger(nullptr);
+            neg->m_OnChange.Trigger(nullptr);
+        }
+    }
+    else
+    {
+        if ((pos->m_currentValue != newVal || neg->m_currentValue != 0.0f))
+        {
+            pos->SetValue(newVal);
+            neg->SetValue(0.0f);
+            pos->m_OnChange.Trigger(nullptr);
+            neg->m_OnChange.Trigger(nullptr);
+        }
+    }
+}

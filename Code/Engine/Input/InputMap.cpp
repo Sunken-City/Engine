@@ -11,14 +11,7 @@ InputMap::InputMap()
 //-----------------------------------------------------------------------------------
 InputMap::~InputMap()
 {
-    for (auto valuePair : m_values)
-    {
-        delete valuePair.second;
-    }
-    for (auto axisPair : m_axies)
-    {
-        delete axisPair.second;
-    }
+    Clear();
 }
 
 //-----------------------------------------------------------------------------------
@@ -98,6 +91,14 @@ InputAxis* InputMap::AddInputAxis(const std::string& name, InputValue* positiveI
 }
 
 //-----------------------------------------------------------------------------------
+InputAxis* InputMap::AddInputAxis(const std::string& name, InputAxis* inputAxis)
+{
+    InputAxis* axis = AddInputAxis(name);
+    axis->AddMapping(inputAxis->m_positiveValue, inputAxis->m_negativeValue);
+    return axis;
+}
+
+//-----------------------------------------------------------------------------------
 InputAxis* InputMap::FindInputAxis(std::string const &name)
 {
     // If we don't find it, create it.
@@ -116,6 +117,19 @@ Vector2 InputMap::GetVector2(const std::string& xName, const std::string& yName)
     InputAxis* x = FindInputAxis(xName);
     InputAxis* y = FindInputAxis(yName);
     return Vector2(x->GetValue(), y->GetValue());
+}
+
+//-----------------------------------------------------------------------------------
+void InputMap::Clear()
+{
+    for (auto valuePair : m_values)
+    {
+        delete valuePair.second;
+    }
+    for (auto axisPair : m_axies)
+    {
+        delete axisPair.second;
+    }
 }
 
 //-----------------------------------------------------------------------------------

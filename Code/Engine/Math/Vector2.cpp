@@ -80,9 +80,26 @@ float Vector2::CalculateMagnitude() const
 void Vector2::Normalize()
 {
     float len = CalculateMagnitude();
-    if (len == 0.f)return;
+    if (len == 0.f)
+    {
+        return;
+    }
     x /= len;
     y /= len;
+}
+
+//-----------------------------------------------------------------------------------
+Vector2 Vector2::GetNorm()
+{
+    float len = CalculateMagnitude();
+    if (len == 0.f)
+    {
+        return Vector2::ZERO;
+    }
+    else
+    {
+        return Vector2(x / len, y / len);
+    }
 }
 
 //-----------------------------------------------------------------------------------
