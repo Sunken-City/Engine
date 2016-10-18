@@ -5,9 +5,10 @@
 #include "Engine/Renderer/AABB2.hpp"
 #include "Engine/DataStructures/InPlaceLinkedList.hpp"
 #include "Engine/Renderer/Material.hpp"
+#include "Engine/Renderer/2D/ParticleSystem.hpp"
+#include "Engine/TextRendering/TextBox.hpp"
 #include <map>
 #include <vector>
-#include "ParticleSystem.hpp"
 
 #define BIT_FLAG(f) (1 << (f))
 
@@ -29,6 +30,8 @@ public:
     inline void RemoveSprite(Sprite* sprite) { RemoveInPlace(m_spriteList, sprite); };
     inline void AddParticleSystem(ParticleSystem* system) { AddInPlace(m_particleSystemList, system); };
     inline void RemoveParticleSystem(ParticleSystem* system) { RemoveInPlace(m_particleSystemList, system); };
+    inline void AddTextBox(TextBox* text) { AddInPlace(m_textBoxList, text); };
+    inline void RemoveTextBox(TextBox* text) { RemoveInPlace(m_textBoxList, text); };
     inline void Enable() { m_isEnabled = true; }
     inline void Disable() { m_isEnabled = false; }
     inline void Toggle() { m_isEnabled = !m_isEnabled; }
@@ -38,6 +41,7 @@ public:
     int m_layer;
     Sprite* m_spriteList;
     ParticleSystem* m_particleSystemList;
+    TextBox* m_textBoxList;
     bool m_isEnabled;
     float m_virtualSize;
     AABB2 m_boundingVolume;
@@ -79,6 +83,8 @@ public:
     void DrawSprite(Sprite* sprite);
     void RegisterSprite(Sprite* sprite);
     void UnregisterSprite(Sprite* sprite);
+    void RegisterTextBox(TextBox* text);
+    void UnregisterTextBox(TextBox* text);
     SpriteLayer* CreateOrGetLayer(int layerNumber);
     void AddEffectToLayer(Material* effectMaterial, int layerNumber);
     void RemoveEffectFromLayer(Material* effectMaterial, int layerNumber);
@@ -104,6 +110,7 @@ public:
     AABB2 GetVirtualBoundsAroundWorldCenter();
     bool IsInsideWorldBounds(const Vector2& attemptedPosition);
     Vector2 GetCameraPositionInWorld();
+    void DrawTextBox(TextBox* currentText);
 
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
     static SpriteGameRenderer* instance;

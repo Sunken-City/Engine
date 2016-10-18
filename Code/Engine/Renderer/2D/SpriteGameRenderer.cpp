@@ -56,6 +56,7 @@ SpriteLayer::SpriteLayer(int layerIndex)
     : m_layer(layerIndex)
     , m_spriteList(nullptr)
     , m_particleSystemList(nullptr)
+    , m_textBoxList(nullptr)
     , m_isEnabled(true)
     , m_virtualSize(SpriteGameRenderer::instance->m_virtualSize)
     , m_boundingVolume(SpriteGameRenderer::instance->m_worldBounds)
@@ -165,7 +166,7 @@ SpriteGameRenderer::~SpriteGameRenderer()
 void SpriteGameRenderer::Update(float deltaSeconds)
 {
     UNUSED(deltaSeconds);
-    #pragma todo("Get changes in screen resolution for the SpriteGameRenderer")
+    #pragma todo("Implement changes in screen resolution for the SpriteGameRenderer")
 
     for (auto layerPair : m_layers)
     {
@@ -180,6 +181,16 @@ void SpriteGameRenderer::Update(float deltaSeconds)
             } while (currentSystem != layer->m_particleSystemList);
         }
         layer->CleanUpDeadParticleSystems();
+
+        TextBox* currentText = layer->m_textBoxList;
+        if (currentText)
+        {
+            do
+            {
+                currentText->Update(deltaSeconds);
+                currentText = currentText->next;
+            } while (currentText != layer->m_textBoxList);
+        }
     }
 }
 
@@ -218,6 +229,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer)
                     currentSprite = currentSprite->next;
                 } while (currentSprite != layer->m_spriteList);
             }
+
             ParticleSystem* currentSystem = layer->m_particleSystemList;
             if (currentSystem)
             {
@@ -226,6 +238,16 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer)
                     DrawParticleSystem(currentSystem);
                     currentSystem = currentSystem->next;
                 } while (currentSystem != layer->m_particleSystemList);
+            }
+
+            TextBox* currentText = layer->m_textBoxList;
+            if (currentText)
+            {
+                do
+                {
+                    DrawTextBox(currentText);
+                    currentText = currentText->next;
+                } while (currentText != layer->m_textBoxList);
             }
         }
         Renderer::instance->EndOrtho();
@@ -337,6 +359,12 @@ void SpriteGameRenderer::DrawSprite(Sprite* sprite)
 }
 
 //-----------------------------------------------------------------------------------
+void SpriteGameRenderer::DrawTextBox(TextBox* currentText)
+{
+    currentText->Render();
+}
+
+//-----------------------------------------------------------------------------------
 void SpriteGameRenderer::RegisterSprite(Sprite* sprite)
 {
     CreateOrGetLayer(sprite->m_orderingLayer)->AddSprite(sprite);
@@ -346,6 +374,18 @@ void SpriteGameRenderer::RegisterSprite(Sprite* sprite)
 void SpriteGameRenderer::UnregisterSprite(Sprite* sprite)
 {
     CreateOrGetLayer(sprite->m_orderingLayer)->RemoveSprite(sprite);
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::RegisterTextBox(TextBox* text)
+{
+    CreateOrGetLayer(text->m_orderingLayer)->AddTextBox(text);
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::UnregisterTextBox(TextBox* text)
+{
+    CreateOrGetLayer(text->m_orderingLayer)->RemoveTextBox(text);
 }
 
 //-----------------------------------------------------------------------------------
