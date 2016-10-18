@@ -287,6 +287,9 @@
     <ClCompile Include="Input\InputDevices.cpp">
       <Filter>Engine\Input</Filter>
     </ClCompile>
+    <ClCompile Include="Math\Transform2D.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -549,6 +552,9 @@
     </ClInclude>
     <ClInclude Include="Input\InputDevices.hpp">
       <Filter>Engine\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Transform2D.hpp">
+      <Filter>Engine\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

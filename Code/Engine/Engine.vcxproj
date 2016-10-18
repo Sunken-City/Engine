@@ -48,6 +48,7 @@
     <ClCompile Include="Math\Matrix4x4.cpp" />
     <ClCompile Include="Math\MatrixStack4x4.cpp" />
     <ClCompile Include="Math\Noise.cpp" />
+    <ClCompile Include="Math\Transform2D.cpp" />
     <ClCompile Include="Math\Vector2.cpp" />
     <ClCompile Include="Math\Vector2Int.cpp" />
     <ClCompile Include="Math\Vector3.cpp" />
@@ -137,6 +138,7 @@
     <ClInclude Include="Math\Matrix4x4.hpp" />
     <ClInclude Include="Math\MatrixStack4x4.hpp" />
     <ClInclude Include="Math\Noise.hpp" />
+    <ClInclude Include="Math\Transform2D.hpp" />
     <ClInclude Include="Math\Vector2.hpp" />
     <ClInclude Include="Math\Vector2Int.hpp" />
     <ClInclude Include="Math\Vector3.hpp" />
