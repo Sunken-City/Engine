@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Math/Vector2Int.hpp"
 #include "Engine/Core/Event.hpp"
+#include "Engine/Core/ErrorWarningAssert.hpp"
 
 class XInputController;
 class KeyboardInputDevice;
@@ -91,7 +92,7 @@ public:
     
 private:
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
-#pragma todo("These need to not be hard-coded, we're gonna have a bad time");
+#pragma todo("These need to not be hard-coded, we're gonna have a bad time")
     static const int SNAP_BACK_X = 800;
     static const int SNAP_BACK_Y = 600;
     

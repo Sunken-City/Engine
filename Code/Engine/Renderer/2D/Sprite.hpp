@@ -7,6 +7,7 @@
 class Texture;
 class Material;
 
+//-----------------------------------------------------------------------------------
 class SpriteResource
 {
 public:
@@ -28,6 +29,7 @@ private:
     SpriteResource(const SpriteResource&) = delete;
 };
 
+//-----------------------------------------------------------------------------------
 class Sprite
 {
 public:
