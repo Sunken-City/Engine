@@ -31,6 +31,12 @@ Vector3 MathUtils::Lerp(float fraction, const Vector3& initialValue, const Vecto
 }
 
 //-----------------------------------------------------------------------------------
+bool MathUtils::CoinFlip()
+{
+    return GetRandomIntFromZeroTo(2) == 1;
+}
+
+//-----------------------------------------------------------------------------------
 float MathUtils::DegreesToRadians(float degrees)
 {
     return degrees * (PI / 180.0f);

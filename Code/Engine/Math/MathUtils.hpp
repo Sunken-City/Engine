@@ -38,6 +38,7 @@ public:
     static float GetRandom(float minimum, float maximum);
     static int GetRandomIntFromZeroTo(int maximum);
     static float GetRandomFloatFromZeroTo(float maximum);
+    static bool CoinFlip();
 
     //TRIGONOMETRY//////////////////////////////////////////////////////////////////////////
     static float Dot(const Vector2& a, const Vector2& b);
@@ -53,7 +54,6 @@ public:
     static float Lerp(float fraction, float initialValue, float endValue);
     static Vector2 Lerp(float fraction, const Vector2& initialValue, const Vector2& endValue);
     static Vector3 Lerp(float fraction, const Vector3& initialValue, const Vector3& endValue);
-
 
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const float PI;
