@@ -71,7 +71,7 @@ public:
     void Update(float deltaSeconds);
     void Render();
     void UpdateScreenResolution(unsigned int widthInPixels, unsigned int heightInPixels);
-    void CopySpriteToMesh(Sprite* sprite);
+    void SetMeshFromSprite(Sprite* sprite);
     void RenderLayer(SpriteLayer* layer);
     void DrawParticleSystem(ParticleSystem* system);
     void RegisterParticleSystem(ParticleSystem* system);

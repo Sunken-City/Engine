@@ -280,7 +280,7 @@ void SpriteGameRenderer::UpdateScreenResolution(unsigned int widthInPixels, unsi
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteGameRenderer::CopySpriteToMesh(Sprite* sprite)
+void SpriteGameRenderer::SetMeshFromSprite(Sprite* sprite)
 {
     unsigned int indices[6] = { 1, 2, 0, 1, 3, 2 };
     Vertex_Sprite verts[4];
@@ -332,7 +332,7 @@ void SpriteGameRenderer::DrawSprite(Sprite* sprite)
 {
     sprite->m_material->SetDiffuseTexture(sprite->m_spriteResource->m_texture);
     m_meshRenderer->m_material = sprite->m_material;
-    CopySpriteToMesh(sprite);
+    SetMeshFromSprite(sprite);
     m_meshRenderer->Render();
 }
 
