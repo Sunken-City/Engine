@@ -8,15 +8,15 @@ void InputValue::SetValue(const float value)
     {
         m_previousValue = m_currentValue;
         m_currentValue = value;
-        m_OnChange.Trigger(this);
+        m_onChange.Trigger(this);
 
-        if (IsUp() && WasDown())
+        if (WasJustReleased())
         {
-            m_OnRelease.Trigger(this);
+            m_onRelease.Trigger(this);
         }
-        else if (IsDown() && WasUp())
+        else if (WasJustPressed())
         {
-            m_OnPress.Trigger(this);
+            m_onPress.Trigger(this);
         }
     }
 }
@@ -30,14 +30,14 @@ void InputValue::OnChanged(const InputValue* v)
 //--------------------------------------------------------------
 void InputValue::AddMapping(InputValue* v)
 {
-    v->m_OnChange.RegisterMethod(this, &InputValue::OnChanged);
+    v->m_onChange.RegisterMethod(this, &InputValue::OnChanged);
 }
 
 //--------------------------------------------------------------
 void InputAxis::AddMapping(InputValue* pos, InputValue* neg)
 {
-    pos->m_OnChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
-    neg->m_OnChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
+    pos->m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
+    neg->m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
     m_positiveValue = pos;
     m_negativeValue = neg;
 }
@@ -90,8 +90,8 @@ void InputVector2::SetAxis(float newVal, InputValue* pos, InputValue* neg)
         {
             pos->SetValue(0.0f);
             neg->SetValue(-newVal);
-            pos->m_OnChange.Trigger(nullptr);
-            neg->m_OnChange.Trigger(nullptr);
+            pos->m_onChange.Trigger(nullptr);
+            neg->m_onChange.Trigger(nullptr);
         }
     }
     else
@@ -100,8 +100,8 @@ void InputVector2::SetAxis(float newVal, InputValue* pos, InputValue* neg)
         {
             pos->SetValue(newVal);
             neg->SetValue(0.0f);
-            pos->m_OnChange.Trigger(nullptr);
-            neg->m_OnChange.Trigger(nullptr);
+            pos->m_onChange.Trigger(nullptr);
+            neg->m_onChange.Trigger(nullptr);
         }
     }
 }

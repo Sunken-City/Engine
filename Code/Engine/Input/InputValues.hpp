@@ -21,7 +21,8 @@ public:
     InputValue()
         : InputBase(nullptr),
         m_currentValue(0.0f),
-        m_previousValue(0.0f) 
+        m_previousValue(0.0f),
+        m_deadzoneValue(0.15f)
     {
 
     }
@@ -29,18 +30,19 @@ public:
     InputValue(InputMap* owner)
         : InputBase(owner),
         m_currentValue(0.0f),
-        m_previousValue(0.0f) 
+        m_previousValue(0.0f),
+        m_deadzoneValue(0.15f)
     {
 
     }
 
     inline float GetValue() const { return m_currentValue; }
-    inline bool IsDown() const { return (m_currentValue == 1.0f); }
-    inline bool IsUp() const { return (m_currentValue == 0.0f); }
-    inline bool WasDown() const { return (m_previousValue == 1.0f); }
-    inline bool WasUp() const { return (m_previousValue == 0.0f); }
-    inline bool WasJustReleased() const { return (m_previousValue == 1.0f && m_currentValue == 0.0f); }
-    inline bool WasJustPressed() const { return (m_previousValue == 0.0f && m_currentValue == 1.0f); }
+    inline bool IsDown() const { return (m_currentValue > 1.0f - m_deadzoneValue); }
+    inline bool IsUp() const { return (m_currentValue < m_deadzoneValue); }
+    inline bool WasDown() const { return (m_previousValue > 1.0f - m_deadzoneValue); }
+    inline bool WasUp() const { return (m_previousValue < m_deadzoneValue); }
+    inline bool WasJustReleased() const { return !IsDown() && WasDown(); }
+    inline bool WasJustPressed() const { return !IsUp() && WasUp(); }
     void SetValue(const float value);
     void OnChanged(const InputValue* v);
     void AddMapping(InputValue* v);
@@ -48,24 +50,31 @@ public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     float m_previousValue;
     float m_currentValue;
-    Event<const InputValue*> m_OnChange;
-    Event<const InputValue*> m_OnPress;
-    Event<const InputValue*> m_OnRelease;
+    float m_deadzoneValue;
+    Event<const InputValue*> m_onChange;
+    Event<const InputValue*> m_onPress;
+    Event<const InputValue*> m_onRelease;
 };
 
 //-----------------------------------------------------------------------------------
-class InputAxis : public InputBase
+class VirtualInputValue : public InputValue
+{
+
+};
+
+//-----------------------------------------------------------------------------------
+class InputAxis : public InputValue
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     InputAxis()
-        : InputBase(nullptr)
+        : InputValue()
         , m_negativeValue(nullptr)
         , m_positiveValue(nullptr)
     {}
 
     InputAxis(InputMap* owner)
-        : InputBase(owner)
+        : InputValue(owner)
         , m_negativeValue(nullptr)
         , m_positiveValue(nullptr)
     {}
@@ -78,8 +87,8 @@ public:
     bool HasChanged(float positiveValue, float negativeValue);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    InputValue* m_negativeValue;
-    InputValue* m_positiveValue;
+    VirtualInputValue m_negativeValue;
+    VirtualInputValue m_positiveValue;
     Event<const InputValue*> m_OnChange;
 };
 
@@ -92,26 +101,14 @@ public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     InputVector2()
         : InputBase(nullptr)
-        , m_xPos(new InputValue(nullptr))
-        , m_xNeg(new InputValue(nullptr))
-        , m_yPos(new InputValue(nullptr))
-        , m_yNeg(new InputValue(nullptr))
     {}
 
     InputVector2(InputMap* owner)
         : InputBase(owner)
-        , m_xPos(new InputValue(owner))
-        , m_xNeg(new InputValue(owner))
-        , m_yPos(new InputValue(owner))
-        , m_yNeg(new InputValue(owner))
     {}
 
     ~InputVector2()
     {
-        delete m_xPos;
-        delete m_xNeg;
-        delete m_yPos;
-        delete m_yNeg;
     }
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
@@ -120,9 +117,7 @@ public:
     void SetAxis(float newVal, InputValue* pos, InputValue* neg);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    InputValue* m_xPos;
-    InputValue* m_xNeg;
-    InputValue* m_yPos;
-    InputValue* m_yNeg;
+    InputAxis m_x;
+    InputAxis m_y;
     Vector2 m_currentValue;
 };
