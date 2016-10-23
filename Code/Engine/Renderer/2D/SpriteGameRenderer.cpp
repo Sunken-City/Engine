@@ -122,9 +122,11 @@ SpriteGameRenderer::SpriteGameRenderer(const RGBA& clearColor, unsigned int widt
     , m_worldBounds(-Vector2::MAX, Vector2::MAX)
     , m_currentFBO(nullptr)
     , m_effectFBO(nullptr)
+    , m_viewportDefinitions(nullptr)
 {
     UpdateScreenResolution(widthInPixels, heightInPixels);
     SetVirtualSize(virtualSize);
+    SetSplitscreen(2);
     m_defaultShader = ShaderProgram::CreateFromShaderStrings(DEFAULT_VERT_SHADER, DEFAULT_FRAG_SHADER);
     m_mesh = new Mesh();
     m_meshRenderer = new MeshRenderer(m_mesh, nullptr);
@@ -164,7 +166,6 @@ SpriteGameRenderer::~SpriteGameRenderer()
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::Update(float deltaSeconds)
 {
-    UNUSED(deltaSeconds);
     #pragma todo("Get changes in screen resolution for the SpriteGameRenderer")
 
     for (auto layerPair : m_layers)
@@ -186,6 +187,15 @@ void SpriteGameRenderer::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::Render()
 {
+    for (unsigned int i = 0; i < m_numSplitscreenViews; ++i)
+    {
+        RenderView(m_viewportDefinitions[i]);
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
+{
     m_currentFBO->Bind();
     Renderer::instance->ClearColor(m_clearColor);
     for (auto layerPair : m_layers)
@@ -193,7 +203,7 @@ void SpriteGameRenderer::Render()
         RenderLayer(layerPair.second);
     }
     m_meshRenderer->m_material = nullptr;
-    Renderer::instance->FrameBufferCopyToBack(m_currentFBO);
+    Renderer::instance->FrameBufferCopyToBack(m_currentFBO, renderArea.viewportWidth, renderArea.viewportHeight, renderArea.bottomLeftX, renderArea.bottomLeftY);
     m_currentFBO->Unbind();
 }
 
@@ -419,6 +429,27 @@ void SpriteGameRenderer::SetCameraPositionInBounds(const Vector2& newCameraPosit
         Vector2 correctionVector = Vector2::CalculateCorrectionVector(cameraBounds.maxs, otherBounds.maxs);
         m_cameraPosition.x -= cameraBounds.maxs.x > otherBounds.maxs.x ? correctionVector.x : 0.0f;
         m_cameraPosition.y -= cameraBounds.maxs.y > otherBounds.maxs.y ? correctionVector.y : 0.0f;
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
+{
+    if (m_viewportDefinitions)
+    {
+        delete m_viewportDefinitions;
+    }
+    m_numSplitscreenViews = numViews;
+    m_viewportDefinitions = new ViewportDefinition[m_numSplitscreenViews];
+
+    int screenOffsetX = m_screenResolution.x / m_numSplitscreenViews;
+    int screenOffsetY = m_screenResolution.y / m_numSplitscreenViews;
+    for (int i = 0; i < m_numSplitscreenViews; ++i)
+    {
+        m_viewportDefinitions[i].bottomLeftX = i * screenOffsetX * 2;
+        m_viewportDefinitions[i].bottomLeftY = 0;
+        m_viewportDefinitions[i].viewportWidth = screenOffsetX;
+        m_viewportDefinitions[i].viewportHeight = m_screenResolution.y;
     }
 }
 

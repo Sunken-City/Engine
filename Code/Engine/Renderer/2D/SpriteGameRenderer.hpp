@@ -17,6 +17,18 @@ class MeshRenderer;
 class Framebuffer;
 
 //-----------------------------------------------------------------------------------
+struct ViewportDefinition
+{
+    ViewportDefinition() {};
+    ViewportDefinition(uint32_t x, uint32_t y, uint32_t width, uint32_t height) : bottomLeftX(x), bottomLeftY(y), viewportWidth(width), viewportHeight(height) {};
+
+    uint32_t bottomLeftX;
+    uint32_t bottomLeftY;
+    uint32_t viewportWidth;
+    uint32_t viewportHeight;
+};
+
+//-----------------------------------------------------------------------------------
 class SpriteLayer
 {
 public:
@@ -70,6 +82,7 @@ public:
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void Update(float deltaSeconds);
     void Render();
+    void RenderView(const ViewportDefinition& renderArea);
     void UpdateScreenResolution(unsigned int widthInPixels, unsigned int heightInPixels);
     void SetMeshFromSprite(Sprite* sprite);
     void RenderLayer(SpriteLayer* layer);
@@ -96,6 +109,7 @@ public:
     void SetCameraPosition(const Vector2& newCameraPosition);
     //Set the camera's position in a set of bounds other than the world bounds.
     void SetCameraPositionInBounds(const Vector2& newCameraPosition, const AABB2& otherBounds);
+    void SetSplitscreen(unsigned int numViews = 1);
 
     //GETTERS/////////////////////////////////////////////////////////////////////
     float GetPixelsPerVirtualUnit();
@@ -128,6 +142,8 @@ private:
     float m_virtualWidth;
     Framebuffer* m_currentFBO;
     Framebuffer* m_effectFBO;
+    unsigned int m_numSplitscreenViews;
+    ViewportDefinition* m_viewportDefinitions;
     
     //CONSTANTS/////////////////////////////////////////////////////////////////////
     static const char* DEFAULT_VERT_SHADER;
