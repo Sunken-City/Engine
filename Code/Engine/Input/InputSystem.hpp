@@ -35,7 +35,7 @@ public:
         NUM_EXTRA_KEYS
     };
 
-    enum MouseButtons
+    enum MouseButton
     {
         LEFT_MOUSE_BUTTON = 0,
         RIGHT_MOUSE_BUTTON,
@@ -51,12 +51,6 @@ public:
     //FUNCTIONS//////////////////////////////////////////////////////////////////////////
     void Update(float deltaTime);
     void AdvanceFrameNumber();
-    void HideMouseCursor();
-    void ShowMouseCursor();
-    void LockMouseCursor();
-    void UnlockMouseCursor();
-    void CaptureMouseCursor();
-    void ReleaseMouseCursor();
 
     //SETTERS//////////////////////////////////////////////////////////////////////////
     void SetCursorPosition(Vector2Int newPosition);
