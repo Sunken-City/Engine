@@ -21,6 +21,7 @@ public:
 
     //FUNCTIONS//////////////////////////////////////////////////////////////////////////
     float CalculateMagnitude() const;
+    void ClampMagnitude(float topSpeed);
     float CalculateTheta();
     void Normalize();
     Vector2 GetNorm();

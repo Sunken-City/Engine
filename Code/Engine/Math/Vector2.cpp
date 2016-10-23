@@ -77,6 +77,18 @@ float Vector2::CalculateMagnitude() const
 }
 
 //-----------------------------------------------------------------------------------
+void Vector2::ClampMagnitude(float desiredMagnitude)
+{
+    float currentMagnitude = CalculateMagnitude();
+    if (currentMagnitude > desiredMagnitude)
+    {
+        float scalingFactor = desiredMagnitude / currentMagnitude;
+        x *= scalingFactor;
+        y *= scalingFactor;
+    }
+}
+
+//-----------------------------------------------------------------------------------
 void Vector2::Normalize()
 {
     float len = CalculateMagnitude();
