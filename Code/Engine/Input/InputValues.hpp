@@ -9,8 +9,10 @@ class Vector2;
 class InputBase
 {
 public:
+    //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     InputBase(InputMap* o) : m_owner(o) {}
 
+    //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     InputMap* m_owner;
 };
 
@@ -18,6 +20,7 @@ public:
 class InputValue : public InputBase
 {
 public:
+    //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     InputValue()
         : InputBase(nullptr),
         m_currentValue(0.0f),
@@ -36,6 +39,7 @@ public:
 
     }
 
+    //FUNCTIONS/////////////////////////////////////////////////////////////////////
     inline float GetValue() const { return m_currentValue; }
     inline bool IsDown() const { return (m_currentValue > 1.0f - m_deadzoneValue); }
     inline bool IsUp() const { return (m_currentValue < m_deadzoneValue); }
@@ -44,8 +48,8 @@ public:
     inline bool WasJustReleased() const { return !IsDown() && WasDown(); }
     inline bool WasJustPressed() const { return !IsUp() && WasUp(); }
     void SetValue(const float value);
-    void OnChanged(const InputValue* v);
-    void AddMapping(InputValue* v);
+    void OnChanged(const InputValue* value);
+    void AddMapping(InputValue* value);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     float m_previousValue;
@@ -59,7 +63,23 @@ public:
 //-----------------------------------------------------------------------------------
 class VirtualInputValue : public InputValue
 {
+public:
+    //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
+    VirtualInputValue()
+        : InputValue()
+    {
 
+    }
+
+    VirtualInputValue(InputMap* owner)
+        : InputValue(owner)
+    {
+
+    }
+
+    //FUNCTIONS/////////////////////////////////////////////////////////////////////
+
+    //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
 };
 
 //-----------------------------------------------------------------------------------
@@ -69,18 +89,18 @@ public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     InputAxis()
         : InputValue()
-        , m_negativeValue(nullptr)
-        , m_positiveValue(nullptr)
+        , m_negativeValue()
+        , m_positiveValue()
     {}
 
     InputAxis(InputMap* owner)
         : InputValue(owner)
-        , m_negativeValue(nullptr)
-        , m_positiveValue(nullptr)
+        , m_negativeValue(owner)
+        , m_positiveValue(owner)
     {}
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
-    void AddMapping(InputValue* pos, InputValue* neg);
+    void AddMapping(const VirtualInputValue& pos, const VirtualInputValue& neg);
     void OnValuesChanged(const InputValue*);
     void SetValue(float positiveValue, float negativeValue);
     float GetValue() const;

@@ -22,22 +22,22 @@ void InputValue::SetValue(const float value)
 }
 
 //--------------------------------------------------------------
-void InputValue::OnChanged(const InputValue* v)
+void InputValue::OnChanged(const InputValue* value)
 {
-    SetValue(v->GetValue());
+    SetValue(value->GetValue());
 }
 
 //--------------------------------------------------------------
-void InputValue::AddMapping(InputValue* v)
+void InputValue::AddMapping(InputValue* value)
 {
-    v->m_onChange.RegisterMethod(this, &InputValue::OnChanged);
+    value->m_onChange.RegisterMethod(this, &InputValue::OnChanged);
 }
 
 //--------------------------------------------------------------
-void InputAxis::AddMapping(InputValue* pos, InputValue* neg)
+void InputAxis::AddMapping(const VirtualInputValue& pos, const VirtualInputValue& neg)
 {
-    pos->m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
-    neg->m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
+    pos.m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
+    neg.m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
     m_positiveValue = pos;
     m_negativeValue = neg;
 }
@@ -45,7 +45,7 @@ void InputAxis::AddMapping(InputValue* pos, InputValue* neg)
 //--------------------------------------------------------------
 void InputAxis::OnValuesChanged(const InputValue*)
 {
-    SetValue(m_positiveValue->GetValue(), m_negativeValue->GetValue());
+    SetValue(m_positiveValue.GetValue(), m_negativeValue.GetValue());
 }
 
 //--------------------------------------------------------------
@@ -54,8 +54,8 @@ void InputAxis::SetValue(float positiveValue, float negativeValue)
     // I would like this not to do anything if you're setting it to the same value it already is.
     if (HasChanged(positiveValue, negativeValue))
     {
-        m_positiveValue->SetValue(positiveValue);
-        m_negativeValue->SetValue(negativeValue);
+        m_positiveValue.SetValue(positiveValue);
+        m_negativeValue.SetValue(negativeValue);
     }
     m_OnChange.Trigger(nullptr);
 }
@@ -63,13 +63,13 @@ void InputAxis::SetValue(float positiveValue, float negativeValue)
 //--------------------------------------------------------------
 float InputAxis::GetValue() const
 {
-    return m_positiveValue->GetValue() - m_negativeValue->GetValue();
+    return m_positiveValue.GetValue() - m_negativeValue.GetValue();
 }
 
 //--------------------------------------------------------------
 bool InputAxis::HasChanged(float positiveValue, float negativeValue)
 {
-    return (m_positiveValue->m_currentValue != positiveValue || m_negativeValue->m_currentValue != negativeValue);
+    return (m_positiveValue.m_currentValue != positiveValue || m_negativeValue.m_currentValue != negativeValue);
 }
 
 //-----------------------------------------------------------------------------------
