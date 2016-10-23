@@ -126,7 +126,8 @@ SpriteGameRenderer::SpriteGameRenderer(const RGBA& clearColor, unsigned int widt
 {
     UpdateScreenResolution(widthInPixels, heightInPixels);
     SetVirtualSize(virtualSize);
-    SetSplitscreen(2);
+    SetSplitscreen(1);
+
     m_defaultShader = ShaderProgram::CreateFromShaderStrings(DEFAULT_VERT_SHADER, DEFAULT_FRAG_SHADER);
     m_mesh = new Mesh();
     m_meshRenderer = new MeshRenderer(m_mesh, nullptr);
@@ -144,6 +145,11 @@ SpriteGameRenderer::SpriteGameRenderer(const RGBA& clearColor, unsigned int widt
 SpriteGameRenderer::~SpriteGameRenderer()
 {
     const bool forceDelete = true;
+
+    if (m_viewportDefinitions)
+    {
+        delete m_viewportDefinitions;
+    }
 
     delete m_defaultShader;
     delete m_mesh;
@@ -446,7 +452,7 @@ void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
     int screenOffsetY = m_screenResolution.y / m_numSplitscreenViews;
     for (int i = 0; i < m_numSplitscreenViews; ++i)
     {
-        m_viewportDefinitions[i].bottomLeftX = i * screenOffsetX * 2;
+        m_viewportDefinitions[i].bottomLeftX = i * screenOffsetX;
         m_viewportDefinitions[i].bottomLeftY = 0;
         m_viewportDefinitions[i].viewportWidth = screenOffsetX;
         m_viewportDefinitions[i].viewportHeight = m_screenResolution.y;

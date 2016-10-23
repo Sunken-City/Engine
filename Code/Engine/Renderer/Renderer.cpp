@@ -1055,13 +1055,13 @@ void Renderer::FrameBufferCopyToBack(Framebuffer* fbo, uint32_t drawingWidth, ui
     uint32_t readWidth = fbo->m_pixelWidth;
     uint32_t readHeight = fbo->m_pixelHeight;
 
-    uint32_t drawWidth = drawingWidth;
-    uint32_t drawHeight = drawingHeight;
+    uint32_t topRightX = bottomLeftX + drawingWidth;
+    uint32_t topRightY = bottomLeftY + drawingHeight;
 
     glBlitFramebuffer(0, 0, //Lower left corner pixel of the read buffer
         readWidth, readHeight, //Top right corner pixel
         bottomLeftX, bottomLeftY, //lower left corner pixel
-        drawWidth, drawHeight, //top right pixel of read buffer
+        topRightX, topRightY, //top right pixel of read buffer
         GL_COLOR_BUFFER_BIT,
         GL_NEAREST);
 
