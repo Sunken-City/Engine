@@ -1,7 +1,8 @@
 #include "Engine/Input/InputSystem.hpp"
 #include "Engine/Input/XInputController.hpp"
 #include "Engine/Math/Vector2Int.hpp"
-#include "Engine/Input/InputDevices.hpp"
+#include "Engine/Input/InputDevices/KeyboardInputDevice.hpp"
+#include "Engine/Input/InputDevices/MouseInputDevice.hpp"
 
 InputSystem* InputSystem::instance = nullptr;
 
@@ -124,46 +125,6 @@ bool InputSystem::IsScrolling()
 int InputSystem::GetScrollAmountThisFrame()
 {
     return m_linesScrolled;
-}
-
-//-----------------------------------------------------------------------------------
-void InputSystem::HideMouseCursor()
-{
-    ShowCursor(FALSE);
-    m_isCursorVisible = false;
-}
-
-//-----------------------------------------------------------------------------------
-void InputSystem::ShowMouseCursor()
-{
-    ShowCursor(TRUE);
-    m_isCursorVisible = true;
-}
-
-//-----------------------------------------------------------------------------------
-void InputSystem::LockMouseCursor()
-{
-    m_captureCursor = true;
-}
-
-//-----------------------------------------------------------------------------------
-void InputSystem::UnlockMouseCursor()
-{
-    m_captureCursor = false;
-}
-
-//-----------------------------------------------------------------------------------
-void InputSystem::CaptureMouseCursor()
-{
-    HideMouseCursor();
-    LockMouseCursor();
-}
-
-//-----------------------------------------------------------------------------------
-void InputSystem::ReleaseMouseCursor()
-{
-    ShowMouseCursor();
-    UnlockMouseCursor();
 }
 
 //-----------------------------------------------------------------------------------

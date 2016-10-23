@@ -15,29 +15,23 @@ InputMap::~InputMap()
 }
 
 //-----------------------------------------------------------------------------------
-InputValue* InputMap::AddInputValue(std::string const &name)
+InputValue* InputMap::MapInputValue(std::string const &name)
 {
-    InputValue *val = nullptr;
+    InputValue *val = FindInputValue(name);
 
-    // If don't find it, create it.
-    auto it = m_values.find(name);
-    if (m_values.find(name) == m_values.end()) 
+    //If we don't find it, create it.
+    if (val == nullptr) 
     {
         val = new InputValue(this);
         m_values[name] = val;
     }
-    else 
-    {
-        val = it->second;
-    }
-
     return val;
 }
 
 //-----------------------------------------------------------------------------------
-InputValue* InputMap::AddInputValue(const std::string& name, InputValue* other)
+InputValue* InputMap::MapInputValue(const std::string& name, InputValue* other)
 {
-    InputValue* val = AddInputValue(name);
+    InputValue* val = MapInputValue(name);
     val->AddMapping(other);
     return val;
 }
@@ -45,14 +39,8 @@ InputValue* InputMap::AddInputValue(const std::string& name, InputValue* other)
 //-----------------------------------------------------------------------------------
 InputValue* InputMap::FindInputValue(std::string const &name)
 {
-    // If don't find it, create it.
     auto it = m_values.find(name);
-    if (m_values.find(name) == m_values.end()) 
-    {
-        return nullptr;
-    }
-
-    return it->second;
+    return (m_values.find(name) == m_values.end()) ? nullptr : it->second;
 }
 
 //-----------------------------------------------------------------------------------
@@ -63,37 +51,31 @@ float InputMap::GetValue(const std::string& name)
 }
 
 //-----------------------------------------------------------------------------------
-InputAxis* InputMap::AddInputAxis(std::string const &name)
+InputAxis* InputMap::MapInputAxis(std::string const &name)
 {
-    InputAxis* axis = nullptr;
+    InputAxis* axis = FindInputAxis(name);
 
-    // If don't find it, create it.
-    auto it = m_axies.find(name);
-    if (m_axies.find(name) == m_axies.end())
+    //If we didn't find it, create it.
+    if (axis == nullptr)
     {
         axis = new InputAxis(this);
         m_axies[name] = axis;
     }
-    else
-    {
-        axis = it->second;
-    }
-
     return axis;
 }
 
 //-----------------------------------------------------------------------------------
-InputAxis* InputMap::AddInputAxis(const std::string& name, InputValue* positiveInput, InputValue* negativeInput)
+InputAxis* InputMap::MapInputAxis(const std::string& name, InputValue* positiveInput, InputValue* negativeInput)
 {
-    InputAxis* axis = AddInputAxis(name);
+    InputAxis* axis = MapInputAxis(name);
     axis->AddMapping(positiveInput, negativeInput);
     return axis;
 }
 
 //-----------------------------------------------------------------------------------
-InputAxis* InputMap::AddInputAxis(const std::string& name, InputAxis* inputAxis)
+InputAxis* InputMap::MapInputAxis(const std::string& name, InputAxis* inputAxis)
 {
-    InputAxis* axis = AddInputAxis(name);
+    InputAxis* axis = MapInputAxis(name);
     axis->AddMapping(inputAxis->m_positiveValue, inputAxis->m_negativeValue);
     return axis;
 }
@@ -101,14 +83,8 @@ InputAxis* InputMap::AddInputAxis(const std::string& name, InputAxis* inputAxis)
 //-----------------------------------------------------------------------------------
 InputAxis* InputMap::FindInputAxis(std::string const &name)
 {
-    // If we don't find it, create it.
     auto it = m_axies.find(name);
-    if (m_axies.find(name) == m_axies.end())
-    {
-        return nullptr;
-    }
-
-    return it->second;
+    return (m_axies.find(name) == m_axies.end()) ? nullptr : it->second;
 }
 
 //-----------------------------------------------------------------------------------
@@ -136,26 +112,26 @@ void InputMap::Clear()
 bool InputMap::WasJustReleased(const std::string& name)
 {
     InputValue* val = FindInputValue(name);
-    return val->WasJustReleased();
+    return val ? val->WasJustReleased() : false;
 }
 
 //-----------------------------------------------------------------------------------
 bool InputMap::WasJustPressed(const std::string& name)
 {
     InputValue* val = FindInputValue(name);
-    return val->WasJustPressed();
+    return val ? val->WasJustPressed() : false;
 }
 
 //-----------------------------------------------------------------------------------
 bool InputMap::IsDown(const std::string& name)
 {
     InputValue* val = FindInputValue(name);
-    return val->IsDown();
+    return val ? val->IsDown() : false;
 }
 
 //-----------------------------------------------------------------------------------
 bool InputMap::IsUp(const std::string& name)
 {
     InputValue* val = FindInputValue(name);
-    return val->IsUp();
+    return val ? val->IsUp() : true;
 }

@@ -54,6 +54,9 @@
     <Filter Include="Engine\Net\UDPIP">
       <UniqueIdentifier>{6fa4adca-4524-48df-ab12-b91954a5fb86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Input\InputDevices">
+      <UniqueIdentifier>{81164c12-fe23-45e7-81a2-b570d47e7b93}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Vector2.cpp">
@@ -284,11 +287,17 @@
     <ClCompile Include="Input\InputValues.cpp">
       <Filter>Engine\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Input\InputDevices.cpp">
-      <Filter>Engine\Input</Filter>
-    </ClCompile>
     <ClCompile Include="Math\Transform2D.cpp">
       <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\InputDevices\KeyboardInputDevice.cpp">
+      <Filter>Engine\Input\InputDevices</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\InputDevices\MouseInputDevice.cpp">
+      <Filter>Engine\Input\InputDevices</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\InputDevices\InputDevice.cpp">
+      <Filter>Engine\Input\InputDevices</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -550,11 +559,17 @@
     <ClInclude Include="Input\InputValues.hpp">
       <Filter>Engine\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Input\InputDevices.hpp">
-      <Filter>Engine\Input</Filter>
-    </ClInclude>
     <ClInclude Include="Math\Transform2D.hpp">
       <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputDevices\KeyboardInputDevice.hpp">
+      <Filter>Engine\Input\InputDevices</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputDevices\MouseInputDevice.hpp">
+      <Filter>Engine\Input\InputDevices</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputDevices\InputDevice.hpp">
+      <Filter>Engine\Input\InputDevices</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
