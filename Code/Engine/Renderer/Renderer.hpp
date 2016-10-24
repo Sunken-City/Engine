@@ -87,6 +87,7 @@ public:
     void SetPerspective(float fovDegreesY, float aspect, float nearDist, float farDist);
     void BeginPerspective(float fovDegreesY, float aspect, float nearDist, float farDist);
     void EndPerspective();
+    void SetViewport(GLint x, GLint y, GLsizei width, GLsizei height);
     void SetColor(float red, float green, float blue, float alpha);
     void SetColor(const RGBA& color);
     void SetPointSize(float size);
@@ -114,7 +115,7 @@ public:
     void DrawTexturedAABB(const AABB2& bounds, const Vector2& texCoordMins, const Vector2& texCoordMaxs, Texture* texture = nullptr, const RGBA& color = RGBA::WHITE);
     void DrawTexturedFace(const Face& face, const Vector2& texCoordMins, const Vector2& texCoordMaxs, Texture* texture = nullptr, const RGBA& color = RGBA::WHITE);
     void BindFramebuffer(Framebuffer* fbo);
-    void FrameBufferCopyToBack(Framebuffer* fbo, int colorTargetNumber = NULL);
+    void FrameBufferCopyToBack(Framebuffer* fbo, uint32_t drawingWidth, uint32_t drawingHeight, uint32_t bottomLeftX = 0, uint32_t bottomLeftY = 0, int colorTargetNumber = NULL);
     void RenderFullScreenEffect(Material* material);
     void DrawPolygonOutline(const Vector2& center, float radius, int numSides, float radianOffset, const RGBA& color = RGBA::WHITE);
     void DrawPolygon(const Vector2& center, float radius, int numSides, float radianOffset, const RGBA& color = RGBA::WHITE);
