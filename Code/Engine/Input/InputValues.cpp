@@ -28,7 +28,7 @@ void InputValue::OnChanged(const InputValue* value)
 }
 
 //--------------------------------------------------------------
-void InputValue::AddMapping(InputValue* value)
+void VirtualInputValue::AddMapping(InputValue* value)
 {
     value->m_onChange.RegisterMethod(this, &InputValue::OnChanged);
 }
