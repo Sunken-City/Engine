@@ -49,7 +49,6 @@ public:
     inline bool WasJustPressed() const { return !IsUp() && WasUp(); }
     void SetValue(const float value);
     void OnChanged(const InputValue* value);
-    void AddMapping(InputValue* value);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     float m_previousValue;
@@ -78,6 +77,7 @@ public:
     }
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
+    void AddMapping(InputValue* value);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
 };
