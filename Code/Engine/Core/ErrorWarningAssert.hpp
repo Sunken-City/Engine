@@ -178,7 +178,8 @@ int SystemDialogue_YesNoCancel( const std::string& messageTitle, const std::stri
 #define QUOTE(x) _QUOTE(x)
 #define __FILE__LINE__ __FILE__ "(" QUOTE(__LINE__) ") : "
 
-#define NOTE( x )  message( x )
+#define PRAGMA(p) __pragma(p)
+#define NOTE( x )  PRAGMA(message( x ))
 #define FILE_LINE  message( __FILE__LINE__ )
 
 #define TODO( x )  message( __FILE__LINE__"\n"           \

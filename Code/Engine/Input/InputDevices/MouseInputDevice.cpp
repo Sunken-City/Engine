@@ -6,6 +6,9 @@
 #include <Windows.h>
 #endif
 
+bool MouseInputDevice::m_isCursorVisible = true;
+bool MouseInputDevice::m_captureCursor = false;
+
 //-----------------------------------------------------------------------------------
 void MouseInputDevice::SetButtonValue(unsigned char mouseButton, bool isDown)
 {
