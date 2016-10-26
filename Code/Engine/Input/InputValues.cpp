@@ -1,5 +1,6 @@
 #include "Engine/Input/InputValues.hpp"
 #include "Engine/Math/Vector2.hpp"
+#include <algorithm>
 
 //--------------------------------------------------------------
 void InputValue::SetValue(const float value)
@@ -30,78 +31,45 @@ void InputValue::OnChanged(const InputValue* value)
 //--------------------------------------------------------------
 void VirtualInputValue::AddMapping(InputValue* value)
 {
-    value->m_onChange.RegisterMethod((InputValue*)this, &InputValue::OnChanged);
+    value->m_onChange.RegisterMethod(this, &VirtualInputValue::OnValuesChanged);
+#pragma todo("Check for dupes first")
+    m_watchedValues.push_back(value);
 }
 
-//--------------------------------------------------------------
-void InputAxis::AddMapping(VirtualInputValue& pos, VirtualInputValue& neg)
+//-----------------------------------------------------------------------------------
+void VirtualInputValue::OnValuesChanged(const InputValue*)
 {
-    pos.m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
-    neg.m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
-    m_positiveValue = pos;
-    m_negativeValue = neg;
+    float value = m_watchedValues[0]->GetValue();
+    
+    for (int i = 1; i < m_watchedValues.size(); ++i)
+    {
+        if (m_chordResolutionMode == RESOLVE_MAXS)
+        {
+            value = std::max(value, m_watchedValues[i]->GetValue());
+        }
+        else
+        {
+            value = std::min(value, m_watchedValues[i]->GetValue());
+        }
+    }
+
+    SetValue(value);
 }
 
 //--------------------------------------------------------------
 void InputAxis::OnValuesChanged(const InputValue*)
 {
-    SetValue(m_positiveValue.GetValue(), m_negativeValue.GetValue());
-}
-
-//--------------------------------------------------------------
-void InputAxis::SetValue(float positiveValue, float negativeValue)
-{
-    // I would like this not to do anything if you're setting it to the same value it already is.
-    if (HasChanged(positiveValue, negativeValue))
-    {
-        m_positiveValue.SetValue(positiveValue);
-        m_negativeValue.SetValue(negativeValue);
-    }
-    m_OnChange.Trigger(nullptr);
-}
-
-//--------------------------------------------------------------
-float InputAxis::GetValue() const
-{
-    return m_positiveValue.GetValue() - m_negativeValue.GetValue();
-}
-
-//--------------------------------------------------------------
-bool InputAxis::HasChanged(float positiveValue, float negativeValue)
-{
-    return (m_positiveValue.m_currentValue != positiveValue || m_negativeValue.m_currentValue != negativeValue);
+    SetValue(m_positiveValue.GetValue() - m_negativeValue.GetValue());
 }
 
 //-----------------------------------------------------------------------------------
 void InputVector2::SetValue(const Vector2& inputValue)
 {
-    m_currentValue = inputValue;
-    SetAxis(inputValue.x, m_xPos, m_xNeg);
-    SetAxis(inputValue.y, m_yPos, m_yNeg);
-}
-
-//-----------------------------------------------------------------------------------
-void InputVector2::SetAxis(float newVal, InputValue* pos, InputValue* neg)
-{
-    //Set the negative value if negative, positive value if positive
-    if (newVal < 0.0f)
+    if (inputValue != m_currentValue)
     {
-        if ((pos->m_currentValue != 0.0f || neg->m_currentValue != -newVal))
-        {
-            pos->SetValue(0.0f);
-            neg->SetValue(-newVal);
-            pos->m_onChange.Trigger(nullptr);
-            neg->m_onChange.Trigger(nullptr);
-        }
-    }
-    else
-    {
-        if ((pos->m_currentValue != newVal || neg->m_currentValue != 0.0f))
-        {
-            pos->SetValue(newVal);
-            neg->SetValue(0.0f);
-            pos->m_onChange.Trigger(nullptr);
-            neg->m_onChange.Trigger(nullptr);
-        }
+        m_currentValue = inputValue;
+        m_xAxis.SetValue(inputValue.x);
+        m_yAxis.SetValue(inputValue.y);
+        m_onChange.Trigger(this);
     }
 }

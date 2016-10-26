@@ -28,16 +28,7 @@ class InputValue : public InputBase
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
-    InputValue()
-        : InputBase(nullptr),
-        m_currentValue(0.0f),
-        m_previousValue(0.0f),
-        m_deadzoneValue(0.15f)
-    {
-
-    }
-
-    InputValue(InputMap* owner)
+    InputValue(InputMap* owner = nullptr)
         : InputBase(owner),
         m_currentValue(0.0f),
         m_previousValue(0.0f),
@@ -45,6 +36,8 @@ public:
     {
 
     }
+
+    virtual ~InputValue() {};
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     inline float GetValue() const { return m_currentValue; }
@@ -71,24 +64,23 @@ class VirtualInputValue : public InputValue
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
-    VirtualInputValue()
-        : InputValue()
-        , m_chordResolutionMode(RESOLVE_MINS)
-    {
-
-    }
-
-    VirtualInputValue(InputMap* owner)
+    VirtualInputValue(InputMap* owner = nullptr)
         : InputValue(owner)
-        , m_chordResolutionMode(RESOLVE_MINS)
+        , m_chordResolutionMode(RESOLVE_MAXS)
     {
-
+        m_watchedValues.reserve(8);
     }
+
+    virtual ~VirtualInputValue() {};
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void AddMapping(InputValue* value);
+    void RemoveMapping(InputValue* value) {};
+    void ClearMappings() {};
+    void OnValuesChanged(const InputValue* value);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
+    std::vector<InputValue*> m_watchedValues;
     ChordResolutionMode m_chordResolutionMode;
 };
 
@@ -97,43 +89,29 @@ class InputAxis : public InputValue
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
-    InputAxis()
-        : InputValue()
-        , m_negativeValue()
-        , m_positiveValue()
-    {}
-
-    InputAxis(InputMap* owner)
+    InputAxis(InputMap* owner = nullptr)
         : InputValue(owner)
         , m_negativeValue(owner)
         , m_positiveValue(owner)
-    {}
+    {
+        m_positiveValue.m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
+        m_negativeValue.m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
+    }
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
-    void AddMapping(VirtualInputValue& pos, VirtualInputValue& neg);
     void OnValuesChanged(const InputValue*);
-    void SetValue(float positiveValue, float negativeValue);
-    float GetValue() const;
-    bool HasChanged(float positiveValue, float negativeValue);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     VirtualInputValue m_negativeValue;
     VirtualInputValue m_positiveValue;
-    Event<const InputValue*> m_OnChange;
 };
 
 //-----------------------------------------------------------------------------------
-//Since this system doesn't handle joysticks well, this is a wrapper around 4 fake key inputs that make up a vector joystick.
-//An input axis can get the "key values" from this input type, while this just takes a vector2 and determines what a virtual joystick would be pressing via 4 keys to make that happen
 class InputVector2 : public InputBase
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
-    InputVector2()
-        : InputBase(nullptr)
-    {}
-
-    InputVector2(InputMap* owner)
+    InputVector2(InputMap* owner = nullptr)
         : InputBase(owner)
     {}
 
@@ -144,10 +122,10 @@ public:
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void SetValue(const Vector2& inputValue);
     Vector2 GetValue() const { return m_currentValue; };
-    void SetAxis(float newVal, InputValue* pos, InputValue* neg);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    InputAxis m_x;
-    InputAxis m_y;
+    InputAxis m_xAxis;
+    InputAxis m_yAxis;
     Vector2 m_currentValue;
+    Event<const InputVector2*> m_onChange;
 };

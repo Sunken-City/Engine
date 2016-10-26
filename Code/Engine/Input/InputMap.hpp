@@ -18,7 +18,7 @@ public:
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     InputValue* MapInputValue(std::string const &name);
-    InputValue* MapInputValue(std::string const &name, InputValue *other);
+    InputValue* MapInputValue(std::string const &name, InputValue* other);
     InputValue* FindInputValue(std::string const &name);
     float GetValue(std::string const &name);
     bool IsDown(const std::string& name);
@@ -27,7 +27,7 @@ public:
     bool WasJustReleased(const std::string& name);
     InputAxis* MapInputAxis(const std::string &name);
     InputAxis* MapInputAxis(const std::string& name, InputAxis* inputAxis);
-    InputAxis* MapInputAxis(const std::string& name, VirtualInputValue& positiveInput, VirtualInputValue& negativeInput);
+    InputAxis* MapInputAxis(const std::string& name, InputValue* positiveInput, InputValue* negativeInput);
     InputAxis* FindInputAxis(std::string const &name);
     Vector2 GetVector2(const std::string& xName, const std::string& yName);
     void Clear();

@@ -17,12 +17,12 @@ InputMap::~InputMap()
 //-----------------------------------------------------------------------------------
 InputValue* InputMap::MapInputValue(std::string const &name)
 {
-    InputValue *val = FindInputValue(name);
+    InputValue* val = FindInputValue(name);
 
     //If we don't find it, create it.
     if (val == nullptr) 
     {
-        val = new InputValue(this);
+        val = new VirtualInputValue(this);
         m_values[name] = val;
     }
     return val;
@@ -31,7 +31,7 @@ InputValue* InputMap::MapInputValue(std::string const &name)
 //-----------------------------------------------------------------------------------
 InputValue* InputMap::MapInputValue(const std::string& name, InputValue* other)
 {
-    InputValue* val = MapInputValue(name);
+    VirtualInputValue* val = (VirtualInputValue*)MapInputValue(name);
     val->AddMapping(other);
     return val;
 }
@@ -65,10 +65,11 @@ InputAxis* InputMap::MapInputAxis(std::string const &name)
 }
 
 //-----------------------------------------------------------------------------------
-InputAxis* InputMap::MapInputAxis(const std::string& name, VirtualInputValue& positiveInput, VirtualInputValue& negativeInput)
+InputAxis* InputMap::MapInputAxis(const std::string& name, InputValue* positiveInput, InputValue* negativeInput)
 {
     InputAxis* axis = MapInputAxis(name);
-    axis->AddMapping(positiveInput, negativeInput);
+    axis->m_positiveValue.AddMapping(positiveInput);
+    axis->m_negativeValue.AddMapping(negativeInput);
     return axis;
 }
 
@@ -76,7 +77,8 @@ InputAxis* InputMap::MapInputAxis(const std::string& name, VirtualInputValue& po
 InputAxis* InputMap::MapInputAxis(const std::string& name, InputAxis* inputAxis)
 {
     InputAxis* axis = MapInputAxis(name);
-    axis->AddMapping(inputAxis->m_positiveValue, inputAxis->m_negativeValue);
+    axis->m_positiveValue.AddMapping(&(inputAxis->m_positiveValue));
+    axis->m_negativeValue.AddMapping(&(inputAxis->m_positiveValue));
     return axis;
 }
 
@@ -106,6 +108,8 @@ void InputMap::Clear()
     {
         delete axisPair.second;
     }
+    m_values.clear();
+    m_axies.clear();
 }
 
 //-----------------------------------------------------------------------------------
