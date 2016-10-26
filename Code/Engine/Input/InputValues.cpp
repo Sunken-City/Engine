@@ -30,11 +30,11 @@ void InputValue::OnChanged(const InputValue* value)
 //--------------------------------------------------------------
 void VirtualInputValue::AddMapping(InputValue* value)
 {
-    value->m_onChange.RegisterMethod(this, &InputValue::OnChanged);
+    value->m_onChange.RegisterMethod((InputValue*)this, &InputValue::OnChanged);
 }
 
 //--------------------------------------------------------------
-void InputAxis::AddMapping(const VirtualInputValue& pos, const VirtualInputValue& neg)
+void InputAxis::AddMapping(VirtualInputValue& pos, VirtualInputValue& neg)
 {
     pos.m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
     neg.m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);

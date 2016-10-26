@@ -6,6 +6,13 @@ class InputMap;
 class Vector2;
 
 //-----------------------------------------------------------------------------------
+enum ChordResolutionMode
+{
+    RESOLVE_MINS,
+    RESOLVE_MAXS
+};
+
+//-----------------------------------------------------------------------------------
 class InputBase
 {
 public:
@@ -66,12 +73,14 @@ public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     VirtualInputValue()
         : InputValue()
+        , m_chordResolutionMode(RESOLVE_MINS)
     {
 
     }
 
     VirtualInputValue(InputMap* owner)
         : InputValue(owner)
+        , m_chordResolutionMode(RESOLVE_MINS)
     {
 
     }
@@ -80,6 +89,7 @@ public:
     void AddMapping(InputValue* value);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
+    ChordResolutionMode m_chordResolutionMode;
 };
 
 //-----------------------------------------------------------------------------------
@@ -100,7 +110,7 @@ public:
     {}
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
-    void AddMapping(const VirtualInputValue& pos, const VirtualInputValue& neg);
+    void AddMapping(VirtualInputValue& pos, VirtualInputValue& neg);
     void OnValuesChanged(const InputValue*);
     void SetValue(float positiveValue, float negativeValue);
     float GetValue() const;

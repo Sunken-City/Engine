@@ -65,7 +65,7 @@ InputAxis* InputMap::MapInputAxis(std::string const &name)
 }
 
 //-----------------------------------------------------------------------------------
-InputAxis* InputMap::MapInputAxis(const std::string& name, InputValue* positiveInput, InputValue* negativeInput)
+InputAxis* InputMap::MapInputAxis(const std::string& name, VirtualInputValue& positiveInput, VirtualInputValue& negativeInput)
 {
     InputAxis* axis = MapInputAxis(name);
     axis->AddMapping(positiveInput, negativeInput);

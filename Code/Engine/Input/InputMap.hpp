@@ -2,6 +2,7 @@
 #include <map>
 
 class InputValue;
+class VirtualInputValue;
 class InputAxis;
 class InputVector2;
 class Vector2;
@@ -26,7 +27,7 @@ public:
     bool WasJustReleased(const std::string& name);
     InputAxis* MapInputAxis(const std::string &name);
     InputAxis* MapInputAxis(const std::string& name, InputAxis* inputAxis);
-    InputAxis* MapInputAxis(const std::string& name, InputValue* positiveInput, InputValue* negativeInput);
+    InputAxis* MapInputAxis(const std::string& name, VirtualInputValue& positiveInput, VirtualInputValue& negativeInput);
     InputAxis* FindInputAxis(std::string const &name);
     Vector2 GetVector2(const std::string& xName, const std::string& yName);
     void Clear();
