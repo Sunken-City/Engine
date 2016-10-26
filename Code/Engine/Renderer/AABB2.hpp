@@ -25,11 +25,12 @@ public:
 
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
     static AABB2 GetIntersectingAABB2(const AABB2& first, const AABB2& second);    
-    //static Vector2 GetCollisionResolution(const AABB2& first, const AABB2& second);
+    static AABB2 CreateMinkowskiBox(const AABB2& original, float radius);
     static bool IsValid(const AABB2& aabb2ToValidate);
 
     //OPERATORS/////////////////////////////////////////////////////////////////////
     AABB2& AABB2::operator+=(const Vector2& rhs);
+
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
     static const AABB2 ZERO_TO_ONE;
 

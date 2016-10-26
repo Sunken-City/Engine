@@ -73,36 +73,17 @@ AABB2 AABB2::GetIntersectingAABB2(const AABB2& first, const AABB2& second)
 }
 
 //-----------------------------------------------------------------------------------
+AABB2 AABB2::CreateMinkowskiBox(const AABB2& original, float radius)
+{
+    return AABB2(Vector2(original.mins.x - radius, original.mins.y - radius), Vector2(original.maxs.x + radius, original.maxs.y + radius));
+}
+
+//-----------------------------------------------------------------------------------
 Vector2 AABB2::GetRandomPointInside()
 {
     Vector2 range = maxs - mins;
     return mins + Vector2(MathUtils::GetRandomFloatFromZeroTo(range.x), MathUtils::GetRandomFloatFromZeroTo(range.y));
 }
-
-//-----------------------------------------------------------------------------------
-// Vector2 AABB2::GetCollisionResolution(const AABB2& first, const AABB2& second)
-// {
-//     Vector2 resolutionVector = Vector2::ZERO;
-//     AABB2 workingBounds = first;
-//     while (workingBounds.IsIntersecting(second))
-//     {
-//         if (!second.IsPointOnOrInside(workingBounds.maxs))
-//         {
-//             Vector2 difference = workingBounds.maxs - second.mins;
-//             if (fabs(difference.x) < fabs(difference.y))
-//             {
-//                 resolutionVector += Vector2(difference.x, 0.0f);
-//                 workingBounds += Vector2(difference.x, 0.0f);
-//             }
-//             else
-//             {
-//                 resolutionVector += Vector2(difference.y, 0.0f);
-//                 workingBounds += Vector2(difference.y, 0.0f);
-//             }
-//         }
-//     }
-//     return resolutionVector;
-// }
 
 //-----------------------------------------------------------------------------------
 AABB2& AABB2::operator+=(const Vector2& rhs)
