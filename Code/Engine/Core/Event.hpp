@@ -14,18 +14,25 @@ public:
     typedef void(EventCallback)(Subscription* sub, Args...);
 
     //STRUCTS/////////////////////////////////////////////////////////////////////
-    struct Subscription
+    template <typename CALLBACKTYPE>
+    struct SubscriptionType
     {
         SubscriptionCallback* utilityCallback; // This is the C style function the trigger actually calls
-        void* callback;         // Is the callback registered by the user
         void* argument;         // Additional data that goes with the subscription (optional)
+
+        union {
+            CALLBACKTYPE callback;         // Is the callback registered by the user
+            char callback_data[16];
+        };
     };
+
+    struct Subscription : public SubscriptionType<void*> {};
 
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     Event() {};
 
     //-----------------------------------------------------------------------------------
-    ~Event() 
+    ~Event()
     {
         UnregisterAllSubscriptions();
     }
@@ -39,23 +46,21 @@ public:
     //-----------------------------------------------------------------------------------
     void UnregisterFunction(FunctionCallback* cb)
     {
-        UnregisterSubscription(&EventFunctionCallback, cb, nullptr);        
+        UnregisterSubscription(&EventFunctionCallback, cb, nullptr);
     }
 
     //-----------------------------------------------------------------------------------
     template <typename T>
     void RegisterMethod(T* object, void (T::*methodCallback)(Args...))
     {
-        void* uniquePointerToCallback = *(void**)(&methodCallback);
-        RegisterSubscription(&MethodCallback<T>, uniquePointerToCallback, object);
+        RegisterSubscription(&MethodCallback<T, decltype(methodCallback)>, methodCallback, object);
     }
 
     //-----------------------------------------------------------------------------------
     template <typename T>
     void UnregisterMethod(T* object, void (T::*methodCallback)(Args...))
     {
-        void* uniquePointerToCallback = *(void**)(&methodCallback);
-        UnregisterSubscription(&MethodCallback<T>, uniquePointerToCallback, object);
+        UnregisterSubscription(&MethodCallback<T, decltype(methodCallback)>, methodCallback, object);
     }
 
     //-----------------------------------------------------------------------------------
@@ -81,12 +86,10 @@ public:
     }
 
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
-    template <typename T>
-    static void MethodCallback(Subscription* sub, Args... args)
+    template <typename T, typename METHODTYPE>
+    static void MethodCallback(SubscriptionType<METHODTYPE>* sub, Args... args)
     {
-        typedef void (T::* Callback)(Args...);
-
-        Callback mcb = *(Callback*)(&sub->callback);
+        METHODTYPE mcb = sub->callback;
         T* objectPtr = (T*)sub->argument;
         (objectPtr->*mcb)(args...);
     }
@@ -100,22 +103,28 @@ public:
 
 private:
     //PRIVATE FUNCTIONS/////////////////////////////////////////////////////////////////////
-    void RegisterSubscription(void* utilityCallback, void* actualCallback, void* data)
+    template <typename CBTYPE>
+    void RegisterSubscription(void* utilityCallback, CBTYPE actualCallback, void* data)
     {
-        Subscription sub;
+        SubscriptionType<CBTYPE> sub;
         sub.utilityCallback = (SubscriptionCallback*)utilityCallback;
         sub.callback = actualCallback;
         sub.argument = data;
 
-        m_subscriptions.push_back(sub);
+        Subscription subConv;
+        subConv = *(Subscription*)&sub;
+
+        m_subscriptions.push_back(subConv);
     }
 
     //-----------------------------------------------------------------------------------
-    void UnregisterSubscription(void* utilityCallback, void* actualCallback, void* data)
+    template <typename CBTYPE>
+    void UnregisterSubscription(void* utilityCallback, CBTYPE actualCallback, void* data)
     {
         for (auto subIter = m_subscriptions.begin(); subIter != m_subscriptions.end(); ++subIter)
         {
-            if (subIter->callback == actualCallback && subIter->utilityCallback == utilityCallback && subIter->argument == data)
+            SubscriptionType<CBTYPE> *sub = (SubscriptionType<CBTYPE>*) &(*subIter);
+            if (sub->callback == actualCallback && sub->utilityCallback == utilityCallback && sub->argument == data)
             {
                 m_subscriptions.erase(subIter);
                 break;
