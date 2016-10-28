@@ -74,11 +74,12 @@ InputAxis* InputMap::MapInputAxis(const std::string& name, InputValue* positiveI
 }
 
 //-----------------------------------------------------------------------------------
-InputAxis* InputMap::MapInputAxis(const std::string& name, InputAxis* inputAxis)
+InputAxis* InputMap::MapInputAxis(const std::string& name, InputAxis* other)
 {
     InputAxis* axis = MapInputAxis(name);
-    axis->m_positiveValue.AddMapping(&(inputAxis->m_positiveValue));
-    axis->m_negativeValue.AddMapping(&(inputAxis->m_positiveValue));
+    axis->AddMapping(other);
+    axis->m_positiveValue.AddMapping(&(other->m_positiveValue));
+    axis->m_negativeValue.AddMapping(&(other->m_negativeValue));
     return axis;
 }
 
