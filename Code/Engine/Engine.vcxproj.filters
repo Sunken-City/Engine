@@ -299,6 +299,9 @@
     <ClCompile Include="Input\InputDevices\InputDevice.cpp">
       <Filter>Engine\Input\InputDevices</Filter>
     </ClCompile>
+    <ClCompile Include="Input\InputDevices\XInputDevice.cpp">
+      <Filter>Engine\Input\InputDevices</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -569,6 +572,9 @@
       <Filter>Engine\Input\InputDevices</Filter>
     </ClInclude>
     <ClInclude Include="Input\InputDevices\InputDevice.hpp">
+      <Filter>Engine\Input\InputDevices</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputDevices\XInputDevice.hpp">
       <Filter>Engine\Input\InputDevices</Filter>
     </ClInclude>
   </ItemGroup>

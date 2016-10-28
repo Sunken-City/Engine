@@ -6,6 +6,7 @@
 class XInputController;
 class KeyboardInputDevice;
 class MouseInputDevice;
+class XInputDevice;
 
 class InputSystem
 {
@@ -82,6 +83,7 @@ public:
     XInputController* m_controllers[4];
     KeyboardInputDevice* m_keyboardDevice;
     MouseInputDevice* m_mouseDevice;
+    XInputDevice* m_xInputDevices[4];
     Event<float> m_OnUpdate;
     
 private:

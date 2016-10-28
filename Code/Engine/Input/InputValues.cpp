@@ -47,6 +47,14 @@ void VirtualInputValue::OnValuesChanged(const InputValue*)
         {
             value = std::max(value, m_watchedValues[i]->GetValue());
         }
+        else if (m_chordResolutionMode == RESOLVE_MAXS_ABSOLUTE)
+        {
+            value = std::max(abs(value), abs(m_watchedValues[i]->GetValue()));
+        }
+        else if (m_chordResolutionMode == RESOLVE_MINS_ABSOLUTE)
+        {
+            value = std::min(abs(value), abs(m_watchedValues[i]->GetValue()));
+        }
         else
         {
             value = std::min(value, m_watchedValues[i]->GetValue());

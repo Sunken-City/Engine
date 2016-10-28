@@ -87,7 +87,7 @@ bool XInputController::IsPressed(XINPUT_STATE &state, XboxButton button)
         return ((buttonState & XINPUT_GAMEPAD_X) != 0 ? true : false);
     case XboxButton::Y:
         return ((buttonState & XINPUT_GAMEPAD_Y) != 0 ? true : false);
-    case XboxButton::numXboxButtons:
+    case XboxButton::NUM_XBOX_BUTTONS:
         return false;
     default:
         return false;

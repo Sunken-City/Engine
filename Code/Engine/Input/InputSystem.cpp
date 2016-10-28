@@ -3,6 +3,7 @@
 #include "Engine/Math/Vector2Int.hpp"
 #include "Engine/Input/InputDevices/KeyboardInputDevice.hpp"
 #include "Engine/Input/InputDevices/MouseInputDevice.hpp"
+#include "InputDevices/XInputDevice.hpp"
 
 InputSystem* InputSystem::instance = nullptr;
 
@@ -22,12 +23,18 @@ InputSystem::InputSystem(void* hWnd, int maximumNumberOfControllers /*= 0*/)
 , m_keyboardDevice(new KeyboardInputDevice())
 , m_mouseDevice(new MouseInputDevice())
 {
-    m_OnUpdate.RegisterMethod(m_keyboardDevice, &KeyboardInputDevice::Update);
-    m_OnUpdate.RegisterMethod(m_mouseDevice, &MouseInputDevice::Update);
     //Only initialize the number of controllers we need for the game.
     for (int i = 0; i < m_maximumNumControllers; i++)
     {
         m_controllers[i] = new XInputController(i);
+        m_xInputDevices[i] = new XInputDevice(m_controllers[i]);
+    }
+
+    m_OnUpdate.RegisterMethod(m_keyboardDevice, &KeyboardInputDevice::Update);
+    m_OnUpdate.RegisterMethod(m_mouseDevice, &MouseInputDevice::Update);
+    for (int i = 0; i < m_maximumNumControllers; ++i)
+    {
+        m_OnUpdate.RegisterMethod(m_xInputDevices[i], &XInputDevice::Update);
     }
 
     //Initialize all keys to up
@@ -56,6 +63,7 @@ InputSystem::~InputSystem()
     for (int i = 0; i < m_maximumNumControllers; i++)
     {
         delete m_controllers[i];
+        delete m_xInputDevices[i];
     }
 }
 
