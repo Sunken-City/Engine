@@ -15,14 +15,14 @@ InputMap::~InputMap()
 }
 
 //-----------------------------------------------------------------------------------
-InputValue* InputMap::MapInputValue(std::string const &name)
+InputValue* InputMap::MapInputValue(std::string const &name, ChordResolutionMode mode)
 {
     InputValue* val = FindInputValue(name);
 
     //If we don't find it, create it.
     if (val == nullptr) 
     {
-        val = new VirtualInputValue(this);
+        val = new VirtualInputValue(this, mode);
         m_values[name] = val;
     }
     return val;
@@ -51,14 +51,14 @@ float InputMap::GetValue(const std::string& name)
 }
 
 //-----------------------------------------------------------------------------------
-InputAxis* InputMap::MapInputAxis(std::string const &name)
+InputAxis* InputMap::MapInputAxis(std::string const &name, ChordResolutionMode mode)
 {
     InputAxis* axis = FindInputAxis(name);
 
     //If we didn't find it, create it.
     if (axis == nullptr)
     {
-        axis = new InputAxis(this);
+        axis = new InputAxis(this, mode);
         m_axies[name] = axis;
     }
     return axis;

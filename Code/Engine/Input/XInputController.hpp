@@ -13,7 +13,7 @@ class Vector2;
 //ENUMS//////////////////////////////////////////////////////////////////////////
 enum class XboxButton
 {
-    DUP,
+    DUP = 0,
     DDOWN,
     DLEFT,
     DRIGHT,
@@ -28,7 +28,7 @@ enum class XboxButton
     START,
     BACK,
     HOME,
-    numXboxButtons
+    NUM_XBOX_BUTTONS
 };
 
 

@@ -9,7 +9,9 @@ class Vector2;
 enum ChordResolutionMode
 {
     RESOLVE_MINS,
-    RESOLVE_MAXS
+    RESOLVE_MAXS,
+    RESOLVE_MAXS_ABSOLUTE,
+    RESOLVE_MINS_ABSOLUTE
 };
 
 //-----------------------------------------------------------------------------------
@@ -64,9 +66,9 @@ class VirtualInputValue : public InputValue
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
-    VirtualInputValue(InputMap* owner = nullptr)
+    VirtualInputValue(InputMap* owner = nullptr, ChordResolutionMode mode = RESOLVE_MAXS)
         : InputValue(owner)
-        , m_chordResolutionMode(RESOLVE_MAXS)
+        , m_chordResolutionMode(mode)
     {
         m_watchedValues.reserve(8);
     }
@@ -89,10 +91,10 @@ class InputAxis : public VirtualInputValue
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
-    InputAxis(InputMap* owner = nullptr)
-        : VirtualInputValue(owner)
-        , m_negativeValue(owner)
-        , m_positiveValue(owner)
+    InputAxis(InputMap* owner = nullptr, ChordResolutionMode mode = RESOLVE_MAXS)
+        : VirtualInputValue(owner, mode)
+        , m_negativeValue(owner, mode)
+        , m_positiveValue(owner, mode)
     {
         m_positiveValue.m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);
         m_negativeValue.m_onChange.RegisterMethod(this, &InputAxis::OnValuesChanged);

@@ -36,6 +36,7 @@
     <ClCompile Include="Input\InputDevices\InputDevice.cpp" />
     <ClCompile Include="Input\InputDevices\KeyboardInputDevice.cpp" />
     <ClCompile Include="Input\InputDevices\MouseInputDevice.cpp" />
+    <ClCompile Include="Input\InputDevices\XInputDevice.cpp" />
     <ClCompile Include="Input\InputMap.cpp" />
     <ClCompile Include="Input\InputOutputUtils.cpp" />
     <ClCompile Include="Input\InputSystem.cpp" />
@@ -128,6 +129,7 @@
     <ClInclude Include="Input\InputDevices\InputDevice.hpp" />
     <ClInclude Include="Input\InputDevices\KeyboardInputDevice.hpp" />
     <ClInclude Include="Input\InputDevices\MouseInputDevice.hpp" />
+    <ClInclude Include="Input\InputDevices\XInputDevice.hpp" />
     <ClInclude Include="Input\InputMap.hpp" />
     <ClInclude Include="Input\InputOutputUtils.hpp" />
     <ClInclude Include="Input\InputSystem.hpp" />
