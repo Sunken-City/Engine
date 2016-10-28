@@ -85,12 +85,12 @@ public:
 };
 
 //-----------------------------------------------------------------------------------
-class InputAxis : public InputValue
+class InputAxis : public VirtualInputValue
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     InputAxis(InputMap* owner = nullptr)
-        : InputValue(owner)
+        : VirtualInputValue(owner)
         , m_negativeValue(owner)
         , m_positiveValue(owner)
     {
@@ -113,6 +113,7 @@ public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     InputVector2(InputMap* owner = nullptr)
         : InputBase(owner)
+        , m_currentValue(0.0f)
     {}
 
     ~InputVector2()
