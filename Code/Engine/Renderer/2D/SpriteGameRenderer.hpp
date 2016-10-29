@@ -20,12 +20,12 @@ class Framebuffer;
 struct ViewportDefinition
 {
     ViewportDefinition() {};
-    ViewportDefinition(uint32_t x, uint32_t y, uint32_t width, uint32_t height) : bottomLeftX(x), bottomLeftY(y), viewportWidth(width), viewportHeight(height) {};
 
     uint32_t bottomLeftX;
     uint32_t bottomLeftY;
     uint32_t viewportWidth;
     uint32_t viewportHeight;
+    float viewportAspectRatio;
 };
 
 //-----------------------------------------------------------------------------------
@@ -85,7 +85,8 @@ public:
     void RenderView(const ViewportDefinition& renderArea);
     void UpdateScreenResolution(unsigned int widthInPixels, unsigned int heightInPixels);
     void SetMeshFromSprite(Sprite* sprite);
-    void RenderLayer(SpriteLayer* layer);
+    void RenderLayer(SpriteLayer* layer, const ViewportDefinition& renderArea);
+    void RecalculateVirtualWidthAndHeight(const ViewportDefinition& renderArea);
     void DrawParticleSystem(ParticleSystem* system);
     void RegisterParticleSystem(ParticleSystem* system);
     void UnregisterParticleSystem(ParticleSystem* system);
@@ -138,8 +139,10 @@ private:
     float m_aspectRatio;
     std::map<int, SpriteLayer*> m_layers;
     //The box (Size in game units of our screen)
-    float m_virtualHeight;
+    float m_windowVirtualHeight;
+    float m_windowVirtualWidth;
     float m_virtualWidth;
+    float m_virtualHeight;
     Framebuffer* m_currentFBO;
     Framebuffer* m_effectFBO;
     unsigned int m_numSplitscreenViews;

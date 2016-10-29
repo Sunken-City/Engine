@@ -206,7 +206,7 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
     Renderer::instance->ClearColor(m_clearColor);
     for (auto layerPair : m_layers)
     {
-        RenderLayer(layerPair.second);
+        RenderLayer(layerPair.second, renderArea);
     }
     m_meshRenderer->m_material = nullptr;
     Renderer::instance->FrameBufferCopyToBack(m_currentFBO, renderArea.viewportWidth, renderArea.viewportHeight, renderArea.bottomLeftX, renderArea.bottomLeftY);
@@ -214,8 +214,10 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteGameRenderer::RenderLayer(SpriteLayer* layer)
+void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinition& renderArea)
 {
+    RecalculateVirtualWidthAndHeight(renderArea);
+
     AABB2 renderBounds = GetVirtualBoundsAroundCameraCenter();
     if (layer->m_isEnabled)
     {
@@ -258,6 +260,15 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer)
             Renderer::instance->ClearDepth();
         }
     }
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::RecalculateVirtualWidthAndHeight(const ViewportDefinition &renderArea)
+{
+    float newVirtualWidth = m_windowVirtualHeight * renderArea.viewportAspectRatio;
+    float newVirtualHeight = m_windowVirtualWidth / renderArea.viewportAspectRatio;
+    m_virtualWidth = MathUtils::Lerp(0.5, m_windowVirtualWidth, newVirtualWidth);
+    m_virtualHeight = MathUtils::Lerp(0.5, m_windowVirtualHeight, newVirtualHeight);
 }
 
 //-----------------------------------------------------------------------------------
@@ -409,8 +420,8 @@ void SpriteGameRenderer::RemoveEffectFromLayer(Material* effectMaterial, int lay
 void SpriteGameRenderer::SetVirtualSize(float vsize)
 {
     m_virtualSize = vsize; 
-    m_virtualHeight = m_aspectRatio < 1 ? vsize / m_aspectRatio : vsize; 
-    m_virtualWidth = m_aspectRatio >= 1 ? vsize * m_aspectRatio : vsize;
+    m_windowVirtualHeight = m_aspectRatio < 1 ? vsize / m_aspectRatio : vsize; 
+    m_windowVirtualWidth = m_aspectRatio >= 1 ? vsize * m_aspectRatio : vsize;
 }
 
 //-----------------------------------------------------------------------------------
@@ -454,8 +465,11 @@ void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
     {
         m_viewportDefinitions[i].bottomLeftX = i * screenOffsetX;
         m_viewportDefinitions[i].bottomLeftY = 0;
-        m_viewportDefinitions[i].viewportWidth = screenOffsetX;
-        m_viewportDefinitions[i].viewportHeight = m_screenResolution.y;
+        float width = (float)screenOffsetX;
+        m_viewportDefinitions[i].viewportWidth = width;
+        float height = (float)m_screenResolution.y;
+        m_viewportDefinitions[i].viewportHeight = height;
+        m_viewportDefinitions[i].viewportAspectRatio = width / height;
     }
 }
 
@@ -468,13 +482,13 @@ Vector2 SpriteGameRenderer::GetCameraPositionInWorld()
 //-----------------------------------------------------------------------------------
 float SpriteGameRenderer::GetPixelsPerVirtualUnit()
 {
-    return (this->m_screenResolution.y / this->m_virtualHeight);
+    return (this->m_screenResolution.y / this->m_windowVirtualHeight);
 }
 
 //-----------------------------------------------------------------------------------
 float SpriteGameRenderer::GetVirtualUnitsPerPixel()
 {
-    return (this->m_virtualHeight / this->m_screenResolution.y);
+    return (this->m_windowVirtualHeight / this->m_screenResolution.y);
 }
 
 //-----------------------------------------------------------------------------------
