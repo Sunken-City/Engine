@@ -45,10 +45,10 @@ public:
     inline float GetValue() const { return m_currentValue; }
     inline bool IsDown() const { return (m_currentValue > 1.0f - m_deadzoneValue); }
     inline bool IsUp() const { return (m_currentValue < m_deadzoneValue); }
-    inline bool WasDown() const { return (m_previousValue > 1.0f - m_deadzoneValue); }
-    inline bool WasUp() const { return (m_previousValue < m_deadzoneValue); }
-    inline bool WasJustReleased() const { return !IsDown() && WasDown(); }
-    inline bool WasJustPressed() const { return !IsUp() && WasUp(); }
+    inline bool DownLastFrame() const { return (m_previousValue > 1.0f - m_deadzoneValue); }
+    inline bool UpLastFrame() const { return (m_previousValue < m_deadzoneValue); }
+    inline bool WasJustReleased() const { return !IsDown() && DownLastFrame(); }
+    inline bool WasJustPressed() const { return !IsUp() && UpLastFrame(); }
     void SetValue(const float value);
     void OnChanged(const InputValue* value);
 
@@ -77,7 +77,7 @@ public:
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void AddMapping(InputValue* value);
-    void RemoveMapping(InputValue* value) {};
+    void RemoveMapping(InputValue*) {};
     void ClearMappings() {};
     void OnValuesChanged(const InputValue* value);
 

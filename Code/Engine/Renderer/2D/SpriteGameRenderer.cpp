@@ -209,7 +209,7 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
         RenderLayer(layerPair.second, renderArea);
     }
     m_meshRenderer->m_material = nullptr;
-    Renderer::instance->FrameBufferCopyToBack(m_currentFBO, renderArea.viewportWidth, renderArea.viewportHeight, renderArea.bottomLeftX, renderArea.bottomLeftY);
+    Renderer::instance->FrameBufferCopyToBack(m_currentFBO, renderArea.m_viewportWidth, renderArea.m_viewportHeight, renderArea.m_bottomLeftX, renderArea.m_bottomLeftY);
     m_currentFBO->Unbind();
 }
 
@@ -217,7 +217,7 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinition& renderArea)
 {
     RecalculateVirtualWidthAndHeight(renderArea);
-
+    UpdateCameraPosition(renderArea.m_cameraPosition);
     AABB2 renderBounds = GetVirtualBoundsAroundCameraCenter();
     if (layer->m_isEnabled)
     {
@@ -265,8 +265,8 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::RecalculateVirtualWidthAndHeight(const ViewportDefinition &renderArea)
 {
-    float newVirtualWidth = m_windowVirtualHeight * renderArea.viewportAspectRatio;
-    float newVirtualHeight = m_windowVirtualWidth / renderArea.viewportAspectRatio;
+    float newVirtualWidth = m_windowVirtualHeight * renderArea.m_viewportAspectRatio;
+    float newVirtualHeight = m_windowVirtualWidth / renderArea.m_viewportAspectRatio;
     m_virtualWidth = MathUtils::Lerp(0.5, m_windowVirtualWidth, newVirtualWidth);
     m_virtualHeight = MathUtils::Lerp(0.5, m_windowVirtualHeight, newVirtualHeight);
 }
@@ -425,13 +425,13 @@ void SpriteGameRenderer::SetVirtualSize(float vsize)
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteGameRenderer::SetCameraPosition(const Vector2& newCameraPosition)
+void SpriteGameRenderer::UpdateCameraPosition(const Vector2& newCameraPosition)
 {
-    SetCameraPositionInBounds(newCameraPosition, m_worldBounds);
+    UpdateCameraPositionInBounds(newCameraPosition, m_worldBounds);
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteGameRenderer::SetCameraPositionInBounds(const Vector2& newCameraPosition, const AABB2& otherBounds)
+void SpriteGameRenderer::UpdateCameraPositionInBounds(const Vector2& newCameraPosition, const AABB2& otherBounds)
 {
     m_cameraPosition = newCameraPosition * -1.0f;
     AABB2 cameraBounds = GetVirtualBoundsAroundCameraCenter();
@@ -463,14 +463,21 @@ void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
     int screenOffsetY = m_screenResolution.y / m_numSplitscreenViews;
     for (int i = 0; i < m_numSplitscreenViews; ++i)
     {
-        m_viewportDefinitions[i].bottomLeftX = i * screenOffsetX;
-        m_viewportDefinitions[i].bottomLeftY = 0;
+        m_viewportDefinitions[i].m_bottomLeftX = i * screenOffsetX;
+        m_viewportDefinitions[i].m_bottomLeftY = 0;
         float width = (float)screenOffsetX;
-        m_viewportDefinitions[i].viewportWidth = width;
+        m_viewportDefinitions[i].m_viewportWidth = width;
         float height = (float)m_screenResolution.y;
-        m_viewportDefinitions[i].viewportHeight = height;
-        m_viewportDefinitions[i].viewportAspectRatio = width / height;
+        m_viewportDefinitions[i].m_viewportHeight = height;
+        m_viewportDefinitions[i].m_viewportAspectRatio = width / height;
+        m_viewportDefinitions[i].m_cameraPosition = Vector2::ZERO;
     }
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::SetCameraPosition(const Vector2& newCameraPosition, int viewportNumber /*= 0*/)
+{
+    m_viewportDefinitions[viewportNumber].m_cameraPosition = newCameraPosition;
 }
 
 //-----------------------------------------------------------------------------------

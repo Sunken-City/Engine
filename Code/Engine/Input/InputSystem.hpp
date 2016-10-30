@@ -77,13 +77,14 @@ public:
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const int NUM_KEYS = 256;
     static const int NUM_MOUSE_BUTTONS = 3;
+    static const int ABSOLUTE_MAX_NUM_CONTROLLERS = 4;
 
     //VARIABLES//////////////////////////////////////////////////////////////////////////
     static InputSystem* instance;
-    XInputController* m_controllers[4];
+    XInputController* m_controllers[ABSOLUTE_MAX_NUM_CONTROLLERS];
     KeyboardInputDevice* m_keyboardDevice;
     MouseInputDevice* m_mouseDevice;
-    XInputDevice* m_xInputDevices[4];
+    XInputDevice* m_xInputDevices[ABSOLUTE_MAX_NUM_CONTROLLERS];
     Event<float> m_OnUpdate;
     
 private:
@@ -103,9 +104,11 @@ private:
     int m_frameNumberKeyLastChanged[NUM_KEYS];
     int m_frameNumberMouseButtonLastChanged[NUM_MOUSE_BUTTONS];
     int m_frameCounter;
-    int m_maximumNumControllers;
     char m_lastPressedChar;
     Vector2Int m_cursorDelta;
     Vector2Int m_cursorPosition;
     void* m_hWnd;
+
+public:
+    int m_maximumNumControllers;
 };

@@ -21,11 +21,12 @@ struct ViewportDefinition
 {
     ViewportDefinition() {};
 
-    uint32_t bottomLeftX;
-    uint32_t bottomLeftY;
-    uint32_t viewportWidth;
-    uint32_t viewportHeight;
-    float viewportAspectRatio;
+    uint32_t m_bottomLeftX;
+    uint32_t m_bottomLeftY;
+    uint32_t m_viewportWidth;
+    uint32_t m_viewportHeight;
+    float m_viewportAspectRatio;
+    Vector2 m_cameraPosition;
 };
 
 //-----------------------------------------------------------------------------------
@@ -106,12 +107,16 @@ public:
     inline void SetVirtualSize(float vsize);
     inline void SetImportSize(unsigned int importSize) { m_importSize = importSize; }; 
     inline void SetWorldBounds(const AABB2& newWorldBounds) { m_worldBounds = newWorldBounds; };
-    //Set the camera's position in virtual coordinates.
-    void SetCameraPosition(const Vector2& newCameraPosition);
-    //Set the camera's position in a set of bounds other than the world bounds.
-    void SetCameraPositionInBounds(const Vector2& newCameraPosition, const AABB2& otherBounds);
     void SetSplitscreen(unsigned int numViews = 1);
+    void SetCameraPosition(const Vector2& newCameraPosition, int viewportNumber = 0);
 
+private:
+    //Set the camera's position in virtual coordinates.
+    void UpdateCameraPosition(const Vector2& newCameraPosition);
+    //Set the camera's position in a set of bounds other than the world bounds.
+    void UpdateCameraPositionInBounds(const Vector2& newCameraPosition, const AABB2& otherBounds);
+
+public:
     //GETTERS/////////////////////////////////////////////////////////////////////
     float GetPixelsPerVirtualUnit();
     float GetVirtualUnitsPerPixel();

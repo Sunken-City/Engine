@@ -17,7 +17,7 @@ void XInputDevice::Update(float)
     for (int button = 0; button < numButtons; ++button)
     {
         bool buttonIsPressed = m_controller->IsPressed(static_cast<XboxButton>(button));
-        m_buttons->SetValue(buttonIsPressed ? 1.0f : 0.0f);
+        m_buttons[button].SetValue(buttonIsPressed ? 1.0f : 0.0f);
     }
 
     m_leftTrigger.SetValue(static_cast<float>(m_controller->GetLeftTrigger()) / 255.0f);
