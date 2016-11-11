@@ -24,6 +24,8 @@ void XInputDevice::Update(float)
     m_rightTrigger.SetValue(static_cast<float>(m_controller->GetRightTrigger()) / 255.0f);
     m_leftStick.SetValue(m_controller->GetLeftStickPosition());
     m_rightStick.SetValue(m_controller->GetRightStickPosition());
+    m_leftStickMagnitude.SetValue(m_controller->GetLeftStickMagnitude());
+    m_rightStickMagnitude.SetValue(m_controller->GetRightStickMagnitude());
 }
 
 //-----------------------------------------------------------------------------------

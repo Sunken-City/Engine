@@ -132,6 +132,20 @@ int XInputController::GetControllerNumber()
 }
 
 //-----------------------------------------------------------------------------------
+float XInputController::GetLeftStickMagnitude()
+{
+    Vector2 stickPosition = GetLeftStickPosition();
+    return stickPosition.CalculateMagnitude();
+}
+
+//-----------------------------------------------------------------------------------
+float XInputController::GetRightStickMagnitude()
+{
+    Vector2 stickPosition = GetRightStickPosition();
+    return stickPosition.CalculateMagnitude();
+}
+
+//-----------------------------------------------------------------------------------
 //Returns the normalized position of the left stick (from 0 to 1)
 Vector2 XInputController::GetLeftStickPosition()
 {

@@ -5,14 +5,18 @@
 class XInputDevice : public InputDevice
 {
 public:
+    ////CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     XInputDevice(XInputController* controller);
     ~XInputDevice() {};
 
+    //FUNCTIONS/////////////////////////////////////////////////////////////////////
     virtual void Update(float) override;
 
     InputValue* FindButton(XboxButton button);
     inline InputValue* GetLeftTrigger() { return &m_leftTrigger; };
     inline InputValue* GetRightTrigger() { return &m_rightTrigger; };
+    inline InputValue* GetLeftStickMagnitude() { return &m_leftStickMagnitude; };
+    inline InputValue* GetRightStickMagnitude() { return &m_rightStickMagnitude; };
     inline InputVector2* GetLeftStick() { return &m_leftStick; };
     inline InputVector2* GetRightStick() { return &m_rightStick; };
 
@@ -22,6 +26,8 @@ private:
     InputValue m_buttons[static_cast<int>(XboxButton::NUM_XBOX_BUTTONS)];
     InputValue m_leftTrigger;
     InputValue m_rightTrigger;
+    InputValue m_leftStickMagnitude;
+    InputValue m_rightStickMagnitude;
     InputVector2 m_leftStick;
     InputVector2 m_rightStick;
 };

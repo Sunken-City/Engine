@@ -55,6 +55,8 @@ public:
 
     //GETTERS//////////////////////////////////////////////////////////////////////////
     int GetControllerNumber();
+    float GetLeftStickMagnitude();
+    float GetRightStickMagnitude();
     //Returns the normalized position of the left stick (from 0 to 1)
     Vector2 GetLeftStickPosition();
     //Returns the normalized position of the right stick (from 0 to 1)
