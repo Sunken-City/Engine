@@ -4,7 +4,7 @@
 #include "Engine/Math/Vector2.hpp"
 #include "Engine/Renderer/RGBA.hpp"
 #include "Engine/Renderer/AABB2.hpp"
-#include "Engine/Renderer/BitmapFont.hpp"
+#include "Engine/Fonts/BitmapFont.hpp"
 #include <cmath>
 
 Console* Console::instance = nullptr;
@@ -24,7 +24,7 @@ Console::Console()
     , m_isCursorShowing(false)
     , m_characterAtCursor(CURSOR_CHARACTER)
     , m_timeSinceCursorBlink(0.0f)
-    , m_font(BitmapFont::CreateOrGetFontFromGlyphSheet("FixedSys"))
+    , m_font(BitmapFont::CreateOrGetFont("FixedSys"))
     , m_commandHistoryIndex(0)
 {
 }
@@ -400,7 +400,7 @@ CONSOLE_COMMAND(changefont)
         return;
     }
     std::string fontName = args.GetStringArgument(0);
-    BitmapFont* font = BitmapFont::CreateOrGetFontFromGlyphSheet(fontName);
+    BitmapFont* font = BitmapFont::CreateOrGetFont(fontName);
     if (font)
     {
         Console::instance->m_font = font;

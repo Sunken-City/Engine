@@ -57,6 +57,9 @@
     <Filter Include="Engine\Input\InputDevices">
       <UniqueIdentifier>{81164c12-fe23-45e7-81a2-b570d47e7b93}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Fonts">
+      <UniqueIdentifier>{4d7d959b-7966-4384-b7e0-8271b71c3ee8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Vector2.cpp">
@@ -109,9 +112,6 @@
     </ClCompile>
     <ClCompile Include="Math\EulerAngles.cpp">
       <Filter>Engine\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer\BitmapFont.cpp">
-      <Filter>Engine\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="Math\Vector3Int.cpp">
       <Filter>Engine\Math</Filter>
@@ -302,6 +302,12 @@
     <ClCompile Include="Input\InputDevices\XInputDevice.cpp">
       <Filter>Engine\Input\InputDevices</Filter>
     </ClCompile>
+    <ClCompile Include="Fonts\BitmapFont.cpp">
+      <Filter>Engine\Fonts</Filter>
+    </ClCompile>
+    <ClCompile Include="Fonts\FontGenerator.cpp">
+      <Filter>Engine\Fonts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -351,9 +357,6 @@
     </ClInclude>
     <ClInclude Include="Math\EulerAngles.hpp">
       <Filter>Engine\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer\BitmapFont.hpp">
-      <Filter>Engine\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="Math\Vector3Int.hpp">
       <Filter>Engine\Math</Filter>
@@ -576,6 +579,12 @@
     </ClInclude>
     <ClInclude Include="Input\InputDevices\XInputDevice.hpp">
       <Filter>Engine\Input\InputDevices</Filter>
+    </ClInclude>
+    <ClInclude Include="Fonts\BitmapFont.hpp">
+      <Filter>Engine\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="Fonts\FontGenerator.hpp">
+      <Filter>Engine\Fonts</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

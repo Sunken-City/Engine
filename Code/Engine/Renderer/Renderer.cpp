@@ -12,7 +12,7 @@
 #include "Engine/Renderer/AABB3.hpp"
 #include "Engine/Renderer/RGBA.hpp"
 #include "Engine/Renderer/Texture.hpp"
-#include "Engine/Renderer/BitmapFont.hpp"
+#include "Engine/Fonts/BitmapFont.hpp"
 #include "Engine/Renderer/Vertex.hpp"
 #include "Engine/Renderer/Face.hpp"
 #include "Engine/Renderer/OpenGLExtensions.hpp"
@@ -526,15 +526,13 @@ void Renderer::DrawText2D
     }
     builder.End();
 
-    Mesh* mesh = new Mesh();
-    builder.CopyToMesh(mesh, &Vertex_PCUTB::Copy, sizeof(Vertex_PCUTB), &Vertex_PCUTB::BindMeshToVAO);
-    mesh->m_drawMode = DrawMode::TRIANGLES;
-    MeshRenderer* thingToRender = new MeshRenderer(mesh, font->GetMaterial());
+    Mesh mesh;
+    builder.CopyToMesh(&mesh, &Vertex_PCUTB::Copy, sizeof(Vertex_PCUTB), &Vertex_PCUTB::BindMeshToVAO);
+    mesh.m_drawMode = DrawMode::TRIANGLES;
+    MeshRenderer thingToRender(&mesh, font->GetMaterial());
     m_defaultMaterial->SetMatrices(Matrix4x4::IDENTITY, m_viewStack.GetTop(), m_projStack.GetTop());
     GL_CHECK_ERROR();
-    thingToRender->Render();
-    delete mesh;
-    delete thingToRender;
+    thingToRender.Render();
 }
 
 //-----------------------------------------------------------------------------------

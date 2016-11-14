@@ -5,7 +5,7 @@
 #include "Engine/Input/BinaryWriter.hpp"
 #include "Engine/Input/BinaryReader.hpp"
 #include "Engine/Renderer/AABB2.hpp"
-#include "Engine/Renderer/BitmapFont.hpp"
+#include "Engine/Fonts/BitmapFont.hpp"
 #include "Engine/Math/MathUtils.hpp"
 
 extern MeshBuilder* g_loadedMeshBuilder;

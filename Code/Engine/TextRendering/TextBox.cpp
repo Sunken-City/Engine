@@ -1,6 +1,6 @@
 #include "Engine/TextRendering/TextBox.hpp"
 #include "Engine/Input/XMLUtils.hpp"
-#include "Engine/Renderer/BitmapFont.hpp"
+#include "Engine/Fonts/BitmapFont.hpp"
 #include "Engine/Core/StringUtils.hpp"
 #include "Engine/Renderer/MeshBuilder.hpp"
 #include "Engine/Renderer/MeshRenderer.hpp"

@@ -1,7 +1,7 @@
 #include "Engine/Core/Memory/MemoryOutputWindow.hpp"
 #include "Engine/Core/Memory/MemoryTracking.hpp"
 #include "Engine/Core/BuildConfig.hpp"
-#include "Engine/Renderer/BitmapFont.hpp"
+#include "Engine/Fonts/BitmapFont.hpp"
 #include "Engine/Math/Vector3.hpp"
 #include "Engine/Input/XMLUtils.hpp"
 #include "Engine/TextRendering/TextBox.hpp"
@@ -34,7 +34,7 @@ void MemoryOutputWindow::Update(float deltaSeconds)
     }
     if (!m_outputWindow)
     {
-        m_outputWindow = new TextBox(Vector3(1300.0f, 500.0f, 0.0f), Vector3::UP, Vector3::RIGHT, 300, 300, 1.0f, BitmapFont::CreateOrGetFontFromGlyphSheet("Runescape"), TextBox::LEFT_ALIGNED);
+        m_outputWindow = new TextBox(Vector3(1300.0f, 500.0f, 0.0f), Vector3::UP, Vector3::RIGHT, 300, 300, 1.0f, BitmapFont::CreateOrGetFont("Runescape"), TextBox::LEFT_ALIGNED);
     }
     std::string xmlData = Stringf("<Text value = \"Allocations: [[%u]]\
                                                    Bytes: [[%u]]\

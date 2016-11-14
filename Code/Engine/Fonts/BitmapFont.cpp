@@ -57,7 +57,8 @@ BitmapFont* BitmapFont::CreateOrGetFont(const std::string& bitmapFontName)
     {
         if (FileExists("Data/Fonts/" + bitmapFontName + "_0.png"))
         {
-            font = new BitmapFont(bitmapFontName + "_0", bitmapFontName);
+            font = new BitmapFont(bitmapFontName + "_0");
+            font->LoadBMFontMetadata(bitmapFontName);
             size_t fileNameHash = std::hash<std::string>{}(bitmapFontName);
             BitmapFont::s_fontRegistry[fileNameHash] = font;
             return font;
@@ -148,18 +149,11 @@ BitmapFont::BitmapFont(const std::string& bitmapFontName)
 }
 
 //-----------------------------------------------------------------------------------
-BitmapFont::BitmapFont(const std::string& bitmapFontName, const std::string& glyphFileName)
-    : m_spriteSheet("Data/Fonts/" + bitmapFontName + ".png", CHARACTER_WIDTH, CHARACTER_WIDTH)
-    , m_isMonospaced(false)
-    , m_maxHeight(0)
-    , m_material(new Material(new ShaderProgram("Data/Shaders/fixedVertexFormat.vert", "Data/Shaders/fixedVertexFormat.frag"),
-        RenderState(RenderState::DepthTestingMode::OFF, RenderState::FaceCullingMode::CULL_BACK_FACES, RenderState::BlendMode::ALPHA_BLEND)))
+void BitmapFont::LoadBMFontMetadata(const std::string& glyphFileName)
 {
-    m_imageDimensions = m_spriteSheet.GetTexture()->m_texelSize;
     std::vector<std::string> glyphSheet;
     ReadTextFileIntoVector(glyphSheet, "Data/Fonts/" + glyphFileName + ".fnt");
     ParseGlyphInfo(glyphSheet);
-    m_material->SetDiffuseTexture(m_spriteSheet.GetTexture());
 }
 
 BitmapFont::~BitmapFont()

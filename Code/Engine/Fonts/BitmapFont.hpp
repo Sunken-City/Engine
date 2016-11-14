@@ -21,7 +21,6 @@ struct Glyph
         , yOffset(yOffset)
         , xAdvance(xAdvance) {};
 
-    char id;
     int x;
     int y;
     int width;
@@ -29,6 +28,7 @@ struct Glyph
     int xOffset;
     int yOffset;
     int xAdvance;
+    char id;
 };
 
 //---------------------------------------------------------------------------
@@ -47,7 +47,6 @@ public:
     //HELPER FUNCTIONS//////////////////////////////////////////////////////////////////////////
     static BitmapFont* GetFontByName(const std::string& imageFilePath);
     static BitmapFont* CreateOrGetFont(const std::string& bitmapFontName);
-    static BitmapFont* CreateOrGetFontFromGlyphSheet(const std::string& bitmapFontName);
     static void CleanUpBitmapFontRegistry();
     float CalcTextWidth(const std::string& textToWrite, float scale) const;
 
@@ -67,11 +66,11 @@ public:
 private:
     //CONSTRUCTORS//////////////////////////////////////////////////////////////////////////
     BitmapFont(const std::string& bitmapFontName);
-    BitmapFont(const std::string& bitmapFontName, const std::string& glyphFileName);
     ~BitmapFont();
 
     //HELPER FUNCTIONS//////////////////////////////////////////////////////////////////////////
     void ParseGlyphInfo(std::vector<std::string>& glyphSheet);
+    void LoadBMFontMetadata(const std::string& glyphFileName);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     static std::map<size_t, BitmapFont*, std::less<size_t>, UntrackedAllocator<std::pair<size_t, BitmapFont*>>> s_fontRegistry;
