@@ -96,8 +96,9 @@ void Vector2::Normalize()
     {
         return;
     }
-    x /= len;
-    y /= len;
+    float scale = 1.0f / len;
+    x *= scale;
+    y *= scale;
 }
 
 //-----------------------------------------------------------------------------------
@@ -110,7 +111,8 @@ Vector2 Vector2::GetNorm()
     }
     else
     {
-        return Vector2(x / len, y / len);
+        float scale = 1.0f / len;
+        return Vector2(x * scale, y * scale);
     }
 }
 

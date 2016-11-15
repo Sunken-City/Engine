@@ -45,13 +45,13 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     const SpriteResource* m_spriteResource;
-    int m_orderingLayer; //Drawing order is ordered by layer, smallest to largest
     Vector2 m_position;
     Vector2 m_scale;
-    float m_rotationDegrees;
     RGBA m_tintColor;
-    bool m_isEnabled; //If disabled - does not get rendered
     Material* m_material;
-    Sprite* prev;
     Sprite* next;
+    Sprite* prev;
+    int m_orderingLayer; //Drawing order is ordered by layer, smallest to largest
+    float m_rotationDegrees;
+    bool m_isEnabled; //If disabled - does not get rendered
 };

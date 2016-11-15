@@ -308,6 +308,9 @@
     <ClCompile Include="Fonts\FontGenerator.cpp">
       <Filter>Engine\Fonts</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\2D\Renderable2D.cpp">
+      <Filter>Engine\Renderer\2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -585,6 +588,9 @@
     </ClInclude>
     <ClInclude Include="Fonts\FontGenerator.hpp">
       <Filter>Engine\Fonts</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\2D\Renderable2D.hpp">
+      <Filter>Engine\Renderer\2D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
