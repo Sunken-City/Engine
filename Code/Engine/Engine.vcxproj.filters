@@ -60,6 +60,9 @@
     <Filter Include="Engine\Fonts">
       <UniqueIdentifier>{4d7d959b-7966-4384-b7e0-8271b71c3ee8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Core\Events">
+      <UniqueIdentifier>{197919c6-2377-43dd-8412-df42b3a9003c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Vector2.cpp">
@@ -520,9 +523,6 @@
     <ClInclude Include="DataStructures\ThreadSafeQueue.hpp">
       <Filter>Engine\DataStructures</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Event.hpp">
-      <Filter>Engine\Core</Filter>
-    </ClInclude>
     <ClInclude Include="Net\NetSystem.hpp">
       <Filter>Engine\Net</Filter>
     </ClInclude>
@@ -591,6 +591,9 @@
     </ClInclude>
     <ClInclude Include="Renderer\2D\Renderable2D.hpp">
       <Filter>Engine\Renderer\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Event.hpp">
+      <Filter>Engine\Core\Events</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
