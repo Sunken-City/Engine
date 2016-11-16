@@ -1,12 +1,13 @@
 #pragma once
 #include <string>
+#include <map>
 
 //-----------------------------------------------------------------------------------
 enum PropertyGetResult
 {
     PGR_SUCCESS,
     PGR_FAILED_WRONG_TYPE,
-    PGR_FAILED_NOT_PRESENT,
+    PGR_FAILED_NO_SUCH_PROPERTY,
     PGR_FAILED_EMPTY,
     NUM_RESULTS
 };
@@ -22,19 +23,46 @@ enum PropertySetResult
 };
 
 //-----------------------------------------------------------------------------------
+struct NamedPropertyBase
+{
+    virtual ~NamedPropertyBase();
+};
+
+//-----------------------------------------------------------------------------------
+template<typename T>
+struct TypedNameProperty : public NamedPropertyBase
+{
+    TypedNameProperty(const T& data)
+        : m_data(data)
+    {}
+
+    virtual ~TypedNameProperty();
+
+    T m_data;
+};
+
+//-----------------------------------------------------------------------------------
 class NamedProperties
 {
     template<typename T>
     PropertyGetResult Get(const std::string& propertyName, T& outPropertyValue)
     {
-
+        auto result = m_properties.find(propertyName);
+        if (result == m_properties.end())
+        {
+            return PropertyGetResult::PGR_FAILED_NO_SUCH_PROPERTY;
+        }
+        NamedPropertyBase* property = result->second;
+        TypedNameProperty<T>* typedProperty = dynamic_cast<TypedNameProperty<T>*>(property);
     };
 
     template<typename T>
     PropertySetResult Set(const std::string& propertyName, const T& propertyValue, bool changeTypeIfDifferent = true)
     {
-
+        m_properties[propertyName] = new TypedNameProperty<T>*(propertyValue);
     };
 
     void Remove(const std::string& propertyName);
+
+    std::map<std::string, NamedPropertyBase* inProperties> m_properties;
 };
