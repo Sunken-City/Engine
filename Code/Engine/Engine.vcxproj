@@ -23,6 +23,8 @@
     <ClCompile Include="..\ThirdParty\stb_image.c" />
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Core\ErrorWarningAssert.cpp" />
+    <ClCompile Include="Core\Events\EventSystem.cpp" />
+    <ClCompile Include="Core\Events\NamedProperties.cpp" />
     <ClCompile Include="Core\JobSystem.cpp" />
     <ClCompile Include="Core\Memory\Callstack.cpp" />
     <ClCompile Include="Core\Memory\MemoryOutputWindow.cpp" />
@@ -111,6 +113,8 @@
     <ClInclude Include="Core\BuildConfig.hpp" />
     <ClInclude Include="Core\ErrorWarningAssert.hpp" />
     <ClInclude Include="Core\Event.hpp" />
+    <ClInclude Include="Core\Events\EventSystem.hpp" />
+    <ClInclude Include="Core\Events\NamedProperties.hpp" />
     <ClInclude Include="Core\JobSystem.hpp" />
     <ClInclude Include="Core\Memory\Callstack.hpp" />
     <ClInclude Include="Core\Memory\MemoryOutputWindow.hpp" />

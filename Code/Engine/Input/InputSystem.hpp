@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine/Math/Vector2Int.hpp"
-#include "Engine/Core/Event.hpp"
+#include "Engine/Core/Events/Event.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 
 class XInputController;
