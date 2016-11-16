@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/Net/UDPIP/PacketChannel.hpp"
 #include "Engine/Net/UDPIP/NetMessage.hpp"
-#include "Engine/Core/Event.hpp"
+#include "Engine/Core/Events/Event.hpp"
 
 #define GAME_PORT_STR "4334"
 #define GAME_PORT 4334

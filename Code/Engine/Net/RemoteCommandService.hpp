@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine/Net/TCPIP/TCPConnection.hpp"
 #include "Engine/Net/TCPIP/TCPListener.hpp"
-#include "Engine/Core/Event.hpp"
+#include "Engine/Core/Events/Event.hpp"
 #include <vector>
 
 //TYPEDEFS/////////////////////////////////////////////////////////////////////

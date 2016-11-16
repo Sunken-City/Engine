@@ -5,7 +5,7 @@
 #include "Engine\Renderer\RGBA.hpp"
 #include "Engine\Core\Memory\UntrackedAllocator.hpp"
 #include "Engine\Core\Memory\MemoryTracking.hpp"
-#include "Engine\Core\Event.hpp"
+#include "Engine\Core\Events\Event.hpp"
 
 //-----------------------------------------------------------------------------------------------
 #define UNUSED(x) (void)(x);
