@@ -8,7 +8,6 @@ Sprite::Sprite(const std::string& resourceName, int orderingLayer, bool isEnable
     , m_scale(Vector2::ONE)
     , m_rotationDegrees(0.0f)
     , m_tintColor(RGBA::WHITE)
-    , m_isEnabled(false)
     , m_material(nullptr)
     , prev(nullptr)
     , next(nullptr)
@@ -26,35 +25,6 @@ Sprite::Sprite(const std::string& resourceName, int orderingLayer, bool isEnable
 Sprite::~Sprite()
 {
     Disable();
-}
-
-//-----------------------------------------------------------------------------------
-void Sprite::ChangeLayer(int layer)
-{
-    //Disable if already connected.
-    Disable();
-    m_orderingLayer = layer;
-    Enable();
-}
-
-//-----------------------------------------------------------------------------------
-void Sprite::Enable()
-{
-    if (!m_isEnabled) 
-    {
-        SpriteGameRenderer::instance->RegisterSprite(this);
-        m_isEnabled = true;
-    }
-}
-
-//-----------------------------------------------------------------------------------
-void Sprite::Disable()
-{
-    if (m_isEnabled) 
-    {
-        SpriteGameRenderer::instance->UnregisterSprite(this);
-        m_isEnabled = false;
-    }
 }
 
 //-----------------------------------------------------------------------------------

@@ -7,7 +7,8 @@
 #include "Engine/Renderer/Material.hpp"
 #include <map>
 #include <vector>
-#include "ParticleSystem.hpp"
+#include "Engine/Renderer/2D/ParticleSystem.hpp"
+#include "Engine/Renderer/2D/Renderable2D.hpp"
 
 #define BIT_FLAG(f) (1 << (f))
 
@@ -38,8 +39,8 @@ public:
     ~SpriteLayer();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
-    inline void AddSprite(Sprite* sprite) { AddInPlace(m_spriteList, sprite); };
-    inline void RemoveSprite(Sprite* sprite) { RemoveInPlace(m_spriteList, sprite); };
+    inline void AddRenderable2D(Renderable2D* renderable) { AddInPlace(m_renderables, renderable); };
+    inline void RemoveRenderable2D(Renderable2D* renderable) { RemoveInPlace(m_renderables, renderable); };
     inline void AddParticleSystem(ParticleSystem* system) { AddInPlace(m_particleSystemList, system); };
     inline void RemoveParticleSystem(ParticleSystem* system) { RemoveInPlace(m_particleSystemList, system); };
     inline void Enable() { m_isEnabled = true; }
@@ -49,7 +50,7 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     int m_layer;
-    Sprite* m_spriteList;
+    Renderable2D* m_renderables;
     ParticleSystem* m_particleSystemList;
     bool m_isEnabled;
     float m_virtualSize;
@@ -91,9 +92,9 @@ public:
     void DrawParticleSystem(ParticleSystem* system);
     void RegisterParticleSystem(ParticleSystem* system);
     void UnregisterParticleSystem(ParticleSystem* system);
-    void DrawSprite(Sprite* sprite);
-    void RegisterSprite(Sprite* sprite);
-    void UnregisterSprite(Sprite* sprite);
+    void DrawRenderable2D(Renderable2D* renderable);
+    void RegisterRenderable2D(Renderable2D* renderable);
+    void UnregisterRenderable2D(Renderable2D* renderable);
     SpriteLayer* CreateOrGetLayer(int layerNumber);
     void AddEffectToLayer(Material* effectMaterial, int layerNumber);
     void RemoveEffectFromLayer(Material* effectMaterial, int layerNumber);

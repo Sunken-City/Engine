@@ -54,7 +54,7 @@ const char* SpriteGameRenderer::DEFAULT_FRAG_SHADER =
 //-----------------------------------------------------------------------------------
 SpriteLayer::SpriteLayer(int layerIndex)
     : m_layer(layerIndex)
-    , m_spriteList(nullptr)
+    , m_renderables(nullptr)
     , m_particleSystemList(nullptr)
     , m_isEnabled(true)
     , m_virtualSize(SpriteGameRenderer::instance->m_virtualSize)
@@ -223,18 +223,18 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
     {
         Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, m_cameraPosition);
         {
-            SortSpritesByXY(layer->m_spriteList);
-            Sprite* currentSprite = layer->m_spriteList;
-            if (currentSprite)
+            //SortSpritesByXY(layer->m_spriteList);
+            Renderable2D* currentRenderable = layer->m_renderables;
+            if (currentRenderable)
             {
                 do
                 {
-                    if (renderBounds.IsIntersecting(currentSprite->GetBounds()))
+                    if (renderBounds.IsIntersecting(currentRenderable->GetBounds()))
                     {
-                        DrawSprite(currentSprite);
+                        DrawRenderable2D(currentRenderable);
                     }
-                    currentSprite = currentSprite->next;
-                } while (currentSprite != layer->m_spriteList);
+                    currentRenderable = currentRenderable->next;
+                } while (currentRenderable != layer->m_renderables);
             }
             ParticleSystem* currentSystem = layer->m_particleSystemList;
             if (currentSystem)
@@ -355,24 +355,25 @@ void SpriteGameRenderer::SetMeshFromSprite(Sprite* sprite)
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteGameRenderer::DrawSprite(Sprite* sprite)
+void SpriteGameRenderer::RegisterRenderable2D(Renderable2D* renderable)
 {
-    sprite->m_material->SetDiffuseTexture(sprite->m_spriteResource->m_texture);
-    m_meshRenderer->m_material = sprite->m_material;
-    SetMeshFromSprite(sprite);
-    m_meshRenderer->Render();
+    CreateOrGetLayer(renderable->m_orderingLayer)->AddRenderable2D(renderable);
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteGameRenderer::RegisterSprite(Sprite* sprite)
+void SpriteGameRenderer::DrawRenderable2D(Renderable2D* renderable)
 {
-    CreateOrGetLayer(sprite->m_orderingLayer)->AddSprite(sprite);
+    renderable->Render(m_meshRenderer, nullptr);
+//     sprite->m_material->SetDiffuseTexture(sprite->m_spriteResource->m_texture);
+//     m_meshRenderer->m_material = sprite->m_material;
+//     SetMeshFromSprite(sprite);
+//     m_meshRenderer->Render();
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteGameRenderer::UnregisterSprite(Sprite* sprite)
+void SpriteGameRenderer::UnregisterRenderable2D(Renderable2D* renderable)
 {
-    CreateOrGetLayer(sprite->m_orderingLayer)->RemoveSprite(sprite);
+    CreateOrGetLayer(renderable->m_orderingLayer)->RemoveRenderable2D(renderable);
 }
 
 //-----------------------------------------------------------------------------------
@@ -459,15 +460,15 @@ void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
     m_numSplitscreenViews = numViews;
     m_viewportDefinitions = new ViewportDefinition[m_numSplitscreenViews];
 
-    int screenOffsetX = m_screenResolution.x / m_numSplitscreenViews;
-    int screenOffsetY = m_screenResolution.y / m_numSplitscreenViews;
-    for (int i = 0; i < m_numSplitscreenViews; ++i)
+    float screenOffsetX = m_screenResolution.x / m_numSplitscreenViews;
+    float screenOffsetY = m_screenResolution.y / m_numSplitscreenViews;
+    for (unsigned int i = 0; i < m_numSplitscreenViews; ++i)
     {
-        m_viewportDefinitions[i].m_bottomLeftX = i * screenOffsetX;
-        m_viewportDefinitions[i].m_bottomLeftY = 0;
-        float width = (float)screenOffsetX;
+        m_viewportDefinitions[i].m_bottomLeftX = (uint32_t)i * screenOffsetX;
+        m_viewportDefinitions[i].m_bottomLeftY = (uint32_t)0;
+        float width = screenOffsetX;
         m_viewportDefinitions[i].m_viewportWidth = width;
-        float height = (float)m_screenResolution.y;
+        float height = m_screenResolution.y;
         m_viewportDefinitions[i].m_viewportHeight = height;
         m_viewportDefinitions[i].m_viewportAspectRatio = width / height;
         m_viewportDefinitions[i].m_cameraPosition = Vector2::ZERO;

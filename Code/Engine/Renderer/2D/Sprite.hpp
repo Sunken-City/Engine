@@ -3,6 +3,7 @@
 #include "Engine/Renderer/AABB2.hpp"
 #include "Engine/Renderer/RGBA.hpp"
 #include <string>
+#include "Renderable2D.hpp"
 
 class Texture;
 class Material;
@@ -30,7 +31,7 @@ private:
 };
 
 //-----------------------------------------------------------------------------------
-class Sprite
+class Sprite : public Renderable2D
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
@@ -38,9 +39,6 @@ public:
     ~Sprite();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
-    void ChangeLayer(int layer);
-    void Enable();
-    void Disable();
     AABB2 GetBounds();
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
@@ -51,7 +49,5 @@ public:
     Material* m_material;
     Sprite* next;
     Sprite* prev;
-    int m_orderingLayer; //Drawing order is ordered by layer, smallest to largest
     float m_rotationDegrees;
-    bool m_isEnabled; //If disabled - does not get rendered
 };
