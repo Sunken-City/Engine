@@ -112,7 +112,7 @@
     <ClInclude Include="Audio\Audio.hpp" />
     <ClInclude Include="Core\BuildConfig.hpp" />
     <ClInclude Include="Core\ErrorWarningAssert.hpp" />
-    <ClInclude Include="Core\Event.hpp" />
+    <ClInclude Include="Core\Events\Event.hpp" />
     <ClInclude Include="Core\Events\EventSystem.hpp" />
     <ClInclude Include="Core\Events\NamedProperties.hpp" />
     <ClInclude Include="Core\JobSystem.hpp" />
