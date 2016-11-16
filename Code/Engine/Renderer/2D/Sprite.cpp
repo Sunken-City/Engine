@@ -42,3 +42,9 @@ AABB2 SpriteResource::GetDefaultBounds() const
     const Vector2 maxs(m_virtualSize.x - m_pivotPoint.x, m_virtualSize.y - m_pivotPoint.y);
     return AABB2(mins, maxs);
 }
+
+//-----------------------------------------------------------------------------------
+void Sprite::Render(BufferedMeshRenderer& renderer)
+{
+
+}

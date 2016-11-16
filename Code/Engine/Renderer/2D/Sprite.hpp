@@ -7,6 +7,7 @@
 
 class Texture;
 class Material;
+class BufferedMeshRender;
 
 //-----------------------------------------------------------------------------------
 class SpriteResource
@@ -40,6 +41,7 @@ public:
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     AABB2 GetBounds();
+    virtual void Render(BufferedMeshRenderer& renderer);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     const SpriteResource* m_spriteResource;
