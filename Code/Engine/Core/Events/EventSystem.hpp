@@ -50,7 +50,7 @@ class EventSystem
     void RegisterEventCallback(const std::string& name, EventCallbackFunction function);
     void FireEvent(const std::string& name);
 
-    template<typename T>
+    template<typename T_ObjectType, typename T_MethodType>
     void RegisterObjectForEvent(const std::string& eventName, T_ObjectType* object, T_MethodType* method)
     {
         RegisteredObjectMethod* rom = new RegisteredObjectMethod<T_ObjectType, T_MethodType>(object, method);

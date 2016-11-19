@@ -9,7 +9,7 @@ enum PropertyGetResult
     PGR_FAILED_WRONG_TYPE,
     PGR_FAILED_NO_SUCH_PROPERTY,
     PGR_FAILED_EMPTY,
-    NUM_RESULTS
+    PGR_NUM_RESULTS
 };
 
 //-----------------------------------------------------------------------------------
@@ -19,13 +19,13 @@ enum PropertySetResult
     PSR_SUCCESS_EXISTED,
     PSR_SUCCESS_CHANGED_TYPE,
     PSR_FAILED_DIFF_TYPE,
-    NUM_RESULTS
+    PSR_NUM_RESULTS
 };
 
 //-----------------------------------------------------------------------------------
 struct NamedPropertyBase
 {
-    virtual ~NamedPropertyBase();
+    virtual ~NamedPropertyBase() {};
 };
 
 //-----------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ struct TypedNameProperty : public NamedPropertyBase
         : m_data(data)
     {}
 
-    virtual ~TypedNameProperty();
+    virtual ~TypedNameProperty() {};
 
     T m_data;
 };
@@ -64,5 +64,5 @@ class NamedProperties
 
     void Remove(const std::string& propertyName);
 
-    std::map<std::string, NamedPropertyBase* inProperties> m_properties;
+    std::map<std::string, NamedPropertyBase*> m_properties;
 };
