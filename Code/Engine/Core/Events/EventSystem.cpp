@@ -14,14 +14,18 @@ void FireEvent(const char* name, NamedProperties& namedProperties)
 }
 
 //-----------------------------------------------------------------------------------
-void FireEvent(const std::string& name)
+void FireEvent(const std::string& name, NamedProperties& namedProperties)
 {
-
+    std::vector<RegisteredObjectBase*> functions = EventSystem::s_registeredFunctions[name];
+    for (RegisteredObjectBase* callee : functions)
+    {
+        callee->Execute(namedProperties);
+    }
 }
 
 //-----------------------------------------------------------------------------------
-void EventSystem::RegisterEventCallback(const std::string& eventName, EventCallbackFunction* m_function)
+void EventSystem::RegisterEventCallback(const std::string& eventName, EventCallbackFunction* m_function, const char* usage)
 {
-    RegisteredFunction* rom = new RegisteredFunction(m_function);
+    RegisteredFunction* rom = new RegisteredFunction(m_function, usage);
     s_registeredFunctions[eventName].push_back(rom);
 }
