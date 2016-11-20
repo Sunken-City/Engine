@@ -172,7 +172,7 @@ std::vector<std::string> EnumerateFiles(const std::string& baseFolder, const std
                 properties.Set<std::string>("FileRelativePath", fullFileName);
                 properties.Set<std::string>("FileAbsolutePath", fullPathStr);
 
-                FireEvent(eventToFire, properties);
+                EventSystem::FireEvent(eventToFire, properties);
             }
 
         } while (FindNextFile(handleToResults, &finder) != 0);

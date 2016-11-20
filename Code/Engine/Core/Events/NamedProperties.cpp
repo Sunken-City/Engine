@@ -39,6 +39,31 @@ PropertySetResult NamedProperties::Set(const std::string& propertyName, const ch
 }
 
 //-----------------------------------------------------------------------------------
+PropertyGetResult NamedProperties::Get(const std::string& propertyName, std::string& outPropertyValue)
+{
+    if (m_properties.size() == 0)
+    {
+        return PropertyGetResult::PGR_FAILED_NO_PROPERTIES;
+    }
+    auto result = m_properties.find(propertyName);
+    if (result == m_properties.end())
+    {
+        return PropertyGetResult::PGR_FAILED_NO_SUCH_PROPERTY;
+    }
+
+    NamedPropertyBase* property = result->second;
+    TypedNameProperty<const char*>* typedProperty = dynamic_cast<TypedNameProperty<const char*>*>(property);
+    if (!typedProperty)
+    {
+        return PropertyGetResult::PGR_FAILED_WRONG_TYPE;
+    }
+    outPropertyValue = std::string(typedProperty->m_data);
+
+    return PropertyGetResult::PGR_SUCCESS;
+
+}
+
+//-----------------------------------------------------------------------------------
 bool NamedProperties::Remove(const std::string& propertyName)
 {
     auto foundPair = m_properties.find(propertyName);
