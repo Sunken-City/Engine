@@ -4,7 +4,7 @@
 std::map<std::string, std::vector<RegisteredObjectBase*>> EventSystem::s_registeredFunctions;
 
 //-----------------------------------------------------------------------------------
-void FireEvent(const char* name, NamedProperties& namedProperties)
+void EventSystem::FireEvent(const char* name, NamedProperties& namedProperties)
 {
     std::vector<RegisteredObjectBase*> functions = EventSystem::s_registeredFunctions[std::string(name)];
     for (RegisteredObjectBase* callee : functions)
@@ -14,7 +14,7 @@ void FireEvent(const char* name, NamedProperties& namedProperties)
 }
 
 //-----------------------------------------------------------------------------------
-void FireEvent(const std::string& name, NamedProperties& namedProperties)
+void EventSystem::FireEvent(const std::string& name, NamedProperties& namedProperties)
 {
     std::vector<RegisteredObjectBase*> functions = EventSystem::s_registeredFunctions[name];
     for (RegisteredObjectBase* callee : functions)

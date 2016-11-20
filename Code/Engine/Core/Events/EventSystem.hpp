@@ -10,6 +10,7 @@ typedef void (EventCallbackFunction)(NamedProperties& params);
 struct RegisteredObjectBase
 {
     virtual void Execute(NamedProperties& params) = 0;
+    virtual void* GetOwningObject() { return nullptr; };
 };
 
 //-----------------------------------------------------------------------------------
@@ -38,6 +39,8 @@ struct RegisteredObjectMethod : public RegisteredObjectBase
         (m_object->*m_method)(params);
     }
 
+    virtual void* GetOwningObject() { return (void*)m_object; };
+
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     T_ObjectType m_object;
     T_MethodType m_method;
@@ -50,6 +53,38 @@ class EventSystem
 public:
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     static void RegisterEventCallback(const std::string& eventName, EventCallbackFunction* m_function, const char* usage = nullptr);
+    static void FireEvent(const std::string& name, NamedProperties& namedProperties = NamedProperties::NONE);
+    static void FireEvent(const char* name, NamedProperties& namedProperties = NamedProperties::NONE);
+
+    //-----------------------------------------------------------------------------------
+    template<typename T_ObjectType>
+    static void UnregisterFromEvent(const std::string& eventName, T_ObjectType object)
+    {
+        std::vector<RegisteredObjectBase*>& subscribers = s_registeredFunctions[eventName];
+        for (auto iter = subscribers.begin(); iter != subscribers.end();)
+        {
+            RegisteredObjectBase* rob = *iter;
+            void* owningObject = rob->GetOwningObject();
+            if (static_cast<void*>(object) == owningObject)
+            {
+                iter = subscribers.erase(iter);
+            }
+            else
+            {
+                ++iter;
+            }
+        }
+    }
+
+    //-----------------------------------------------------------------------------------
+    template<typename T_ObjectType>
+    static void UnregisterFromAllEvents(T_ObjectType object)
+    {
+        for (auto eventPair : s_registeredFunctions)
+        {
+            UnregisterFromEvent<T_ObjectType>(eventPair.first, object);
+        }
+    }
 
     //-----------------------------------------------------------------------------------
     template<typename T_ObjectType, typename T_MethodType>
@@ -62,6 +97,3 @@ public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     static std::map<std::string, std::vector<RegisteredObjectBase*>> s_registeredFunctions;
 };
-
-void FireEvent(const std::string& name, NamedProperties& namedProperties = NamedProperties::NONE);
-void FireEvent(const char* name, NamedProperties& namedProperties = NamedProperties::NONE);
