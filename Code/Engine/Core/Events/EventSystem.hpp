@@ -15,20 +15,22 @@ struct RegisteredObjectBase
 //-----------------------------------------------------------------------------------
 struct RegisteredFunction : public RegisteredObjectBase
 {
+    RegisteredFunction(EventCallbackFunction* func) : m_function(func) {};
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void Execute(NamedProperties& params)
     {
-        (*function)(params);
+        (*m_function)(params);
     }
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    EventCallbackFunction* function;
+    EventCallbackFunction* m_function;
 };
 
 //-----------------------------------------------------------------------------------
 template<typename T_ObjectType, typename T_MethodType>
 struct RegisteredObjectMethod : public RegisteredObjectBase
 {
+    RegisteredObjectMethod(T_ObjectType obj, T_MethodType method) : m_object(obj), m_method(method) {};
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void Execute(NamedProperties& params)
     {
@@ -36,31 +38,28 @@ struct RegisteredObjectMethod : public RegisteredObjectBase
     }
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    T_ObjectType* m_object;
-    T_MethodType* m_method;
+    T_ObjectType m_object;
+    T_MethodType m_method;
 };
 
 //-----------------------------------------------------------------------------------
 class EventSystem
 {
 public:
-    //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
-
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
-    void RegisterEventCallback(const std::string& name, EventCallbackFunction function);
-    void FireEvent(const std::string& name);
+    static void RegisterEventCallback(const std::string& eventName, EventCallbackFunction* m_function);
 
+    //-----------------------------------------------------------------------------------
     template<typename T_ObjectType, typename T_MethodType>
-    void RegisterObjectForEvent(const std::string& eventName, T_ObjectType* object, T_MethodType* method)
+    static void RegisterObjectForEvent(const std::string& eventName, T_ObjectType object, T_MethodType method)
     {
-        RegisteredObjectMethod* rom = new RegisteredObjectMethod<T_ObjectType, T_MethodType>(object, method);
-        //Find the eventName's vector
-        //vector.push_back(rom);
+        RegisteredObjectMethod<T_ObjectType, T_MethodType>* rom = new RegisteredObjectMethod<T_ObjectType, T_MethodType>(object, method);
+        s_registeredFunctions[eventName].push_back(rom);
     }
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    std::map<std::string, std::vector<RegisteredObjectBase*>> m_registeredFunctions;
+    static std::map<std::string, std::vector<RegisteredObjectBase*>> s_registeredFunctions;
 };
 
 void FireEvent(const std::string& name); 
-void FireEvent(const char* name, const NamedProperties& namedProperties);
+void FireEvent(const char* name, NamedProperties& namedProperties);
