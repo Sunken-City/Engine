@@ -43,7 +43,7 @@ struct RegisteredObjectMethod : public RegisteredObjectBase
 //-----------------------------------------------------------------------------------
 class EventSystem
 {
-
+public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
@@ -61,3 +61,6 @@ class EventSystem
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::map<std::string, std::vector<RegisteredObjectBase*>> m_registeredFunctions;
 };
+
+void FireEvent(const std::string& name); 
+void FireEvent(const char* name, const NamedProperties& namedProperties);
