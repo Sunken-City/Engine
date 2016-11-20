@@ -44,6 +44,7 @@ struct TypedNameProperty : public NamedPropertyBase
 //-----------------------------------------------------------------------------------
 class NamedProperties
 {
+public:
     template<typename T>
     PropertyGetResult Get(const std::string& propertyName, T& outPropertyValue)
     {
@@ -59,7 +60,8 @@ class NamedProperties
     template<typename T>
     PropertySetResult Set(const std::string& propertyName, const T& propertyValue, bool changeTypeIfDifferent = true)
     {
-        m_properties[propertyName] = new TypedNameProperty<T>*(propertyValue);
+        //m_properties[propertyName] = new TypedNameProperty<T>*(propertyValue);
+        return PropertySetResult::PSR_SUCCESS;
     };
 
     void Remove(const std::string& propertyName);

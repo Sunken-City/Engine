@@ -1,5 +1,6 @@
 #include "Engine/Input/InputOutputUtils.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
+#include "Engine/Core/Events/EventSystem.hpp"
 #include <windows.h>
 #include <strsafe.h>
 #include <fstream>
@@ -87,49 +88,17 @@ char* FileReadIntoNewBuffer(const std::string& filePath)
 }
 
 //-----------------------------------------------------------------------------------
-std::vector<std::string> GetFileNamesInFolder(const std::string& filePathSearchString)
+std::wstring RelativeToFullPath(const std::wstring& relativePath)
 {
-    WIN32_FIND_DATA finder;
-    HANDLE handleToResults = INVALID_HANDLE_VALUE;
-    DWORD dwError = 0;
-    TCHAR tcharFilePath[MAX_PATH];
-    std::vector<std::string> fileNames;
-    fileNames.reserve(20);
-
-    //Make our search string windows-friendly.
-    std::wstring wideFilePath = std::wstring(filePathSearchString.begin(), filePathSearchString.end());
-    LPCWSTR wideFilePathCStr = wideFilePath.c_str();
-    StringCchCopy(tcharFilePath, MAX_PATH, wideFilePathCStr);
-
-    //Find the first file in the folder.
-    handleToResults = FindFirstFile(tcharFilePath, &finder);
-
-    if (INVALID_HANDLE_VALUE == handleToResults)
-    {
-        //Empty List
-        return fileNames;
-    }
-    
-    do //Add each file name in the folder to the list
-    {
-        std::wstring wideFileName = std::wstring(finder.cFileName);
-        std::string fileName = std::string(wideFileName.begin(), wideFileName.end());
-        fileNames.push_back(fileName);
-
-    } while (FindNextFile(handleToResults, &finder) != 0);
-
-    dwError = GetLastError();
-    if (dwError != ERROR_NO_MORE_FILES)
-    {
-        ERROR_AND_DIE("Error while reading files in folder, code: " + dwError);
-    }
-
-    FindClose(handleToResults);
-    return fileNames;
+    TCHAR tcharFilePath[MAX_PATH] = TEXT("");
+    TCHAR buffer[MAX_PATH] = TEXT("");
+    StringCchCopy(tcharFilePath, MAX_PATH, relativePath.c_str());
+    GetFullPathName(tcharFilePath, MAX_PATH, buffer, nullptr);
+    return std::wstring(buffer);
 }
 
 //-----------------------------------------------------------------------------------
-std::vector<std::string> EnumerateFiles(const std::string& baseFolder, const std::string& filePattern, bool recurseSubfolders)
+std::vector<std::string> EnumerateFiles(const std::string& baseFolder, const std::string& filePattern, bool recurseSubfolders, const char* eventToFire)
 {
     WIN32_FIND_DATA finder;
     HANDLE handleToResults = INVALID_HANDLE_VALUE;
@@ -171,17 +140,39 @@ std::vector<std::string> EnumerateFiles(const std::string& baseFolder, const std
 
         do //Add each file name in the folder to the list
         {
+            if (wcscmp(finder.cFileName, L".") == 0 || wcscmp(finder.cFileName, L"..") == 0)
+            {
+                continue;
+            }
             std::wstring wideFileName = std::wstring(finder.cFileName);
             std::string fileName = std::string(wideFileName.begin(), wideFileName.end());
+            std::string fullFileName = fileName;
             if (path != baseDirectory)
             {
                 auto uniquePathStringBegin = path.begin() + baseDirectory.length() + 1;
-                std::string fullFileName = std::string(uniquePathStringBegin, path.end()) + "\\" + fileName;
+                fullFileName = std::string(uniquePathStringBegin, path.end()) + "\\" + fileName;
                 fileNames.push_back(fullFileName);
             }
             else
             {
                 fileNames.push_back(fileName);
+            }
+            if (eventToFire)
+            {
+                auto fileExtensionLocation = fileName.find_last_of('.');
+                std::string fileNameWithoutExtension = fileName.substr(0, fileExtensionLocation);
+                std::string fileExtension = fileName.substr(fileExtensionLocation, fileName.size() - fileExtensionLocation);
+                std::wstring fullPathWStr = RelativeToFullPath(path + L"\\" + wideFileName);
+                std::string fullPathStr = std::string(fullPathWStr.begin(), fullPathWStr.end());
+
+                NamedProperties properties;
+                properties.Set<std::string>("FileName", fileName);
+                properties.Set<std::string>("FileExtension", fileExtension);
+                properties.Set<std::string>("FileNameWithoutExtension", fileNameWithoutExtension);
+                properties.Set<std::string>("FileRelativePath", fullFileName);
+                properties.Set<std::string>("FileAbsolutePath", fullPathStr);
+
+                FireEvent(eventToFire, properties);
             }
 
         } while (FindNextFile(handleToResults, &finder) != 0);
