@@ -1,5 +1,7 @@
 #include "Engine/Core/Events/NamedProperties.hpp"
 
+NamedProperties NamedProperties::NONE;
+
 //-----------------------------------------------------------------------------------
 NamedProperties::NamedProperties()
 {
@@ -51,3 +53,4 @@ bool NamedProperties::Remove(const std::string& propertyName)
         return false;
     }
 }
+

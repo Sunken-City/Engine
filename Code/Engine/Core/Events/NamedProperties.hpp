@@ -123,6 +123,7 @@ public:
     PropertySetResult Set(const std::string& propertyName, const char* propertyValue, bool changeTypeIfDifferent = true);
     bool Remove(const std::string& propertyName);
 
-    //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
+    //VARIABLES/////////////////////////////////////////////////////////////////////
     std::map<std::string, NamedPropertyBase*> m_properties;
+    static NamedProperties NONE;
 };
