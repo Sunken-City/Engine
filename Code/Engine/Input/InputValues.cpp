@@ -1,5 +1,6 @@
 #include "Engine/Input/InputValues.hpp"
 #include "Engine/Math/Vector2.hpp"
+#include "Engine/Core/ErrorWarningAssert.hpp"
 #include <algorithm>
 
 //--------------------------------------------------------------
@@ -41,7 +42,8 @@ void VirtualInputValue::OnValuesChanged(const InputValue*)
 {
     float value = m_watchedValues[0]->GetValue();
     
-    for (int i = 1; i < m_watchedValues.size(); ++i)
+    unsigned int size = m_watchedValues.size();
+    for (unsigned int i = 1; i < size; ++i)
     {
         if (m_chordResolutionMode == RESOLVE_MAXS)
         {
