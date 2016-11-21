@@ -24,7 +24,7 @@ InputValue* MouseInputDevice::FindButtonValue(unsigned char mouseButton)
 //-----------------------------------------------------------------------------------
 void MouseInputDevice::SetDelta(const Vector2Int& cursorDelta)
 {
-    m_deltaPosition.SetValue(Vector2(cursorDelta.x, -cursorDelta.y).GetNorm());
+    m_deltaPosition.SetValue(Vector2((float)cursorDelta.x, (float)-cursorDelta.y).GetNorm());
 }
 
 //-----------------------------------------------------------------------------------
