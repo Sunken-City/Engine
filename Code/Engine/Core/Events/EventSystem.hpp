@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include "../Memory/UntrackedAllocator.hpp"
 
 typedef void (EventCallbackFunction)(NamedProperties& params);
 
@@ -55,6 +56,7 @@ public:
     static void RegisterEventCallback(const std::string& eventName, EventCallbackFunction* m_function, const char* usage = nullptr);
     static void FireEvent(const std::string& name, NamedProperties& namedProperties = NamedProperties::NONE);
     static void FireEvent(const char* name, NamedProperties& namedProperties = NamedProperties::NONE);
+    static void CleanUpEventRegistry();
 
     //-----------------------------------------------------------------------------------
     template<typename T_ObjectType>
@@ -68,6 +70,7 @@ public:
             if (static_cast<void*>(object) == owningObject)
             {
                 iter = subscribers.erase(iter);
+                delete rob;
             }
             else
             {
@@ -95,5 +98,5 @@ public:
     }
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    static std::map<std::string, std::vector<RegisteredObjectBase*>> s_registeredFunctions;
+    static std::map<std::string, std::vector<RegisteredObjectBase*>, std::less<std::string>, UntrackedAllocator<std::pair<std::string, std::vector<RegisteredObjectBase*>>>> s_registeredFunctions;
 };

@@ -22,11 +22,13 @@ NamedProperties::~NamedProperties()
 PropertySetResult NamedProperties::Set(const std::string& propertyName, const char* propertyValue, bool changeTypeIfDifferent)
 {
     PropertySetResult result = PSR_SUCCESS;
-    if (m_properties.find(propertyName) != m_properties.end())
+    auto foundPair = m_properties.find(propertyName);
+    if (foundPair != m_properties.end())
     {
         if (changeTypeIfDifferent)
         {
             result = PSR_SUCCESS_EXISTED;
+            delete (*foundPair).second;
         }
         else
         {
