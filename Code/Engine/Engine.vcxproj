@@ -37,7 +37,6 @@
     <ClCompile Include="Input\BinaryReader.cpp" />
     <ClCompile Include="Input\BinaryWriter.cpp" />
     <ClCompile Include="Input\Console.cpp" />
-    <ClCompile Include="Input\InputDevices\InputDevice.cpp" />
     <ClCompile Include="Input\InputDevices\KeyboardInputDevice.cpp" />
     <ClCompile Include="Input\InputDevices\MouseInputDevice.cpp" />
     <ClCompile Include="Input\InputDevices\XInputDevice.cpp" />

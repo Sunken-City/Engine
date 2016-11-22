@@ -299,9 +299,6 @@
     <ClCompile Include="Input\InputDevices\MouseInputDevice.cpp">
       <Filter>Engine\Input\InputDevices</Filter>
     </ClCompile>
-    <ClCompile Include="Input\InputDevices\InputDevice.cpp">
-      <Filter>Engine\Input\InputDevices</Filter>
-    </ClCompile>
     <ClCompile Include="Input\InputDevices\XInputDevice.cpp">
       <Filter>Engine\Input\InputDevices</Filter>
     </ClCompile>
