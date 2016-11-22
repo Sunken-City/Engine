@@ -31,6 +31,9 @@ public:
     RGBA m_initialTintPerParticle;
     bool m_fadeoutEnabled;
     const SpriteResource* m_spriteResource;
+    Range<float> m_maxLifetime = 0.0f;
+    Range<float> m_spawnRadius = 0.0f;
+    float m_scaleRateOfChangePerSecond = 1.0f;
 };
 
 //-----------------------------------------------------------------------------------

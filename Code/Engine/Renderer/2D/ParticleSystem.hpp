@@ -41,9 +41,11 @@ public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     const ParticleEmitterDefinition* m_definition;
     std::vector<Particle> m_particles;
-    Vector2* m_position;
+    Vector2 m_position;
+    Vector2* m_followablePosition = nullptr;
     float m_rotationDegrees;
     float m_emitterAge;
+    float m_maxEmitterAge = FLT_MAX;
     float m_timeSinceLastEmission;
     float m_secondsPerParticle;
     bool m_isDead;
@@ -56,7 +58,6 @@ public:
     ParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow);
     ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees = 0.0f);
     ~ParticleSystem();
-    void AddEmitter(ParticleEmitter* emitter);
     void Update(float deltaSeconds);
 
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////

@@ -31,6 +31,14 @@ Vector3 MathUtils::Lerp(float fraction, const Vector3& initialValue, const Vecto
 }
 
 //-----------------------------------------------------------------------------------
+Vector2 MathUtils::GetRandomVectorInCircle(float radius)
+{
+    float t = TWO_PI * GetRandomFloatFromZeroTo(1.0f);
+    float r = sqrt(GetRandomFloatFromZeroTo(1.0f)) * radius;
+    return Vector2(r * cos(t), r * sin(t));
+}
+
+//-----------------------------------------------------------------------------------
 bool MathUtils::CoinFlip()
 {
     return GetRandomIntFromZeroTo(2) == 1;
