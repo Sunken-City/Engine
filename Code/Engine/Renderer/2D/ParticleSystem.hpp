@@ -37,7 +37,7 @@ public:
     virtual void SpawnParticles(float deltaSeconds);
     virtual void CleanUpDeadParticles();
     void CopyParticlesToMesh(Mesh* m_mesh);
-
+    void SpawnParticle();
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     const ParticleEmitterDefinition* m_definition;
     std::vector<Particle> m_particles;

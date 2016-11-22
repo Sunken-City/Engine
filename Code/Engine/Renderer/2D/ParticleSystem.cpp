@@ -71,8 +71,7 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
         m_secondsPerParticle = 0.0f;
         for (unsigned int i = 0; i < definition->m_initialNumParticlesSpawn; ++i)
         {
-            m_particles.emplace_back(positionToSpawn, m_definition, m_rotationDegrees);
-            m_particles.back().tint = m_definition->m_initialTintPerParticle;
+            SpawnParticle();
         }
     }
 }
@@ -210,6 +209,17 @@ void ParticleEmitter::CopyParticlesToMesh(Mesh* m_mesh)
 }
 
 //-----------------------------------------------------------------------------------
+void ParticleEmitter::SpawnParticle()
+{
+    Vector2 spawnPosition = m_position;
+    Vector2 randomVectorOffset = MathUtils::GetRandomVectorInCircle(m_definition->m_spawnRadius.GetRandom());
+    spawnPosition += randomVectorOffset;
+    float rotation = m_rotationDegrees + m_definition->m_initialRotationDegrees.GetRandom();
+    m_particles.emplace_back(spawnPosition, m_definition, rotation);
+    m_particles.back().tint = m_definition->m_initialTintPerParticle;
+}
+
+//-----------------------------------------------------------------------------------
 void ParticleEmitter::SpawnParticles(float deltaSeconds)
 {
     if (m_secondsPerParticle > 0.0f && m_emitterAge < m_maxEmitterAge)
@@ -217,11 +227,7 @@ void ParticleEmitter::SpawnParticles(float deltaSeconds)
         m_timeSinceLastEmission += deltaSeconds;
         while (m_timeSinceLastEmission >= m_secondsPerParticle)
         {
-            Vector2 spawnPosition = m_position;
-            Vector2 randomVectorOffset = MathUtils::GetRandomVectorInCircle(m_definition->m_spawnRadius.GetRandom());
-            spawnPosition += randomVectorOffset;
-            m_particles.emplace_back(spawnPosition, m_definition, m_rotationDegrees);
-            m_particles.back().tint = m_definition->m_initialTintPerParticle;
+            SpawnParticle();
             m_timeSinceLastEmission -= m_secondsPerParticle;
         }
     }
