@@ -223,7 +223,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
     {
         Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, m_cameraPosition);
         {
-            SortSpritesByXY(layer->m_spriteList);
+            //SortSpritesByXY(layer->m_spriteList);
             Sprite* currentSprite = layer->m_spriteList;
             if (currentSprite)
             {

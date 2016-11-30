@@ -34,7 +34,7 @@ public:
     Range<float> m_maxLifetime = 0.0f;
     Range<float> m_spawnRadius = 0.0f; 
     Range<float> m_initialRotationDegrees = 0.0f;
-    Vector2 m_scaleRateOfChangePerSecond = Vector2::ONE;
+    Vector2 m_scaleRateOfChangePerSecond = Vector2::ZERO;
 };
 
 //-----------------------------------------------------------------------------------
