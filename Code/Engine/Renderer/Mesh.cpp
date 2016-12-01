@@ -19,6 +19,8 @@ Mesh::Mesh()
     : m_drawMode(Renderer::DrawMode::TRIANGLES)
     , m_vbo(0)
     , m_ibo(0)
+    , m_numIndices(0)
+    , m_numVerts(0)
 {
 
 }
@@ -29,10 +31,12 @@ void Mesh::CleanUpRenderObjects()
     if (m_vbo != 0)
     {
         Renderer::instance->DeleteBuffers(m_vbo);
+        m_numVerts = 0;
     }
     if (m_ibo != 0)
     {
         Renderer::instance->RenderBufferDestroy(m_ibo);
+        m_numIndices = 0;
     }
 }
 

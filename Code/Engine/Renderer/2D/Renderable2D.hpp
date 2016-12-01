@@ -1,6 +1,7 @@
 #pragma once
 
 class BufferedMeshRenderer;
+class AABB2;
 
 class Renderable2D
 {
@@ -14,6 +15,8 @@ public:
     void Enable();
     void Disable();
     virtual void Render(BufferedMeshRenderer& renderer);
+    virtual AABB2 GetBounds();
+    virtual bool IsCullable() { return true; };
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     Renderable2D* prev;

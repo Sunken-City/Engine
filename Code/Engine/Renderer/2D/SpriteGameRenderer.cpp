@@ -123,14 +123,13 @@ SpriteGameRenderer::SpriteGameRenderer(const RGBA& clearColor, unsigned int widt
     , m_currentFBO(nullptr)
     , m_effectFBO(nullptr)
     , m_viewportDefinitions(nullptr)
+    , m_bufferedMeshRenderer()
 {
     UpdateScreenResolution(widthInPixels, heightInPixels);
     SetVirtualSize(virtualSize);
     SetSplitscreen(1);
 
     m_defaultShader = ShaderProgram::CreateFromShaderStrings(DEFAULT_VERT_SHADER, DEFAULT_FRAG_SHADER);
-    m_mesh = new Mesh();
-    m_meshRenderer = new MeshRenderer(m_mesh, nullptr);
 
     Texture* currentColorTarget = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::RGBA8);
     Texture* currentDepthTex = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::D24S8);
@@ -152,8 +151,6 @@ SpriteGameRenderer::~SpriteGameRenderer()
     }
 
     delete m_defaultShader;
-    delete m_mesh;
-    delete m_meshRenderer;
     delete m_currentFBO->m_colorTargets[0];
     delete m_currentFBO->m_depthStencilTarget;
     delete m_currentFBO;
@@ -208,7 +205,7 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
     {
         RenderLayer(layerPair.second, renderArea);
     }
-    m_meshRenderer->m_material = nullptr;
+    //m_meshRenderer->m_material = nullptr;
     Renderer::instance->FrameBufferCopyToBack(m_currentFBO, renderArea.m_viewportWidth, renderArea.m_viewportHeight, renderArea.m_bottomLeftX, renderArea.m_bottomLeftY);
     m_currentFBO->Unbind();
 }
@@ -224,19 +221,14 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
         Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, m_cameraPosition);
         {
             //SortSpritesByXY(layer->m_spriteList);
-<<<<<<< HEAD
             Renderable2D* currentRenderable = layer->m_renderables;
             if (currentRenderable)
-=======
-            Sprite* currentSprite = layer->m_spriteList;
-            if (currentSprite)
->>>>>>> refs/remotes/origin/master
             {
                 do
                 {
-                    if (renderBounds.IsIntersecting(currentRenderable->GetBounds()))
+                    if (!currentRenderable->IsCullable() || renderBounds.IsIntersecting(currentRenderable->GetBounds()))
                     {
-                        DrawRenderable2D(currentRenderable);
+                        currentRenderable->Render(m_bufferedMeshRenderer);
                     }
                     currentRenderable = currentRenderable->next;
                 } while (currentRenderable != layer->m_renderables);
@@ -283,11 +275,11 @@ void SpriteGameRenderer::DrawParticleSystem(ParticleSystem* system)
     {
         if (emitter->m_particles.size() > 0)
         {
-            emitter->m_definition->m_material->SetDiffuseTexture(emitter->m_definition->m_spriteResource->m_texture);
-            m_meshRenderer->m_material = emitter->m_definition->m_material;
-            m_meshRenderer->SetModelMatrix(Matrix4x4::IDENTITY);
-            emitter->CopyParticlesToMesh(m_mesh);
-            m_meshRenderer->Render();
+//             emitter->m_definition->m_material->SetDiffuseTexture(emitter->m_definition->m_spriteResource->m_texture);
+//             m_bufferedMeshRenderer.SetMaterial(emitter->m_definition->m_material);
+//             m_bufferedMeshRenderer.SetModelMatrix(Matrix4x4::IDENTITY);
+//             emitter->CopyParticlesToMesh(m_mesh);
+//             m_meshRenderer->Render();
         }
     }
 }
@@ -312,67 +304,9 @@ void SpriteGameRenderer::UpdateScreenResolution(unsigned int widthInPixels, unsi
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteGameRenderer::SetMeshFromSprite(Sprite* sprite)
-{
-    unsigned int indices[6] = { 1, 2, 0, 1, 3, 2 };
-    Vertex_Sprite verts[4];
-    Vector2 pivotPoint = sprite->m_spriteResource->m_pivotPoint;
-    Vector2 uvMins = sprite->m_spriteResource->m_uvBounds.mins;
-    Vector2 uvMaxs = sprite->m_spriteResource->m_uvBounds.maxs;
-    Vector2 spriteBounds = sprite->m_spriteResource->m_virtualSize;
-    Matrix4x4 scale = Matrix4x4::IDENTITY;
-    Matrix4x4 rotation = Matrix4x4::IDENTITY;
-    Matrix4x4 translation = Matrix4x4::IDENTITY;
-
-    //Calculate the bounding box for our sprite
-    //position, scale, rotation, virtual size
-    verts[0].position = Vector2(-pivotPoint.x, -pivotPoint.y);
-    verts[1].position = Vector2(spriteBounds.x - pivotPoint.x, -pivotPoint.y);
-    verts[2].position = Vector2(-pivotPoint.x, spriteBounds.y - pivotPoint.y);
-    verts[3].position = Vector2(spriteBounds.x - pivotPoint.x, spriteBounds.y - pivotPoint.y);
-
-    //This is skewed to accomodate for STBI loading in the images the wrong way.
-    verts[0].uv = Vector2(uvMins.x, uvMaxs.y);
-    verts[1].uv = uvMaxs;
-    verts[2].uv = uvMins;
-    verts[3].uv = Vector2(uvMaxs.x, uvMins.y);
-
-    verts[0].color = sprite->m_tintColor;
-    verts[1].color = sprite->m_tintColor;
-    verts[2].color = sprite->m_tintColor;
-    verts[3].color = sprite->m_tintColor;
-
-    //Scale the bounding box
-    Matrix4x4::MatrixMakeScale(&scale, Vector3(sprite->m_scale, 0.0f));
-
-    //Rotate the bounding box
-    Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(sprite->m_rotationDegrees));
-
-    //Translate the bounding box
-    Matrix4x4::MatrixMakeTranslation(&translation, Vector3(sprite->m_position, 0.0f));
-
-    //Apply our transformations
-    m_meshRenderer->SetModelMatrix(scale * rotation * translation);
-
-    //Copy the vertices into the mesh
-    m_mesh->CleanUpRenderObjects();
-    m_mesh->Init(verts, 4, sizeof(Vertex_Sprite), indices, 6, &Vertex_Sprite::BindMeshToVAO);
-}
-
-//-----------------------------------------------------------------------------------
 void SpriteGameRenderer::RegisterRenderable2D(Renderable2D* renderable)
 {
     CreateOrGetLayer(renderable->m_orderingLayer)->AddRenderable2D(renderable);
-}
-
-//-----------------------------------------------------------------------------------
-void SpriteGameRenderer::DrawRenderable2D(Renderable2D* renderable)
-{
-    renderable->Render(m_meshRenderer, nullptr);
-//     sprite->m_material->SetDiffuseTexture(sprite->m_spriteResource->m_texture);
-//     m_meshRenderer->m_material = sprite->m_material;
-//     SetMeshFromSprite(sprite);
-//     m_meshRenderer->Render();
 }
 
 //-----------------------------------------------------------------------------------
@@ -526,13 +460,13 @@ bool SpriteGameRenderer::IsInsideWorldBounds(const Vector2& attemptedPosition)
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteGameRenderer::SortSpritesByXY(Sprite*& spriteList)
-{
-    if (spriteList)
-    {
-        SortInPlace(spriteList, &LowerYComparison);
-    }
-}
+// void SpriteGameRenderer::SortSpritesByXY(Renderable2D*& renderableList)
+// {
+// //     if (renderableList)
+// //     {
+// //         SortInPlace(renderableList, &LowerYComparison);
+// //     }
+// }
 
 //-----------------------------------------------------------------------------------
 CONSOLE_COMMAND(enablelayer)

@@ -12,10 +12,12 @@ public:
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void SetMaterial(Material* newMat);
     void FlushAndRender();
+    void SetModelMatrix(const Matrix4x4& model);
+    void SetDiffuseTexture(Texture* diffuseTexture);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-private:
     Mesh m_mesh;
+private:
     MeshRenderer m_renderer;
     MeshBuilder m_builder;
 };

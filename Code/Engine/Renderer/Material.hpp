@@ -86,7 +86,6 @@ public:
     ShaderProgram* m_shaderProgram;
     RenderState m_renderState;
 
-private:
     unsigned int m_samplerID;
     unsigned int m_diffuseID;
     unsigned int m_normalID;

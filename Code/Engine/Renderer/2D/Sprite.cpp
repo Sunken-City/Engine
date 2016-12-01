@@ -4,21 +4,15 @@
 
 //-----------------------------------------------------------------------------------
 Sprite::Sprite(const std::string& resourceName, int orderingLayer, bool isEnabled) 
-    : m_position(Vector2::ZERO)
+    : Renderable2D(orderingLayer, isEnabled)
+    , m_position(Vector2::ZERO)
     , m_scale(Vector2::ONE)
     , m_rotationDegrees(0.0f)
     , m_tintColor(RGBA::WHITE)
     , m_material(nullptr)
-    , prev(nullptr)
-    , next(nullptr)
 {
     this->m_spriteResource = ResourceDatabase::instance->GetSpriteResource(resourceName);
     this->m_material = m_spriteResource->m_defaultMaterial;
-    if (isEnabled)
-    {
-        m_orderingLayer = orderingLayer;
-        Enable();
-    }
 }
 
 //-----------------------------------------------------------------------------------
@@ -46,5 +40,56 @@ AABB2 SpriteResource::GetDefaultBounds() const
 //-----------------------------------------------------------------------------------
 void Sprite::Render(BufferedMeshRenderer& renderer)
 {
+    renderer.SetDiffuseTexture(m_spriteResource->m_texture);
+    renderer.SetMaterial(m_material);
+    PushSpriteToMesh(renderer);
+#pragma todo("Clear this out once we have this rendering properly")
+    renderer.FlushAndRender();
+}
 
+//-----------------------------------------------------------------------------------
+void Sprite::PushSpriteToMesh(BufferedMeshRenderer& renderer)
+{
+    unsigned int indices[6] = { 1, 2, 0, 1, 3, 2 };
+    Vertex_Sprite verts[4];
+    Vector2 pivotPoint = m_spriteResource->m_pivotPoint;
+    Vector2 uvMins = m_spriteResource->m_uvBounds.mins;
+    Vector2 uvMaxs = m_spriteResource->m_uvBounds.maxs;
+    Vector2 spriteBounds = m_spriteResource->m_virtualSize;
+    Matrix4x4 scale = Matrix4x4::IDENTITY;
+    Matrix4x4 rotation = Matrix4x4::IDENTITY;
+    Matrix4x4 translation = Matrix4x4::IDENTITY;
+
+    //Calculate the bounding box for our sprite
+    //position, scale, rotation, virtual size
+    verts[0].position = Vector2(-pivotPoint.x, -pivotPoint.y);
+    verts[1].position = Vector2(spriteBounds.x - pivotPoint.x, -pivotPoint.y);
+    verts[2].position = Vector2(-pivotPoint.x, spriteBounds.y - pivotPoint.y);
+    verts[3].position = Vector2(spriteBounds.x - pivotPoint.x, spriteBounds.y - pivotPoint.y);
+
+    //This is skewed to accomodate for STBI loading in the images the wrong way.
+    verts[0].uv = Vector2(uvMins.x, uvMaxs.y);
+    verts[1].uv = uvMaxs;
+    verts[2].uv = uvMins;
+    verts[3].uv = Vector2(uvMaxs.x, uvMins.y);
+
+    verts[0].color = m_tintColor;
+    verts[1].color = m_tintColor;
+    verts[2].color = m_tintColor;
+    verts[3].color = m_tintColor;
+
+    //Scale the bounding box
+    Matrix4x4::MatrixMakeScale(&scale, Vector3(m_scale, 0.0f));
+
+    //Rotate the bounding box
+    Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(m_rotationDegrees));
+
+    //Translate the bounding box
+    Matrix4x4::MatrixMakeTranslation(&translation, Vector3(m_position, 0.0f));
+
+    //Apply our transformations
+    renderer.SetModelMatrix(scale * rotation * translation);
+
+    //Copy the vertices into the mesh
+    renderer.m_mesh.Init(verts, 4, sizeof(Vertex_Sprite), indices, 6, &Vertex_Sprite::BindMeshToVAO);
 }

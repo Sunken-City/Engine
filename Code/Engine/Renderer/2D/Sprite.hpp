@@ -37,10 +37,11 @@ class Sprite : public Renderable2D
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     Sprite(const std::string& resourceName, int orderingLayer = 0, bool isEnabled = true);
-    ~Sprite();
+    virtual ~Sprite();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
-    AABB2 GetBounds();
+    void PushSpriteToMesh(BufferedMeshRenderer& renderer);
+    virtual AABB2 GetBounds();
     virtual void Render(BufferedMeshRenderer& renderer);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
@@ -49,7 +50,5 @@ public:
     Vector2 m_scale;
     RGBA m_tintColor;
     Material* m_material;
-    Sprite* next;
-    Sprite* prev;
     float m_rotationDegrees;
 };

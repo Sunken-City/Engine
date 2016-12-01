@@ -3,8 +3,14 @@
 
 //-----------------------------------------------------------------------------------
 Renderable2D::Renderable2D(int orderingLayer, bool isEnabled)
+    : m_isEnabled(false)
+    , m_orderingLayer(-1)
 {
-
+    if (isEnabled)
+    {
+        m_orderingLayer = orderingLayer;
+        Enable();
+    }
 }
 
 //-----------------------------------------------------------------------------------
@@ -46,4 +52,10 @@ void Renderable2D::Disable()
 void Renderable2D::Render(BufferedMeshRenderer& renderer)
 {
 
+}
+
+//-----------------------------------------------------------------------------------
+AABB2 Renderable2D::GetBounds()
+{
+    return AABB2();
 }

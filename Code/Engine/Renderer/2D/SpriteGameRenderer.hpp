@@ -9,6 +9,7 @@
 #include <vector>
 #include "Engine/Renderer/2D/ParticleSystem.hpp"
 #include "Engine/Renderer/2D/Renderable2D.hpp"
+#include "../BufferedMeshRenderer.hpp"
 
 #define BIT_FLAG(f) (1 << (f))
 
@@ -86,13 +87,11 @@ public:
     void Render();
     void RenderView(const ViewportDefinition& renderArea);
     void UpdateScreenResolution(unsigned int widthInPixels, unsigned int heightInPixels);
-    void SetMeshFromSprite(Sprite* sprite);
     void RenderLayer(SpriteLayer* layer, const ViewportDefinition& renderArea);
     void RecalculateVirtualWidthAndHeight(const ViewportDefinition& renderArea);
     void DrawParticleSystem(ParticleSystem* system);
     void RegisterParticleSystem(ParticleSystem* system);
     void UnregisterParticleSystem(ParticleSystem* system);
-    void DrawRenderable2D(Renderable2D* renderable);
     void RegisterRenderable2D(Renderable2D* renderable);
     void UnregisterRenderable2D(Renderable2D* renderable);
     SpriteLayer* CreateOrGetLayer(int layerNumber);
@@ -101,7 +100,7 @@ public:
     inline void EnableLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Enable(); };
     inline void DisableLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Disable(); };
     inline void ToggleLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Toggle(); };
-    void SortSpritesByXY(Sprite*& spriteList);
+    //void SortSpritesByXY(Renderable2D*& spriteList);
 
     //SETTERS/////////////////////////////////////////////////////////////////////
     inline void SetClearColor(const RGBA& clearColor) { m_clearColor = clearColor; };
@@ -138,8 +137,7 @@ public:
 
 private:
     RGBA m_clearColor;
-    Mesh* m_mesh;
-    MeshRenderer* m_meshRenderer;
+    BufferedMeshRenderer m_bufferedMeshRenderer;
     Vector2 m_screenResolution;
     Vector2 m_cameraPosition;
     float m_aspectRatio;
