@@ -224,8 +224,13 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
         Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, m_cameraPosition);
         {
             //SortSpritesByXY(layer->m_spriteList);
+<<<<<<< HEAD
             Renderable2D* currentRenderable = layer->m_renderables;
             if (currentRenderable)
+=======
+            Sprite* currentSprite = layer->m_spriteList;
+            if (currentSprite)
+>>>>>>> refs/remotes/origin/master
             {
                 do
                 {
@@ -460,16 +465,16 @@ void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
     m_numSplitscreenViews = numViews;
     m_viewportDefinitions = new ViewportDefinition[m_numSplitscreenViews];
 
-    float screenOffsetX = m_screenResolution.x / m_numSplitscreenViews;
-    float screenOffsetY = m_screenResolution.y / m_numSplitscreenViews;
+    int screenOffsetX = static_cast<int>(m_screenResolution.x / m_numSplitscreenViews);
+    //int screenOffsetY = static_cast<int>(m_screenResolution.y / m_numSplitscreenViews);
     for (unsigned int i = 0; i < m_numSplitscreenViews; ++i)
     {
-        m_viewportDefinitions[i].m_bottomLeftX = (uint32_t)i * screenOffsetX;
-        m_viewportDefinitions[i].m_bottomLeftY = (uint32_t)0;
-        float width = screenOffsetX;
-        m_viewportDefinitions[i].m_viewportWidth = width;
-        float height = m_screenResolution.y;
-        m_viewportDefinitions[i].m_viewportHeight = height;
+        m_viewportDefinitions[i].m_bottomLeftX = i * screenOffsetX;
+        m_viewportDefinitions[i].m_bottomLeftY = 0;
+        float width = (float)screenOffsetX;
+        m_viewportDefinitions[i].m_viewportWidth = (uint32_t)width;
+        float height = (float)m_screenResolution.y;
+        m_viewportDefinitions[i].m_viewportHeight = (uint32_t)height;
         m_viewportDefinitions[i].m_viewportAspectRatio = width / height;
         m_viewportDefinitions[i].m_cameraPosition = Vector2::ZERO;
     }

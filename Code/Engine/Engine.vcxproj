@@ -23,6 +23,8 @@
     <ClCompile Include="..\ThirdParty\stb_image.c" />
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Core\ErrorWarningAssert.cpp" />
+    <ClCompile Include="Core\Events\EventSystem.cpp" />
+    <ClCompile Include="Core\Events\NamedProperties.cpp" />
     <ClCompile Include="Core\JobSystem.cpp" />
     <ClCompile Include="Core\Memory\Callstack.cpp" />
     <ClCompile Include="Core\Memory\MemoryOutputWindow.cpp" />
@@ -35,7 +37,6 @@
     <ClCompile Include="Input\BinaryReader.cpp" />
     <ClCompile Include="Input\BinaryWriter.cpp" />
     <ClCompile Include="Input\Console.cpp" />
-    <ClCompile Include="Input\InputDevices\InputDevice.cpp" />
     <ClCompile Include="Input\InputDevices\KeyboardInputDevice.cpp" />
     <ClCompile Include="Input\InputDevices\MouseInputDevice.cpp" />
     <ClCompile Include="Input\InputDevices\XInputDevice.cpp" />
@@ -111,7 +112,9 @@
     <ClInclude Include="Audio\Audio.hpp" />
     <ClInclude Include="Core\BuildConfig.hpp" />
     <ClInclude Include="Core\ErrorWarningAssert.hpp" />
-    <ClInclude Include="Core\Event.hpp" />
+    <ClInclude Include="Core\Events\Event.hpp" />
+    <ClInclude Include="Core\Events\EventSystem.hpp" />
+    <ClInclude Include="Core\Events\NamedProperties.hpp" />
     <ClInclude Include="Core\JobSystem.hpp" />
     <ClInclude Include="Core\Memory\Callstack.hpp" />
     <ClInclude Include="Core\Memory\MemoryOutputWindow.hpp" />
@@ -275,6 +278,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)../../Engine/Code/;$(SolutionDir)Code/</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -291,6 +295,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)../../Engine/Code/;$(SolutionDir)Code/</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -310,6 +315,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -327,6 +333,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)../../Engine/Code/;$(SolutionDir)Code/</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

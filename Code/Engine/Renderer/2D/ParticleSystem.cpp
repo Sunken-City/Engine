@@ -25,11 +25,16 @@ Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition
 //-----------------------------------------------------------------------------------
 ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Vector2* positionToFollow)
     : m_definition(definition)
-    , m_position(positionToFollow)
+    , m_followablePosition(positionToFollow)
     , m_emitterAge(0.0f)
     , m_timeSinceLastEmission(0.0f) 
     , m_isDead(false)
+    , m_maxEmitterAge(definition->m_maxLifetime.GetRandom())
 {
+    if (positionToFollow)
+    {
+        m_position = *positionToFollow;
+    }
     if (definition->m_particlesPerSecond != 0.0f)
     {
         m_secondsPerParticle = 1.0f / definition->m_particlesPerSecond;
@@ -40,7 +45,7 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
         m_secondsPerParticle = 0.0f;
         for (unsigned int i = 0; i < definition->m_initialNumParticlesSpawn; ++i)
         {
-            m_particles.emplace_back(*m_position, m_definition, m_rotationDegrees);
+            m_particles.emplace_back(m_position, m_definition, m_rotationDegrees);
         }
     }
 }
@@ -52,6 +57,9 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
     , m_timeSinceLastEmission(0.0f)
     , m_isDead(false)
     , m_rotationDegrees(rotationDegrees)
+    , m_position(positionToSpawn)
+    , m_followablePosition(nullptr)
+    , m_maxEmitterAge(definition->m_maxLifetime.GetRandom())
 {
     if (definition->m_particlesPerSecond != 0.0f)
     {
@@ -63,8 +71,7 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
         m_secondsPerParticle = 0.0f;
         for (unsigned int i = 0; i < definition->m_initialNumParticlesSpawn; ++i)
         {
-            m_particles.emplace_back(positionToSpawn, m_definition, m_rotationDegrees);
-            m_particles.back().tint = m_definition->m_initialTintPerParticle;
+            SpawnParticle();
         }
     }
 }
@@ -75,10 +82,14 @@ void ParticleEmitter::Update(float deltaSeconds)
     if (!m_isDead)
     {
         m_emitterAge += deltaSeconds;
+        if (m_followablePosition)
+        {
+            m_position = *m_followablePosition;
+        }
         UpdateParticles(deltaSeconds);
         CleanUpDeadParticles();
         SpawnParticles(deltaSeconds);
-        if (m_secondsPerParticle == 0.0f && m_particles.size() == 0)
+        if ((m_secondsPerParticle == 0.0f || m_emitterAge > m_maxEmitterAge) && m_particles.size() == 0)
         {
             m_isDead = true;
         }
@@ -92,6 +103,7 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
     {
         particle.position += particle.velocity * deltaSeconds;
         particle.velocity += particle.acceleration * deltaSeconds;
+        particle.scale += m_definition->m_scaleRateOfChangePerSecond * deltaSeconds;
 
         particle.age += deltaSeconds;
         if (m_definition->m_fadeoutEnabled)
@@ -197,15 +209,25 @@ void ParticleEmitter::CopyParticlesToMesh(Mesh* m_mesh)
 }
 
 //-----------------------------------------------------------------------------------
+void ParticleEmitter::SpawnParticle()
+{
+    Vector2 spawnPosition = m_position;
+    Vector2 randomVectorOffset = MathUtils::GetRandomVectorInCircle(m_definition->m_spawnRadius.GetRandom());
+    spawnPosition += randomVectorOffset;
+    float rotation = m_rotationDegrees + m_definition->m_initialRotationDegrees.GetRandom();
+    m_particles.emplace_back(spawnPosition, m_definition, rotation);
+    m_particles.back().tint = m_definition->m_initialTintPerParticle;
+}
+
+//-----------------------------------------------------------------------------------
 void ParticleEmitter::SpawnParticles(float deltaSeconds)
 {
-    if (m_secondsPerParticle > 0.0f)
+    if (m_secondsPerParticle > 0.0f && m_emitterAge < m_maxEmitterAge)
     {
         m_timeSinceLastEmission += deltaSeconds;
         while (m_timeSinceLastEmission >= m_secondsPerParticle)
         {
-            m_particles.emplace_back(*m_position, m_definition, m_rotationDegrees);
-            m_particles.back().tint = m_definition->m_initialTintPerParticle;
+            SpawnParticle();
             m_timeSinceLastEmission -= m_secondsPerParticle;
         }
     }

@@ -72,7 +72,7 @@ Logger::~Logger()
 //-----------------------------------------------------------------------------------
 void Logger::CleanUpOldLogFiles()
 {
-    std::vector<std::string> logFiles = GetFileNamesInFolder("Logs\\*.txt");
+    std::vector<std::string> logFiles = EnumerateFiles("Logs", "*.txt", true);
     if (logFiles.size() > MAX_LOG_HISTORY)
     {
         std::sort(logFiles.begin(), logFiles.end());
@@ -99,7 +99,7 @@ void Logger::CreateLogFile()
     //Supressed because localtime_s isn't actually accessible because I don't know why try for yourself. >:I
     #pragma warning(suppress: 4996)
     std::tm time = *std::localtime(&timeNow);
-    std::string timestamp = Stringf("%i-%i-%i %i.%02i.%02i", time.tm_mon, time.tm_mday, time.tm_year + 1900, time.tm_hour, time.tm_min, time.tm_sec);
+    std::string timestamp = Stringf("%02i-%i-%i %i.%02i.%02i", time.tm_mon + 1, time.tm_mday, time.tm_year + 1900, time.tm_hour, time.tm_min, time.tm_sec);
     EnsureDirectoryExists("Logs");
     m_fileName = Stringf("Logs\\%s Log %s.txt", APP_NAME, timestamp.c_str());
     errno_t errorCode = fopen_s(&m_file, m_fileName.c_str(), "wb");

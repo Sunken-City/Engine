@@ -7,8 +7,10 @@ bool SaveBufferToBinaryFile(const std::vector<unsigned char>& buffer, const std:
 bool EnsureDirectoryExists(const std::string& directoryPath);
 bool ReadTextFileIntoVector(std::vector<std::string>& outBuffer, const std::string& filePath);
 char* FileReadIntoNewBuffer(const std::string& filePath);
-std::vector<std::string> GetFileNamesInFolder(const std::string& filePathSearchString);
+std::vector<std::string> EnumerateFiles(const std::string& baseFolder, const std::string& filePattern, bool recurseSubfolders = false, const char* eventToFire = nullptr);
+std::vector<std::string> EnumerateDirectories(const std::string& baseFolder, bool recurseSubfolders = false);
 bool FileExists(const std::string& filename);
+std::wstring RelativeToFullPath(const std::wstring& relativePath);
 
 //-----------------------------------------------------------------------------------
 template<typename T>

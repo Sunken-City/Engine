@@ -39,6 +39,7 @@ public:
     static int GetRandomIntFromZeroTo(int maximum);
     static float GetRandomFloatFromZeroTo(float maximum);
     static bool CoinFlip();
+    static Vector2 GetRandomVectorInCircle(float radius);
 
     //TRIGONOMETRY//////////////////////////////////////////////////////////////////////////
     static float Dot(const Vector2& a, const Vector2& b);

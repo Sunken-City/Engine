@@ -4,7 +4,7 @@
 #include "Engine/Net/NetSystem.hpp"
 #include "Engine/Core/StringUtils.hpp"
 #include "Engine/Net/UDPIP/NetPacket.hpp"
-#include "Engine/Core/Event.hpp"
+#include "Engine/Core/Events/Event.hpp"
 #include "Engine/Input/Logging.hpp"
 #include "Engine/Time/Time.hpp"
 
