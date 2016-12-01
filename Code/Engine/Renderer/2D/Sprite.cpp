@@ -40,10 +40,10 @@ AABB2 SpriteResource::GetDefaultBounds() const
 //-----------------------------------------------------------------------------------
 void Sprite::Render(BufferedMeshRenderer& renderer)
 {
-    renderer.SetDiffuseTexture(m_spriteResource->m_texture);
     renderer.SetMaterial(m_material);
+    renderer.SetDiffuseTexture(m_spriteResource->m_texture);
     PushSpriteToMesh(renderer);
-#pragma todo("Clear this out once we have this rendering properly")
+#pragma todo("This should be unneccessary once we have batching done properly")
     renderer.FlushAndRender();
 }
 
