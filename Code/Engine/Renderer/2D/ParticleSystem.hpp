@@ -4,6 +4,7 @@
 #include "Engine/Renderer/RGBA.hpp"
 #include "Engine/Renderer/Mesh.hpp"
 #include <vector>
+#include "Renderable2D.hpp"
 
 class ParticleEmitterDefinition;
 class ParticleSystemDefinition;
@@ -52,7 +53,7 @@ public:
 };
 
 //-----------------------------------------------------------------------------------
-class ParticleSystem
+class ParticleSystem : public Renderable2D
 {
 public:
     ParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow);
@@ -67,10 +68,7 @@ public:
     static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, Vector2 spawnPosition, float rotationDegrees = 0.0f);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    ParticleSystem* next;
-    ParticleSystem* prev;
     std::vector<ParticleEmitter*> m_emitters;
     const ParticleSystemDefinition* m_definition;
-    int m_orderingLayer;
     bool m_isDead;
 };

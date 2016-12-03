@@ -29,6 +29,7 @@ void BufferedMeshRenderer::SetMaterial(Material* newMat)
 //-----------------------------------------------------------------------------------
 void BufferedMeshRenderer::FlushAndRender()
 {
+#pragma todo("Ensure that this doesn't overwrite preexisting geometry")
     m_builder.CopyToMesh(&m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
     if (m_mesh.m_numVerts == 0)
     {

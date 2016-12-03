@@ -275,11 +275,11 @@ void SpriteGameRenderer::DrawParticleSystem(ParticleSystem* system)
     {
         if (emitter->m_particles.size() > 0)
         {
-//             emitter->m_definition->m_material->SetDiffuseTexture(emitter->m_definition->m_spriteResource->m_texture);
-//             m_bufferedMeshRenderer.SetMaterial(emitter->m_definition->m_material);
-//             m_bufferedMeshRenderer.SetModelMatrix(Matrix4x4::IDENTITY);
-//             emitter->CopyParticlesToMesh(m_mesh);
-//             m_meshRenderer->Render();
+            emitter->m_definition->m_material->SetDiffuseTexture(emitter->m_definition->m_spriteResource->m_texture);
+            m_bufferedMeshRenderer.SetMaterial(emitter->m_definition->m_material);
+            m_bufferedMeshRenderer.SetModelMatrix(Matrix4x4::IDENTITY);
+            emitter->CopyParticlesToMesh(m_mesh);
+            m_meshRenderer->Render();
         }
     }
 }

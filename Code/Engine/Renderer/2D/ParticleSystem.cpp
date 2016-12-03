@@ -235,9 +235,7 @@ void ParticleEmitter::SpawnParticles(float deltaSeconds)
 
 //-----------------------------------------------------------------------------------
 ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow) 
-    : prev(nullptr)
-    , next(nullptr)
-    , m_orderingLayer(orderingLayer)
+    : Renderable2D(orderingLayer, true)
     , m_isDead(false)
     , m_definition(ResourceDatabase::instance->GetParticleSystemResource(systemName))
 {
@@ -245,14 +243,11 @@ ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer,
     {
         m_emitters.push_back(new ParticleEmitter(emitterDefinition, positionToFollow));
     }
-    SpriteGameRenderer::instance->RegisterParticleSystem(this);
 }
 
 //-----------------------------------------------------------------------------------
 ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees)
-    : prev(nullptr)
-    , next(nullptr)
-    , m_orderingLayer(orderingLayer)
+    : Renderable2D(orderingLayer, true)
     , m_isDead(false)
     , m_definition(ResourceDatabase::instance->GetParticleSystemResource(systemName))
 {
@@ -260,7 +255,6 @@ ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer,
     {
         m_emitters.push_back(new ParticleEmitter(emitterDefinition, positionToSpawn, rotationDegrees));
     }
-    SpriteGameRenderer::instance->RegisterParticleSystem(this);
 }
 
 //-----------------------------------------------------------------------------------
