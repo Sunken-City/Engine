@@ -54,8 +54,7 @@ const char* SpriteGameRenderer::DEFAULT_FRAG_SHADER =
 //-----------------------------------------------------------------------------------
 SpriteLayer::SpriteLayer(int layerIndex)
     : m_layer(layerIndex)
-    , m_renderables(nullptr)
-    , m_particleSystemList(nullptr)
+    , m_renderablesList(nullptr)
     , m_isEnabled(true)
     , m_virtualSize(SpriteGameRenderer::instance->m_virtualSize)
     , m_boundingVolume(SpriteGameRenderer::instance->m_worldBounds)
@@ -66,50 +65,49 @@ SpriteLayer::SpriteLayer(int layerIndex)
 //-----------------------------------------------------------------------------------
 SpriteLayer::~SpriteLayer()
 {
-    ParticleSystem* currentSystem = m_particleSystemList;
-    while (m_particleSystemList)
-    {
-        if (currentSystem->next == currentSystem)
-        {
-            //Destroy Immediately unregisters the pointer from m_particleSystemList, selecting a new value for the head
-            ParticleSystem::DestroyImmediately(currentSystem);
-            break;
-        }
-        else
-        {
-            currentSystem = currentSystem->next;
-            ParticleSystem::DestroyImmediately(currentSystem->prev);
-        }
-    }
+//     ParticleSystem* currentSystem = m_particleSystemList;
+//     while (m_particleSystemList)
+//     {
+//         if (currentSystem->next == currentSystem)
+//         {
+//             //Destroy Immediately unregisters the pointer from m_particleSystemList, selecting a new value for the head
+//             ParticleSystem::DestroyImmediately(currentSystem);
+//             break;
+//         }
+//         else
+//         {
+//             currentSystem = currentSystem->next;
+//             ParticleSystem::DestroyImmediately(currentSystem->prev);
+//         }
+//     }
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteLayer::CleanUpDeadParticleSystems()
+void SpriteLayer::CleanUpDeadRenderables()
 {
-    ParticleSystem* currentSystem = m_particleSystemList;
-    if (currentSystem)
+    Renderable2D* currentRenderable = m_renderablesList;
+    if (currentRenderable)
     {
         do
         {
-            if (currentSystem->m_isDead)
+            if (currentRenderable->m_isDead)
             {
-                if (currentSystem->next == currentSystem)
+                if (currentRenderable->next == currentRenderable)
                 {
-                    //Destroy Immediately unregisters the pointer from m_particleSystemList, selecting a new value for the head
-                    ParticleSystem::DestroyImmediately(currentSystem);
+                    delete currentRenderable;
                     break;
                 }
                 else
                 {
-                    currentSystem = currentSystem->next;
-                    ParticleSystem::DestroyImmediately(currentSystem->prev);
+                    currentRenderable = currentRenderable->next;
+                    delete currentRenderable->prev;
                 }
             }
             else
             {
-                currentSystem = currentSystem->next;
+                currentRenderable = currentRenderable->next;
             }
-        } while (currentSystem != m_particleSystemList);
+        } while (currentRenderable != m_renderablesList);
     }
 }
 
@@ -161,7 +159,7 @@ SpriteGameRenderer::~SpriteGameRenderer()
     for (auto layerPair : m_layers)
     {
         SpriteLayer* layer = layerPair.second;
-        layer->CleanUpDeadParticleSystems();
+        layer->CleanUpDeadRenderables();
         delete layer;
     }
 }
@@ -174,16 +172,16 @@ void SpriteGameRenderer::Update(float deltaSeconds)
     for (auto layerPair : m_layers)
     {
         SpriteLayer* layer = layerPair.second;
-        ParticleSystem* currentSystem = layer->m_particleSystemList;
-        if (currentSystem)
+        Renderable2D* currentRenderable = layer->m_renderablesList;
+        if (currentRenderable)
         {
             do
             {
-                currentSystem->Update(deltaSeconds);
-                currentSystem = currentSystem->next;
-            } while (currentSystem != layer->m_particleSystemList);
+                currentRenderable->Update(deltaSeconds);
+                currentRenderable = currentRenderable->next;
+            } while (currentRenderable != layer->m_renderablesList);
         }
-        layer->CleanUpDeadParticleSystems();
+        layer->CleanUpDeadRenderables();
     }
 }
 
@@ -221,7 +219,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
         Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, m_cameraPosition);
         {
             //SortSpritesByXY(layer->m_spriteList);
-            Renderable2D* currentRenderable = layer->m_renderables;
+            Renderable2D* currentRenderable = layer->m_renderablesList;
             if (currentRenderable)
             {
                 do
@@ -231,16 +229,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
                         currentRenderable->Render(m_bufferedMeshRenderer);
                     }
                     currentRenderable = currentRenderable->next;
-                } while (currentRenderable != layer->m_renderables);
-            }
-            ParticleSystem* currentSystem = layer->m_particleSystemList;
-            if (currentSystem)
-            {
-                do
-                {
-                    DrawParticleSystem(currentSystem);
-                    currentSystem = currentSystem->next;
-                } while (currentSystem != layer->m_particleSystemList);
+                } while (currentRenderable != layer->m_renderablesList);
             }
         }
         Renderer::instance->EndOrtho();
@@ -266,34 +255,6 @@ void SpriteGameRenderer::RecalculateVirtualWidthAndHeight(const ViewportDefiniti
     float newVirtualHeight = m_windowVirtualWidth / renderArea.m_viewportAspectRatio;
     m_virtualWidth = MathUtils::Lerp(0.5, m_windowVirtualWidth, newVirtualWidth);
     m_virtualHeight = MathUtils::Lerp(0.5, m_windowVirtualHeight, newVirtualHeight);
-}
-
-//-----------------------------------------------------------------------------------
-void SpriteGameRenderer::DrawParticleSystem(ParticleSystem* system)
-{
-    for (ParticleEmitter* emitter : system->m_emitters)
-    {
-        if (emitter->m_particles.size() > 0)
-        {
-            emitter->m_definition->m_material->SetDiffuseTexture(emitter->m_definition->m_spriteResource->m_texture);
-            m_bufferedMeshRenderer.SetMaterial(emitter->m_definition->m_material);
-            m_bufferedMeshRenderer.SetModelMatrix(Matrix4x4::IDENTITY);
-            emitter->CopyParticlesToMesh(m_mesh);
-            m_meshRenderer->Render();
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------------
-void SpriteGameRenderer::RegisterParticleSystem(ParticleSystem* system)
-{
-    CreateOrGetLayer(system->m_orderingLayer)->AddParticleSystem(system);
-}
-
-//-----------------------------------------------------------------------------------
-void SpriteGameRenderer::UnregisterParticleSystem(ParticleSystem* system)
-{
-    CreateOrGetLayer(system->m_orderingLayer)->RemoveParticleSystem(system);
 }
 
 //-----------------------------------------------------------------------------------

@@ -40,19 +40,16 @@ public:
     ~SpriteLayer();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
-    inline void AddRenderable2D(Renderable2D* renderable) { AddInPlace(m_renderables, renderable); };
-    inline void RemoveRenderable2D(Renderable2D* renderable) { RemoveInPlace(m_renderables, renderable); };
-    inline void AddParticleSystem(ParticleSystem* system) { AddInPlace(m_particleSystemList, system); };
-    inline void RemoveParticleSystem(ParticleSystem* system) { RemoveInPlace(m_particleSystemList, system); };
+    inline void AddRenderable2D(Renderable2D* renderable) { AddInPlace(m_renderablesList, renderable); };
+    inline void RemoveRenderable2D(Renderable2D* renderable) { RemoveInPlace(m_renderablesList, renderable); };
     inline void Enable() { m_isEnabled = true; }
     inline void Disable() { m_isEnabled = false; }
     inline void Toggle() { m_isEnabled = !m_isEnabled; }
-    void CleanUpDeadParticleSystems();
+    void CleanUpDeadRenderables();
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     int m_layer;
-    Renderable2D* m_renderables;
-    ParticleSystem* m_particleSystemList;
+    Renderable2D* m_renderablesList;
     bool m_isEnabled;
     float m_virtualSize;
     AABB2 m_boundingVolume;
@@ -89,9 +86,6 @@ public:
     void UpdateScreenResolution(unsigned int widthInPixels, unsigned int heightInPixels);
     void RenderLayer(SpriteLayer* layer, const ViewportDefinition& renderArea);
     void RecalculateVirtualWidthAndHeight(const ViewportDefinition& renderArea);
-    void DrawParticleSystem(ParticleSystem* system);
-    void RegisterParticleSystem(ParticleSystem* system);
-    void UnregisterParticleSystem(ParticleSystem* system);
     void RegisterRenderable2D(Renderable2D* renderable);
     void UnregisterRenderable2D(Renderable2D* renderable);
     SpriteLayer* CreateOrGetLayer(int layerNumber);

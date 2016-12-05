@@ -32,11 +32,13 @@ void Mesh::CleanUpRenderObjects()
     {
         Renderer::instance->DeleteBuffers(m_vbo);
         m_numVerts = 0;
+        m_vbo = 0;
     }
     if (m_ibo != 0)
     {
         Renderer::instance->RenderBufferDestroy(m_ibo);
         m_numIndices = 0;
+        m_ibo = 0;
     }
 }
 

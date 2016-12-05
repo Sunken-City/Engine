@@ -236,7 +236,6 @@ void ParticleEmitter::SpawnParticles(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow) 
     : Renderable2D(orderingLayer, true)
-    , m_isDead(false)
     , m_definition(ResourceDatabase::instance->GetParticleSystemResource(systemName))
 {
     for (const ParticleEmitterDefinition* emitterDefinition : m_definition->m_emitterDefinitions)
@@ -248,7 +247,6 @@ ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer,
 //-----------------------------------------------------------------------------------
 ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees)
     : Renderable2D(orderingLayer, true)
-    , m_isDead(false)
     , m_definition(ResourceDatabase::instance->GetParticleSystemResource(systemName))
 {
     for (const ParticleEmitterDefinition* emitterDefinition : m_definition->m_emitterDefinitions)
@@ -264,7 +262,6 @@ ParticleSystem::~ParticleSystem()
     {
         delete emitter;
     }
-    SpriteGameRenderer::instance->UnregisterParticleSystem(this);
 }
 
 //-----------------------------------------------------------------------------------
@@ -280,6 +277,23 @@ void ParticleSystem::Update(float deltaSeconds)
             areAllEmittersDead = areAllEmittersDead && emitter->m_isDead;
         }
         m_isDead = areAllEmittersDead;
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void ParticleSystem::Render(BufferedMeshRenderer& renderer)
+{
+    for (ParticleEmitter* emitter : m_emitters)
+    {
+        if (emitter->m_particles.size() > 0)
+        {
+            emitter->m_definition->m_material->SetDiffuseTexture(emitter->m_definition->m_spriteResource->m_texture);
+            renderer.SetMaterial(emitter->m_definition->m_material);
+            renderer.SetModelMatrix(Matrix4x4::IDENTITY);
+            emitter->CopyParticlesToMesh(&renderer.m_mesh);
+#pragma todo("Remove this flush once we're ready to")
+            renderer.FlushAndRender();
+        }
     }
 }
 

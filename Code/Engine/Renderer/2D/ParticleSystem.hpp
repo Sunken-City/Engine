@@ -58,8 +58,9 @@ class ParticleSystem : public Renderable2D
 public:
     ParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow);
     ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees = 0.0f);
-    ~ParticleSystem();
-    void Update(float deltaSeconds);
+    virtual ~ParticleSystem();
+    virtual void Update(float deltaSeconds) override;
+    virtual void Render(BufferedMeshRenderer& renderer) override;
 
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
     static void DestroyImmediately(ParticleSystem* systemToDestroy);
@@ -70,5 +71,4 @@ public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::vector<ParticleEmitter*> m_emitters;
     const ParticleSystemDefinition* m_definition;
-    bool m_isDead;
 };
