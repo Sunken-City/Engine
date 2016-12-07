@@ -1,11 +1,13 @@
 #pragma once
 #include <vector>
+#include "Engine/Input/XMLUtils.hpp"
+#include "Engine/Core/Events/NamedProperties.hpp"
 
 class WidgetBase
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
-    WidgetBase();
+    WidgetBase(XMLNode& node);
     virtual ~WidgetBase();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
@@ -16,4 +18,5 @@ public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     WidgetBase* m_parent = nullptr;
     std::vector<WidgetBase*> m_children;
+    mutable NamedProperties m_properties;
 };

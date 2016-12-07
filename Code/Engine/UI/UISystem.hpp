@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/UI/WidgetBase.hpp"
+#include "Engine/Input/XMLUtils.hpp"
 #include <vector>
 
 class UISystem
@@ -12,9 +13,13 @@ public:
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void Update(float deltaSeconds);
     void Render() const;
-    //WidgetBase* CreateWidget
+    void LoadAndParseUIXML();
 
+private:
+    WidgetBase* CreateWidget(XMLNode& node);
+
+public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     static UISystem* instance;
-    std::vector<WidgetBase*> m_widgets;
+    std::vector<WidgetBase*> m_childWidgets;
 };
