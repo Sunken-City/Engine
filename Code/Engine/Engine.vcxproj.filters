@@ -598,10 +598,9 @@
     <ClInclude Include="Renderer\2D\Renderable2D.hpp">
       <Filter>Engine\Renderer\2D</Filter>
     </ClInclude>
-<<<<<<< HEAD
     <ClInclude Include="Renderer\BufferedMeshRenderer.hpp">
       <Filter>Engine\Renderer</Filter>
-=======
+    </ClInclude>
     <ClInclude Include="Core\Events\NamedProperties.hpp">
       <Filter>Engine\Core\Events</Filter>
     </ClInclude>
@@ -610,7 +609,6 @@
     </ClInclude>
     <ClInclude Include="Core\Events\Event.hpp">
       <Filter>Engine\Core\Events</Filter>
->>>>>>> refs/remotes/origin/master
     </ClInclude>
   </ItemGroup>
 </Project>
