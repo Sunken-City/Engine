@@ -4,9 +4,18 @@
 #include "Engine/Fonts/BitmapFont.hpp"
 
 //-----------------------------------------------------------------------------------
+WidgetBase::WidgetBase()
+{
+    m_properties.Set<Vector2>("Offset", Vector2::ZERO);
+    m_properties.Set<Vector2>("Size", Vector2::ONE);
+    m_properties.Set<RGBA>("BackgroundColor", RGBA::WHITE);
+    m_properties.Set<RGBA>("EdgeColor", RGBA::WHITE);
+    m_properties.Set<float>("Opacity", 1.0f);
+}
+
+//-----------------------------------------------------------------------------------
 WidgetBase::WidgetBase(XMLNode& node)
 {
-
 }
 
 //-----------------------------------------------------------------------------------

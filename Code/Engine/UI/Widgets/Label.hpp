@@ -5,8 +5,9 @@ class Label : public WidgetBase
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
+    Label();
     Label(XMLNode& node);
-    ~Label();
+    virtual ~Label();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     virtual void Update(float deltaSeconds);
