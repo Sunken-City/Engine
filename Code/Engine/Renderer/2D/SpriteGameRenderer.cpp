@@ -65,21 +65,23 @@ SpriteLayer::SpriteLayer(int layerIndex)
 //-----------------------------------------------------------------------------------
 SpriteLayer::~SpriteLayer()
 {
-//     ParticleSystem* currentSystem = m_particleSystemList;
-//     while (m_particleSystemList)
-//     {
-//         if (currentSystem->next == currentSystem)
-//         {
-//             //Destroy Immediately unregisters the pointer from m_particleSystemList, selecting a new value for the head
-//             ParticleSystem::DestroyImmediately(currentSystem);
-//             break;
-//         }
-//         else
-//         {
-//             currentSystem = currentSystem->next;
-//             ParticleSystem::DestroyImmediately(currentSystem->prev);
-//         }
-//     }
+    Renderable2D* currentRenderable = m_renderablesList;
+    if (currentRenderable)
+    {
+        do
+        {
+            if (currentRenderable->next == currentRenderable)
+            {
+                delete currentRenderable;
+                break;
+            }
+            else
+            {
+                currentRenderable = currentRenderable->next;
+                delete currentRenderable->prev;
+            }
+        } while (currentRenderable != m_renderablesList);
+    }
 }
 
 //-----------------------------------------------------------------------------------
