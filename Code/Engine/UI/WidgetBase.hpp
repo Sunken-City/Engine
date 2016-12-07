@@ -7,6 +7,7 @@ class WidgetBase
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
+    WidgetBase();
     WidgetBase(XMLNode& node);
     virtual ~WidgetBase();
 
