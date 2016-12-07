@@ -1,6 +1,7 @@
 #include "Engine/Renderer/RGBA.hpp"
 #include "Engine/Math/Vector4.hpp"
 #include "Engine/Math/MathUtils.hpp"
+#include "Engine/Core/StringUtils.hpp"
 
 const RGBA RGBA::WHITE(0xFFFFFFFF);
 const RGBA RGBA::BLACK(0x000000FF);
@@ -100,6 +101,26 @@ Vector4 RGBA::ToVec4() const
 RGBA RGBA::GetInverse() const
 {
     return CreateFromUChars(0xFF - red, 0xFF - green, 0xFF - blue, alpha);
+}
+
+//-----------------------------------------------------------------------------------
+RGBA RGBA::CreateFromString(const std::string& textColor)
+{
+    if (textColor.empty())
+    {
+        return RGBA::WHITE;
+    }
+
+    if (textColor.at(1) == 'x') //Format 0xRRGGBBAA
+    {
+        unsigned int hexColor = stoul(textColor, nullptr, 0);
+        return RGBA(hexColor);
+    }
+    else //Format R,G,B
+    {
+        std::vector<std::string>* strings = SplitString(textColor, ",");
+        return RGBA(stoi(strings->at(0)) / 255.0f, stoi(strings->at(1)) / 255.0f, stoi(strings->at(2)) / 255.0f);
+    }
 }
 
 //-----------------------------------------------------------------------------------

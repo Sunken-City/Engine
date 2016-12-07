@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 class Vector4;
 
@@ -18,6 +19,7 @@ public:
     static inline unsigned char GetRed(unsigned int hexColor);
     static inline unsigned char GetGreen(unsigned int hexColor);
     static inline unsigned char GetBlue(unsigned int hexColor);
+    static RGBA CreateFromString(const std::string& textColor);
     static inline RGBA CreateFromUChars(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
     static Vector4 GetRandomVec4();
     static RGBA GetRandom();
@@ -36,7 +38,6 @@ public:
         this->blue -= rhs;
         return *this;
     }
-
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
     unsigned char red;
     unsigned char green;
