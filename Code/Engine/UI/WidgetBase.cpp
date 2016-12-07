@@ -4,7 +4,7 @@
 #include "Engine/Fonts/BitmapFont.hpp"
 
 //-----------------------------------------------------------------------------------
-WidgetBase::WidgetBase()
+WidgetBase::WidgetBase(XMLNode& node)
 {
 
 }
@@ -31,10 +31,6 @@ void WidgetBase::Render() const
     {
         child->Render();
     }
-
-    Vector2 currentBaseline = Vector2::ONE * 10.0f;
-    Renderer::instance->DrawText2D(currentBaseline, std::string("It's meme time"), 1.0f, RGBA::WHITE, true, BitmapFont::CreateOrGetFont("Runescape"));
-
 }
 
 //-----------------------------------------------------------------------------------

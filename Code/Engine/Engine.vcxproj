@@ -106,6 +106,7 @@
     <ClCompile Include="Tools\fbx.cpp" />
     <ClCompile Include="UI\UISystem.cpp" />
     <ClCompile Include="UI\WidgetBase.cpp" />
+    <ClCompile Include="UI\Widgets\Label.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ThirdParty\OpenGL\glext.h" />
@@ -206,6 +207,7 @@
     <ClInclude Include="Tools\fbx.hpp" />
     <ClInclude Include="UI\UISystem.hpp" />
     <ClInclude Include="UI\WidgetBase.hpp" />
+    <ClInclude Include="UI\Widgets\Label.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ADF625C9-96EC-4C9F-B6F0-235762D622AE}</ProjectGuid>

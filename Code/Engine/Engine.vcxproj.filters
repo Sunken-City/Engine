@@ -332,6 +332,9 @@
     <ClCompile Include="UI\WidgetBase.cpp">
       <Filter>Engine\UI</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Widgets\Label.cpp">
+      <Filter>Engine\UI\Widgets</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -627,6 +630,9 @@
     </ClInclude>
     <ClInclude Include="UI\WidgetBase.hpp">
       <Filter>Engine\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Widgets\Label.hpp">
+      <Filter>Engine\UI\Widgets</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
