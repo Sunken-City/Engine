@@ -52,6 +52,8 @@ public:
     void End();
     static MeshBuilder* Merge(MeshBuilder* meshBuilderArray, unsigned int numberOfMeshes);
     void CopyToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsigned int sizeofVertex, Mesh::BindMeshToVAOForVertex* bindMeshFunction);
+    void AppendToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsigned int sizeofVertex, Mesh::BindMeshToVAOForVertex* bindMeshFunction);
+    void ClearMesh(Mesh* mesh);
     void AddVertex(const Vector3& position);
     void AddIndex(int index);
     void AddLinearIndices();

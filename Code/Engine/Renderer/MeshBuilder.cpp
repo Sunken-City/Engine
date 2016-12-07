@@ -135,6 +135,43 @@ void MeshBuilder::CopyToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsig
 }
 
 //-----------------------------------------------------------------------------------
+void MeshBuilder::AppendToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsigned int sizeofVertex, Mesh::BindMeshToVAOForVertex* bindMeshFunction)
+{
+    // First, we need to allocate a buffer to copy 
+    // our vertices into, that matches what the mesh
+    // wants.  
+    unsigned int vertexCount = m_vertices.size();
+    if (vertexCount == 0) {
+        // nothing in this mesh.
+        return;
+    }
+
+    unsigned int vertexSize = sizeofVertex; //mesh->vdefn->vertexSize;
+    unsigned int vertex_buffer_size = vertexCount * vertexSize;
+
+    byte* vertexBuffer = new byte[vertex_buffer_size];
+    byte* currentBufferIndex = vertexBuffer;
+
+    //	mesh->m_verts.clear();
+    for (unsigned int vertex_index = 0; vertex_index < vertexCount; ++vertex_index)
+    {
+        copyFunction(m_vertices[vertex_index], currentBufferIndex);
+        currentBufferIndex += vertexSize;
+    }
+    mesh->Init(vertexBuffer, vertexCount, sizeofVertex, m_indices.data(), m_indices.size(), bindMeshFunction);
+    mesh->m_drawMode = this->m_drawMode;
+    // Make sure we clean up after ourselves
+    delete vertexBuffer;
+
+}
+
+//-----------------------------------------------------------------------------------
+void MeshBuilder::ClearMesh(Mesh* mesh)
+{
+
+}
+
+//-----------------------------------------------------------------------------------
 void MeshBuilder::AddVertex(const Vector3& position)
 {
     m_stamp.position = position;

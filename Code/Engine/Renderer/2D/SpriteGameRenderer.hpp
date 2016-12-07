@@ -7,7 +7,9 @@
 #include "Engine/Renderer/Material.hpp"
 #include <map>
 #include <vector>
-#include "ParticleSystem.hpp"
+#include "Engine/Renderer/2D/ParticleSystem.hpp"
+#include "Engine/Renderer/2D/Renderable2D.hpp"
+#include "../BufferedMeshRenderer.hpp"
 
 #define BIT_FLAG(f) (1 << (f))
 
@@ -38,19 +40,16 @@ public:
     ~SpriteLayer();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
-    inline void AddSprite(Sprite* sprite) { AddInPlace(m_spriteList, sprite); };
-    inline void RemoveSprite(Sprite* sprite) { RemoveInPlace(m_spriteList, sprite); };
-    inline void AddParticleSystem(ParticleSystem* system) { AddInPlace(m_particleSystemList, system); };
-    inline void RemoveParticleSystem(ParticleSystem* system) { RemoveInPlace(m_particleSystemList, system); };
+    inline void AddRenderable2D(Renderable2D* renderable) { AddInPlace(m_renderablesList, renderable); };
+    inline void RemoveRenderable2D(Renderable2D* renderable) { RemoveInPlace(m_renderablesList, renderable); };
     inline void Enable() { m_isEnabled = true; }
     inline void Disable() { m_isEnabled = false; }
     inline void Toggle() { m_isEnabled = !m_isEnabled; }
-    void CleanUpDeadParticleSystems();
+    void CleanUpDeadRenderables();
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     int m_layer;
-    Sprite* m_spriteList;
-    ParticleSystem* m_particleSystemList;
+    Renderable2D* m_renderablesList;
     bool m_isEnabled;
     float m_virtualSize;
     AABB2 m_boundingVolume;
@@ -85,22 +84,17 @@ public:
     void Render();
     void RenderView(const ViewportDefinition& renderArea);
     void UpdateScreenResolution(unsigned int widthInPixels, unsigned int heightInPixels);
-    void SetMeshFromSprite(Sprite* sprite);
     void RenderLayer(SpriteLayer* layer, const ViewportDefinition& renderArea);
     void RecalculateVirtualWidthAndHeight(const ViewportDefinition& renderArea);
-    void DrawParticleSystem(ParticleSystem* system);
-    void RegisterParticleSystem(ParticleSystem* system);
-    void UnregisterParticleSystem(ParticleSystem* system);
-    void DrawSprite(Sprite* sprite);
-    void RegisterSprite(Sprite* sprite);
-    void UnregisterSprite(Sprite* sprite);
+    void RegisterRenderable2D(Renderable2D* renderable);
+    void UnregisterRenderable2D(Renderable2D* renderable);
     SpriteLayer* CreateOrGetLayer(int layerNumber);
     void AddEffectToLayer(Material* effectMaterial, int layerNumber);
     void RemoveEffectFromLayer(Material* effectMaterial, int layerNumber);
     inline void EnableLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Enable(); };
     inline void DisableLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Disable(); };
     inline void ToggleLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Toggle(); };
-    void SortSpritesByXY(Sprite*& spriteList);
+    //void SortSpritesByXY(Renderable2D*& spriteList);
 
     //SETTERS/////////////////////////////////////////////////////////////////////
     inline void SetClearColor(const RGBA& clearColor) { m_clearColor = clearColor; };
@@ -137,8 +131,7 @@ public:
 
 private:
     RGBA m_clearColor;
-    Mesh* m_mesh;
-    MeshRenderer* m_meshRenderer;
+    BufferedMeshRenderer m_bufferedMeshRenderer;
     Vector2 m_screenResolution;
     Vector2 m_cameraPosition;
     float m_aspectRatio;

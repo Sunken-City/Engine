@@ -80,6 +80,7 @@
     <ClCompile Include="Renderer\AABB2.cpp" />
     <ClCompile Include="Renderer\AABB3.cpp" />
     <ClCompile Include="Renderer\AnimationMotion.cpp" />
+    <ClCompile Include="Renderer\BufferedMeshRenderer.cpp" />
     <ClCompile Include="Renderer\DebugRenderer.cpp" />
     <ClCompile Include="Renderer\Face.cpp" />
     <ClCompile Include="Renderer\Framebuffer.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Renderer\AABB2.hpp" />
     <ClInclude Include="Renderer\AABB3.hpp" />
     <ClInclude Include="Renderer\AnimationMotion.hpp" />
+    <ClInclude Include="Renderer\BufferedMeshRenderer.hpp" />
     <ClInclude Include="Renderer\DebugRenderer.hpp" />
     <ClInclude Include="Renderer\Face.hpp" />
     <ClInclude Include="Renderer\Framebuffer.hpp" />

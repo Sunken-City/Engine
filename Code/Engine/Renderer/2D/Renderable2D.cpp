@@ -2,9 +2,15 @@
 #include "SpriteGameRenderer.hpp"
 
 //-----------------------------------------------------------------------------------
-Renderable2D::Renderable2D()
+Renderable2D::Renderable2D(int orderingLayer, bool isEnabled)
+    : m_isEnabled(false)
+    , m_orderingLayer(-1)
 {
-
+    if (isEnabled)
+    {
+        m_orderingLayer = orderingLayer;
+        Enable();
+    }
 }
 
 //-----------------------------------------------------------------------------------
@@ -27,7 +33,7 @@ void Renderable2D::Enable()
 {
     if (!m_isEnabled)
     {
-        //SpriteGameRenderer::instance->RegisterSprite(this);
+        SpriteGameRenderer::instance->RegisterRenderable2D(this);
         m_isEnabled = true;
     }
 }
@@ -37,7 +43,19 @@ void Renderable2D::Disable()
 {
     if (m_isEnabled)
     {
-        //SpriteGameRenderer::instance->UnregisterSprite(this);
+        SpriteGameRenderer::instance->UnregisterRenderable2D(this);
         m_isEnabled = false;
     }
+}
+
+//-----------------------------------------------------------------------------------
+void Renderable2D::Render(BufferedMeshRenderer& renderer)
+{
+
+}
+
+//-----------------------------------------------------------------------------------
+AABB2 Renderable2D::GetBounds()
+{
+    return AABB2();
 }
