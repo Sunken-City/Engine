@@ -66,6 +66,9 @@
     <Filter Include="Engine\UI">
       <UniqueIdentifier>{6abdef6a-85dd-4e99-a608-2bacf534fcb8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\UI\Widgets">
+      <UniqueIdentifier>{ab0f991d-396b-4616-93f0-3901560232e2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Vector2.cpp">
@@ -324,6 +327,9 @@
       <Filter>Engine\Core\Events</Filter>
     </ClCompile>
     <ClCompile Include="UI\UISystem.cpp">
+      <Filter>Engine\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\WidgetBase.cpp">
       <Filter>Engine\UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -617,6 +623,9 @@
       <Filter>Engine\Core\Events</Filter>
     </ClInclude>
     <ClInclude Include="UI\UISystem.hpp">
+      <Filter>Engine\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\WidgetBase.hpp">
       <Filter>Engine\UI</Filter>
     </ClInclude>
   </ItemGroup>
