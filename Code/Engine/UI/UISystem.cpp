@@ -2,13 +2,14 @@
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Renderer/AABB2.hpp"
 #include "Engine/Fonts/BitmapFont.hpp"
+#include "Engine/Input/InputOutputUtils.hpp"
+#include "ThirdParty/Parsers/XMLParser.hpp"
 
 UISystem* UISystem::instance = nullptr;
 
 //-----------------------------------------------------------------------------------
 UISystem::UISystem()
 {
-
 }
 
 //-----------------------------------------------------------------------------------
@@ -20,7 +21,10 @@ UISystem::~UISystem()
 //-----------------------------------------------------------------------------------
 void UISystem::Update(float deltaSeconds)
 {
-
+    for (WidgetBase* widget : m_widgets)
+    {
+        widget->Update(deltaSeconds);
+    }
 }
 
 //-----------------------------------------------------------------------------------
@@ -28,8 +32,10 @@ void UISystem::Render() const
 {
     Renderer::instance->BeginOrtho(Vector2::ZERO, Vector2(1600, 900));
     {
-        Vector2 currentBaseline = Vector2::ONE * 10.0f;
-        Renderer::instance->DrawText2D(currentBaseline, std::string("It's meme time"), 1.0f, RGBA::WHITE, true, BitmapFont::CreateOrGetFont("Runescape"));
+        for (WidgetBase* widget : m_widgets)
+        {
+            widget->Render();
+        }
     }
     Renderer::instance->EndOrtho();
 }

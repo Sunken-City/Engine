@@ -1,20 +1,19 @@
 #pragma once
-#include "Engine/UI/WidgetBase.hpp"
 #include <vector>
 
-class UISystem
+class WidgetBase
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
-    UISystem();
-    ~UISystem();
+    WidgetBase();
+    virtual ~WidgetBase();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
-    void Update(float deltaSeconds);
-    void Render() const;
-    //WidgetBase* CreateWidget
+    virtual void Update(float deltaSeconds);
+    virtual void Render() const;
+    virtual void AddChild(WidgetBase* child);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    static UISystem* instance;
-    std::vector<WidgetBase*> m_widgets;
+    WidgetBase* m_parent = nullptr;
+    std::vector<WidgetBase*> m_children;
 };

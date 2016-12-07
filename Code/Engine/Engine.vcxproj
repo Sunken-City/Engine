@@ -105,6 +105,7 @@
     <ClCompile Include="Time\Time.cpp" />
     <ClCompile Include="Tools\fbx.cpp" />
     <ClCompile Include="UI\UISystem.cpp" />
+    <ClCompile Include="UI\WidgetBase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ThirdParty\OpenGL\glext.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="Time\Time.hpp" />
     <ClInclude Include="Tools\fbx.hpp" />
     <ClInclude Include="UI\UISystem.hpp" />
+    <ClInclude Include="UI\WidgetBase.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ADF625C9-96EC-4C9F-B6F0-235762D622AE}</ProjectGuid>
