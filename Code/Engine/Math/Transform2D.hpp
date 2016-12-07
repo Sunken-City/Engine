@@ -15,4 +15,5 @@ public:
     Vector2 position;
     float rotationDegrees;
     Vector2 scale;
+    Transform2D* parent = nullptr;
 };
