@@ -6,16 +6,11 @@
 //-----------------------------------------------------------------------------------
 WidgetBase::WidgetBase()
 {
-    m_properties.Set<Vector2>("Offset", Vector2::ZERO);
-    m_properties.Set<Vector2>("Size", Vector2::ONE);
-    m_properties.Set<RGBA>("BackgroundColor", RGBA::WHITE);
-    m_properties.Set<RGBA>("EdgeColor", RGBA::WHITE);
-    m_properties.Set<float>("Opacity", 1.0f);
-}
-
-//-----------------------------------------------------------------------------------
-WidgetBase::WidgetBase(XMLNode& node)
-{
+    m_propertiesForAllStates.Set<Vector2>("Offset", Vector2::ZERO);
+    m_propertiesForAllStates.Set<Vector2>("Size", Vector2::ONE);
+    m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::WHITE);
+    m_propertiesForAllStates.Set<RGBA>("EdgeColor", RGBA::WHITE);
+    m_propertiesForAllStates.Set<float>("Opacity", 1.0f);
 }
 
 //-----------------------------------------------------------------------------------
@@ -48,3 +43,19 @@ void WidgetBase::AddChild(WidgetBase* child)
     m_children.push_back(child);
 }
 
+//-----------------------------------------------------------------------------------
+AABB2 WidgetBase::GetSmallestBoundsAroundChildren()
+{
+    AABB2 smallestBounds;
+
+    for (WidgetBase* child : m_children)
+    {
+        AABB2 childBounds = child->GetBounds();
+        smallestBounds.mins.x = (childBounds.mins.x < smallestBounds.mins.x) ? childBounds.mins.x : smallestBounds.mins.x;
+        smallestBounds.mins.y = (childBounds.mins.y < smallestBounds.mins.y) ? childBounds.mins.y : smallestBounds.mins.y;
+        smallestBounds.maxs.x = (childBounds.maxs.x > smallestBounds.maxs.x) ? childBounds.maxs.x : smallestBounds.maxs.x;
+        smallestBounds.maxs.y = (childBounds.maxs.y > smallestBounds.maxs.y) ? childBounds.maxs.y : smallestBounds.maxs.y;
+    }
+
+    return smallestBounds;
+}
