@@ -140,6 +140,7 @@ public:
     void TranslateView(const Vector3& translation);
     void DeleteVAOHandle(GLuint m_vaoID);
     void ClearDepth(float depthValue = 1.0f);
+
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const int CIRCLE_SIDES = 50;
     static const int HEXAGON_SIDES = 6;

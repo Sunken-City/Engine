@@ -1,15 +1,16 @@
 #pragma once
 #include "Engine/UI/WidgetBase.hpp"
 
-class Label : public WidgetBase
+class LabelWidget : public WidgetBase
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
-    Label();
-    Label(XMLNode& node);
-    virtual ~Label();
+    LabelWidget();
+    virtual ~LabelWidget();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     virtual void Update(float deltaSeconds);
     virtual void Render() const;
+    virtual void BuildFromXMLNode(XMLNode& node) override;
+    virtual void RecalculateBounds() override;
 };

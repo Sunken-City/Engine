@@ -3,7 +3,8 @@
 #include "Engine/Renderer/AABB2.hpp"
 #include "Engine/Fonts/BitmapFont.hpp"
 #include "Engine/Input/InputOutputUtils.hpp"
-#include "Widgets/Label.hpp"
+#include "Widgets/LabelWidget.hpp"
+#include "Widgets/ButtonWidget.hpp"
 
 UISystem* UISystem::instance = nullptr;
 
@@ -59,9 +60,21 @@ void UISystem::LoadAndParseUIXML()
 WidgetBase* UISystem::CreateWidget(XMLNode& node)
 {
     std::string nodeName = node.getName();
-    if (nodeName == "Label")
+    WidgetBase* widget = CreateWidget(nodeName);
+    widget->BuildFromXMLNode(node);
+    return widget;
+}
+
+//-----------------------------------------------------------------------------------
+WidgetBase* UISystem::CreateWidget(const std::string& name)
+{
+    if (name == "Label")
     {
-        return static_cast<WidgetBase*>(new Label(node));
+        return static_cast<WidgetBase*>(new LabelWidget());
+    }
+    else if (name == "Button")
+    {
+        return static_cast<WidgetBase*>(new ButtonWidget());
     }
     return nullptr;
 }

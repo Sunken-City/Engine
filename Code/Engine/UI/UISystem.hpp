@@ -14,6 +14,7 @@ public:
     void Update(float deltaSeconds);
     void Render() const;
     void LoadAndParseUIXML();
+    WidgetBase* CreateWidget(const std::string& name);
 
 private:
     WidgetBase* CreateWidget(XMLNode& node);
