@@ -46,7 +46,7 @@ void WidgetBase::AddChild(WidgetBase* child)
 //-----------------------------------------------------------------------------------
 AABB2 WidgetBase::GetSmallestBoundsAroundChildren()
 {
-    AABB2 smallestBounds;
+    AABB2 smallestBounds = AABB2(Vector2::ZERO, Vector2::ZERO);
 
     for (WidgetBase* child : m_children)
     {

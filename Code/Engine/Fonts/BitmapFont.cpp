@@ -94,6 +94,7 @@ Texture* BitmapFont::GetTexture() const
     return m_spriteSheet.GetTexture();
 }
 
+//-----------------------------------------------------------------------------------
 Material* BitmapFont::GetMaterial() const
 {
     return m_material;
@@ -115,6 +116,15 @@ const Glyph* BitmapFont::GetGlyph(char glyphAscii) const
 int BitmapFont::GetCharacterWidth()
 {
     return CHARACTER_WIDTH;
+}
+
+//-----------------------------------------------------------------------------------
+AABB2 BitmapFont::CalcTextBounds(const std::string& textToWrite, float scale) const
+{
+    AABB2 bounds = AABB2(Vector2::ZERO, Vector2::ZERO);
+    bounds.maxs.x = CalcTextWidth(textToWrite, scale) * scale;
+    bounds.maxs.y = m_maxHeight * scale;
+    return bounds;
 }
 
 //-----------------------------------------------------------------------------------
@@ -156,6 +166,7 @@ void BitmapFont::LoadBMFontMetadata(const std::string& glyphFileName)
     ParseGlyphInfo(glyphSheet);
 }
 
+//-----------------------------------------------------------------------------------
 BitmapFont::~BitmapFont()
 {
     delete m_material->m_shaderProgram;

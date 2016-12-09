@@ -32,6 +32,8 @@ void UISystem::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void UISystem::Render() const
 {
+    Renderer::instance->ClearDepth();
+    Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::OFF;
     Renderer::instance->BeginOrtho(Vector2::ZERO, Vector2(1600, 900));
     {
         for (WidgetBase* widget : m_childWidgets)
@@ -40,6 +42,7 @@ void UISystem::Render() const
         }
     }
     Renderer::instance->EndOrtho();
+    Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::ON;
 }
 
 //-----------------------------------------------------------------------------------

@@ -14,7 +14,7 @@ public:
     virtual void Update(float deltaSeconds);
     virtual void Render() const;
     virtual void BuildFromXMLNode(XMLNode& node) override;
-    virtual AABB2 GetBounds() override;
+    virtual void RecalculateBounds() override;    
 
 private:
     std::string m_onClickEventName;
