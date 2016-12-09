@@ -2,7 +2,8 @@
 #include "Engine/Math/Vector2.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 #include "Engine/Fonts/BitmapFont.hpp"
-#include "../Math/Matrix4x4.hpp"
+#include "Engine/Math/Matrix4x4.hpp"
+#include "Engine/Core/Events/EventSystem.hpp"
 
 //-----------------------------------------------------------------------------------
 WidgetBase::WidgetBase()
@@ -10,8 +11,9 @@ WidgetBase::WidgetBase()
     m_propertiesForAllStates.Set<Vector2>("Offset", Vector2::ZERO);
     m_propertiesForAllStates.Set<Vector2>("Size", Vector2::ONE);
     m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::WHITE);
-    m_propertiesForAllStates.Set<RGBA>("EdgeColor", RGBA::WHITE);
+    m_propertiesForAllStates.Set<RGBA>("BorderColor", RGBA::WHITE);
     m_propertiesForAllStates.Set<float>("Opacity", 1.0f);
+    m_propertiesForAllStates.Set<float>("BorderWidth", 0.0f);
 }
 
 //-----------------------------------------------------------------------------------
@@ -70,10 +72,15 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
 {
     const char* horizontalOffset = node.getAttribute("HorizontalOffset");
     const char* verticalOffset = node.getAttribute("VerticalOffset");
-    const char* textColorAttribute = node.getAttribute("TextColor");
-    const char* textSizeAttribute = node.getAttribute("FontSize");
+    const char* backgroundColorAttribute = node.getAttribute("BackgroundColor");
+    const char* borderColorAttribute = node.getAttribute("BorderColor");
+    const char* borderWidthAttribute = node.getAttribute("BorderWidth");
+    const char* onClickAttribute = node.getAttribute("OnClick");
 
     Vector2 offset = m_propertiesForAllStates.Get<Vector2>("Offset");
+    RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
+    RGBA edgeColor = m_propertiesForAllStates.Get<RGBA>("BorderColor");
+    float borderWidth = m_propertiesForAllStates.Get<float>("BorderWidth");
 
     if (horizontalOffset)
     {
@@ -83,12 +90,41 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     {
         offset.y = std::stof(verticalOffset);
     }
+    if (backgroundColorAttribute)
+    {
+        bgColor = RGBA::CreateFromString(backgroundColorAttribute);
+    }
+    if (borderColorAttribute)
+    {
+        edgeColor = RGBA::CreateFromString(borderColorAttribute);
+    }
+    if (borderWidthAttribute)
+    {
+        borderWidth = std::stof(borderWidthAttribute);
+    }
+    if (onClickAttribute)
+    {
+        auto event = std::string(onClickAttribute);
+        m_propertiesForAllStates.Set("OnClick", event);
+    }
 
     m_propertiesForAllStates.Set<Vector2>("Offset", offset);
+    m_propertiesForAllStates.Set<RGBA>("BackgroundColor", bgColor);
+    m_propertiesForAllStates.Set<RGBA>("BorderColor", edgeColor);
     m_propertiesForAllStates.Set<Vector2>("Size", Vector2::ONE);
-    m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::WHITE);
-    m_propertiesForAllStates.Set<RGBA>("EdgeColor", RGBA::WHITE);
     m_propertiesForAllStates.Set<float>("Opacity", 1.0f);
+    m_propertiesForAllStates.Set<float>("BorderWidth", borderWidth);
+}
+
+//-----------------------------------------------------------------------------------
+void WidgetBase::OnClick()
+{
+    std::string clickEvent;
+    PropertyGetResult state = m_propertiesForAllStates.Get("OnClick", clickEvent);
+    if (state == PGR_SUCCESS)
+    {
+        EventSystem::FireEvent(clickEvent);
+    }
 }
 
 //-----------------------------------------------------------------------------------

@@ -33,6 +33,7 @@ public:
     virtual AABB2 GetSmallestBoundsAroundChildren();
     virtual void RecalculateBounds() = 0;
     virtual void BuildFromXMLNode(XMLNode& node);
+    virtual void OnClick();
     Vector2 GetParentOffsets() const;
     Matrix4x4 GetModelMatrix() const;
 

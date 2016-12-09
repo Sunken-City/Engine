@@ -39,7 +39,19 @@ void ButtonWidget::Render() const
 //     GL_CHECK_ERROR();
 //     thingToRender.Render();
 
-    Renderer::instance->DrawAABB(m_bounds, RGBA::CHOCOLATE);
+    RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
+    RGBA borderColor = m_propertiesForAllStates.Get<RGBA>("BorderColor");
+    float borderWidth = m_propertiesForAllStates.Get<float>("BorderWidth");
+    
+    if (borderWidth > 0.0f)
+    {
+        AABB2 borderBounds = m_bounds;
+        borderBounds.mins += Vector2(-borderWidth);
+        borderBounds.maxs += Vector2(borderWidth);
+        Renderer::instance->DrawAABB(borderBounds, borderColor);
+    }
+
+    Renderer::instance->DrawAABB(m_bounds, bgColor);
 
     WidgetBase::Render();
 }

@@ -20,9 +20,11 @@ public:
 
 private:
     WidgetBase* CreateWidget(XMLNode& node);
+    WidgetBase* FindHighlightedWidget();
 
 public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     static UISystem* instance;
     std::vector<WidgetBase*> m_childWidgets;
+    WidgetBase* m_highlightedWidget;
 };
