@@ -5,6 +5,7 @@
 #include "Engine/Input/InputOutputUtils.hpp"
 #include "Widgets/LabelWidget.hpp"
 #include "Widgets/ButtonWidget.hpp"
+#include "../Input/InputSystem.hpp"
 
 UISystem* UISystem::instance = nullptr;
 
@@ -17,12 +18,16 @@ UISystem::UISystem()
 //-----------------------------------------------------------------------------------
 UISystem::~UISystem()
 {
-
+    DeleteAllUI();
 }
 
 //-----------------------------------------------------------------------------------
 void UISystem::Update(float deltaSeconds)
 {
+    if (InputSystem::instance->WasKeyJustPressed('U'))
+    {
+        ReloadUI();
+    }
     for (WidgetBase* widget : m_childWidgets)
     {
         widget->Update(deltaSeconds);
@@ -57,6 +62,23 @@ void UISystem::LoadAndParseUIXML()
             m_childWidgets.push_back(CreateWidget(node));
         }
     }
+}
+
+//-----------------------------------------------------------------------------------
+void UISystem::ReloadUI()
+{
+    DeleteAllUI();
+    LoadAndParseUIXML();
+}
+
+//-----------------------------------------------------------------------------------
+void UISystem::DeleteAllUI()
+{
+    for (WidgetBase* child : m_childWidgets)
+    {
+        delete child;
+    }
+    m_childWidgets.clear();
 }
 
 //-----------------------------------------------------------------------------------

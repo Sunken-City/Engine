@@ -14,6 +14,8 @@ public:
     void Update(float deltaSeconds);
     void Render() const;
     void LoadAndParseUIXML();
+    void ReloadUI();
+    void DeleteAllUI();
     WidgetBase* CreateWidget(const std::string& name);
 
 private:
