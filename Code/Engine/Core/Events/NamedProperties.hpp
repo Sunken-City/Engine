@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <map>
+#include "..\ErrorWarningAssert.hpp"
 
 //-----------------------------------------------------------------------------------
 enum PropertyGetResult
@@ -98,6 +99,19 @@ public:
 
         return PropertyGetResult::PGR_SUCCESS;
     };
+
+    //-----------------------------------------------------------------------------------
+    template<typename T>
+    T Get(const std::string& propertyName)
+    {
+        T returnVal;
+        PropertyGetResult result = Get<T>(propertyName, returnVal);
+        if (result != PGR_SUCCESS)
+        {
+            ERROR_RECOVERABLE("Property %s wasn't found on widget", propertyName.c_str());
+        }
+        return returnVal;
+    }
 
     //-----------------------------------------------------------------------------------
     template<typename T>

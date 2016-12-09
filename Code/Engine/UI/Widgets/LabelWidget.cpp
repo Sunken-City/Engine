@@ -20,6 +20,12 @@ LabelWidget::~LabelWidget()
 //-----------------------------------------------------------------------------------
 void LabelWidget::BuildFromXMLNode(XMLNode& node)
 {
+    std::string name = node.getName();
+    if (name == "Label")
+    {
+        WidgetBase::BuildFromXMLNode(node);
+    }
+
     const char* textAttribute = node.getAttribute("Text");
     const char* textColorAttribute = node.getAttribute("TextColor");
     const char* textSizeAttribute = node.getAttribute("FontSize");
@@ -68,7 +74,7 @@ void LabelWidget::Render() const
     PropertyGetResult textColorGet = m_propertiesForAllStates.Get<RGBA>("TextColor", textColor);
     PropertyGetResult fontSizeGet = m_propertiesForAllStates.Get<float>("FontSize", fontSize);
 
-    Vector2 currentBaseline = Vector2::ZERO;
+    Vector2 currentBaseline = GetParentOffsets() + m_propertiesForAllStates.Get<Vector2>("Offset");
     Renderer::instance->DrawText2D(currentBaseline, text, fontSize, textColor, true, BitmapFont::CreateOrGetFont("Runescape"));
 }
 
