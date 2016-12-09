@@ -46,7 +46,7 @@ void LabelWidget::RecalculateBounds()
     PropertyGetResult textGet = m_propertiesForAllStates.Get<std::string>("Text", text);
     PropertyGetResult fontSizeGet = m_propertiesForAllStates.Get<float>("FontSize", fontSize);
 
-    float length = BitmapFont::CreateOrGetFont("Runescape")->CalcTextWidth(text, fontSize);
+    m_bounds = BitmapFont::CreateOrGetFont("Runescape")->CalcTextBounds(text, fontSize);
 }
 
 //-----------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ void LabelWidget::Render() const
     PropertyGetResult textColorGet = m_propertiesForAllStates.Get<RGBA>("TextColor", textColor);
     PropertyGetResult fontSizeGet = m_propertiesForAllStates.Get<float>("FontSize", fontSize);
 
-    Vector2 currentBaseline = Vector2::ONE * 10.0f;
+    Vector2 currentBaseline = Vector2::ZERO;
     Renderer::instance->DrawText2D(currentBaseline, text, fontSize, textColor, true, BitmapFont::CreateOrGetFont("Runescape"));
 }
 
