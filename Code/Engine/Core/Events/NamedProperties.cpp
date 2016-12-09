@@ -19,7 +19,7 @@ NamedProperties::~NamedProperties()
 }
 
 //-----------------------------------------------------------------------------------
-PropertySetResult NamedProperties::Set(const std::string& propertyName, const char* propertyValue, bool changeTypeIfDifferent)
+PropertySetResult NamedProperties::Set(const std::string& propertyName, std::string propertyValue, bool changeTypeIfDifferent)
 {
     PropertySetResult result = PSR_SUCCESS;
     auto foundPair = m_properties.find(propertyName);
@@ -36,7 +36,7 @@ PropertySetResult NamedProperties::Set(const std::string& propertyName, const ch
             return result;
         }
     }
-    m_properties[propertyName] = static_cast<NamedPropertyBase*>(new TypedNameProperty<const char*>(propertyValue));
+    m_properties[propertyName] = static_cast<NamedPropertyBase*>(new TypedNameProperty<std::string>(propertyValue));
     return result;
 }
 
@@ -54,7 +54,7 @@ PropertyGetResult NamedProperties::Get(const std::string& propertyName, std::str
     }
 
     NamedPropertyBase* property = result->second;
-    TypedNameProperty<const char*>* typedProperty = dynamic_cast<TypedNameProperty<const char*>*>(property);
+    TypedNameProperty<std::string>* typedProperty = dynamic_cast<TypedNameProperty<std::string>*>(property);
     if (!typedProperty)
     {
         return PropertyGetResult::PGR_FAILED_WRONG_TYPE;

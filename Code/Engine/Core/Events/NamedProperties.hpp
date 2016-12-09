@@ -136,7 +136,7 @@ public:
         return result;
     };
 
-    PropertySetResult Set(const std::string& propertyName, const char* propertyValue, bool changeTypeIfDifferent = true);
+    PropertySetResult Set(const std::string& propertyName, std::string propertyValue, bool changeTypeIfDifferent = true);
     PropertyGetResult Get(const std::string& propertyName, std::string& outPropertyValue);
     bool Remove(const std::string& propertyName);
 

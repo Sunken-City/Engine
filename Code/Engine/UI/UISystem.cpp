@@ -37,7 +37,7 @@ void UISystem::Update(float deltaSeconds)
         m_highlightedWidget = newHighlightedWidget;
     }
 
-    if (InputSystem::instance->WasMouseButtonJustPressed(InputSystem::LEFT_MOUSE_BUTTON));
+    if (InputSystem::instance->WasMouseButtonJustPressed(InputSystem::LEFT_MOUSE_BUTTON))
     {
         m_highlightedWidget->OnClick();
     }
