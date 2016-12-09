@@ -28,6 +28,20 @@ void UISystem::Update(float deltaSeconds)
     {
         ReloadUI();
     }
+
+    WidgetBase* newHighlightedWidget = FindHighlightedWidget();
+    if (newHighlightedWidget != m_highlightedWidget)
+    {
+        //m_highlightedWidget->StopBehingHighlighted();
+        //newHighlightedWidget->StartBeingHighlighted();
+        m_highlightedWidget = newHighlightedWidget;
+    }
+
+    if (InputSystem::instance->WasMouseButtonJustPressed(InputSystem::LEFT_MOUSE_BUTTON));
+    {
+        m_highlightedWidget->OnClick();
+    }
+
     for (WidgetBase* widget : m_childWidgets)
     {
         widget->Update(deltaSeconds);
@@ -102,5 +116,11 @@ WidgetBase* UISystem::CreateWidget(const std::string& name)
         return static_cast<WidgetBase*>(new ButtonWidget());
     }
     return nullptr;
+}
+
+//-----------------------------------------------------------------------------------
+WidgetBase* UISystem::FindHighlightedWidget()
+{
+    return m_childWidgets[0];
 }
 
