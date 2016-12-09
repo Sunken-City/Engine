@@ -104,7 +104,7 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     }
     if (onClickAttribute)
     {
-        auto event = std::string(onClickAttribute);
+        std::string event = std::string(onClickAttribute);
         m_propertiesForAllStates.Set("OnClick", event);
     }
 
