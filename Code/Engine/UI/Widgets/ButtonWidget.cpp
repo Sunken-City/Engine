@@ -1,17 +1,17 @@
 #include "Engine/UI/Widgets/ButtonWidget.hpp"
 #include "Engine/Renderer/AABB2.hpp"
 #include "Engine/UI/Widgets/LabelWidget.hpp"
-#include "../../Renderer/Renderer.hpp"
-#include "../../Renderer/MeshBuilder.hpp"
-#include "../../Renderer/MeshRenderer.hpp"
-#include "../../Renderer/Material.hpp"
+#include "Engine/Renderer/Renderer.hpp"
+#include "Engine/Renderer/MeshBuilder.hpp"
+#include "Engine/Renderer/MeshRenderer.hpp"
+#include "Engine/Renderer/Material.hpp"
 
 //-----------------------------------------------------------------------------------
 ButtonWidget::ButtonWidget()
     : WidgetBase()
 {
     m_textLabel = new LabelWidget();
-    m_children.push_back(m_textLabel);
+    AddChild(m_textLabel);
 }
 
 //-----------------------------------------------------------------------------------
@@ -38,6 +38,7 @@ void ButtonWidget::Render() const
 //     MeshRenderer thingToRender(&mesh, Renderer::instance->m_defaultMaterial);
 //     GL_CHECK_ERROR();
 //     thingToRender.Render();
+
     Renderer::instance->DrawAABB(m_bounds, RGBA::CHOCOLATE);
 
     WidgetBase::Render();
@@ -46,6 +47,11 @@ void ButtonWidget::Render() const
 //-----------------------------------------------------------------------------------
 void ButtonWidget::BuildFromXMLNode(XMLNode& node)
 {
+    std::string name = node.getName();
+    if (name == "Button")
+    {
+        WidgetBase::BuildFromXMLNode(node);
+    }
     m_textLabel->BuildFromXMLNode(node);
 
     RecalculateBounds();
@@ -55,4 +61,5 @@ void ButtonWidget::BuildFromXMLNode(XMLNode& node)
 void ButtonWidget::RecalculateBounds()
 {
     m_bounds = GetSmallestBoundsAroundChildren();
+    m_bounds += m_propertiesForAllStates.Get<Vector2>("Offset");
 }

@@ -41,3 +41,10 @@ public:
     Vector2 mins;
     Vector2 maxs;
 };
+
+//----------------------------------------------------------------------
+inline AABB2 operator+(AABB2 lhs, const Vector2& rhs)
+{
+    lhs += rhs;
+    return lhs;
+}

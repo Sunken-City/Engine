@@ -4,6 +4,8 @@
 #include "Engine/Core/Events/NamedProperties.hpp"
 #include "Engine/Renderer/AABB2.hpp"
 
+class Matrix4x4;
+
 //-----------------------------------------------------------------------------------
 enum WidgetState
 {
@@ -30,7 +32,9 @@ public:
     virtual AABB2 GetBounds() { return m_bounds; };
     virtual AABB2 GetSmallestBoundsAroundChildren();
     virtual void RecalculateBounds() = 0;
-    virtual void BuildFromXMLNode(XMLNode& node) = 0;
+    virtual void BuildFromXMLNode(XMLNode& node);
+    Vector2 GetParentOffsets() const;
+    Matrix4x4 GetModelMatrix() const;
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     mutable NamedProperties m_propertiesForAllStates;
