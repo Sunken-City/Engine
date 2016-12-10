@@ -7,7 +7,9 @@
 
 //-----------------------------------------------------------------------------------
 WidgetBase::WidgetBase()
+    : m_name("Unnamed Widget")
 {
+    m_propertiesForAllStates.Set<std::string>("Name", m_name);
     m_propertiesForAllStates.Set<Vector2>("Offset", Vector2::ZERO);
     m_propertiesForAllStates.Set<Vector2>("Size", Vector2::ONE);
     m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::WHITE);
@@ -70,6 +72,7 @@ AABB2 WidgetBase::GetSmallestBoundsAroundChildren()
 //-----------------------------------------------------------------------------------
 void WidgetBase::BuildFromXMLNode(XMLNode& node)
 {
+    const char* nameAttribute = node.getAttribute("Name");
     const char* horizontalOffset = node.getAttribute("HorizontalOffset");
     const char* verticalOffset = node.getAttribute("VerticalOffset");
     const char* backgroundColorAttribute = node.getAttribute("BackgroundColor");
@@ -104,8 +107,14 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     }
     if (onClickAttribute)
     {
-        std::string event = std::string(onClickAttribute);
-        m_propertiesForAllStates.Set("OnClick", event);
+        std::string eventName = std::string(onClickAttribute);
+        m_propertiesForAllStates.Set("OnClick", eventName);
+    }
+    if (nameAttribute)
+    {
+        std::string name = std::string(nameAttribute);
+        m_propertiesForAllStates.Set("Name", name);
+        m_name = name;
     }
 
     m_propertiesForAllStates.Set<Vector2>("Offset", offset);
