@@ -41,6 +41,7 @@ public:
     mutable NamedProperties m_propertiesForAllStates;
     mutable NamedProperties m_propertiesPerState[NUM_STATES];
     std::vector<WidgetBase*> m_children;
+    std::string m_name;
     AABB2 m_bounds;
     WidgetBase* m_parent = nullptr;
     WidgetState m_currentState = ACTIVE_WIDGET_STATE;
