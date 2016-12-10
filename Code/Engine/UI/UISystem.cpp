@@ -32,14 +32,17 @@ void UISystem::Update(float deltaSeconds)
     WidgetBase* newHighlightedWidget = FindHighlightedWidget();
     if (newHighlightedWidget != m_highlightedWidget)
     {
-        //m_highlightedWidget->StopBehingHighlighted();
+        //m_highlightedWidget->StopBeingHighlighted();
         //newHighlightedWidget->StartBeingHighlighted();
         m_highlightedWidget = newHighlightedWidget;
     }
 
     if (InputSystem::instance->WasMouseButtonJustPressed(InputSystem::LEFT_MOUSE_BUTTON))
     {
-        m_highlightedWidget->OnClick();
+        if (m_highlightedWidget)
+        {
+            m_highlightedWidget->OnClick();
+        }
     }
 
     for (WidgetBase* widget : m_childWidgets)
@@ -119,8 +122,38 @@ WidgetBase* UISystem::CreateWidget(const std::string& name)
 }
 
 //-----------------------------------------------------------------------------------
+Vector2 UISystem::ScreenToUIVirtualCoords(const Vector2& point)
+{
+#pragma todo("Make this relative too, please ;w;")
+    float adjustedY = 900 - point.y;
+    return Vector2(point.x, adjustedY);
+}
+
+//-----------------------------------------------------------------------------------
 WidgetBase* UISystem::FindHighlightedWidget()
 {
-    return m_childWidgets[0];
+    Vector2 cursorVirtualPos = GetCursorVirtualPos();
+    WidgetBase* widgetAtPos = nullptr;
+
+    for (WidgetBase* widget : m_childWidgets)
+    {
+        WidgetBase* foundWidget = widget->GetWidgetPointIsInside(cursorVirtualPos);
+        if (foundWidget)
+        {
+            widgetAtPos = foundWidget;
+            break;
+        }
+    }
+    
+    return widgetAtPos;
+}
+
+//-----------------------------------------------------------------------------------
+Vector2 UISystem::GetCursorVirtualPos()
+{
+    Vector2 cursorPos = static_cast<Vector2>(InputSystem::instance->GetMousePos());
+    Vector2 virtualCursorPos = ScreenToUIVirtualCoords(cursorPos);
+    DebuggerPrintf("X: %f, Y:%f\n", virtualCursorPos.x, virtualCursorPos.y);
+    return virtualCursorPos;
 }
 

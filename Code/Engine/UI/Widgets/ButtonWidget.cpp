@@ -5,13 +5,13 @@
 #include "Engine/Renderer/MeshBuilder.hpp"
 #include "Engine/Renderer/MeshRenderer.hpp"
 #include "Engine/Renderer/Material.hpp"
+#include "../UISystem.hpp"
 
 //-----------------------------------------------------------------------------------
 ButtonWidget::ButtonWidget()
-    : WidgetBase()
+    : LabelWidget()
 {
-    m_textLabel = new LabelWidget();
-    AddChild(m_textLabel);
+
 }
 
 //-----------------------------------------------------------------------------------
@@ -23,7 +23,7 @@ ButtonWidget::~ButtonWidget()
 //-----------------------------------------------------------------------------------
 void ButtonWidget::Update(float deltaSeconds)
 {
-    WidgetBase::Update(deltaSeconds);
+    LabelWidget::Update(deltaSeconds);
 }
 
 //-----------------------------------------------------------------------------------
@@ -39,32 +39,17 @@ void ButtonWidget::Render() const
 //     GL_CHECK_ERROR();
 //     thingToRender.Render();
 
-    RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
-    RGBA borderColor = m_propertiesForAllStates.Get<RGBA>("BorderColor");
-    float borderWidth = m_propertiesForAllStates.Get<float>("BorderWidth");
-    
-    if (borderWidth > 0.0f)
+    LabelWidget::Render();
+    if (UISystem::instance->m_highlightedWidget == this)
     {
-        AABB2 borderBounds = m_bounds;
-        borderBounds.mins += Vector2(-borderWidth);
-        borderBounds.maxs += Vector2(borderWidth);
-        Renderer::instance->DrawAABB(borderBounds, borderColor);
+        Renderer::instance->DrawAABB(m_bounds, RGBA(0xff000077));
     }
-
-    Renderer::instance->DrawAABB(m_bounds, bgColor);
-
-    WidgetBase::Render();
 }
 
 //-----------------------------------------------------------------------------------
 void ButtonWidget::BuildFromXMLNode(XMLNode& node)
 {
-    std::string name = node.getName();
-    if (name == "Button")
-    {
-        WidgetBase::BuildFromXMLNode(node);
-    }
-    m_textLabel->BuildFromXMLNode(node);
+    LabelWidget::BuildFromXMLNode(node);
 
     RecalculateBounds();
 }
@@ -72,6 +57,6 @@ void ButtonWidget::BuildFromXMLNode(XMLNode& node)
 //-----------------------------------------------------------------------------------
 void ButtonWidget::RecalculateBounds()
 {
-    m_bounds = GetSmallestBoundsAroundChildren();
+    LabelWidget::RecalculateBounds();
     m_bounds += m_propertiesForAllStates.Get<Vector2>("Offset");
 }

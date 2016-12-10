@@ -85,14 +85,18 @@ void InputSystem::Update(float deltaSeconds)
         BOOL success = GetCursorPos(&cursorPos);
         if (success)
         {
-            m_cursorPosition = Vector2Int(cursorPos.x, cursorPos.y);
-            m_cursorDelta.x = cursorPos.x - SNAP_BACK_X;
-            m_cursorDelta.y = cursorPos.y - SNAP_BACK_Y;
-            m_mouseDevice->SetDelta(m_cursorDelta);
-            if (!m_isCursorVisible && m_captureCursor)
+            if (ScreenToClient(hWnd, &cursorPos))
             {
-                SetCursorPos(SNAP_BACK_X, SNAP_BACK_Y);
+                m_cursorPosition = Vector2Int(cursorPos.x, cursorPos.y);
+                m_cursorDelta.x = cursorPos.x - SNAP_BACK_X;
+                m_cursorDelta.y = cursorPos.y - SNAP_BACK_Y;
+                m_mouseDevice->SetDelta(m_cursorDelta);
+                if (!m_isCursorVisible && m_captureCursor)
+                {
+                    SetCursorPos(SNAP_BACK_X, SNAP_BACK_Y);
+                }
             }
+
         }
     }
 

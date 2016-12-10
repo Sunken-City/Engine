@@ -1,10 +1,8 @@
 #pragma once
-#include "Engine\UI\WidgetBase.hpp"
-
-class LabelWidget;
+#include "Engine\UI\Widgets\LabelWidget.hpp"
 
 //-----------------------------------------------------------------------------------
-class ButtonWidget : public WidgetBase
+class ButtonWidget : public LabelWidget
 {
 public:
     ButtonWidget();
@@ -14,9 +12,5 @@ public:
     virtual void Update(float deltaSeconds);
     virtual void Render() const;
     virtual void BuildFromXMLNode(XMLNode& node) override;
-    virtual void RecalculateBounds() override;    
-
-private:
-    std::string m_onClickEventName;
-    LabelWidget* m_textLabel;
+    virtual void RecalculateBounds() override;
 };
