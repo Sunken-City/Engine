@@ -20,11 +20,7 @@ LabelWidget::~LabelWidget()
 //-----------------------------------------------------------------------------------
 void LabelWidget::BuildFromXMLNode(XMLNode& node)
 {
-    std::string name = node.getName();
-    if (name == "Label")
-    {
-        WidgetBase::BuildFromXMLNode(node);
-    }
+    WidgetBase::BuildFromXMLNode(node);
 
     const char* textAttribute = node.getAttribute("Text");
     const char* textColorAttribute = node.getAttribute("TextColor");
@@ -64,17 +60,27 @@ void LabelWidget::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void LabelWidget::Render() const
 {
-    WidgetBase::Render();
-
-    std::string text;
-    RGBA textColor;
-    float fontSize;
-
-    PropertyGetResult textGet = m_propertiesForAllStates.Get<std::string>("Text", text);
-    PropertyGetResult textColorGet = m_propertiesForAllStates.Get<RGBA>("TextColor", textColor);
-    PropertyGetResult fontSizeGet = m_propertiesForAllStates.Get<float>("FontSize", fontSize);
-
+    std::string text = m_propertiesForAllStates.Get<std::string>("Text");
+    RGBA textColor = m_propertiesForAllStates.Get<RGBA>("TextColor");
+    float fontSize = m_propertiesForAllStates.Get<float>("FontSize");
+    RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
+    RGBA borderColor = m_propertiesForAllStates.Get<RGBA>("BorderColor");
+    float borderWidth = m_propertiesForAllStates.Get<float>("BorderWidth");
     Vector2 currentBaseline = GetParentOffsets() + m_propertiesForAllStates.Get<Vector2>("Offset");
+
+    if (borderWidth > 0.0f)
+    {
+        AABB2 borderBounds = m_bounds;
+        borderBounds.mins += Vector2(-borderWidth);
+        borderBounds.maxs += Vector2(borderWidth);
+        Renderer::instance->DrawAABB(borderBounds, borderColor);
+    }
+    if (bgColor.alpha > 0.0f)
+    {
+        Renderer::instance->DrawAABB(m_bounds, bgColor);
+    }
     Renderer::instance->DrawText2D(currentBaseline, text, fontSize, textColor, true, BitmapFont::CreateOrGetFont("Runescape"));
+
+    WidgetBase::Render();
 }
 

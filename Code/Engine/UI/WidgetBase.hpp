@@ -34,6 +34,7 @@ public:
     virtual void RecalculateBounds() = 0;
     virtual void BuildFromXMLNode(XMLNode& node);
     virtual void OnClick();
+    virtual WidgetBase* GetWidgetPointIsInside(const Vector2& point); //Is this inside you or any of your children?
     Vector2 GetParentOffsets() const;
     Matrix4x4 GetModelMatrix() const;
 

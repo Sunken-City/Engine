@@ -18,13 +18,16 @@ public:
     void DeleteAllUI();
     WidgetBase* CreateWidget(const std::string& name);
 
+    static Vector2 ScreenToUIVirtualCoords(const Vector2& cursorPos);
+
 private:
     WidgetBase* CreateWidget(XMLNode& node);
     WidgetBase* FindHighlightedWidget();
+    Vector2 GetCursorVirtualPos();
 
 public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     static UISystem* instance;
     std::vector<WidgetBase*> m_childWidgets;
-    WidgetBase* m_highlightedWidget;
+    WidgetBase* m_highlightedWidget = nullptr;
 };

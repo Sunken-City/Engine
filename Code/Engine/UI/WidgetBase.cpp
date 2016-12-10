@@ -156,3 +156,17 @@ Matrix4x4 WidgetBase::GetModelMatrix() const
     Matrix4x4::MatrixMakeTranslation(&model, Vector3(m_propertiesForAllStates.Get<Vector2>("Offset"), 0.0f));
     return model;
 }
+
+//-----------------------------------------------------------------------------------
+WidgetBase* WidgetBase::GetWidgetPointIsInside(const Vector2& point)
+{
+    for (WidgetBase* child : m_children) //Ask in the appropriate drawing order
+    {
+        WidgetBase* widget = child->GetWidgetPointIsInside(point);
+        if (widget)
+        {
+            return widget;
+        }
+    }
+    return m_bounds.IsPointOnOrInside(point) ? this : nullptr;
+}
