@@ -102,10 +102,10 @@ inline RGBA operator-(RGBA lhs, unsigned char rhs)
 inline RGBA operator-(const RGBA& lhs, const RGBA& rhs)
 {
     RGBA result;
-    result.red   = Clamp<uchar>(lhs.red - rhs.red, 0x00, 0xFF);
-    result.green = Clamp<uchar>(lhs.green - rhs.green, 0x00, 0xFF);
-    result.blue  = Clamp<uchar>(lhs.blue - rhs.blue, 0x00, 0xFF);
-    result.alpha = Clamp<uchar>(lhs.alpha - rhs.alpha, 0x00, 0xFF);
+    result.red   = ClampedSubtraction(lhs.red, rhs.red);
+    result.green = ClampedSubtraction(lhs.green, rhs.green);
+    result.blue  = ClampedSubtraction(lhs.blue, rhs.blue);
+    result.alpha = ClampedSubtraction(lhs.alpha, rhs.alpha);
     return result;
 }
 
@@ -113,10 +113,10 @@ inline RGBA operator-(const RGBA& lhs, const RGBA& rhs)
 inline RGBA operator+(const RGBA& lhs, const RGBA& rhs)
 {
     RGBA result;
-    result.red   = Clamp<uchar>(lhs.red + rhs.red, 0x00, 0xFF);
-    result.green = Clamp<uchar>(lhs.green + rhs.green, 0x00, 0xFF);
-    result.blue  = Clamp<uchar>(lhs.blue + rhs.blue, 0x00, 0xFF);
-    result.alpha = Clamp<uchar>(lhs.alpha + rhs.alpha, 0x00, 0xFF);
+    result.red   = ClampedAddition(lhs.red, rhs.red);
+    result.green = ClampedAddition(lhs.green, rhs.green);
+    result.blue  = ClampedAddition(lhs.blue, rhs.blue);
+    result.alpha = ClampedAddition(lhs.alpha, rhs.alpha);
     return result;
 }
 

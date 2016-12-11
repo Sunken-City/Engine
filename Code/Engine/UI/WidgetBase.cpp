@@ -13,15 +13,14 @@ WidgetBase::WidgetBase()
     m_propertiesForAllStates.Set<Vector2>("Offset", Vector2::ZERO);
     m_propertiesForAllStates.Set<Vector2>("Size", Vector2::ONE);
     m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::KINDA_GRAY);
-    m_propertiesForAllStates.Set<RGBA>("BorderColor", RGBA::WHITE);
+    m_propertiesForAllStates.Set<RGBA>("BorderColor", RGBA::KINDA_GRAY);
     m_propertiesForAllStates.Set<float>("Opacity", 1.0f);
     m_propertiesForAllStates.Set<float>("BorderWidth", 0.0f);
 
-    m_propertiesForState[HIGHLIGHTED_WIDGET_STATE].Set<RGBA>("BackgroundColor", RGBA::WHITE);
-    m_propertiesForState[PRESSED_WIDGET_STATE].Set<RGBA>("BackgroundColor", RGBA::VERY_GRAY);
-
-    m_propertiesForState[HIGHLIGHTED_WIDGET_STATE].Set<RGBA>("BorderColor", RGBA::WHITE);
-    m_propertiesForState[PRESSED_WIDGET_STATE].Set<RGBA>("BorderColor", RGBA::VERY_GRAY);
+    SetProperty("BackgroundColor", RGBA::WHITE, HIGHLIGHTED_WIDGET_STATE);
+    SetProperty("BackgroundColor", RGBA::VERY_GRAY, PRESSED_WIDGET_STATE);
+    SetProperty("BorderColor", RGBA::WHITE, HIGHLIGHTED_WIDGET_STATE);
+    SetProperty("BorderColor", RGBA::VERY_GRAY, PRESSED_WIDGET_STATE);
 }
 
 //-----------------------------------------------------------------------------------
@@ -87,6 +86,8 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     const char* onClickAttribute = node.getAttribute("OnClick");
     const char* h_backgroundColorAttribute = node.getAttribute("H_BackgroundColor");
     const char* h_borderColorAttribute = node.getAttribute("H_BorderColor");
+    const char* p_backgroundColorAttribute = node.getAttribute("P_BackgroundColor");
+    const char* p_borderColorAttribute = node.getAttribute("P_BorderColor");
 
     Vector2 offset = m_propertiesForAllStates.Get<Vector2>("Offset");
     RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
@@ -127,22 +128,42 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
 
     if (h_backgroundColorAttribute)
     {
-        m_propertiesForState[HIGHLIGHTED_WIDGET_STATE].Set<RGBA>("BackgroundColor", RGBA::CreateFromString(h_backgroundColorAttribute));
+        SetProperty("BackgroundColor", RGBA::CreateFromString(h_backgroundColorAttribute), HIGHLIGHTED_WIDGET_STATE);
     }
     else
     {
         RGBA highlightedColor = bgColor + RGBA(0x22222200);
-        m_propertiesForState[HIGHLIGHTED_WIDGET_STATE].Set<RGBA>("BackgroundColor", highlightedColor);
+        SetProperty("BackgroundColor", highlightedColor, HIGHLIGHTED_WIDGET_STATE);
     }
 
     if (h_borderColorAttribute)
     {
-        m_propertiesForState[HIGHLIGHTED_WIDGET_STATE].Set<RGBA>("BorderColor", RGBA::CreateFromString(h_borderColorAttribute));
+        SetProperty("BorderColor", RGBA::CreateFromString(h_borderColorAttribute), HIGHLIGHTED_WIDGET_STATE);
     }
     else
     {
         RGBA highlightedColor = edgeColor + RGBA(0x22222200);
-        m_propertiesForState[HIGHLIGHTED_WIDGET_STATE].Set<RGBA>("BorderColor", highlightedColor);
+        SetProperty("BorderColor", highlightedColor, HIGHLIGHTED_WIDGET_STATE);
+    }
+
+    if (p_backgroundColorAttribute)
+    {
+        SetProperty("BackgroundColor", RGBA::CreateFromString(p_backgroundColorAttribute), PRESSED_WIDGET_STATE);
+    }
+    else
+    {
+        RGBA pressedColor = bgColor - RGBA(0x22222200);
+        SetProperty("BackgroundColor", pressedColor, PRESSED_WIDGET_STATE);
+    }
+
+    if (p_borderColorAttribute)
+    {
+        SetProperty("BorderColor", RGBA::CreateFromString(p_borderColorAttribute), PRESSED_WIDGET_STATE);
+    }
+    else
+    {
+        RGBA pressedColor = edgeColor - RGBA(0x22222200);
+        SetProperty("BorderColor", pressedColor, PRESSED_WIDGET_STATE);
     }
 
     m_propertiesForAllStates.Set<Vector2>("Offset", offset);
@@ -162,6 +183,7 @@ void WidgetBase::OnClick()
     {
         EventSystem::FireEvent(clickEvent);
     }
+    UnsetPressed();
 }
 
 //-----------------------------------------------------------------------------------

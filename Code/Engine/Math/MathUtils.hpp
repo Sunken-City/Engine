@@ -122,6 +122,20 @@ inline T Clamp(const T& inputValue, const T& min, const T& max)
     }
 }
 
+//---------------------------------------------------------------------------------
+inline uchar ClampedAddition(uchar first, uchar second)
+{
+    uchar sum = first + second;
+    return sum < first ? 0xFF : sum;
+}
+
+//---------------------------------------------------------------------------------
+inline uchar ClampedSubtraction(uchar first, uchar second)
+{
+    uchar sum = first - second;
+    return sum > first ? 0x00 : sum;
+}
+
 // 
 // #include "Engine/Math/Vector4.hpp"
 // 

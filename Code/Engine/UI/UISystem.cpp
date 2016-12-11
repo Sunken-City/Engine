@@ -50,8 +50,12 @@ void UISystem::Update(float deltaSeconds)
         }
         m_highlightedWidget = newHighlightedWidget;
     }
+    if (InputSystem::instance->IsMouseButtonDown(InputSystem::LEFT_MOUSE_BUTTON) && m_highlightedWidget)
+    {
+        m_highlightedWidget->SetPressed();
+    }
 
-    if (InputSystem::instance->WasMouseButtonJustPressed(InputSystem::LEFT_MOUSE_BUTTON))
+    if (InputSystem::instance->WasMouseButtonJustReleased(InputSystem::LEFT_MOUSE_BUTTON))
     {
         if (m_highlightedWidget)
         {
