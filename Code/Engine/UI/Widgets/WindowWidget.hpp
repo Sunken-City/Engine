@@ -1,12 +1,12 @@
 #pragma once
 #include "Engine/UI/WidgetBase.hpp"
 
-class LabelWidget : public WidgetBase
+class WindowWidget : public WidgetBase
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
-    LabelWidget();
-    virtual ~LabelWidget();
+    WindowWidget();
+    virtual ~WindowWidget();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     virtual void Update(float deltaSeconds) override;

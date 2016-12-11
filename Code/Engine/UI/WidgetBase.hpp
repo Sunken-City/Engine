@@ -79,7 +79,9 @@ public:
     }
 
     virtual void Update(float deltaSeconds);
+    void UpdateChildren(float deltaSeconds);
     virtual void Render() const;
+    void RenderChildren() const;
     virtual void AddChild(WidgetBase* child);
     virtual AABB2 GetBounds() { return m_bounds; };
     virtual AABB2 GetSmallestBoundsAroundChildren();
@@ -98,6 +100,7 @@ public:
     bool IsClickable();
     bool SetWidgetVisibility(const std::string& name, bool setHidden = true);
     Vector2 GetParentOffsets() const;
+    float GetParentOpacities() const;
     Matrix4x4 GetModelMatrix() const;
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////

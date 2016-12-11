@@ -29,7 +29,7 @@ UISystem::UISystem()
     child->SetProperty<std::string>("OnClick", "StartGame");
     child->SetProperty("BackgroundColor", RGBA::GBDARKGREEN, WidgetState::HIGHLIGHTED_WIDGET_STATE);
     child->SetProperty("Offset", Vector2(0, 50));
-    child->SetProperty("FontSize", 0.5f);
+    child->SetProperty("TextSize", 0.5f);
     child->SetProperty("BorderWidth", 5.0f);
     child->m_currentState = WidgetState::ACTIVE_WIDGET_STATE;
     button->AddChild(child);
