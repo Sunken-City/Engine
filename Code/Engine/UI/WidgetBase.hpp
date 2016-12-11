@@ -92,6 +92,8 @@ public:
     virtual void SetPressed() { m_currentState = PRESSED_WIDGET_STATE; };
     virtual void UnsetPressed() { m_currentState = m_previousState; };
     inline bool IsHighlighted() const { return m_currentState == HIGHLIGHTED_WIDGET_STATE; };
+    inline bool IsHidden() const { return m_currentState == HIDDEN_WIDGET_STATE; };
+    bool IsClickable();
     Vector2 GetParentOffsets() const;
     Matrix4x4 GetModelMatrix() const;
 

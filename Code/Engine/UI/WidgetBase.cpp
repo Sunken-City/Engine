@@ -13,14 +13,17 @@ WidgetBase::WidgetBase()
     m_propertiesForAllStates.Set<Vector2>("Offset", Vector2::ZERO);
     m_propertiesForAllStates.Set<Vector2>("Size", Vector2::ONE);
     m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::KINDA_GRAY);
-    m_propertiesForAllStates.Set<RGBA>("BorderColor", RGBA::KINDA_GRAY);
+    m_propertiesForAllStates.Set<RGBA>("BorderColor", RGBA::GRAY);
     m_propertiesForAllStates.Set<float>("Opacity", 1.0f);
     m_propertiesForAllStates.Set<float>("BorderWidth", 0.0f);
 
     SetProperty("BackgroundColor", RGBA::WHITE, HIGHLIGHTED_WIDGET_STATE);
-    SetProperty("BackgroundColor", RGBA::VERY_GRAY, PRESSED_WIDGET_STATE);
+    SetProperty("BackgroundColor", RGBA::GRAY, PRESSED_WIDGET_STATE);
+    SetProperty("BackgroundColor", RGBA::VERY_GRAY, DISABLED_WIDGET_STATE);
     SetProperty("BorderColor", RGBA::WHITE, HIGHLIGHTED_WIDGET_STATE);
     SetProperty("BorderColor", RGBA::VERY_GRAY, PRESSED_WIDGET_STATE);
+    SetProperty("BorderColor", RGBA::BLACK, DISABLED_WIDGET_STATE);
+    SetProperty("TextColor", RGBA::GRAY, DISABLED_WIDGET_STATE);
 }
 
 //-----------------------------------------------------------------------------------
@@ -35,6 +38,11 @@ WidgetBase::~WidgetBase()
 //-----------------------------------------------------------------------------------
 void WidgetBase::Update(float deltaSeconds)
 {
+    if (IsHidden())
+    {
+        return;
+    }
+
     for (WidgetBase* child : m_children)
     {
         child->Update(deltaSeconds);
@@ -44,6 +52,11 @@ void WidgetBase::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void WidgetBase::Render() const
 {
+    if (IsHidden())
+    {
+        return;
+    }
+
     for (WidgetBase* child : m_children)
     {
         child->Render();
@@ -205,6 +218,12 @@ Matrix4x4 WidgetBase::GetModelMatrix() const
     Matrix4x4 model = Matrix4x4::IDENTITY;
     Matrix4x4::MatrixMakeTranslation(&model, Vector3(m_propertiesForAllStates.Get<Vector2>("Offset"), 0.0f));
     return model;
+}
+
+//-----------------------------------------------------------------------------------
+bool WidgetBase::IsClickable()
+{
+    return !(m_currentState == DISABLED_WIDGET_STATE || m_currentState == HIDDEN_WIDGET_STATE);
 }
 
 //-----------------------------------------------------------------------------------
