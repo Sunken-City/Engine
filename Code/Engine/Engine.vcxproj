@@ -108,6 +108,7 @@
     <ClCompile Include="UI\WidgetBase.cpp" />
     <ClCompile Include="UI\Widgets\ButtonWidget.cpp" />
     <ClCompile Include="UI\Widgets\LabelWidget.cpp" />
+    <ClCompile Include="UI\Widgets\WindowWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\ThirdParty\OpenGL\glext.h" />
@@ -210,6 +211,7 @@
     <ClInclude Include="UI\WidgetBase.hpp" />
     <ClInclude Include="UI\Widgets\ButtonWidget.hpp" />
     <ClInclude Include="UI\Widgets\LabelWidget.hpp" />
+    <ClInclude Include="UI\Widgets\WindowWidget.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{ADF625C9-96EC-4C9F-B6F0-235762D622AE}</ProjectGuid>

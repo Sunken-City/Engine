@@ -519,7 +519,9 @@ void Renderer::DrawText2D
         if (drawShadow)
         {
             AABB2 shadowBounds = AABB2(currentPosition + SHADOW_OFFSET, topRight + SHADOW_OFFSET);
-            builder.AddTexturedAABB(shadowBounds, glyphBounds.mins, glyphBounds.maxs, RGBA::BLACK);
+            RGBA shadowColor = RGBA::BLACK;
+            shadowColor.alpha = tint.alpha;
+            builder.AddTexturedAABB(shadowBounds, glyphBounds.mins, glyphBounds.maxs, shadowColor);
         }
         builder.AddTexturedAABB(quadBounds, glyphBounds.mins, glyphBounds.maxs, tint);
         currentPosition.x += cellWidth;
@@ -577,7 +579,9 @@ void Renderer::DrawText2D(const Vector2& position, const std::string& asciiText,
             float shadowHeightOffset = glyphHeight / -10.0f;
             Vector2 shadowOffset = Vector2(shadowWidthOffset, shadowHeightOffset);
             AABB2 shadowBounds = AABB2(bottomLeft + shadowOffset, topRight + shadowOffset);
-            builder.AddTexturedAABB(shadowBounds, glyphBounds.mins, glyphBounds.maxs, RGBA::BLACK);
+            RGBA shadowColor = RGBA::BLACK;
+            shadowColor.alpha = tint.alpha;
+            builder.AddTexturedAABB(shadowBounds, glyphBounds.mins, glyphBounds.maxs, shadowColor);
         }
         builder.AddTexturedAABB(quadBounds, glyphBounds.mins, glyphBounds.maxs, tint);
         cursorPosition.x += glyph->xAdvance * scale;

@@ -42,7 +42,13 @@ void WidgetBase::Update(float deltaSeconds)
     {
         return;
     }
+    UpdateChildren(deltaSeconds);
 
+}
+
+//-----------------------------------------------------------------------------------
+void WidgetBase::UpdateChildren(float deltaSeconds)
+{
     for (WidgetBase* child : m_children)
     {
         child->Update(deltaSeconds);
@@ -56,7 +62,31 @@ void WidgetBase::Render() const
     {
         return;
     }
+    float borderWidth = GetProperty<float>("BorderWidth");
+    RGBA bgColor = GetProperty<RGBA>("BackgroundColor");
+    RGBA borderColor = GetProperty<RGBA>("BorderColor");
+    float opacity = GetProperty<float>("Opacity");
 
+    if (borderWidth > 0.0f)
+    {
+        AABB2 borderBounds = m_bounds;
+        borderBounds.mins += Vector2(-borderWidth);
+        borderBounds.maxs += Vector2(borderWidth);
+        Renderer::instance->DrawAABB(borderBounds, borderColor);
+    }
+    if (bgColor.alpha > 0.0f)
+    {
+        Renderer::instance->DrawAABB(m_bounds, bgColor);
+    }
+
+    opacity *= GetParentOpacities();
+    bgColor.alpha = (uchar)((((float)bgColor.alpha / 255.0f) * opacity) * 255.0f);
+    borderColor.alpha = (uchar)((((float)borderColor.alpha / 255.0f) * opacity) * 255.0f);
+}
+
+//-----------------------------------------------------------------------------------
+void WidgetBase::RenderChildren() const
+{
     for (WidgetBase* child : m_children)
     {
         child->Render();
@@ -224,6 +254,19 @@ Vector2 WidgetBase::GetParentOffsets() const
         parent = parent->m_parent;
     }
     return parentOffsets;
+}
+
+//-----------------------------------------------------------------------------------
+float WidgetBase::GetParentOpacities() const
+{
+    float parentOpacities = 1.0f;
+    WidgetBase* parent = m_parent;
+    while (parent)
+    {
+        parentOpacities *= parent->m_propertiesForAllStates.Get<float>("Opacity");
+        parent = parent->m_parent;
+    }
+    return parentOpacities;
 }
 
 //-----------------------------------------------------------------------------------
