@@ -1,5 +1,8 @@
 #pragma once
 #include <string>
+#include "Engine\Math\MathUtils.hpp"
+
+typedef unsigned char uchar;
 
 class Vector4;
 
@@ -99,13 +102,23 @@ inline RGBA operator-(RGBA lhs, unsigned char rhs)
 inline RGBA operator-(const RGBA& lhs, const RGBA& rhs)
 {
     RGBA result;
-    result.red = lhs.red - rhs.red;
-    result.green = lhs.green - rhs.green;
-    result.blue = lhs.blue - rhs.blue;
-    result.alpha = lhs.alpha - rhs.alpha;
+    result.red   = Clamp<uchar>(lhs.red - rhs.red, 0x00, 0xFF);
+    result.green = Clamp<uchar>(lhs.green - rhs.green, 0x00, 0xFF);
+    result.blue  = Clamp<uchar>(lhs.blue - rhs.blue, 0x00, 0xFF);
+    result.alpha = Clamp<uchar>(lhs.alpha - rhs.alpha, 0x00, 0xFF);
     return result;
 }
 
+//---------------------------------------------------------------------------
+inline RGBA operator+(const RGBA& lhs, const RGBA& rhs)
+{
+    RGBA result;
+    result.red   = Clamp<uchar>(lhs.red + rhs.red, 0x00, 0xFF);
+    result.green = Clamp<uchar>(lhs.green + rhs.green, 0x00, 0xFF);
+    result.blue  = Clamp<uchar>(lhs.blue + rhs.blue, 0x00, 0xFF);
+    result.alpha = Clamp<uchar>(lhs.alpha + rhs.alpha, 0x00, 0xFF);
+    return result;
+}
 
 //---------------------------------------------------------------------------
 inline RGBA RGBA::CreateFromUChars(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha)

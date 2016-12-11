@@ -98,23 +98,6 @@ float MathUtils::RangeMap(float inValue, float min1, float max1, float min2, flo
 }
 
 //-----------------------------------------------------------------------------------
-int MathUtils::Clamp(int inputValue, int min, int max)
-{
-    if (inputValue < min)
-    {
-        return min;
-    }
-    else if (inputValue > max)
-    {
-        return max;
-    }
-    else
-    {
-        return inputValue;
-    }
-}
-
-//-----------------------------------------------------------------------------------
 float MathUtils::Clamp(float inputValue, float min, float max)
 {
     if (inputValue < min)
