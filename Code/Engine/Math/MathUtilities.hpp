@@ -196,19 +196,19 @@ inline float GetMaxFloat( const float a, const float b, const float c, const flo
 	}
 }
 
-
-//-----------------------------------------------------------------------------------------------
-template< typename T >
-T Clamp( const T& originalValue, const T& minValue, const T& maxValue )
-{
-	T clampedValue = originalValue;
-	if( clampedValue < minValue )
-		clampedValue = minValue;
-	else if( clampedValue > maxValue )
-		clampedValue = maxValue;
-
-	return clampedValue;
-}
+// 
+// //-----------------------------------------------------------------------------------------------
+// template< typename T >
+// T Clamp( const T& originalValue, const T& minValue, const T& maxValue )
+// {
+// 	T clampedValue = originalValue;
+// 	if( clampedValue < minValue )
+// 		clampedValue = minValue;
+// 	else if( clampedValue > maxValue )
+// 		clampedValue = maxValue;
+// 
+// 	return clampedValue;
+// }
 
 
 //-----------------------------------------------------------------------------------------------

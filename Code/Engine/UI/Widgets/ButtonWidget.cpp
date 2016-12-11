@@ -40,10 +40,6 @@ void ButtonWidget::Render() const
 //     thingToRender.Render();
 
     LabelWidget::Render();
-    if (UISystem::instance->m_highlightedWidget == this)
-    {
-        Renderer::instance->DrawAABB(m_bounds, RGBA(0xff000077));
-    }
 }
 
 //-----------------------------------------------------------------------------------

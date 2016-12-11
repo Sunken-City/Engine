@@ -63,9 +63,9 @@ void LabelWidget::Render() const
     std::string text = m_propertiesForAllStates.Get<std::string>("Text");
     RGBA textColor = m_propertiesForAllStates.Get<RGBA>("TextColor");
     float fontSize = m_propertiesForAllStates.Get<float>("FontSize");
-    RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
-    RGBA borderColor = m_propertiesForAllStates.Get<RGBA>("BorderColor");
     float borderWidth = m_propertiesForAllStates.Get<float>("BorderWidth");
+    RGBA bgColor = IsHighlighted() ? m_propertiesForState[HIGHLIGHTED_WIDGET_STATE].Get<RGBA>("BackgroundColor") : m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
+    RGBA borderColor = IsHighlighted() ? m_propertiesForState[HIGHLIGHTED_WIDGET_STATE].Get<RGBA>("BorderColor") : m_propertiesForAllStates.Get<RGBA>("BorderColor");
     Vector2 currentBaseline = GetParentOffsets() + m_propertiesForAllStates.Get<Vector2>("Offset");
 
     if (borderWidth > 0.0f)

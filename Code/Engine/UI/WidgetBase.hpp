@@ -35,16 +35,20 @@ public:
     virtual void BuildFromXMLNode(XMLNode& node);
     virtual void OnClick();
     virtual WidgetBase* GetWidgetPointIsInside(const Vector2& point); //Is this inside you or any of your children?
+    virtual void SetHighlighted() { m_previousState = m_currentState; m_currentState = HIGHLIGHTED_WIDGET_STATE; };
+    virtual void UnsetHighlighted() { m_currentState = m_previousState; };
+    inline bool IsHighlighted() const { return m_currentState == HIGHLIGHTED_WIDGET_STATE; };
     Vector2 GetParentOffsets() const;
     Matrix4x4 GetModelMatrix() const;
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     mutable NamedProperties m_propertiesForAllStates;
-    mutable NamedProperties m_propertiesPerState[NUM_STATES];
+    mutable NamedProperties m_propertiesForState[NUM_STATES];
     std::vector<WidgetBase*> m_children;
     std::string m_name;
     AABB2 m_bounds;
     WidgetBase* m_parent = nullptr;
+    WidgetState m_previousState = ACTIVE_WIDGET_STATE;
     WidgetState m_currentState = ACTIVE_WIDGET_STATE;
     const bool m_isInteractive = true;
 };

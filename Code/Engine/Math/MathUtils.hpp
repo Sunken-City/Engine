@@ -23,7 +23,6 @@ public:
     static float RangeMap(float inValue, float min1, float max1, float min2, float max2);
     static float Clamp(float inputValue);
     static float Clamp(float inputValue, float min, float max);
-    static int Clamp(int inputValue, int min, int max);
     static Vector3 Clamp(const Vector3& inputValue, float min, float max);
     static Vector3 RemoveDirectionalComponent(const Vector3& original, const Vector3& directionToStripOut);
 
@@ -101,6 +100,25 @@ inline T Min(const T& first, const T& second)
     else
     {
         return second;
+    }
+}
+
+
+//-----------------------------------------------------------------------------------
+template <typename T>
+inline T Clamp(const T& inputValue, const T& min, const T& max)
+{
+    if (inputValue < min)
+    {
+        return min;
+    }
+    else if (inputValue > max)
+    {
+        return max;
+    }
+    else
+    {
+        return inputValue;
     }
 }
 

@@ -32,8 +32,14 @@ void UISystem::Update(float deltaSeconds)
     WidgetBase* newHighlightedWidget = FindHighlightedWidget();
     if (newHighlightedWidget != m_highlightedWidget)
     {
-        //m_highlightedWidget->StopBeingHighlighted();
-        //newHighlightedWidget->StartBeingHighlighted();
+        if (m_highlightedWidget)
+        {
+            m_highlightedWidget->UnsetHighlighted();
+        }
+        if (newHighlightedWidget)
+        {
+            newHighlightedWidget->SetHighlighted();
+        }
         m_highlightedWidget = newHighlightedWidget;
     }
 
