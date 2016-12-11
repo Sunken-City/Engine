@@ -24,7 +24,7 @@ private:
     WidgetBase* CreateWidget(XMLNode& node);
     WidgetBase* FindHighlightedWidget();
     Vector2 GetCursorVirtualPos();
-
+    void AddWidget(WidgetBase* newWidget);
 public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     static UISystem* instance;

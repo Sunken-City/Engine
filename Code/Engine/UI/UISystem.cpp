@@ -13,6 +13,14 @@ UISystem* UISystem::instance = nullptr;
 UISystem::UISystem()
 {
     LoadAndParseUIXML();
+    WidgetBase* button = CreateWidget("Button");
+    button->SetProperty<std::string>("Name", "CodeButton");
+    button->SetProperty<std::string>("Text", "I AM FROM CODE!");
+    button->SetProperty<std::string>("OnClick", "StartGame");
+    button->SetProperty("BackgroundColor", RGBA::TURQUOISE, WidgetState::HIGHLIGHTED_WIDGET_STATE);
+    button->SetProperty("Offset", Vector2(700, 20));
+    button->SetProperty("BorderWidth", 5.0f);
+    AddWidget(button);
 }
 
 //-----------------------------------------------------------------------------------
@@ -82,7 +90,7 @@ void UISystem::LoadAndParseUIXML()
     {
         if (!node.isEmpty())
         {
-            m_childWidgets.push_back(CreateWidget(node));
+            AddWidget(CreateWidget(node));
         }
     }
 }
@@ -161,5 +169,13 @@ Vector2 UISystem::GetCursorVirtualPos()
     Vector2 virtualCursorPos = ScreenToUIVirtualCoords(cursorPos);
     DebuggerPrintf("X: %f, Y:%f\n", virtualCursorPos.x, virtualCursorPos.y);
     return virtualCursorPos;
+}
+
+//-----------------------------------------------------------------------------------
+void UISystem::AddWidget(WidgetBase* newWidget)
+{
+    ASSERT_OR_DIE(newWidget, "Attempted to add a nullptr as a widget.");
+    m_childWidgets.push_back(newWidget);
+    newWidget->RecalculateBounds();
 }
 

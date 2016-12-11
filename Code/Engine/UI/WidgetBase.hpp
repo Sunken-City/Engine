@@ -14,7 +14,8 @@ enum WidgetState
     PRESSED_WIDGET_STATE,
     DISABLED_WIDGET_STATE,
     HIDDEN_WIDGET_STATE,
-    NUM_STATES
+    NUM_STATES,
+    DEFAULT_STATE = NUM_STATES
 };
 
 //-----------------------------------------------------------------------------------
@@ -26,6 +27,44 @@ public:
     virtual ~WidgetBase();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
+    template <typename T>
+    void SetProperty(const std::string& propertyName, const T& value, WidgetState state = DEFAULT_STATE)
+    {
+        if (state == DEFAULT_STATE)
+        {
+            m_propertiesForAllStates.Set<T>(propertyName, value);
+        }
+        else
+        {
+            m_propertiesForState[state].Set<T>(propertyName, value);
+        }
+    }
+
+    void SetProperty(const std::string& propertyName, const std::string& value, WidgetState state = DEFAULT_STATE)
+    {
+        if (state == DEFAULT_STATE)
+        {
+            m_propertiesForAllStates.Set(propertyName, value);
+        }
+        else
+        {
+            m_propertiesForState[state].Set(propertyName, value);
+        }
+    }
+
+    template <typename T>
+    T GetProperty(const std::string& propertyName, WidgetState state = DEFAULT_STATE)
+    {
+        if (state == DEFAULT_STATE)
+        {
+            return m_propertiesForAllStates.Get<T>(propertyName);
+        }
+        else
+        {
+            return m_propertiesForState[state].Get<T>(propertyName);
+        }
+    }
+
     virtual void Update(float deltaSeconds);
     virtual void Render() const;
     virtual void AddChild(WidgetBase* child);
