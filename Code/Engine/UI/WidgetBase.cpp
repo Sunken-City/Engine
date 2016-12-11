@@ -141,7 +141,7 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     }
     else
     {
-        RGBA highlightedColor = bgColor + RGBA(0x22222200);
+        RGBA highlightedColor = edgeColor + RGBA(0x22222200);
         m_propertiesForState[HIGHLIGHTED_WIDGET_STATE].Set<RGBA>("BorderColor", highlightedColor);
     }
 

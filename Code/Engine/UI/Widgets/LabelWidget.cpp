@@ -8,7 +8,13 @@
 LabelWidget::LabelWidget()
     : WidgetBase()
 {
+    std::string text = "";
+    RGBA textColor = RGBA::WHITE;
+    float textSize = 1.0f;
 
+    m_propertiesForAllStates.Set("Text", text);
+    m_propertiesForAllStates.Set<RGBA>("TextColor", textColor);
+    m_propertiesForAllStates.Set<float>("FontSize", textSize);
 }
 
 //-----------------------------------------------------------------------------------
