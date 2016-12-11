@@ -16,8 +16,8 @@ public:
     void LoadAndParseUIXML();
     void ReloadUI();
     void DeleteAllUI();
-    WidgetBase* CreateWidget(const std::string& name);
-
+    WidgetBase* CreateWidget(const std::string& widgetTypeName);
+    bool SetWidgetVisibility(const std::string& name, bool setHidden = true);
     static Vector2 ScreenToUIVirtualCoords(const Vector2& cursorPos);
 
 private:

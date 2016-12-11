@@ -97,6 +97,10 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     const char* borderColorAttribute = node.getAttribute("BorderColor");
     const char* borderWidthAttribute = node.getAttribute("BorderWidth");
     const char* onClickAttribute = node.getAttribute("OnClick");
+    const char* opacityAttribute = node.getAttribute("Opacity");
+    const char* sizeAttribute = node.getAttribute("Size");
+    const char* offsetAttribute = node.getAttribute("Offset");
+
     const char* h_backgroundColorAttribute = node.getAttribute("H_BackgroundColor");
     const char* h_borderColorAttribute = node.getAttribute("H_BorderColor");
     const char* p_backgroundColorAttribute = node.getAttribute("P_BackgroundColor");
@@ -105,8 +109,11 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     Vector2 offset = m_propertiesForAllStates.Get<Vector2>("Offset");
     RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
     RGBA edgeColor = m_propertiesForAllStates.Get<RGBA>("BorderColor");
-    float borderWidth = m_propertiesForAllStates.Get<float>("BorderWidth");
 
+    if (offsetAttribute)
+    {
+        offset = Vector2::CreateFromString(offsetAttribute);
+    }
     if (horizontalOffset)
     {
         offset.x = std::stof(horizontalOffset);
@@ -118,14 +125,16 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     if (backgroundColorAttribute)
     {
         bgColor = RGBA::CreateFromString(backgroundColorAttribute);
+        m_propertiesForAllStates.Set<RGBA>("BackgroundColor", bgColor);
     }
     if (borderColorAttribute)
     {
         edgeColor = RGBA::CreateFromString(borderColorAttribute);
+        m_propertiesForAllStates.Set<RGBA>("BorderColor", edgeColor);
     }
     if (borderWidthAttribute)
     {
-        borderWidth = std::stof(borderWidthAttribute);
+        m_propertiesForAllStates.Set<float>("BorderWidth", std::stof(borderWidthAttribute));
     }
     if (onClickAttribute)
     {
@@ -137,6 +146,15 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
         std::string name = std::string(nameAttribute);
         m_propertiesForAllStates.Set("Name", name);
         m_name = name;
+    }
+    if (opacityAttribute)
+    {
+        m_propertiesForAllStates.Set<float>("Opacity", std::stof(opacityAttribute));
+    }
+    if (sizeAttribute)
+    {
+        Vector2 size = Vector2::CreateFromString(sizeAttribute);
+        m_propertiesForAllStates.Set<Vector2>("Size", size);
     }
 
     if (h_backgroundColorAttribute)
@@ -180,11 +198,7 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     }
 
     m_propertiesForAllStates.Set<Vector2>("Offset", offset);
-    m_propertiesForAllStates.Set<RGBA>("BackgroundColor", bgColor);
-    m_propertiesForAllStates.Set<RGBA>("BorderColor", edgeColor);
     m_propertiesForAllStates.Set<Vector2>("Size", Vector2::ONE);
-    m_propertiesForAllStates.Set<float>("Opacity", 1.0f);
-    m_propertiesForAllStates.Set<float>("BorderWidth", borderWidth);
 }
 
 //-----------------------------------------------------------------------------------
@@ -218,6 +232,24 @@ Matrix4x4 WidgetBase::GetModelMatrix() const
     Matrix4x4 model = Matrix4x4::IDENTITY;
     Matrix4x4::MatrixMakeTranslation(&model, Vector3(m_propertiesForAllStates.Get<Vector2>("Offset"), 0.0f));
     return model;
+}
+
+//-----------------------------------------------------------------------------------
+bool WidgetBase::SetWidgetVisibility(const std::string& name, bool setHidden)
+{
+    for (WidgetBase* child : m_children)
+    {
+        if (child->GetProperty<std::string>("Name") == name)
+        {
+            setHidden ? child->SetHidden() : child->SetVisible();
+            return true;
+        }
+        else if (child->SetWidgetVisibility(name, setHidden))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 //-----------------------------------------------------------------------------------

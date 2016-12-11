@@ -26,11 +26,11 @@ UISystem::UISystem()
     WidgetBase* child = CreateWidget("Button");
     child->SetProperty<std::string>("Name", "CodeLabel");
     child->SetProperty<std::string>("Text", "I AM el Nino!");
-    button->SetProperty<std::string>("OnClick", "StartGame");
+    child->SetProperty<std::string>("OnClick", "StartGame");
     child->SetProperty("BackgroundColor", RGBA::GBDARKGREEN, WidgetState::HIGHLIGHTED_WIDGET_STATE);
     child->SetProperty("Offset", Vector2(0, 50));
     child->SetProperty("FontSize", 0.5f);
-    button->SetProperty("BorderWidth", 5.0f);
+    child->SetProperty("BorderWidth", 5.0f);
     child->m_currentState = WidgetState::ACTIVE_WIDGET_STATE;
     button->AddChild(child);
 }
@@ -163,6 +163,24 @@ WidgetBase* UISystem::CreateWidget(const std::string& name)
         return static_cast<WidgetBase*>(new ButtonWidget());
     }
     return nullptr;
+}
+
+//-----------------------------------------------------------------------------------
+bool UISystem::SetWidgetVisibility(const std::string& name, bool setHidden)
+{
+    for (WidgetBase* child : m_childWidgets)
+    {
+        if (child->GetProperty<std::string>("Name") == name)
+        {
+            setHidden ? child->SetHidden() : child->SetVisible();
+            return true;
+        }
+        else if(child->SetWidgetVisibility(name, setHidden))
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 //-----------------------------------------------------------------------------------

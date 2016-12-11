@@ -91,9 +91,12 @@ public:
     virtual void UnsetHighlighted() { m_currentState = m_previousState; };
     virtual void SetPressed() { m_currentState = PRESSED_WIDGET_STATE; };
     virtual void UnsetPressed() { m_currentState = m_previousState; };
+    inline void SetHidden() { m_currentState = HIDDEN_WIDGET_STATE; };
+    inline void SetVisible() { m_currentState = ACTIVE_WIDGET_STATE; };
     inline bool IsHighlighted() const { return m_currentState == HIGHLIGHTED_WIDGET_STATE; };
     inline bool IsHidden() const { return m_currentState == HIDDEN_WIDGET_STATE; };
     bool IsClickable();
+    bool SetWidgetVisibility(const std::string& name, bool setHidden = true);
     Vector2 GetParentOffsets() const;
     Matrix4x4 GetModelMatrix() const;
 

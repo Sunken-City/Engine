@@ -5,6 +5,8 @@
 #include "Engine/Math/MathUtils.hpp"
 #include <cmath>
 #include <float.h>
+#include <string>
+#include "../Core/StringUtils.hpp"
 
 const Vector2 Vector2::ZERO = Vector2(0.0f, 0.0f);
 const Vector2 Vector2::ONE = Vector2(1.0f, 1.0f);
@@ -195,4 +197,13 @@ Vector2& Vector2::operator/=(const float& scalarConstant)
     this->x /= scalarConstant;
     this->y /= scalarConstant;
     return *this;
+}
+
+//-----------------------------------------------------------------------------------
+Vector2 Vector2::CreateFromString(const char* xmlString)
+{
+    std::vector<std::string>* components = SplitString(std::string(xmlString), ",");
+    Vector2 returnValue = Vector2(std::stof(components->at(0)), std::stof(components->at(1)));
+    delete components;
+    return returnValue;
 }

@@ -40,7 +40,7 @@ public:
     Vector2& operator*=(const Vector2& rhs);
     Vector2& operator*=(const float& scalarConstant);
     Vector2& operator/=(const float& scalarConstant);
-
+    static Vector2 CreateFromString(const char* xmlString);
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const Vector2 ZERO;
     static const Vector2 ONE;
