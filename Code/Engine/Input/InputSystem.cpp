@@ -128,6 +128,12 @@ bool InputSystem::WasMouseButtonJustPressed(unsigned char mouseButtonCode)
 }
 
 //-----------------------------------------------------------------------------------
+bool InputSystem::WasMouseButtonJustReleased(unsigned char mouseButtonCode)
+{
+    return (!m_isMouseDown[mouseButtonCode] && (m_frameNumberMouseButtonLastChanged[mouseButtonCode] == m_frameCounter));
+}
+
+//-----------------------------------------------------------------------------------
 bool InputSystem::IsScrolling()
 {
     return m_isScrolling;

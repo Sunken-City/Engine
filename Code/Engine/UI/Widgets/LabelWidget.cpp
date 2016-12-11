@@ -66,13 +66,13 @@ void LabelWidget::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void LabelWidget::Render() const
 {
-    std::string text = m_propertiesForAllStates.Get<std::string>("Text");
-    RGBA textColor = m_propertiesForAllStates.Get<RGBA>("TextColor");
-    float fontSize = m_propertiesForAllStates.Get<float>("FontSize");
-    float borderWidth = m_propertiesForAllStates.Get<float>("BorderWidth");
-    RGBA bgColor = IsHighlighted() ? m_propertiesForState[HIGHLIGHTED_WIDGET_STATE].Get<RGBA>("BackgroundColor") : m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
-    RGBA borderColor = IsHighlighted() ? m_propertiesForState[HIGHLIGHTED_WIDGET_STATE].Get<RGBA>("BorderColor") : m_propertiesForAllStates.Get<RGBA>("BorderColor");
-    Vector2 currentBaseline = GetParentOffsets() + m_propertiesForAllStates.Get<Vector2>("Offset");
+    std::string text = GetProperty<std::string>("Text");
+    RGBA textColor = GetProperty<RGBA>("TextColor");
+    float fontSize = GetProperty<float>("FontSize");
+    float borderWidth = GetProperty<float>("BorderWidth");
+    RGBA bgColor = GetProperty<RGBA>("BackgroundColor");
+    RGBA borderColor = GetProperty<RGBA>("BorderColor");
+    Vector2 currentBaseline = GetParentOffsets() + GetProperty<Vector2>("Offset");
 
     if (borderWidth > 0.0f)
     {

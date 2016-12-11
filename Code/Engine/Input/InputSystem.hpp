@@ -64,6 +64,7 @@ public:
     bool WasKeyJustPressed(unsigned char keyCode);
     bool IsMouseButtonDown(unsigned char mouseButtonCode);
     bool WasMouseButtonJustPressed(unsigned char mouseButtonCode);
+    bool WasMouseButtonJustReleased(unsigned char mouseButtonCode);
     bool IsScrolling();
     bool HasFocus();
 

@@ -40,6 +40,7 @@ public:
         }
     }
 
+    //-----------------------------------------------------------------------------------
     void SetProperty(const std::string& propertyName, const std::string& value, WidgetState state = DEFAULT_STATE)
     {
         if (state == DEFAULT_STATE)
@@ -52,17 +53,29 @@ public:
         }
     }
 
+    //-----------------------------------------------------------------------------------
     template <typename T>
-    T GetProperty(const std::string& propertyName, WidgetState state = DEFAULT_STATE)
+    T GetProperty(const std::string& propertyName) const
     {
-        if (state == DEFAULT_STATE)
+        T returnValue;
+        PropertyGetResult result = m_propertiesForState[m_currentState].Get<T>(propertyName, returnValue);
+        if (result != PGR_SUCCESS)
         {
-            return m_propertiesForAllStates.Get<T>(propertyName);
+            returnValue = m_propertiesForAllStates.Get<T>(propertyName);
         }
-        else
+        return returnValue;
+    }
+
+    //-----------------------------------------------------------------------------------
+    std::string GetProperty(const std::string& propertyName) const
+    {
+        std::string returnValue;
+        PropertyGetResult result = m_propertiesForState[m_currentState].Get<std::string>(propertyName, returnValue);
+        if (result != PGR_SUCCESS)
         {
-            return m_propertiesForState[state].Get<T>(propertyName);
+            returnValue = m_propertiesForAllStates.Get<std::string>(propertyName);
         }
+        return returnValue;
     }
 
     virtual void Update(float deltaSeconds);
@@ -76,6 +89,8 @@ public:
     virtual WidgetBase* GetWidgetPointIsInside(const Vector2& point); //Is this inside you or any of your children?
     virtual void SetHighlighted() { m_previousState = m_currentState; m_currentState = HIGHLIGHTED_WIDGET_STATE; };
     virtual void UnsetHighlighted() { m_currentState = m_previousState; };
+    virtual void SetPressed() { m_currentState = PRESSED_WIDGET_STATE; };
+    virtual void UnsetPressed() { m_currentState = m_previousState; };
     inline bool IsHighlighted() const { return m_currentState == HIGHLIGHTED_WIDGET_STATE; };
     Vector2 GetParentOffsets() const;
     Matrix4x4 GetModelMatrix() const;
