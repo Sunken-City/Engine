@@ -60,12 +60,22 @@ void LabelWidget::RecalculateBounds()
 //-----------------------------------------------------------------------------------
 void LabelWidget::Update(float deltaSeconds)
 {
+    if (IsHidden())
+    {
+        return;
+    }
+
     WidgetBase::Update(deltaSeconds);
 }
 
 //-----------------------------------------------------------------------------------
 void LabelWidget::Render() const
 {
+    if (IsHidden())
+    {
+        return;
+    }
+
     std::string text = GetProperty<std::string>("Text");
     RGBA textColor = GetProperty<RGBA>("TextColor");
     float fontSize = GetProperty<float>("FontSize");

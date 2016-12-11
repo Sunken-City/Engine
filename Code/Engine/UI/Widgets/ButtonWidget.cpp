@@ -23,12 +23,22 @@ ButtonWidget::~ButtonWidget()
 //-----------------------------------------------------------------------------------
 void ButtonWidget::Update(float deltaSeconds)
 {
+    if (IsHidden())
+    {
+        return;
+    }
+
     LabelWidget::Update(deltaSeconds);
 }
 
 //-----------------------------------------------------------------------------------
 void ButtonWidget::Render() const
 {
+    if (IsHidden())
+    {
+        return;
+    }
+
 //     MeshBuilder builder;
 //     builder.AddTexturedAABB(AABB2(Vector2::ZERO, Vector2(1600,900)), Vector2::ZERO, Vector2::ZERO, RGBA::WHITE);
 //     Mesh mesh;

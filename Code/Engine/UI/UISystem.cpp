@@ -3,9 +3,9 @@
 #include "Engine/Renderer/AABB2.hpp"
 #include "Engine/Fonts/BitmapFont.hpp"
 #include "Engine/Input/InputOutputUtils.hpp"
-#include "Widgets/LabelWidget.hpp"
-#include "Widgets/ButtonWidget.hpp"
-#include "../Input/InputSystem.hpp"
+#include "Engine/UI/Widgets/LabelWidget.hpp"
+#include "Engine/UI/Widgets/ButtonWidget.hpp"
+#include "Engine/Input/InputSystem.hpp"
 
 UISystem* UISystem::instance = nullptr;
 
@@ -20,7 +20,19 @@ UISystem::UISystem()
     button->SetProperty("BackgroundColor", RGBA::TURQUOISE, WidgetState::HIGHLIGHTED_WIDGET_STATE);
     button->SetProperty("Offset", Vector2(700, 20));
     button->SetProperty("BorderWidth", 5.0f);
+    button->m_currentState = WidgetState::ACTIVE_WIDGET_STATE;
     AddWidget(button);
+
+    WidgetBase* child = CreateWidget("Button");
+    child->SetProperty<std::string>("Name", "CodeLabel");
+    child->SetProperty<std::string>("Text", "I AM el Nino!");
+    button->SetProperty<std::string>("OnClick", "StartGame");
+    child->SetProperty("BackgroundColor", RGBA::GBDARKGREEN, WidgetState::HIGHLIGHTED_WIDGET_STATE);
+    child->SetProperty("Offset", Vector2(0, 50));
+    child->SetProperty("FontSize", 0.5f);
+    button->SetProperty("BorderWidth", 5.0f);
+    child->m_currentState = WidgetState::ACTIVE_WIDGET_STATE;
+    button->AddChild(child);
 }
 
 //-----------------------------------------------------------------------------------
@@ -40,24 +52,24 @@ void UISystem::Update(float deltaSeconds)
     WidgetBase* newHighlightedWidget = FindHighlightedWidget();
     if (newHighlightedWidget != m_highlightedWidget)
     {
-        if (m_highlightedWidget)
+        if (m_highlightedWidget && m_highlightedWidget->IsClickable())
         {
             m_highlightedWidget->UnsetHighlighted();
         }
-        if (newHighlightedWidget)
+        if (newHighlightedWidget && newHighlightedWidget->IsClickable())
         {
             newHighlightedWidget->SetHighlighted();
         }
         m_highlightedWidget = newHighlightedWidget;
     }
-    if (InputSystem::instance->IsMouseButtonDown(InputSystem::LEFT_MOUSE_BUTTON) && m_highlightedWidget)
+    if (InputSystem::instance->IsMouseButtonDown(InputSystem::LEFT_MOUSE_BUTTON) && m_highlightedWidget && m_highlightedWidget->IsClickable())
     {
         m_highlightedWidget->SetPressed();
     }
 
     if (InputSystem::instance->WasMouseButtonJustReleased(InputSystem::LEFT_MOUSE_BUTTON))
     {
-        if (m_highlightedWidget)
+        if (m_highlightedWidget && m_highlightedWidget->IsClickable())
         {
             m_highlightedWidget->OnClick();
         }
@@ -65,7 +77,14 @@ void UISystem::Update(float deltaSeconds)
 
     for (WidgetBase* widget : m_childWidgets)
     {
-        widget->Update(deltaSeconds);
+        if (widget->IsHidden())
+        {
+            continue;
+        }
+        else 
+        {
+            widget->Update(deltaSeconds);
+        }
     }
 }
 
@@ -78,7 +97,14 @@ void UISystem::Render() const
     {
         for (WidgetBase* widget : m_childWidgets)
         {
-            widget->Render();
+            if (widget->IsHidden())
+            {
+                continue;
+            }
+            else
+            {
+                widget->Render();
+            }
         }
     }
     Renderer::instance->EndOrtho();
