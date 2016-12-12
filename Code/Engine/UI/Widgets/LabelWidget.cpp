@@ -60,6 +60,7 @@ void LabelWidget::RecalculateBounds()
     PropertyGetResult fontSizeGet = m_propertiesForAllStates.Get<float>("TextSize", fontSize);
 
     m_bounds = BitmapFont::CreateOrGetFont("Runescape")->CalcTextBounds(text, fontSize);
+    m_bounds += GetTotalOffset();
 }
 
 //-----------------------------------------------------------------------------------
@@ -78,8 +79,8 @@ void LabelWidget::Render() const
     float textOpacity = GetProperty<float>("TextOpacity");
     float fontSize = GetProperty<float>("TextSize");
     float opacity = GetProperty<float>("Opacity");
-    Vector2 currentBaseline = GetParentOffsets() + GetProperty<Vector2>("Offset");
     RGBA textColor = GetProperty<RGBA>("TextColor");
+    Vector2 currentBaseline = GetTotalOffset();
 
     opacity *= GetParentOpacities();
     textColor.alpha = (uchar)((((float)textColor.alpha / 255.0f) * (opacity * textOpacity)) * 255.0f);

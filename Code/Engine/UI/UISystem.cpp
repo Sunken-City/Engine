@@ -140,6 +140,7 @@ void UISystem::DeleteAllUI()
         delete child;
     }
     m_childWidgets.clear();
+    m_highlightedWidget = nullptr;
 }
 
 //-----------------------------------------------------------------------------------
