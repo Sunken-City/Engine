@@ -264,6 +264,26 @@ bool WidgetBase::SetWidgetVisibility(const std::string& name, bool setHidden)
 }
 
 //-----------------------------------------------------------------------------------
+void WidgetBase::SetHidden()
+{
+    m_currentState = HIDDEN_WIDGET_STATE;
+    for (WidgetBase* child : m_children)
+    {
+        child->SetHidden();
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void WidgetBase::SetVisible()
+{
+    m_currentState = ACTIVE_WIDGET_STATE;
+    for (WidgetBase* child : m_children)
+    {
+        child->SetVisible();
+    }
+}
+
+//-----------------------------------------------------------------------------------
 bool WidgetBase::IsClickable()
 {
     return !(m_currentState == DISABLED_WIDGET_STATE || m_currentState == HIDDEN_WIDGET_STATE);

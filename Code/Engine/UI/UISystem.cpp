@@ -44,6 +44,12 @@ UISystem::~UISystem()
 //-----------------------------------------------------------------------------------
 void UISystem::Update(float deltaSeconds)
 {
+    if (InputSystem::instance->WasKeyJustPressed('G'))
+    {
+        static bool isHidden = false;
+        isHidden = !isHidden;
+        SetWidgetHidden("Window Widget", isHidden);
+    }
     if (InputSystem::instance->WasKeyJustPressed('U'))
     {
         ReloadUI();
@@ -172,7 +178,7 @@ WidgetBase* UISystem::CreateWidget(const std::string& name)
 }
 
 //-----------------------------------------------------------------------------------
-bool UISystem::SetWidgetVisibility(const std::string& name, bool setHidden)
+bool UISystem::SetWidgetHidden(const std::string& name, bool setHidden)
 {
     for (WidgetBase* child : m_childWidgets)
     {
