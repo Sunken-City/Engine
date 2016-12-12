@@ -5,7 +5,7 @@
 #include "Engine/Renderer/MeshBuilder.hpp"
 #include "Engine/Renderer/MeshRenderer.hpp"
 #include "Engine/Renderer/Material.hpp"
-#include "../UISystem.hpp"
+#include "Engine/UI/UISystem.hpp"
 
 //-----------------------------------------------------------------------------------
 ButtonWidget::ButtonWidget()

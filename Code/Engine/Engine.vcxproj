@@ -107,6 +107,7 @@
     <ClCompile Include="UI\UISystem.cpp" />
     <ClCompile Include="UI\WidgetBase.cpp" />
     <ClCompile Include="UI\Widgets\ButtonWidget.cpp" />
+    <ClCompile Include="UI\Widgets\CheckboxWidget.cpp" />
     <ClCompile Include="UI\Widgets\LabelWidget.cpp" />
     <ClCompile Include="UI\Widgets\WindowWidget.cpp" />
   </ItemGroup>
@@ -210,6 +211,7 @@
     <ClInclude Include="UI\UISystem.hpp" />
     <ClInclude Include="UI\WidgetBase.hpp" />
     <ClInclude Include="UI\Widgets\ButtonWidget.hpp" />
+    <ClInclude Include="UI\Widgets\CheckboxWidget.hpp" />
     <ClInclude Include="UI\Widgets\LabelWidget.hpp" />
     <ClInclude Include="UI\Widgets\WindowWidget.hpp" />
   </ItemGroup>
