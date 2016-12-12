@@ -61,6 +61,8 @@ void LabelWidget::RecalculateBounds()
 
     m_bounds = BitmapFont::CreateOrGetFont("Runescape")->CalcTextBounds(text, fontSize);
     m_bounds += GetTotalOffset();
+    m_bounds.mins -= m_propertiesForAllStates.Get<Vector2>("Padding");
+    m_bounds.maxs += m_propertiesForAllStates.Get<Vector2>("Padding");
 }
 
 //-----------------------------------------------------------------------------------

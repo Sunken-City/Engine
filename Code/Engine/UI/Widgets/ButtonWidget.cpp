@@ -44,6 +44,7 @@ void ButtonWidget::Render() const
 //     thingToRender.Render();
 
     LabelWidget::Render();
+    RenderChildren();
 }
 
 //-----------------------------------------------------------------------------------
