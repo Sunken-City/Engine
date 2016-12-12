@@ -17,14 +17,14 @@ public:
     void ReloadUI();
     void DeleteAllUI();
     WidgetBase* CreateWidget(const std::string& widgetTypeName);
+    WidgetBase* CreateWidget(XMLNode& node);
+    void AddWidget(WidgetBase* newWidget);
     bool SetWidgetVisibility(const std::string& name, bool setHidden = true);
     static Vector2 ScreenToUIVirtualCoords(const Vector2& cursorPos);
 
 private:
-    WidgetBase* CreateWidget(XMLNode& node);
     WidgetBase* FindHighlightedWidget();
     Vector2 GetCursorVirtualPos();
-    void AddWidget(WidgetBase* newWidget);
 
 public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////

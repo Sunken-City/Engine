@@ -29,7 +29,8 @@ void WindowWidget::Render() const
 //-----------------------------------------------------------------------------------
 void WindowWidget::BuildFromXMLNode(XMLNode& node)
 {
-
+    WidgetBase::BuildFromXMLNode(node);
+    RecalculateBounds();
 }
 
 //-----------------------------------------------------------------------------------
