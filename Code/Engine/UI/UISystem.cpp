@@ -6,13 +6,13 @@
 #include "Engine/UI/Widgets/LabelWidget.hpp"
 #include "Engine/UI/Widgets/ButtonWidget.hpp"
 #include "Engine/Input/InputSystem.hpp"
+#include "Widgets/WindowWidget.hpp"
 
 UISystem* UISystem::instance = nullptr;
 
 //-----------------------------------------------------------------------------------
 UISystem::UISystem()
 {
-    LoadAndParseUIXML();
     WidgetBase* button = CreateWidget("Button");
     button->SetProperty<std::string>("Name", "CodeButton");
     button->SetProperty<std::string>("Text", "I AM FROM CODE!");
@@ -162,6 +162,11 @@ WidgetBase* UISystem::CreateWidget(const std::string& name)
     {
         return static_cast<WidgetBase*>(new ButtonWidget());
     }
+    else if (name == "Window")
+    {
+        return static_cast<WidgetBase*>(new WindowWidget());
+    }
+    ERROR_RECOVERABLE(Stringf("Attempted to create widget %s, but it didn't exist. Have you updated the Create Widget function?", name.c_str()));
     return nullptr;
 }
 

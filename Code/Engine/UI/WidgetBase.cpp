@@ -4,6 +4,7 @@
 #include "Engine/Fonts/BitmapFont.hpp"
 #include "Engine/Math/Matrix4x4.hpp"
 #include "Engine/Core/Events/EventSystem.hpp"
+#include "UISystem.hpp"
 
 //-----------------------------------------------------------------------------------
 WidgetBase::WidgetBase()
@@ -15,15 +16,10 @@ WidgetBase::WidgetBase()
     m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::KINDA_GRAY);
     m_propertiesForAllStates.Set<RGBA>("BorderColor", RGBA::GRAY);
     m_propertiesForAllStates.Set<float>("Opacity", 1.0f);
-    m_propertiesForAllStates.Set<float>("BorderWidth", 0.0f);
-
-    SetProperty("BackgroundColor", RGBA::WHITE, HIGHLIGHTED_WIDGET_STATE);
-    SetProperty("BackgroundColor", RGBA::GRAY, PRESSED_WIDGET_STATE);
-    SetProperty("BackgroundColor", RGBA::VERY_GRAY, DISABLED_WIDGET_STATE);
-    SetProperty("BorderColor", RGBA::WHITE, HIGHLIGHTED_WIDGET_STATE);
-    SetProperty("BorderColor", RGBA::VERY_GRAY, PRESSED_WIDGET_STATE);
+    m_propertiesForAllStates.Set<float>("BorderWidth", 5.0f);
     SetProperty("BorderColor", RGBA::BLACK, DISABLED_WIDGET_STATE);
     SetProperty("TextColor", RGBA::GRAY, DISABLED_WIDGET_STATE);
+    SetProperty("BackgroundColor", RGBA::VERY_GRAY, DISABLED_WIDGET_STATE);
 }
 
 //-----------------------------------------------------------------------------------
@@ -131,11 +127,6 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     const char* sizeAttribute = node.getAttribute("Size");
     const char* offsetAttribute = node.getAttribute("Offset");
 
-    const char* h_backgroundColorAttribute = node.getAttribute("H_BackgroundColor");
-    const char* h_borderColorAttribute = node.getAttribute("H_BorderColor");
-    const char* p_backgroundColorAttribute = node.getAttribute("P_BackgroundColor");
-    const char* p_borderColorAttribute = node.getAttribute("P_BorderColor");
-
     Vector2 offset = m_propertiesForAllStates.Get<Vector2>("Offset");
     RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
     RGBA edgeColor = m_propertiesForAllStates.Get<RGBA>("BorderColor");
@@ -187,48 +178,18 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
         m_propertiesForAllStates.Set<Vector2>("Size", size);
     }
 
-    if (h_backgroundColorAttribute)
-    {
-        SetProperty("BackgroundColor", RGBA::CreateFromString(h_backgroundColorAttribute), HIGHLIGHTED_WIDGET_STATE);
-    }
-    else
-    {
-        RGBA highlightedColor = bgColor + RGBA(0x22222200);
-        SetProperty("BackgroundColor", highlightedColor, HIGHLIGHTED_WIDGET_STATE);
-    }
-
-    if (h_borderColorAttribute)
-    {
-        SetProperty("BorderColor", RGBA::CreateFromString(h_borderColorAttribute), HIGHLIGHTED_WIDGET_STATE);
-    }
-    else
-    {
-        RGBA highlightedColor = edgeColor + RGBA(0x22222200);
-        SetProperty("BorderColor", highlightedColor, HIGHLIGHTED_WIDGET_STATE);
-    }
-
-    if (p_backgroundColorAttribute)
-    {
-        SetProperty("BackgroundColor", RGBA::CreateFromString(p_backgroundColorAttribute), PRESSED_WIDGET_STATE);
-    }
-    else
-    {
-        RGBA pressedColor = bgColor - RGBA(0x22222200);
-        SetProperty("BackgroundColor", pressedColor, PRESSED_WIDGET_STATE);
-    }
-
-    if (p_borderColorAttribute)
-    {
-        SetProperty("BorderColor", RGBA::CreateFromString(p_borderColorAttribute), PRESSED_WIDGET_STATE);
-    }
-    else
-    {
-        RGBA pressedColor = edgeColor - RGBA(0x22222200);
-        SetProperty("BorderColor", pressedColor, PRESSED_WIDGET_STATE);
-    }
-
     m_propertiesForAllStates.Set<Vector2>("Offset", offset);
     m_propertiesForAllStates.Set<Vector2>("Size", Vector2::ONE);
+
+    std::vector<XMLNode> children = XMLUtils::GetChildren(node);
+    for (XMLNode& child : children)
+    {
+        if (!child.isEmpty())
+        {
+            AddChild(UISystem::instance->CreateWidget(child));
+        }
+    }
+    RecalculateBounds();
 }
 
 //-----------------------------------------------------------------------------------

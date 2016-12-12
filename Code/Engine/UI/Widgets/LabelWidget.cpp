@@ -86,6 +86,5 @@ void LabelWidget::Render() const
 
     Renderer::instance->DrawText2D(currentBaseline, text, fontSize, textColor, true, BitmapFont::CreateOrGetFont("Runescape"));
     RenderChildren();
-
 }
 
