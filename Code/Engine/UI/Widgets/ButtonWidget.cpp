@@ -44,7 +44,6 @@ void ButtonWidget::Render() const
 //     thingToRender.Render();
 
     LabelWidget::Render();
-    RenderChildren();
 }
 
 //-----------------------------------------------------------------------------------
@@ -107,5 +106,4 @@ void ButtonWidget::BuildFromXMLNode(XMLNode& node)
 void ButtonWidget::RecalculateBounds()
 {
     LabelWidget::RecalculateBounds();
-    m_bounds += m_propertiesForAllStates.Get<Vector2>("Offset");
 }

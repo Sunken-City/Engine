@@ -39,7 +39,6 @@ void WidgetBase::Update(float deltaSeconds)
         return;
     }
     UpdateChildren(deltaSeconds);
-
 }
 
 //-----------------------------------------------------------------------------------
@@ -94,12 +93,14 @@ void WidgetBase::AddChild(WidgetBase* child)
 {
     m_children.push_back(child);
     child->m_parent = this;
+    child->RecalculateBounds();
+    RecalculateBounds();
 }
 
 //-----------------------------------------------------------------------------------
 AABB2 WidgetBase::GetSmallestBoundsAroundChildren()
 {
-    AABB2 smallestBounds = AABB2(Vector2::ZERO, Vector2::ZERO);
+    AABB2 smallestBounds = m_children.size() > 0 ? m_children.at(0)->m_bounds : AABB2(Vector2::ZERO, Vector2::ZERO);
 
     for (WidgetBase* child : m_children)
     {
@@ -189,7 +190,6 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
             AddChild(UISystem::instance->CreateWidget(child));
         }
     }
-    RecalculateBounds();
 }
 
 //-----------------------------------------------------------------------------------

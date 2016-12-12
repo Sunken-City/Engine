@@ -5,6 +5,7 @@
 #include "Engine/Renderer/AABB2.hpp"
 
 class Matrix4x4;
+class Vector2;
 
 //-----------------------------------------------------------------------------------
 enum WidgetState
@@ -97,6 +98,7 @@ public:
     inline void SetVisible() { m_currentState = ACTIVE_WIDGET_STATE; };
     inline bool IsHighlighted() const { return m_currentState == HIGHLIGHTED_WIDGET_STATE; };
     inline bool IsHidden() const { return m_currentState == HIDDEN_WIDGET_STATE; };
+    inline Vector2 GetTotalOffset() const { return GetParentOffsets() + GetProperty<Vector2>("Offset"); };
     bool IsClickable();
     bool SetWidgetVisibility(const std::string& name, bool setHidden = true);
     Vector2 GetParentOffsets() const;
