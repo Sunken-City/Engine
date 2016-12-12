@@ -69,14 +69,11 @@ void WidgetBase::Render() const
 
     if (borderWidth > 0.0f)
     {
-        AABB2 borderBounds = m_bounds;
-        borderBounds.mins += Vector2(-borderWidth);
-        borderBounds.maxs += Vector2(borderWidth);
-        Renderer::instance->DrawAABB(borderBounds, borderColor);
+        Renderer::instance->DrawAABB(m_borderedBounds, borderColor);
     }
     if (bgColor.alpha > 0.0f)
     {
-        Renderer::instance->DrawAABB(m_bounds, bgColor);
+        Renderer::instance->DrawAABB(m_borderlessBounds, bgColor);
     }
 }
 

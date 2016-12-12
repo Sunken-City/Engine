@@ -13,10 +13,11 @@ LabelWidget::LabelWidget()
     float textSize = 1.0f;
     float textOpacity = 1.0f;
 
-    m_propertiesForAllStates.Set("Text", text);
-    m_propertiesForAllStates.Set<RGBA>("TextColor", textColor);
-    m_propertiesForAllStates.Set<float>("TextSize", textSize);
-    m_propertiesForAllStates.Set<float>("TextOpacity", textOpacity);
+    SetProperty<std::string>("Text", text);
+    SetProperty<RGBA>("TextColor", textColor);
+    SetProperty<float>("TextSize", textSize);
+    SetProperty<float>("TextOpacity", textOpacity);
+    SetProperty<Vector2>("TextOffset", Vector2::ZERO);
 }
 
 //-----------------------------------------------------------------------------------
@@ -34,6 +35,7 @@ void LabelWidget::BuildFromXMLNode(XMLNode& node)
     const char* textColorAttribute = node.getAttribute("TextColor");
     const char* textSizeAttribute = node.getAttribute("TextSize");
     const char* textOpacityAttribute = node.getAttribute("TextOpacity");
+    const char* textOffsetAttribute = node.getAttribute("TextOffset");
 
     ASSERT_OR_DIE(textAttribute != nullptr, "No text was supplied on Label node.");
 
@@ -41,11 +43,13 @@ void LabelWidget::BuildFromXMLNode(XMLNode& node)
     RGBA textColor = textColorAttribute ? RGBA::CreateFromString(textColorAttribute) : RGBA::WHITE;
     float textSize = textSizeAttribute ? std::stof(textSizeAttribute) : 1.0f;
     float textOpacity = textOpacityAttribute ? std::stof(textOpacityAttribute) : 1.0f;
+    Vector2 textOffset = textOffsetAttribute ? Vector2::CreateFromString(textOffsetAttribute) : Vector2::ZERO;
 
     m_propertiesForAllStates.Set("Text", text);
     m_propertiesForAllStates.Set<RGBA>("TextColor", textColor);
     m_propertiesForAllStates.Set<float>("TextSize", textSize);
     m_propertiesForAllStates.Set<float>("TextOpacity", textOpacity);
+    SetProperty<Vector2>("TextOffset", textOffset);
     
     RecalculateBounds();
 }
@@ -58,9 +62,14 @@ void LabelWidget::RecalculateBounds()
 
     PropertyGetResult textGet = m_propertiesForAllStates.Get<std::string>("Text", text);
     PropertyGetResult fontSizeGet = m_propertiesForAllStates.Get<float>("TextSize", fontSize);
+    float borderWidth = GetProperty<float>("BorderWidth");
 
     m_bounds = BitmapFont::CreateOrGetFont("Runescape")->CalcTextBounds(text, fontSize);
     m_bounds += GetTotalOffset();
+    m_borderlessBounds = m_bounds;
+    m_bounds.mins += Vector2(-borderWidth);
+    m_bounds.maxs += Vector2(borderWidth);
+    m_borderedBounds = m_bounds;
     m_bounds.mins -= m_propertiesForAllStates.Get<Vector2>("Padding");
     m_bounds.maxs += m_propertiesForAllStates.Get<Vector2>("Padding");
 }
@@ -82,7 +91,7 @@ void LabelWidget::Render() const
     float fontSize = GetProperty<float>("TextSize");
     float opacity = GetProperty<float>("Opacity");
     RGBA textColor = GetProperty<RGBA>("TextColor");
-    Vector2 currentBaseline = GetTotalOffset();
+    Vector2 currentBaseline = GetTotalOffset() + GetProperty<Vector2>("TextOffset");
 
     opacity *= GetParentOpacities();
     textColor.alpha = (uchar)((((float)textColor.alpha / 255.0f) * (opacity * textOpacity)) * 255.0f);

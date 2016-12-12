@@ -7,6 +7,7 @@
 #include "Engine/UI/Widgets/ButtonWidget.hpp"
 #include "Engine/Input/InputSystem.hpp"
 #include "Widgets/WindowWidget.hpp"
+#include "Widgets/CheckboxWidget.hpp"
 
 UISystem* UISystem::instance = nullptr;
 
@@ -172,6 +173,10 @@ WidgetBase* UISystem::CreateWidget(const std::string& name)
     else if (name == "Window")
     {
         return static_cast<WidgetBase*>(new WindowWidget());
+    }
+    else if (name == "Checkbox")
+    {
+        return static_cast<WidgetBase*>(new CheckboxWidget());
     }
     ERROR_RECOVERABLE(Stringf("Attempted to create widget %s, but it didn't exist. Have you updated the Create Widget function?", name.c_str()));
     return nullptr;

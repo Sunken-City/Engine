@@ -111,6 +111,8 @@ public:
     std::vector<WidgetBase*> m_children;
     std::string m_name;
     AABB2 m_bounds;
+    AABB2 m_borderlessBounds;
+    AABB2 m_borderedBounds;
     WidgetBase* m_parent = nullptr;
     WidgetState m_previousState = ACTIVE_WIDGET_STATE;
     WidgetState m_currentState = ACTIVE_WIDGET_STATE;
