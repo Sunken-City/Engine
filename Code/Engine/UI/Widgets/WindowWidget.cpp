@@ -37,4 +37,6 @@ void WindowWidget::BuildFromXMLNode(XMLNode& node)
 void WindowWidget::RecalculateBounds()
 {
     m_bounds = GetSmallestBoundsAroundChildren();
+    m_bounds.mins -= m_propertiesForAllStates.Get<Vector2>("Padding");
+    m_bounds.maxs += m_propertiesForAllStates.Get<Vector2>("Padding");
 }

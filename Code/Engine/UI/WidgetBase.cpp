@@ -13,6 +13,7 @@ WidgetBase::WidgetBase()
     m_propertiesForAllStates.Set<std::string>("Name", m_name);
     m_propertiesForAllStates.Set<Vector2>("Offset", Vector2::ZERO);
     m_propertiesForAllStates.Set<Vector2>("Size", Vector2::ONE);
+    m_propertiesForAllStates.Set<Vector2>("Padding", Vector2::ZERO);
     m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::KINDA_GRAY);
     m_propertiesForAllStates.Set<RGBA>("BorderColor", RGBA::GRAY);
     m_propertiesForAllStates.Set<float>("Opacity", 1.0f);
@@ -62,6 +63,10 @@ void WidgetBase::Render() const
     RGBA borderColor = GetProperty<RGBA>("BorderColor");
     float opacity = GetProperty<float>("Opacity");
 
+    opacity *= GetParentOpacities();
+    bgColor.alpha = (uchar)((((float)bgColor.alpha / 255.0f) * opacity) * 255.0f);
+    borderColor.alpha = (uchar)((((float)borderColor.alpha / 255.0f) * opacity) * 255.0f);
+
     if (borderWidth > 0.0f)
     {
         AABB2 borderBounds = m_bounds;
@@ -73,10 +78,6 @@ void WidgetBase::Render() const
     {
         Renderer::instance->DrawAABB(m_bounds, bgColor);
     }
-
-    opacity *= GetParentOpacities();
-    bgColor.alpha = (uchar)((((float)bgColor.alpha / 255.0f) * opacity) * 255.0f);
-    borderColor.alpha = (uchar)((((float)borderColor.alpha / 255.0f) * opacity) * 255.0f);
 }
 
 //-----------------------------------------------------------------------------------
@@ -127,11 +128,17 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     const char* opacityAttribute = node.getAttribute("Opacity");
     const char* sizeAttribute = node.getAttribute("Size");
     const char* offsetAttribute = node.getAttribute("Offset");
+    const char* paddingAttribute = node.getAttribute("Padding");
 
     Vector2 offset = m_propertiesForAllStates.Get<Vector2>("Offset");
     RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
     RGBA edgeColor = m_propertiesForAllStates.Get<RGBA>("BorderColor");
 
+    if (paddingAttribute)
+    {
+        Vector2 padding = Vector2::CreateFromString(paddingAttribute);
+        m_propertiesForAllStates.Set<Vector2>("Padding", padding);
+    }
     if (offsetAttribute)
     {
         offset = Vector2::CreateFromString(offsetAttribute);
