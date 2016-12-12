@@ -19,7 +19,7 @@ public:
     WidgetBase* CreateWidget(const std::string& widgetTypeName);
     WidgetBase* CreateWidget(XMLNode& node);
     void AddWidget(WidgetBase* newWidget);
-    bool SetWidgetVisibility(const std::string& name, bool setHidden = true);
+    bool SetWidgetHidden(const std::string& name, bool setHidden = true);
     static Vector2 ScreenToUIVirtualCoords(const Vector2& cursorPos);
 
 private:
