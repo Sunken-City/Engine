@@ -170,6 +170,27 @@ char InputSystem::GetLastPressedChar()
 }
 
 //-----------------------------------------------------------------------------------
+bool InputSystem::WasButtonJustPressed(XboxButton button, int controllerIndex)
+{
+    if (controllerIndex > -1 && controllerIndex < XInputController::MAX_CONTROLLERS)
+    {
+        return m_controllers[controllerIndex] && m_controllers[controllerIndex]->JustPressed(button);
+    }
+    else
+    {
+        bool wasButtonPressedOnAnyController = false;
+
+        for (int i = 0; i < XInputController::MAX_CONTROLLERS; ++i)
+        {
+            bool wasJustPressed = m_controllers[i] && m_controllers[i]->JustPressed(button);
+            wasButtonPressedOnAnyController = wasButtonPressedOnAnyController || wasJustPressed;
+        }
+
+        return wasButtonPressedOnAnyController;
+    }
+}
+
+//-----------------------------------------------------------------------------------
 void InputSystem::SetCursorPosition(Vector2Int newPosition)
 {
     SetCursorPos(newPosition.x, newPosition.y);

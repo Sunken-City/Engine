@@ -7,6 +7,7 @@ class XInputController;
 class KeyboardInputDevice;
 class MouseInputDevice;
 class XInputDevice;
+enum class XboxButton;
 
 class InputSystem
 {
@@ -74,6 +75,7 @@ public:
     Vector2Int GetMousePos();
     void SetLastPressedChar(unsigned char asKey);
     char GetLastPressedChar();
+    bool WasButtonJustPressed(XboxButton button, int controllerIndex = -1);
 
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const int NUM_KEYS = 256;
