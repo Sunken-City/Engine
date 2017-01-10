@@ -14,26 +14,26 @@ UISystem* UISystem::instance = nullptr;
 //-----------------------------------------------------------------------------------
 UISystem::UISystem()
 {
-    WidgetBase* button = CreateWidget("Button");
-    button->SetProperty<std::string>("Name", "CodeButton");
-    button->SetProperty<std::string>("Text", "I AM FROM CODE!");
-    button->SetProperty<std::string>("OnClick", "StartGame");
-    button->SetProperty("BackgroundColor", RGBA::TURQUOISE, WidgetState::HIGHLIGHTED_WIDGET_STATE);
-    button->SetProperty("Offset", Vector2(700, 20));
-    button->SetProperty("BorderWidth", 5.0f);
-    button->m_currentState = WidgetState::ACTIVE_WIDGET_STATE;
-    AddWidget(button);
-
-    WidgetBase* child = CreateWidget("Button");
-    child->SetProperty<std::string>("Name", "CodeLabel");
-    child->SetProperty<std::string>("Text", "I AM el Nino!");
-    child->SetProperty<std::string>("OnClick", "StartGame");
-    child->SetProperty("BackgroundColor", RGBA::GBDARKGREEN, WidgetState::HIGHLIGHTED_WIDGET_STATE);
-    child->SetProperty("Offset", Vector2(0, 50));
-    child->SetProperty("TextSize", 0.5f);
-    child->SetProperty("BorderWidth", 5.0f);
-    child->m_currentState = WidgetState::ACTIVE_WIDGET_STATE;
-    button->AddChild(child);
+//     WidgetBase* button = CreateWidget("Button");
+//     button->SetProperty<std::string>("Name", "CodeButton");
+//     button->SetProperty<std::string>("Text", "I AM FROM CODE!");
+//     button->SetProperty<std::string>("OnClick", "StartGame");
+//     button->SetProperty("BackgroundColor", RGBA::TURQUOISE, WidgetState::HIGHLIGHTED_WIDGET_STATE);
+//     button->SetProperty("Offset", Vector2(700, 20));
+//     button->SetProperty("BorderWidth", 5.0f);
+//     button->m_currentState = WidgetState::ACTIVE_WIDGET_STATE;
+//     AddWidget(button);
+// 
+//     WidgetBase* child = CreateWidget("Button");
+//     child->SetProperty<std::string>("Name", "CodeLabel");
+//     child->SetProperty<std::string>("Text", "I AM el Nino!");
+//     child->SetProperty<std::string>("OnClick", "StartGame");
+//     child->SetProperty("BackgroundColor", RGBA::GBDARKGREEN, WidgetState::HIGHLIGHTED_WIDGET_STATE);
+//     child->SetProperty("Offset", Vector2(0, 50));
+//     child->SetProperty("TextSize", 0.5f);
+//     child->SetProperty("BorderWidth", 5.0f);
+//     child->m_currentState = WidgetState::ACTIVE_WIDGET_STATE;
+//     button->AddChild(child);
 }
 
 //-----------------------------------------------------------------------------------
