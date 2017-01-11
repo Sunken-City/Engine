@@ -41,7 +41,7 @@ public:
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void PushSpriteToMesh(BufferedMeshRenderer& renderer);
-    virtual void Update(float deltaSeconds) {};
+    virtual void Update(float) {};
     virtual AABB2 GetBounds();
     virtual void Render(BufferedMeshRenderer& renderer);
 

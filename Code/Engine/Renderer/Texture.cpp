@@ -2,6 +2,8 @@
 // Based on code written by Squirrel Eiserloh
 //
 #include "Engine/Renderer/Texture.hpp"
+#include "Engine/Core/ErrorWarningAssert.hpp"
+#include "Engine/Core/StringUtils.hpp"
 
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -40,6 +42,7 @@ Texture::Texture(const std::string& imageFilePath)
     int numComponents = 0; // Filled in for us to indicate how many color/alpha components the image had (e.g. 3=RGB, 4=RGBA)
     int numComponentsRequested = 0; // don't care; we support 3 (RGB) or 4 (RGBA)
     m_imageData = stbi_load( imageFilePath.c_str(), &m_texelSize.x, &m_texelSize.y, &numComponents, numComponentsRequested );
+    ASSERT_OR_DIE(m_imageData != nullptr, Stringf("The texture at %s failed to load!", imageFilePath.c_str()));
 
     // Enable texturing
     glEnable( GL_TEXTURE_2D );

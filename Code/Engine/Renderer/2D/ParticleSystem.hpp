@@ -8,6 +8,7 @@
 
 class ParticleEmitterDefinition;
 class ParticleSystemDefinition;
+class SpriteResource;
 
 //-----------------------------------------------------------------------------------
 struct Particle
@@ -39,11 +40,13 @@ public:
     virtual void CleanUpDeadParticles();
     void CopyParticlesToMesh(Mesh* m_mesh);
     void SpawnParticle();
+
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     const ParticleEmitterDefinition* m_definition;
     std::vector<Particle> m_particles;
     Vector2 m_position;
     Vector2* m_followablePosition = nullptr;
+    const SpriteResource* m_spriteOverride = nullptr;
     float m_rotationDegrees;
     float m_emitterAge;
     float m_maxEmitterAge = FLT_MAX;
@@ -56,8 +59,8 @@ public:
 class ParticleSystem : public Renderable2D
 {
 public:
-    ParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow);
-    ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees = 0.0f);
+    ParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow, const SpriteResource* spriteOverride = nullptr);
+    ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees = 0.0f, const SpriteResource* spriteOverride = nullptr);
     virtual ~ParticleSystem();
     virtual void Update(float deltaSeconds) override;
     virtual void Render(BufferedMeshRenderer& renderer) override;
@@ -65,8 +68,8 @@ public:
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
     static void DestroyImmediately(ParticleSystem* systemToDestroy);
     static void Destroy(ParticleSystem* systemToDestroy);
-    static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, Vector2* followingPosition);
-    static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, Vector2 spawnPosition, float rotationDegrees = 0.0f);
+    static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, Vector2* followingPosition, const SpriteResource* spriteOverride = nullptr);
+    static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, Vector2 spawnPosition, float rotationDegrees = 0.0f, const SpriteResource* spriteOverride = nullptr);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::vector<ParticleEmitter*> m_emitters;

@@ -234,24 +234,28 @@ void ParticleEmitter::SpawnParticles(float deltaSeconds)
 }
 
 //-----------------------------------------------------------------------------------
-ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow) 
+ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow, const SpriteResource* spriteOverride)
     : Renderable2D(orderingLayer, true)
     , m_definition(ResourceDatabase::instance->GetParticleSystemResource(systemName))
 {
     for (const ParticleEmitterDefinition* emitterDefinition : m_definition->m_emitterDefinitions)
     {
-        m_emitters.push_back(new ParticleEmitter(emitterDefinition, positionToFollow));
+        ParticleEmitter* emitter = new ParticleEmitter(emitterDefinition, positionToFollow);
+        emitter->m_spriteOverride = spriteOverride;
+        m_emitters.push_back(emitter);
     }
 }
 
 //-----------------------------------------------------------------------------------
-ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees)
+ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees, const SpriteResource* spriteOverride)
     : Renderable2D(orderingLayer, true)
     , m_definition(ResourceDatabase::instance->GetParticleSystemResource(systemName))
 {
     for (const ParticleEmitterDefinition* emitterDefinition : m_definition->m_emitterDefinitions)
     {
-        m_emitters.push_back(new ParticleEmitter(emitterDefinition, positionToSpawn, rotationDegrees));
+        ParticleEmitter* emitter = new ParticleEmitter(emitterDefinition, positionToSpawn, rotationDegrees);
+        emitter->m_spriteOverride = spriteOverride;
+        m_emitters.push_back(emitter);
     }
 }
 
@@ -287,7 +291,8 @@ void ParticleSystem::Render(BufferedMeshRenderer& renderer)
     {
         if (emitter->m_particles.size() > 0)
         {
-            emitter->m_definition->m_material->SetDiffuseTexture(emitter->m_definition->m_spriteResource->m_texture);
+            Texture* diffuse = emitter->m_spriteOverride ? emitter->m_spriteOverride->m_texture : emitter->m_definition->m_spriteResource->m_texture;
+            emitter->m_definition->m_material->SetDiffuseTexture(diffuse);
             renderer.SetMaterial(emitter->m_definition->m_material);
             renderer.SetModelMatrix(Matrix4x4::IDENTITY);
             emitter->CopyParticlesToMesh(&renderer.m_mesh);
@@ -314,17 +319,17 @@ void ParticleSystem::Destroy(ParticleSystem* systemToDestroy)
 }
 
 //-----------------------------------------------------------------------------------
-void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerId, Vector2* followingPosition)
+void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerId, Vector2* followingPosition, const SpriteResource* spriteOverride)
 {
     //The SpriteGameRenderer cleans up these one-shot systems whenever they're finished playing.
-    ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerId, followingPosition);
+    ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerId, followingPosition, spriteOverride);
     ASSERT_OR_DIE(newSystemToPlay->m_definition->m_type == ONE_SHOT, "Attempted to call PlayOneShotParticleEffect with a looping particle system. PlayOneShotParticleEffect is only used for one-shot particle systems.");
 }
 
 //-----------------------------------------------------------------------------------
-void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerId, Vector2 spawnPosition, float rotationDegrees)
+void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerId, Vector2 spawnPosition, float rotationDegrees, const SpriteResource* spriteOverride)
 {
     //The SpriteGameRenderer cleans up these one-shot systems whenever they're finished playing.
-    ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerId, spawnPosition, rotationDegrees);
+    ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerId, spawnPosition, rotationDegrees, spriteOverride);
     ASSERT_OR_DIE(newSystemToPlay->m_definition->m_type == ONE_SHOT, "Attempted to call PlayOneShotParticleEffect with a looping particle system. PlayOneShotParticleEffect is only used for one-shot particle systems.");
 }
