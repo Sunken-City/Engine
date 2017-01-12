@@ -9,6 +9,7 @@
 class IBinaryWriter;
 class IBinaryReader;
 class AABB2;
+class Sprite;
 
 class MeshBuilder
 {
@@ -46,6 +47,8 @@ public:
     //CONSTRUCTORS//////////////////////////////////////////////////////////////////////////
     MeshBuilder();
     ~MeshBuilder();
+
+    void Flush();
 
     //MEMBER FUNCTIONS//////////////////////////////////////////////////////////////////////////
     void Begin();
@@ -130,6 +133,7 @@ public:
     uint32_t ReadDataMask(IBinaryReader& reader);
     void RenormalizeSkinWeights();
     bool IsEmpty();
+    void AddSprite(const Sprite* sprite);
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
     std::vector<Vertex_Master> m_vertices;
     std::vector<unsigned int> m_indices;

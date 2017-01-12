@@ -7,6 +7,7 @@
 #include "Engine/Renderer/AABB2.hpp"
 #include "Engine/Fonts/BitmapFont.hpp"
 #include "Engine/Math/MathUtils.hpp"
+#include "2D/Sprite.hpp"
 
 extern MeshBuilder* g_loadedMeshBuilder;
 extern Mesh* g_loadedMesh;
@@ -63,6 +64,12 @@ MeshBuilder::MeshBuilder()
 
 //-----------------------------------------------------------------------------------
 MeshBuilder::~MeshBuilder()
+{
+    Flush();
+}
+
+//-----------------------------------------------------------------------------------
+void MeshBuilder::Flush()
 {
     m_vertices.clear();
     m_indices.clear();
@@ -132,6 +139,7 @@ void MeshBuilder::CopyToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsig
     mesh->m_drawMode = this->m_drawMode;
     // Make sure we clean up after ourselves
     delete vertexBuffer;
+    Flush();
 }
 
 //-----------------------------------------------------------------------------------
@@ -599,6 +607,27 @@ void MeshBuilder::RenormalizeSkinWeights()
 bool MeshBuilder::IsEmpty()
 {
     return m_vertices.size() == 0;
+}
+
+//-----------------------------------------------------------------------------------
+void MeshBuilder::AddSprite(const Sprite* sprite)
+{
+    Vector2 pivotPoint = sprite->m_spriteResource->m_pivotPoint;
+    Vector2 uvMins = sprite->m_spriteResource->m_uvBounds.mins;
+    Vector2 uvMaxs = sprite->m_spriteResource->m_uvBounds.maxs;
+    Vector2 spriteBounds = sprite->m_spriteResource->m_virtualSize;
+
+    int startingVertex = m_vertices.size();
+    SetColor(sprite->m_tintColor);
+    SetUV(Vector2(uvMins.x, uvMaxs.y));
+    AddVertex(Vector3(-pivotPoint.x, -pivotPoint.y, 0.0f));
+    SetUV(uvMaxs);
+    AddVertex(Vector3(spriteBounds.x - pivotPoint.x, -pivotPoint.y, 0.0f));
+    SetUV(uvMins);
+    AddVertex(Vector3(-pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f));
+    SetUV(Vector2(uvMaxs.x, uvMins.y));
+    AddVertex(Vector3(spriteBounds.x - pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f));
+    AddQuadIndices(startingVertex + 1, startingVertex + 0, startingVertex + 3, startingVertex + 2);
 }
 
 //-----------------------------------------------------------------------------------

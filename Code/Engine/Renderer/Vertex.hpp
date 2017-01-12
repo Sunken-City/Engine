@@ -39,12 +39,13 @@ struct Vertex_Sprite
     typedef unsigned int GLuint;
 
     Vertex_Sprite() {};
-    Vertex_Sprite(const Vector2& inPosition, const Vector2& inUV, const Vector4& tintColor) : position(inPosition), uv(inUV), color(tintColor){};
+    Vertex_Sprite(const Vector2& inPosition, const Vector2& inUV, const Vector4& tintColor) : position(inPosition), uv(inUV), color(tintColor) {};
+    static void Copy(const Vertex_Master& source, byte* destination);
+    static void BindMeshToVAO(GLuint vao, GLuint vbo, GLuint ibo, ShaderProgram* program);
+
     Vector2 position;
     RGBA color;
     Vector2 uv;
-    static void Copy(const Vertex_Master& source, byte* destination);
-    static void BindMeshToVAO(GLuint vao, GLuint vbo, GLuint ibo, ShaderProgram* program);
 };
 
 //-----------------------------------------------------------------------------------
