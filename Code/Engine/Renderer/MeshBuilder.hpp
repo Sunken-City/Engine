@@ -9,7 +9,9 @@
 class IBinaryWriter;
 class IBinaryReader;
 class AABB2;
+class Matrix4x4;
 class Sprite;
+class SpriteResource;
 
 class MeshBuilder
 {
@@ -133,7 +135,8 @@ public:
     uint32_t ReadDataMask(IBinaryReader& reader);
     void RenormalizeSkinWeights();
     bool IsEmpty();
-    void AddSprite(const Sprite* sprite);
+    void AddSprite(const SpriteResource* resource, const RGBA& color, Matrix4x4* transform = nullptr);
+
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
     std::vector<Vertex_Master> m_vertices;
     std::vector<unsigned int> m_indices;

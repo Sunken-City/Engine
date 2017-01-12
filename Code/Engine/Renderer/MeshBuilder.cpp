@@ -610,24 +610,42 @@ bool MeshBuilder::IsEmpty()
 }
 
 //-----------------------------------------------------------------------------------
-void MeshBuilder::AddSprite(const Sprite* sprite)
+void MeshBuilder::AddSprite(const SpriteResource* resource, const RGBA& color, Matrix4x4* transform)
 {
-    Vector2 pivotPoint = sprite->m_spriteResource->m_pivotPoint;
-    Vector2 uvMins = sprite->m_spriteResource->m_uvBounds.mins;
-    Vector2 uvMaxs = sprite->m_spriteResource->m_uvBounds.maxs;
-    Vector2 spriteBounds = sprite->m_spriteResource->m_virtualSize;
+    Vector2 pivotPoint = resource->m_pivotPoint;
+    Vector2 uvMins = resource->m_uvBounds.mins;
+    Vector2 uvMaxs = resource->m_uvBounds.maxs;
+    Vector2 spriteBounds = resource->m_virtualSize;
 
-    int startingVertex = m_vertices.size();
-    SetColor(sprite->m_tintColor);
-    SetUV(Vector2(uvMins.x, uvMaxs.y));
-    AddVertex(Vector3(-pivotPoint.x, -pivotPoint.y, 0.0f));
-    SetUV(uvMaxs);
-    AddVertex(Vector3(spriteBounds.x - pivotPoint.x, -pivotPoint.y, 0.0f));
-    SetUV(uvMins);
-    AddVertex(Vector3(-pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f));
-    SetUV(Vector2(uvMaxs.x, uvMins.y));
-    AddVertex(Vector3(spriteBounds.x - pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f));
-    AddQuadIndices(startingVertex + 1, startingVertex + 0, startingVertex + 3, startingVertex + 2);
+    if (transform)
+    {
+        Matrix4x4& mat = *transform;
+        int startingVertex = m_vertices.size();
+        SetColor(color);
+        SetUV(Vector2(uvMins.x, uvMaxs.y));
+        AddVertex(Vector3(Vector4(-pivotPoint.x, -pivotPoint.y, 0.0f, 1.0f) * mat));
+        SetUV(uvMaxs);
+        AddVertex(Vector3(Vector4(spriteBounds.x - pivotPoint.x, -pivotPoint.y, 0.0f, 1.0f) * mat));
+        SetUV(uvMins);
+        AddVertex(Vector3(Vector4(-pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f, 1.0f) * mat));
+        SetUV(Vector2(uvMaxs.x, uvMins.y));
+        AddVertex(Vector3(Vector4(spriteBounds.x - pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f, 1.0f) * mat));
+        AddQuadIndices(startingVertex + 1, startingVertex + 0, startingVertex + 3, startingVertex + 2);
+    }
+    else
+    {
+        int startingVertex = m_vertices.size();
+        SetColor(color);
+        SetUV(Vector2(uvMins.x, uvMaxs.y));
+        AddVertex(Vector3(-pivotPoint.x, -pivotPoint.y, 0.0f));
+        SetUV(uvMaxs);
+        AddVertex(Vector3(spriteBounds.x - pivotPoint.x, -pivotPoint.y, 0.0f));
+        SetUV(uvMins);
+        AddVertex(Vector3(-pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f));
+        SetUV(Vector2(uvMaxs.x, uvMins.y));
+        AddVertex(Vector3(spriteBounds.x - pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f));
+        AddQuadIndices(startingVertex + 1, startingVertex + 0, startingVertex + 3, startingVertex + 2);
+    }
 }
 
 //-----------------------------------------------------------------------------------
