@@ -26,6 +26,7 @@ Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition
 ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Vector2* positionToFollow)
     : m_definition(definition)
     , m_followablePosition(positionToFollow)
+    , m_rotationDegrees(0.0f)
     , m_emitterAge(0.0f)
     , m_timeSinceLastEmission(0.0f) 
     , m_isDead(false)
@@ -34,6 +35,7 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
     if (positionToFollow)
     {
         m_position = *positionToFollow;
+        m_followablePosition = positionToFollow;
     }
     if (definition->m_particlesPerSecond != 0.0f)
     {
@@ -45,7 +47,8 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
         m_secondsPerParticle = 0.0f;
         for (unsigned int i = 0; i < definition->m_initialNumParticlesSpawn; ++i)
         {
-            m_particles.emplace_back(m_position, m_definition, m_rotationDegrees);
+            SpawnParticle();
+            //m_particles.emplace_back(m_position, m_definition, m_rotationDegrees);
         }
     }
 }

@@ -19,7 +19,6 @@ public:
         CENTER_ALIGNED
     };
 
-    TextBox() {};
     TextBox(const Vector3& bottomLeft, const Vector3& upVector, const Vector3& rightVector, float width, float height, float scale, BitmapFont* baseFont, TextAlignment textAlignment = TextAlignment::LEFT_ALIGNED);
     ~TextBox();
     void SetFromXMLNode(const struct XMLNode& node);
