@@ -33,7 +33,7 @@ class ParticleEmitter
 public:
     ParticleEmitter(const ParticleEmitterDefinition* definition, Vector2* positionToFollow);
     ParticleEmitter(const ParticleEmitterDefinition* definition, Vector2 positionToSpawn, float rotationDegrees = 0.0f);
-    virtual ~ParticleEmitter() {};
+    virtual ~ParticleEmitter();
     virtual void Update(float deltaSeconds);
     virtual void UpdateParticles(float deltaSeconds);
     virtual void SpawnParticles(float deltaSeconds);

@@ -8,6 +8,6 @@
 //---------------------------------------------------------------------------
 double GetCurrentTimeSeconds();
 double GetCurrentTimeMilliseconds();
-double GetCurrentTimeAbsoluteSeconds();
+int GetTimeBasedSeed();
 
 #endif

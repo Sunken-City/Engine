@@ -34,3 +34,10 @@ double GetCurrentTimeMilliseconds()
     return GetCurrentTimeSeconds() * 1000.0f;
 }
 
+//-----------------------------------------------------------------------------------
+int GetTimeBasedSeed()
+{
+    LARGE_INTEGER currentCount;
+    QueryPerformanceCounter(&currentCount);
+    return static_cast<int>(currentCount.QuadPart);
+}

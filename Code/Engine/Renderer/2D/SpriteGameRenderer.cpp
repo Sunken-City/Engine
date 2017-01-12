@@ -85,14 +85,14 @@ SpriteLayer::~SpriteLayer()
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteLayer::CleanUpDeadRenderables()
+void SpriteLayer::CleanUpDeadRenderables(bool cleanUpLiveRenderables)
 {
     Renderable2D* currentRenderable = m_renderablesList;
     if (currentRenderable)
     {
         do
         {
-            if (currentRenderable->m_isDead)
+            if (currentRenderable->m_isDead || cleanUpLiveRenderables)
             {
                 if (currentRenderable->next == currentRenderable)
                 {
@@ -161,7 +161,7 @@ SpriteGameRenderer::~SpriteGameRenderer()
     for (auto layerPair : m_layers)
     {
         SpriteLayer* layer = layerPair.second;
-        layer->CleanUpDeadRenderables();
+        layer->CleanUpDeadRenderables(forceDelete);
         delete layer;
     }
 }

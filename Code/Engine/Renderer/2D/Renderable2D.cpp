@@ -6,9 +6,9 @@ Renderable2D::Renderable2D(int orderingLayer, bool isEnabled)
     : m_isEnabled(false)
     , m_orderingLayer(-1)
 {
+    m_orderingLayer = orderingLayer;
     if (isEnabled)
     {
-        m_orderingLayer = orderingLayer;
         Enable();
     }
 }

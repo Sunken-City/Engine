@@ -177,9 +177,16 @@ Vector2& Vector2::operator-=(const Vector2& rhs)
 //-----------------------------------------------------------------------------------
 Vector2& Vector2::operator*=(const Vector2& rhs)
 {
-
     this->x *= rhs.x;
     this->y *= rhs.y;
+    return *this;
+}
+
+//-----------------------------------------------------------------------------------
+Vector2& Vector2::operator/=(const Vector2& rhs)
+{
+    this->x /= rhs.x;
+    this->y /= rhs.y;
     return *this;
 }
 

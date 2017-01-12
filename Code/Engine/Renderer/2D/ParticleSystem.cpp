@@ -77,6 +77,12 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
 }
 
 //-----------------------------------------------------------------------------------
+ParticleEmitter::~ParticleEmitter()
+{
+    m_particles.clear();
+}
+
+//-----------------------------------------------------------------------------------
 void ParticleEmitter::Update(float deltaSeconds)
 {
     if (!m_isDead)

@@ -38,6 +38,7 @@ public:
     Vector2& operator+=(const Vector2& rhs);
     Vector2& operator-=(const Vector2& rhs);
     Vector2& operator*=(const Vector2& rhs);
+    Vector2& operator/=(const Vector2& rhs);
     Vector2& operator*=(const float& scalarConstant);
     Vector2& operator/=(const float& scalarConstant);
     static Vector2 CreateFromString(const char* xmlString);
@@ -73,6 +74,13 @@ inline Vector2 operator-(Vector2 lhs, const Vector2& rhs)
 inline Vector2 operator*(Vector2 lhs, const Vector2& rhs)
 {
     lhs *= rhs;
+    return lhs;
+}
+
+//----------------------------------------------------------------------
+inline Vector2 operator/(Vector2 lhs, const Vector2& rhs)
+{
+    lhs /= rhs;
     return lhs;
 }
 

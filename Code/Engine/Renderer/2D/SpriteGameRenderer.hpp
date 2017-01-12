@@ -45,7 +45,7 @@ public:
     inline void Enable() { m_isEnabled = true; }
     inline void Disable() { m_isEnabled = false; }
     inline void Toggle() { m_isEnabled = !m_isEnabled; }
-    void CleanUpDeadRenderables();
+    void CleanUpDeadRenderables(bool cleanUpLiveRenderables = false);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     int m_layer;
