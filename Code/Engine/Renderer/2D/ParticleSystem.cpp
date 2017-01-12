@@ -141,7 +141,7 @@ void ParticleEmitter::CleanUpDeadParticles()
 }
 
 //-----------------------------------------------------------------------------------
-void ParticleEmitter::CopyParticlesToMesh(Mesh* m_mesh)
+void ParticleEmitter::BuildParticles(BufferedMeshRenderer& renderer)
 {
     unsigned int numParticles = m_particles.size();
     if (numParticles == 0)
@@ -210,11 +210,11 @@ void ParticleEmitter::CopyParticlesToMesh(Mesh* m_mesh)
         indices.push_back(1 + currentOffset);
         indices.push_back(3 + currentOffset);
         indices.push_back(2 + currentOffset);
+
+        renderer.m_builder.AddSprite(GetSpriteResource(), particle.tint, &transform);
     } 
 
-    //Copy the vertices into the mesh
-    m_mesh->CleanUpRenderObjects();
-    m_mesh->Init(verts.data(), verts.size(), sizeof(Vertex_Sprite), indices.data(), indices.size(), &Vertex_Sprite::BindMeshToVAO);
+    renderer.m_builder.CopyToMesh(&renderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
 }
 
 //-----------------------------------------------------------------------------------
@@ -226,6 +226,12 @@ void ParticleEmitter::SpawnParticle()
     float rotation = m_rotationDegrees + m_definition->m_initialRotationDegrees.GetRandom();
     m_particles.emplace_back(spawnPosition, m_definition, rotation);
     m_particles.back().tint = m_definition->m_initialTintPerParticle;
+}
+
+//-----------------------------------------------------------------------------------
+const SpriteResource* ParticleEmitter::GetSpriteResource()
+{
+    return m_spriteOverride ? m_spriteOverride : m_definition->m_spriteResource;
 }
 
 //-----------------------------------------------------------------------------------
@@ -304,7 +310,7 @@ void ParticleSystem::Render(BufferedMeshRenderer& renderer)
             emitter->m_definition->m_material->SetDiffuseTexture(diffuse);
             renderer.SetMaterial(emitter->m_definition->m_material);
             renderer.SetModelMatrix(Matrix4x4::IDENTITY);
-            emitter->CopyParticlesToMesh(&renderer.m_mesh);
+            emitter->BuildParticles(renderer);
 #pragma todo("Remove this flush once we're ready to")
             renderer.FlushAndRender();
         }

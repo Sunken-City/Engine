@@ -38,8 +38,9 @@ public:
     virtual void UpdateParticles(float deltaSeconds);
     virtual void SpawnParticles(float deltaSeconds);
     virtual void CleanUpDeadParticles();
-    void CopyParticlesToMesh(Mesh* m_mesh);
+    void BuildParticles(BufferedMeshRenderer& renderer);
     void SpawnParticle();
+    const SpriteResource* GetSpriteResource();
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     const ParticleEmitterDefinition* m_definition;

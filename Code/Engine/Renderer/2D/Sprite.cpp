@@ -59,25 +59,7 @@ void Sprite::PushSpriteToMesh(BufferedMeshRenderer& renderer)
     Matrix4x4 scale = Matrix4x4::IDENTITY;
     Matrix4x4 rotation = Matrix4x4::IDENTITY;
     Matrix4x4 translation = Matrix4x4::IDENTITY;
-
-    //Calculate the bounding box for our sprite
-    //position, scale, rotation, virtual size
-//     verts[0].position = Vector2(-pivotPoint.x, -pivotPoint.y);
-//     verts[1].position = Vector2(spriteBounds.x - pivotPoint.x, -pivotPoint.y);
-//     verts[2].position = Vector2(-pivotPoint.x, spriteBounds.y - pivotPoint.y);
-//     verts[3].position = Vector2(spriteBounds.x - pivotPoint.x, spriteBounds.y - pivotPoint.y);
-// 
-//     //This is skewed to accomodate for STBI loading in the images the wrong way.
-//     verts[0].uv = Vector2(uvMins.x, uvMaxs.y);
-//     verts[1].uv = uvMaxs;
-//     verts[2].uv = uvMins;
-//     verts[3].uv = Vector2(uvMaxs.x, uvMins.y);
-// 
-//     verts[0].color = m_tintColor;
-//     verts[1].color = m_tintColor;
-//     verts[2].color = m_tintColor;
-//     verts[3].color = m_tintColor;
-
+    
     //Scale the bounding box
     Matrix4x4::MatrixMakeScale(&scale, Vector3(m_scale, 0.0f));
 
@@ -89,6 +71,6 @@ void Sprite::PushSpriteToMesh(BufferedMeshRenderer& renderer)
 
     //Apply our transformations
     renderer.SetModelMatrix(scale * rotation * translation);
-    renderer.m_builder.AddSprite(this);
+    renderer.m_builder.AddSprite(m_spriteResource, m_tintColor);
     renderer.m_builder.CopyToMesh(&renderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
 }
