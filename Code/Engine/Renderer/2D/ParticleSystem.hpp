@@ -63,7 +63,8 @@ public:
     ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees = 0.0f, const SpriteResource* spriteOverride = nullptr);
     virtual ~ParticleSystem();
     virtual void Update(float deltaSeconds) override;
-    virtual void Render(BufferedMeshRenderer& renderer) override;
+    virtual void Render(BufferedMeshRenderer& renderer) override; 
+    virtual bool IsCullable() override { return false; };
 
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
     static void DestroyImmediately(ParticleSystem* systemToDestroy);
