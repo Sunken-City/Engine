@@ -17,7 +17,7 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     Mesh m_mesh;
+    MeshBuilder m_builder;
 private:
     MeshRenderer m_renderer;
-    MeshBuilder m_builder;
 };
