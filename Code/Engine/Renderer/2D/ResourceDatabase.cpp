@@ -69,6 +69,7 @@ ParticleSystemDefinition* ResourceDatabase::RegisterParticleSystem(std::string p
 {
     ParticleSystemDefinition* resource = new ParticleSystemDefinition(type);
     m_particleSystemDatabase[std::hash<std::string>{}(particleSystemName)] = resource;
+    resource->m_name = particleSystemName;
     return resource;
 }
 

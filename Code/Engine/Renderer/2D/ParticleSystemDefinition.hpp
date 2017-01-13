@@ -23,6 +23,7 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     Material* m_material;
+    std::string m_name;
     unsigned int m_initialNumParticlesSpawn;
     float m_particlesPerSecond;
     Range<float> m_lifetimePerParticle;
@@ -47,6 +48,7 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::vector<ParticleEmitterDefinition*> m_emitterDefinitions;
+    std::string m_name;
     ParticleSystemType m_type;
     ParticleSystemDefinition* next;
     ParticleSystemDefinition* prev;
