@@ -98,7 +98,7 @@ void ParticleEmitter::Update(float deltaSeconds)
         UpdateParticles(deltaSeconds);
         CleanUpDeadParticles();
         SpawnParticles(deltaSeconds);
-        if ((m_secondsPerParticle == 0.0f || m_emitterAge > m_maxEmitterAge) && m_particles.size() == 0)
+        if ((m_secondsPerParticle == 0.0f || (m_maxEmitterAge > 0.0f && m_emitterAge > m_maxEmitterAge)) && m_particles.size() == 0)
         {
             m_isDead = true;
         }
