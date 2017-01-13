@@ -56,7 +56,6 @@ SpriteLayer::SpriteLayer(int layerIndex)
     : m_layer(layerIndex)
     , m_renderablesList(nullptr)
     , m_isEnabled(true)
-    , m_virtualSize(SpriteGameRenderer::instance->m_virtualSize)
     , m_boundingVolume(SpriteGameRenderer::instance->m_worldBounds)
 {
 
@@ -213,7 +212,7 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinition& renderArea)
 {
-    RecalculateVirtualWidthAndHeight(renderArea);
+    RecalculateVirtualWidthAndHeight(renderArea, layer->m_virtualScaleChange);
     UpdateCameraPosition(renderArea.m_cameraPosition);
     AABB2 renderBounds = GetVirtualBoundsAroundCameraCenter();
     if (layer->m_isEnabled)
@@ -251,12 +250,12 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteGameRenderer::RecalculateVirtualWidthAndHeight(const ViewportDefinition &renderArea)
+void SpriteGameRenderer::RecalculateVirtualWidthAndHeight(const ViewportDefinition& renderArea, float layerVirtualSizeScaleFactor)
 {
     float newVirtualWidth = m_windowVirtualHeight * renderArea.m_viewportAspectRatio;
     float newVirtualHeight = m_windowVirtualWidth / renderArea.m_viewportAspectRatio;
-    m_virtualWidth = MathUtils::Lerp(0.5, m_windowVirtualWidth, newVirtualWidth);
-    m_virtualHeight = MathUtils::Lerp(0.5, m_windowVirtualHeight, newVirtualHeight);
+    m_virtualWidth = MathUtils::Lerp(0.5, m_windowVirtualWidth, newVirtualWidth) * layerVirtualSizeScaleFactor;
+    m_virtualHeight = MathUtils::Lerp(0.5, m_windowVirtualHeight, newVirtualHeight) * layerVirtualSizeScaleFactor;
 }
 
 //-----------------------------------------------------------------------------------

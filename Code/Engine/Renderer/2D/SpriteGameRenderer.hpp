@@ -51,7 +51,7 @@ public:
     int m_layer;
     Renderable2D* m_renderablesList;
     bool m_isEnabled;
-    float m_virtualSize;
+    float m_virtualScaleChange = 1.0f;
     AABB2 m_boundingVolume;
     std::vector<Material*> m_effectMaterials;
 };
@@ -85,7 +85,7 @@ public:
     void RenderView(const ViewportDefinition& renderArea);
     void UpdateScreenResolution(unsigned int widthInPixels, unsigned int heightInPixels);
     void RenderLayer(SpriteLayer* layer, const ViewportDefinition& renderArea);
-    void RecalculateVirtualWidthAndHeight(const ViewportDefinition& renderArea);
+    void RecalculateVirtualWidthAndHeight(const ViewportDefinition& renderArea, float layerVirtualSizeScaleFactor);
     void RegisterRenderable2D(Renderable2D* renderable);
     void UnregisterRenderable2D(Renderable2D* renderable);
     SpriteLayer* CreateOrGetLayer(int layerNumber);
