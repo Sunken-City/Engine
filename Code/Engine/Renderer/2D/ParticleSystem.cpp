@@ -110,8 +110,11 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
 {
     for (Particle& particle : m_particles)
     {
+        float gravityScale = 0.0f;
+        m_definition->m_properties.Get<float>("Gravity Scale", gravityScale);
+        Vector2 acceleration = particle.acceleration + (Vector2(0.0f, -9.81f) * gravityScale);
         particle.position += particle.velocity * deltaSeconds;
-        particle.velocity += particle.acceleration * deltaSeconds;
+        particle.velocity += acceleration * deltaSeconds;
         particle.scale += m_definition->m_scaleRateOfChangePerSecond * deltaSeconds;
 
         particle.age += deltaSeconds;

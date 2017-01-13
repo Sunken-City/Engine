@@ -2,6 +2,7 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/Vector2.hpp"
 #include "Engine/Renderer/RGBA.hpp"
+#include "Engine/Core/Events/NamedProperties.hpp"
 #include <vector>
 
 class Material;
@@ -22,6 +23,7 @@ public:
     ParticleEmitterDefinition(const SpriteResource* spriteResource);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
+    mutable NamedProperties m_properties;
     Material* m_material;
     std::string m_name;
     unsigned int m_initialNumParticlesSpawn;
@@ -47,7 +49,8 @@ public:
     void AddEmitter(ParticleEmitterDefinition* emitterDefinition);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    std::vector<ParticleEmitterDefinition*> m_emitterDefinitions;
+    std::vector<ParticleEmitterDefinition*> m_emitterDefinitions; 
+    mutable NamedProperties m_properties;
     std::string m_name;
     ParticleSystemType m_type;
     ParticleSystemDefinition* next;
