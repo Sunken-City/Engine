@@ -53,3 +53,9 @@ public:
     Material* m_material;
     float m_rotationDegrees;
 };
+
+//-----------------------------------------------------------------------------------
+class AnimatedSprite : public Sprite
+{
+
+};

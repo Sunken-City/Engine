@@ -36,7 +36,9 @@ struct TypedNameProperty : public NamedPropertyBase
 {
     TypedNameProperty(const T& data)
         : m_data(data)
-    {}
+    {
+        //If you get an "array initialization" compile error pointing here, you probably forgot to put <std::string> when using the string Set
+    }
 
     virtual ~TypedNameProperty() {};
 

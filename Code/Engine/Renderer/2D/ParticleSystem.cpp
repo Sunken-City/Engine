@@ -88,6 +88,7 @@ ParticleEmitter::~ParticleEmitter()
 //-----------------------------------------------------------------------------------
 void ParticleEmitter::Update(float deltaSeconds)
 {
+    //auto UpdateFunction = &UpdateParticles;
     if (!m_isDead)
     {
         m_emitterAge += deltaSeconds;
@@ -108,6 +109,7 @@ void ParticleEmitter::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void ParticleEmitter::UpdateParticles(float deltaSeconds)
 {
+    static const bool fadeoutEnabled = m_definition->m_properties.Get<bool>("Fadeout Enabled");
     for (Particle& particle : m_particles)
     {
         float gravityScale = 0.0f;
@@ -118,7 +120,7 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
         particle.scale += m_definition->m_scaleRateOfChangePerSecond * deltaSeconds;
 
         particle.age += deltaSeconds;
-        if (m_definition->m_fadeoutEnabled)
+        if (fadeoutEnabled)
         {
             particle.tint.SetAlphaFloat(MathUtils::Clamp(1.0f - MathUtils::RangeMap(particle.age, 0.0f, particle.maxAge, 0.0f, 1.0f)));
         }

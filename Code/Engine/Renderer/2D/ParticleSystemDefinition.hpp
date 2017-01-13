@@ -25,14 +25,12 @@ public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     mutable NamedProperties m_properties;
     Material* m_material;
-    std::string m_name;
     unsigned int m_initialNumParticlesSpawn;
     float m_particlesPerSecond;
     Range<float> m_lifetimePerParticle;
     Range<Vector2> m_initialScalePerParticle;
     Range<Vector2> m_initialVelocity;
     RGBA m_initialTintPerParticle;
-    bool m_fadeoutEnabled;
     const SpriteResource* m_spriteResource;
     Range<float> m_maxLifetime = 0.0f;
     Range<float> m_spawnRadius = 0.0f; 
