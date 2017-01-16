@@ -20,6 +20,7 @@ public:
     void SetXY(float newX, float newY);
 
     //FUNCTIONS//////////////////////////////////////////////////////////////////////////
+    float CalculateMagnitudeSquared() const;
     float CalculateMagnitude() const;
     void ClampMagnitude(float topSpeed);
     float CalculateThetaDegrees();
@@ -42,6 +43,7 @@ public:
     Vector2& operator*=(const float& scalarConstant);
     Vector2& operator/=(const float& scalarConstant);
     static Vector2 CreateFromString(const char* xmlString);
+
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const Vector2 ZERO;
     static const Vector2 ONE;

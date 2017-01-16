@@ -13,18 +13,17 @@ Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition
     : position(spawnPosition)
     , velocity(initialVelocity)
     , acceleration(initialAcceleration)
-    , age(0.0f)
     , rotationDegrees(initialRotationDegrees)
+    , age(0.0f)
 {
-    velocity = definition->m_properties.Get<Range<Vector2>>(PROPERTY_INITIAL_VELOCITY).GetRandom();
-    maxAge = definition->m_properties.Get<Range<float>>(PROPERTY_PARTICLE_LIFETIME).GetRandom();
     scale = definition->m_properties.Get<Range<Vector2>>(PROPERTY_INITIAL_SCALE).GetRandom();
-    tint = definition->m_properties.Get<RGBA>(PROPERTY_INITIAL_COLOR);
+    maxAge = definition->m_properties.Get<Range<float>>(PROPERTY_PARTICLE_LIFETIME).GetRandom();
 }
 
 //-----------------------------------------------------------------------------------
-ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Vector2* positionToFollow)
-    : m_definition(definition)
+ParticleEmitter::ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDefinition* definition, Vector2* positionToFollow)
+    : m_parentSystem(parent)
+    , m_definition(definition)
     , m_followablePosition(positionToFollow)
     , m_rotationDegrees(0.0f)
     , m_emitterAge(0.0f)
@@ -56,8 +55,9 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
 }
 
 //-----------------------------------------------------------------------------------
-ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Vector2 positionToSpawn, float rotationDegrees)
-    : m_definition(definition)
+ParticleEmitter::ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDefinition* definition, Vector2 positionToSpawn, float rotationDegrees)
+    : m_parentSystem(parent)
+    , m_definition(definition)
     , m_emitterAge(0.0f)
     , m_timeSinceLastEmission(0.0f)
     , m_isDead(false)
@@ -234,9 +234,12 @@ void ParticleEmitter::SpawnParticle()
 {
     Vector2 spawnPosition = m_position;
     Vector2 randomVectorOffset = MathUtils::GetRandomVectorInCircle(m_definition->m_properties.Get<Range<float>>(PROPERTY_SPAWN_RADIUS).GetRandom());
+    float initialRotation = m_rotationDegrees + m_definition->m_properties.Get<Range<float>>(PROPERTY_INITIAL_ROTATION_DEGREES).GetRandom();
+    Vector2 initialVelocity = m_definition->m_properties.Get<Range<Vector2>>(PROPERTY_INITIAL_VELOCITY).GetRandom();
+    
     spawnPosition += randomVectorOffset;
-    float rotation = m_rotationDegrees + m_definition->m_properties.Get<Range<float>>(PROPERTY_INITIAL_ROTATION_DEGREES).GetRandom();
-    m_particles.emplace_back(spawnPosition, m_definition, rotation);
+
+    m_particles.emplace_back(spawnPosition, m_definition, initialRotation, initialVelocity);
     m_particles.back().tint = m_definition->m_properties.Get<RGBA>(PROPERTY_INITIAL_COLOR);
 }
 
@@ -249,7 +252,7 @@ const SpriteResource* ParticleEmitter::GetSpriteResource()
 //-----------------------------------------------------------------------------------
 void ParticleEmitter::SpawnParticles(float deltaSeconds)
 {
-    if (m_secondsPerParticle > 0.0f && m_emitterAge < m_maxEmitterAge)
+    if (m_secondsPerParticle > 0.0f && m_emitterAge < m_maxEmitterAge && !m_parentSystem->m_isPaused)
     {
         m_timeSinceLastEmission += deltaSeconds;
         while (m_timeSinceLastEmission >= m_secondsPerParticle)
@@ -267,7 +270,7 @@ ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer,
 {
     for (const ParticleEmitterDefinition* emitterDefinition : m_definition->m_emitterDefinitions)
     {
-        ParticleEmitter* emitter = new ParticleEmitter(emitterDefinition, positionToFollow);
+        ParticleEmitter* emitter = new ParticleEmitter(this, emitterDefinition, positionToFollow);
         emitter->m_spriteOverride = spriteOverride;
         m_emitters.push_back(emitter);
     }
@@ -280,7 +283,7 @@ ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer,
 {
     for (const ParticleEmitterDefinition* emitterDefinition : m_definition->m_emitterDefinitions)
     {
-        ParticleEmitter* emitter = new ParticleEmitter(emitterDefinition, positionToSpawn, rotationDegrees);
+        ParticleEmitter* emitter = new ParticleEmitter(this, emitterDefinition, positionToSpawn, rotationDegrees);
         emitter->m_spriteOverride = spriteOverride;
         m_emitters.push_back(emitter);
     }

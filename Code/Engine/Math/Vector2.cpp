@@ -73,6 +73,12 @@ void Vector2::SetXY(float newX, float NewY)
 }
 
 //-----------------------------------------------------------------------------------
+float Vector2::CalculateMagnitudeSquared() const
+{
+    return (x*x) + (y*y);
+}
+
+//-----------------------------------------------------------------------------------
 float Vector2::CalculateMagnitude() const
 {
     return sqrt((x*x) + (y*y));
