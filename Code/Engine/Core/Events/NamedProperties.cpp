@@ -25,7 +25,7 @@ PropertySetResult NamedProperties::Set(const std::string& propertyName, std::str
     auto foundPair = m_properties.find(propertyName);
     if (foundPair != m_properties.end())
     {
-        if (changeTypeIfDifferent)
+        if (!m_neverChangeTypeIfDifferent && changeTypeIfDifferent)
         {
             result = PSR_SUCCESS_EXISTED;
             delete (*foundPair).second;
@@ -33,6 +33,7 @@ PropertySetResult NamedProperties::Set(const std::string& propertyName, std::str
         else
         {
             result = PSR_FAILED_DIFF_TYPE;
+            ERROR_RECOVERABLE(Stringf("Attempted to Set %s to a different type when it wasn't allowed.", propertyName.c_str()));
             return result;
         }
     }

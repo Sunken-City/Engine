@@ -113,15 +113,8 @@ void ParticleEmitter::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void ParticleEmitter::UpdateParticles(float deltaSeconds)
 {
-    static const bool fadeoutEnabled = m_definition->m_properties.Get<bool>(PROPERTY_FADEOUT_ENABLED);
-    
-    Vector2 scaleRateOfChangePerSecond = Vector2::ZERO;
-    Range<Vector2> scaleRateOfChangePerSecondRange;
-    PropertyGetResult result = m_definition->m_properties.Get<Range<Vector2>>(PROPERTY_DELTA_SCALE_PER_SECOND, scaleRateOfChangePerSecondRange);
-    if (result = PGR_SUCCESS)
-    {
-        scaleRateOfChangePerSecond = scaleRateOfChangePerSecondRange.GetRandom();
-    }
+    const bool fadeoutEnabled = m_definition->m_properties.Get<bool>(PROPERTY_FADEOUT_ENABLED);
+    const Vector2 scaleRateOfChangePerSecond = m_definition->m_properties.Get<Range<Vector2>>(PROPERTY_DELTA_SCALE_PER_SECOND).GetRandom();
 
     for (Particle& particle : m_particles)
     {
