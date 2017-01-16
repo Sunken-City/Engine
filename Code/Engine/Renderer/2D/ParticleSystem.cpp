@@ -31,7 +31,7 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
     , m_timeSinceLastEmission(0.0f) 
     , m_isDead(false)
     , m_maxEmitterAge(definition->m_properties.Get<Range<float>>(PROPERTY_MAX_EMITTER_LIFETIME).GetRandom())
-    , m_particlesPerSecond(definition->m_properties.Get<Range<float>>(PROPERTY_PARTICLES_PER_SECOND).GetRandom())
+    , m_particlesPerSecond(definition->m_properties.Get<float>(PROPERTY_PARTICLES_PER_SECOND))
     , m_initialNumParticlesSpawn(definition->m_properties.Get<Range<unsigned int>>(PROPERTY_INITIAL_NUM_PARTICLES).GetRandom())
 {
     if (positionToFollow)
@@ -65,7 +65,7 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
     , m_position(positionToSpawn)
     , m_followablePosition(nullptr)
     , m_maxEmitterAge(definition->m_properties.Get<Range<float>>(PROPERTY_MAX_EMITTER_LIFETIME).GetRandom())
-    , m_particlesPerSecond(definition->m_properties.Get<Range<float>>(PROPERTY_PARTICLES_PER_SECOND).GetRandom())
+    , m_particlesPerSecond(definition->m_properties.Get<float>(PROPERTY_PARTICLES_PER_SECOND))
     , m_initialNumParticlesSpawn(definition->m_properties.Get<Range<unsigned int>>(PROPERTY_INITIAL_NUM_PARTICLES).GetRandom())
 {
     if (m_particlesPerSecond != 0.0f)
@@ -114,7 +114,15 @@ void ParticleEmitter::Update(float deltaSeconds)
 void ParticleEmitter::UpdateParticles(float deltaSeconds)
 {
     static const bool fadeoutEnabled = m_definition->m_properties.Get<bool>(PROPERTY_FADEOUT_ENABLED);
-    static const Vector2 scaleRateOfChangePerSecond = m_definition->m_properties.Get<Range<Vector2>>(PROPERTY_DELTA_SCALE_PER_SECOND).GetRandom();
+    
+    Vector2 scaleRateOfChangePerSecond = Vector2::ZERO;
+    Range<Vector2> scaleRateOfChangePerSecondRange;
+    PropertyGetResult result = m_definition->m_properties.Get<Range<Vector2>>(PROPERTY_DELTA_SCALE_PER_SECOND, scaleRateOfChangePerSecondRange);
+    if (result = PGR_SUCCESS)
+    {
+        scaleRateOfChangePerSecond = scaleRateOfChangePerSecondRange.GetRandom();
+    }
+
     for (Particle& particle : m_particles)
     {
         float gravityScale = 0.0f;

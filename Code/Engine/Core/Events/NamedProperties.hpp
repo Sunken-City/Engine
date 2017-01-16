@@ -111,7 +111,7 @@ public:
         PropertyGetResult result = Get<T>(propertyName, returnVal);
         if (result != PGR_SUCCESS)
         {
-            ERROR_RECOVERABLE(Stringf("Property %s wasn't found on widget", propertyName.c_str()));
+            ERROR_RECOVERABLE(Stringf("Property %s wasn't found.", propertyName.c_str()));
         }
         return returnVal;
     }
