@@ -220,3 +220,9 @@ Vector2 Vector2::CreateFromString(const char* xmlString)
     delete components;
     return returnValue;
 }
+
+//-----------------------------------------------------------------------------------
+Vector2 Vector2::CreateFromPolar(float radius, float degrees)
+{
+    return Vector2(radius * MathUtils::CosDegrees(degrees), radius * MathUtils::SinDegrees(degrees));
+}

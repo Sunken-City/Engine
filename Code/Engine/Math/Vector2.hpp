@@ -43,6 +43,7 @@ public:
     Vector2& operator*=(const float& scalarConstant);
     Vector2& operator/=(const float& scalarConstant);
     static Vector2 CreateFromString(const char* xmlString);
+    static Vector2 CreateFromPolar(float radius, float degrees);
 
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const Vector2 ZERO;
