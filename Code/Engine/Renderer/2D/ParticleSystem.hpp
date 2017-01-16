@@ -48,8 +48,10 @@ public:
     Vector2 m_position;
     Vector2* m_followablePosition = nullptr;
     const SpriteResource* m_spriteOverride = nullptr;
+    unsigned int m_initialNumParticlesSpawn;
     float m_rotationDegrees;
     float m_emitterAge;
+    float m_particlesPerSecond;
     float m_maxEmitterAge = FLT_MAX;
     float m_timeSinceLastEmission;
     float m_secondsPerParticle;

@@ -160,6 +160,11 @@ class Range
 {
 public:
     //-----------------------------------------------------------------------------------
+    //Added this default constructor in order to use Get in named properties, however, you should always give the range a value.
+    Range()
+    {};
+
+    //-----------------------------------------------------------------------------------
     Range(T const &a)
         : minValue(a)
         , maxValue(a) {}

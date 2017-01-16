@@ -11,6 +11,16 @@ class SpriteResource;
 //NAMED CONSTANTS/////////////////////////////////////////////////////////////////////
 static const char* PROPERTY_FADEOUT_ENABLED = "Fadeout Enabled";
 static const char* PROPERTY_NAME = "Name";
+static const char* PROPERTY_INITIAL_NUM_PARTICLES = "Initial Number of Particles";
+static const char* PROPERTY_INITIAL_SCALE = "Initial Scale";
+static const char* PROPERTY_INITIAL_VELOCITY = "Initial Velocity";
+static const char* PROPERTY_INITIAL_COLOR = "Initial Color";
+static const char* PROPERTY_INITIAL_ROTATION_DEGREES = "Initial Rotation Degrees";
+static const char* PROPERTY_PARTICLE_LIFETIME = "Particle Lifetime";
+static const char* PROPERTY_MAX_EMITTER_LIFETIME = "Max Emitter Lifetime";
+static const char* PROPERTY_PARTICLES_PER_SECOND = "Particles per Second";
+static const char* PROPERTY_SPAWN_RADIUS = "Spawn Radius";
+static const char* PROPERTY_DELTA_SCALE_PER_SECOND = "Delta Scale Per Second";
 
 //-----------------------------------------------------------------------------------
 enum ParticleSystemType
@@ -28,18 +38,8 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     mutable NamedProperties m_properties;
-    Material* m_material;
-    unsigned int m_initialNumParticlesSpawn;
-    float m_particlesPerSecond;
-    Range<float> m_lifetimePerParticle;
-    Range<Vector2> m_initialScalePerParticle;
-    Range<Vector2> m_initialVelocity;
-    RGBA m_initialTintPerParticle;
     const SpriteResource* m_spriteResource;
-    Range<float> m_maxLifetime = 0.0f;
-    Range<float> m_spawnRadius = 0.0f; 
-    Range<float> m_initialRotationDegrees = 0.0f;
-    Vector2 m_scaleRateOfChangePerSecond = Vector2::ZERO;
+    Material* m_material;
 };
 
 //-----------------------------------------------------------------------------------
