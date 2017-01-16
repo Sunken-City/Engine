@@ -3,19 +3,48 @@
 #include "Engine/Renderer/AABB2.hpp"
 #include "Engine/Renderer/RGBA.hpp"
 #include <string>
+#include <vector>
 #include "Renderable2D.hpp"
 
 class Texture;
 class Material;
+class SpriteResource;
 class BufferedMeshRender;
+
+//-----------------------------------------------------------------------------------
+enum class SpriteAnimationLoopMode
+{
+    ONE_SHOT,
+    LOOP,
+    PING_PONG,
+    NUM_LOOP_MODES
+};
+
+//-----------------------------------------------------------------------------------
+struct SpriteAnimationFrame
+{
+    SpriteAnimationFrame(const SpriteResource* resource, float timeAtFrame) : m_resource(resource), m_timeAtFrame(timeAtFrame) {};
+    const SpriteResource* m_resource = nullptr;
+    float m_timeAtFrame = 0.0f;
+};
 
 //-----------------------------------------------------------------------------------
 class SpriteAnimationResource
 {
 public:
+    //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     SpriteAnimationResource() {};
 
+    //FUNCTIONS/////////////////////////////////////////////////////////////////////
+    const SpriteResource* GetCurrentSpriteResourceAtTime(float seconds) const;
+    void AddFrame(const std::string& spriteResourceName, float durationSeconds);
+
+    //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
+    std::vector<SpriteAnimationFrame> m_frames;
     std::string m_name;
+    SpriteAnimationLoopMode m_loopMode = SpriteAnimationLoopMode::ONE_SHOT;
+    float m_totalLengthSeconds = 0.0f;
+
 
 private:
     //Prevent copy by value for these resources.
@@ -70,5 +99,13 @@ public:
 //-----------------------------------------------------------------------------------
 class AnimatedSprite : public Sprite
 {
+public:
+    //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
+    AnimatedSprite(const std::string& animationResourceName, const std::string& defaultSpriteName, int orderingLayer = 0, bool isEnabled = true);
+    virtual ~AnimatedSprite();
 
+    virtual void Update(float deltaSeconds);
+
+    const SpriteAnimationResource* m_currentAnimation = nullptr;
+    float m_currentTime = 0.0f;
 };

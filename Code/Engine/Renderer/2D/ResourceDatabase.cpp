@@ -22,6 +22,11 @@ ResourceDatabase::~ResourceDatabase()
         delete resource->m_defaultMaterial;
         delete resource;
     }
+    for (auto resourcePair : m_spriteAnimationDatabase)
+    {
+        SpriteAnimationResource* resource = resourcePair.second;
+        delete resource;
+    }
     for (auto resourcePair : m_particleSystemDatabase)
     {
         ParticleSystemDefinition* resource = resourcePair.second;
@@ -65,11 +70,12 @@ SpriteResource* ResourceDatabase::EditSpriteResource(const std::string& resource
 }
 
 //-----------------------------------------------------------------------------------
-SpriteAnimationResource* ResourceDatabase::RegisterSpriteAnimation(std::string animationName)
+SpriteAnimationResource* ResourceDatabase::RegisterSpriteAnimation(std::string animationName, SpriteAnimationLoopMode mode)
 {
     SpriteAnimationResource* resource = new SpriteAnimationResource();
     m_spriteAnimationDatabase[std::hash<std::string>{}(animationName)] = resource;
     resource->m_name = animationName;
+    resource->m_loopMode = mode;
     return resource;
 }
 

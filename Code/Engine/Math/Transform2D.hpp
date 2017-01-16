@@ -1,7 +1,9 @@
 #pragma once
 
+#include <vector>
 #include "Engine/Math/Vector2.hpp"
 
+//-----------------------------------------------------------------------------------
 class Transform2D
 {
 public:
@@ -16,4 +18,5 @@ public:
     float rotationDegrees;
     Vector2 scale;
     Transform2D* parent = nullptr;
+    std::vector<Transform2D*> children;
 };

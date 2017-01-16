@@ -20,7 +20,7 @@ public:
     const SpriteResource* GetSpriteResource(const std::string& resourceName);
     SpriteResource* EditSpriteResource(const std::string& resourceName);
     
-    SpriteAnimationResource* RegisterSpriteAnimation(std::string animationName);
+    SpriteAnimationResource* RegisterSpriteAnimation(std::string animationName, SpriteAnimationLoopMode mode);
     const SpriteAnimationResource* GetSpriteAnimationResource(const std::string& resourceName);
     SpriteAnimationResource* EditSpriteAnimationResource(const std::string& resourceName);
 

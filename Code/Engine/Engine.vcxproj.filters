@@ -652,5 +652,8 @@
     <ClInclude Include="UI\Widgets\CheckboxWidget.hpp">
       <Filter>Engine\UI\Widgets</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Keyframes.hpp">
+      <Filter>Engine\Core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

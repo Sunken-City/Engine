@@ -122,6 +122,7 @@
     <ClInclude Include="Core\Events\EventSystem.hpp" />
     <ClInclude Include="Core\Events\NamedProperties.hpp" />
     <ClInclude Include="Core\JobSystem.hpp" />
+    <ClInclude Include="Core\Keyframes.hpp" />
     <ClInclude Include="Core\Memory\Callstack.hpp" />
     <ClInclude Include="Core\Memory\MemoryOutputWindow.hpp" />
     <ClInclude Include="Core\Memory\MemoryTracking.hpp" />

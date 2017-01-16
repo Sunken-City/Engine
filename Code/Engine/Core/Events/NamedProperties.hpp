@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
 #include <map>
-#include "..\ErrorWarningAssert.hpp"
-#include "..\StringUtils.hpp"
+#include "Engine\Core\ErrorWarningAssert.hpp"
+#include "Engine\Core\StringUtils.hpp"
+#include "Engine\Core\Memory\UntrackedAllocator.hpp"
 
 //-----------------------------------------------------------------------------------
 enum PropertyGetResult
@@ -151,7 +152,7 @@ public:
     bool Remove(const std::string& propertyName);
 
     //VARIABLES/////////////////////////////////////////////////////////////////////
-    std::map<std::string, NamedPropertyBase*> m_properties;
+    std::map<std::string, NamedPropertyBase*, std::less<std::string>, UntrackedAllocator<std::pair<std::string, NamedPropertyBase*>>> m_properties;
     bool m_neverChangeTypeIfDifferent = false;
     static NamedProperties NONE;
 };

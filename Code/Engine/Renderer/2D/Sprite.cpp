@@ -74,3 +74,86 @@ void Sprite::PushSpriteToMesh(BufferedMeshRenderer& renderer)
     renderer.m_builder.AddSprite(m_spriteResource, m_tintColor);
     renderer.m_builder.CopyToMesh(&renderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
 }
+
+//-----------------------------------------------------------------------------------
+AnimatedSprite::AnimatedSprite(const std::string& animationResourceName, const std::string& defaultSpriteName, int orderingLayer /*= 0*/, bool isEnabled /*= true*/)
+    : Sprite(defaultSpriteName, orderingLayer, isEnabled)
+    , m_currentAnimation(ResourceDatabase::instance->GetSpriteAnimationResource(animationResourceName))
+{
+
+}
+
+//-----------------------------------------------------------------------------------
+AnimatedSprite::~AnimatedSprite()
+{
+
+}
+
+//-----------------------------------------------------------------------------------
+void AnimatedSprite::Update(float deltaSeconds) 
+{
+    m_currentTime += deltaSeconds;
+    m_spriteResource = m_currentAnimation->GetCurrentSpriteResourceAtTime(m_currentTime);
+    ASSERT_OR_DIE(m_spriteResource, "Failed to get a sprite resource from the animation");
+}
+
+//-----------------------------------------------------------------------------------
+const SpriteResource* SpriteAnimationResource::GetCurrentSpriteResourceAtTime(float seconds) const
+{
+    float currentTime = seconds;
+    if (m_frames.size() < 1)
+    {
+        return nullptr;
+    }
+    if (m_loopMode == SpriteAnimationLoopMode::ONE_SHOT)
+    {
+        currentTime = fmodf(seconds, m_totalLengthSeconds);
+        if (currentTime > m_totalLengthSeconds)
+        {
+            currentTime = m_totalLengthSeconds;
+        }
+    }
+    else if (m_loopMode == SpriteAnimationLoopMode::LOOP)
+    {
+        if (currentTime > m_totalLengthSeconds)
+        {
+            currentTime = fmodf(currentTime, m_totalLengthSeconds);
+        }
+    }
+    else if (m_loopMode == SpriteAnimationLoopMode::PING_PONG)
+    {
+        if (currentTime > m_totalLengthSeconds)
+        {
+            float animTime = fmodf(currentTime, m_totalLengthSeconds * 2.0f) - m_totalLengthSeconds;
+            if (animTime > 0.0f)
+            {
+                currentTime = fmodf(currentTime, m_totalLengthSeconds);
+            }
+            else if (animTime < 0.0f)
+            {
+                currentTime = m_totalLengthSeconds - fmodf(currentTime, m_totalLengthSeconds);
+            }
+        }
+    }
+
+    const SpriteResource* currentSprite = m_frames[0].m_resource;
+    for (const SpriteAnimationFrame& frame : m_frames)
+    {
+        if (currentTime < frame.m_timeAtFrame)
+        {
+            break;
+        }
+        else
+        {
+            currentSprite = frame.m_resource;
+        }
+    }
+    return currentSprite;
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteAnimationResource::AddFrame(const std::string& spriteResourceName, float durationSeconds)
+{
+    m_frames.emplace_back(ResourceDatabase::instance->GetSpriteResource(spriteResourceName), m_totalLengthSeconds);
+    m_totalLengthSeconds += durationSeconds;
+}
