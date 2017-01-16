@@ -11,18 +11,18 @@ class Vector2
 public:
     //CONSTRUCTORS//////////////////////////////////////////////////////////////////////////
     Vector2();
-    Vector2(float initialValue);
-    Vector2(float initialX, float initialY);
+    explicit Vector2(float initialValue);
+    explicit Vector2(float initialX, float initialY);
     Vector2(const Vector2& other);
-    Vector2(const Vector3& other);
-    Vector2(const Vector4& other);
-    Vector2(const Vector2Int& other);
+    explicit Vector2(const Vector3& other);
+    explicit Vector2(const Vector4& other);
+    explicit Vector2(const Vector2Int& other);
     void SetXY(float newX, float newY);
 
     //FUNCTIONS//////////////////////////////////////////////////////////////////////////
     float CalculateMagnitude() const;
     void ClampMagnitude(float topSpeed);
-    float CalculateTheta();
+    float CalculateThetaDegrees();
     void Normalize();
     Vector2 GetNorm();
     float Dot(const Vector2& b) const;
@@ -56,11 +56,16 @@ public:
     float y;
 };
 
-//----------------------------------------------------------------------
-inline Vector2 operator+(Vector2 lhs, const Vector2& rhs)
+//-----------------------------------------------------------------------------------
+inline Vector2 operator-(const Vector2& vecToReverse)
 {
-    lhs += rhs;
-    return lhs;
+    return Vector2(-vecToReverse.x, -vecToReverse.y);
+}
+
+//----------------------------------------------------------------------
+inline Vector2 operator+(const Vector2& lhs, const Vector2& rhs)
+{
+    return Vector2(lhs.x + rhs.x, lhs.y + rhs.y);
 }
 
 //----------------------------------------------------------------------
@@ -85,14 +90,21 @@ inline Vector2 operator/(Vector2 lhs, const Vector2& rhs)
 }
 
 //----------------------------------------------------------------------
-inline Vector2 operator*(Vector2 lhs, const float& scalarConstant)
+inline Vector2 operator*(float scalarConstant, Vector2 lhs)
 {
     lhs *= scalarConstant;
     return lhs;
 }
 
 //----------------------------------------------------------------------
-inline Vector2 operator/(Vector2 lhs, const float& scalarConstant)
+inline Vector2 operator*(Vector2 lhs, float scalarConstant)
+{
+    lhs *= scalarConstant;
+    return lhs;
+}
+
+//----------------------------------------------------------------------
+inline Vector2 operator/(Vector2 lhs, float scalarConstant)
 {
     lhs /= scalarConstant;
     return lhs;

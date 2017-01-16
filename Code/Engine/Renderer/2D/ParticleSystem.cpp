@@ -5,8 +5,8 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Renderer/MeshBuilder.hpp"
 #include "Engine/Math/Matrix4x4.hpp"
-#include "ResourceDatabase.hpp"
-#include "../../Math/Vector3.hpp"
+#include "Engine/Math/Vector3.hpp"
+#include "Engine/Renderer/2D/ResourceDatabase.hpp"
 
 //-----------------------------------------------------------------------------------
 Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition* definition, float initialRotationDegrees, const Vector2& initialVelocity, const Vector2& initialAcceleration)

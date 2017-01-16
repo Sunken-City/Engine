@@ -28,5 +28,5 @@ ParticleEmitterDefinition::ParticleEmitterDefinition(const SpriteResource* sprit
     , m_spriteResource(spriteResource)
 {
     m_material = m_spriteResource->m_defaultMaterial; 
-    //m_properties.Set<bool>("Fadeout Enabled", false);
+    m_properties.Set<bool>(PROPERTY_FADEOUT_ENABLED, false);
 }
