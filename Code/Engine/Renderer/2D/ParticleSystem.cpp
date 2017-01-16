@@ -16,10 +16,10 @@ Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition
     , age(0.0f)
     , rotationDegrees(initialRotationDegrees)
 {
-    velocity = definition->m_initialVelocity.GetRandom();
-    maxAge = definition->m_lifetimePerParticle.GetRandom();
-    scale = definition->m_initialScalePerParticle.GetRandom();
-    tint = definition->m_initialTintPerParticle;
+    velocity = definition->m_properties.Get<Range<Vector2>>(PROPERTY_INITIAL_VELOCITY).GetRandom();
+    maxAge = definition->m_properties.Get<Range<float>>(PROPERTY_PARTICLE_LIFETIME).GetRandom();
+    scale = definition->m_properties.Get<Range<Vector2>>(PROPERTY_INITIAL_SCALE).GetRandom();
+    tint = definition->m_properties.Get<RGBA>(PROPERTY_INITIAL_COLOR);
 }
 
 //-----------------------------------------------------------------------------------
@@ -30,22 +30,24 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
     , m_emitterAge(0.0f)
     , m_timeSinceLastEmission(0.0f) 
     , m_isDead(false)
-    , m_maxEmitterAge(definition->m_maxLifetime.GetRandom())
+    , m_maxEmitterAge(definition->m_properties.Get<Range<float>>(PROPERTY_MAX_EMITTER_LIFETIME).GetRandom())
+    , m_particlesPerSecond(definition->m_properties.Get<Range<float>>(PROPERTY_PARTICLES_PER_SECOND).GetRandom())
+    , m_initialNumParticlesSpawn(definition->m_properties.Get<Range<unsigned int>>(PROPERTY_INITIAL_NUM_PARTICLES).GetRandom())
 {
     if (positionToFollow)
     {
         m_position = *positionToFollow;
         m_followablePosition = positionToFollow;
     }
-    if (definition->m_particlesPerSecond != 0.0f)
+    if (m_particlesPerSecond != 0.0f)
     {
-        m_secondsPerParticle = 1.0f / definition->m_particlesPerSecond;
-        SpawnParticles(m_secondsPerParticle * definition->m_initialNumParticlesSpawn);
+        m_secondsPerParticle = 1.0f / m_particlesPerSecond;
+        SpawnParticles(m_secondsPerParticle * m_initialNumParticlesSpawn);
     }
     else
     {
         m_secondsPerParticle = 0.0f;
-        for (unsigned int i = 0; i < definition->m_initialNumParticlesSpawn; ++i)
+        for (unsigned int i = 0; i < m_initialNumParticlesSpawn; ++i)
         {
             SpawnParticle();
             //m_particles.emplace_back(m_position, m_definition, m_rotationDegrees);
@@ -62,17 +64,19 @@ ParticleEmitter::ParticleEmitter(const ParticleEmitterDefinition* definition, Ve
     , m_rotationDegrees(rotationDegrees)
     , m_position(positionToSpawn)
     , m_followablePosition(nullptr)
-    , m_maxEmitterAge(definition->m_maxLifetime.GetRandom())
+    , m_maxEmitterAge(definition->m_properties.Get<Range<float>>(PROPERTY_MAX_EMITTER_LIFETIME).GetRandom())
+    , m_particlesPerSecond(definition->m_properties.Get<Range<float>>(PROPERTY_PARTICLES_PER_SECOND).GetRandom())
+    , m_initialNumParticlesSpawn(definition->m_properties.Get<Range<unsigned int>>(PROPERTY_INITIAL_NUM_PARTICLES).GetRandom())
 {
-    if (definition->m_particlesPerSecond != 0.0f)
+    if (m_particlesPerSecond != 0.0f)
     {
-        m_secondsPerParticle = 1.0f / definition->m_particlesPerSecond;
-        SpawnParticles(m_secondsPerParticle * definition->m_initialNumParticlesSpawn);
+        m_secondsPerParticle = 1.0f / m_particlesPerSecond;
+        SpawnParticles(m_secondsPerParticle * m_initialNumParticlesSpawn);
     }
     else
     {
         m_secondsPerParticle = 0.0f;
-        for (unsigned int i = 0; i < definition->m_initialNumParticlesSpawn; ++i)
+        for (unsigned int i = 0; i < m_initialNumParticlesSpawn; ++i)
         {
             SpawnParticle();
         }
@@ -109,7 +113,8 @@ void ParticleEmitter::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void ParticleEmitter::UpdateParticles(float deltaSeconds)
 {
-    static const bool fadeoutEnabled = m_definition->m_properties.Get<bool>("Fadeout Enabled");
+    static const bool fadeoutEnabled = m_definition->m_properties.Get<bool>(PROPERTY_FADEOUT_ENABLED);
+    static const Vector2 scaleRateOfChangePerSecond = m_definition->m_properties.Get<Range<Vector2>>(PROPERTY_DELTA_SCALE_PER_SECOND).GetRandom();
     for (Particle& particle : m_particles)
     {
         float gravityScale = 0.0f;
@@ -117,7 +122,7 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
         Vector2 acceleration = particle.acceleration + (Vector2(0.0f, -9.81f) * gravityScale);
         particle.position += particle.velocity * deltaSeconds;
         particle.velocity += acceleration * deltaSeconds;
-        particle.scale += m_definition->m_scaleRateOfChangePerSecond * deltaSeconds;
+        particle.scale += scaleRateOfChangePerSecond * deltaSeconds;
 
         particle.age += deltaSeconds;
         if (fadeoutEnabled)
@@ -226,11 +231,11 @@ void ParticleEmitter::BuildParticles(BufferedMeshRenderer& renderer)
 void ParticleEmitter::SpawnParticle()
 {
     Vector2 spawnPosition = m_position;
-    Vector2 randomVectorOffset = MathUtils::GetRandomVectorInCircle(m_definition->m_spawnRadius.GetRandom());
+    Vector2 randomVectorOffset = MathUtils::GetRandomVectorInCircle(m_definition->m_properties.Get<Range<float>>(PROPERTY_SPAWN_RADIUS).GetRandom());
     spawnPosition += randomVectorOffset;
-    float rotation = m_rotationDegrees + m_definition->m_initialRotationDegrees.GetRandom();
+    float rotation = m_rotationDegrees + m_definition->m_properties.Get<Range<float>>(PROPERTY_INITIAL_ROTATION_DEGREES).GetRandom();
     m_particles.emplace_back(spawnPosition, m_definition, rotation);
-    m_particles.back().tint = m_definition->m_initialTintPerParticle;
+    m_particles.back().tint = m_definition->m_properties.Get<RGBA>(PROPERTY_INITIAL_COLOR);
 }
 
 //-----------------------------------------------------------------------------------
