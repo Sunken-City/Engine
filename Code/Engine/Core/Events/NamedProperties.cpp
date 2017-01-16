@@ -25,17 +25,22 @@ PropertySetResult NamedProperties::Set(const std::string& propertyName, std::str
     auto foundPair = m_properties.find(propertyName);
     if (foundPair != m_properties.end())
     {
-        if (!m_neverChangeTypeIfDifferent && changeTypeIfDifferent)
+        NamedPropertyBase* property = foundPair->second;
+        TypedNameProperty<std::string>* foundProperty = dynamic_cast<TypedNameProperty<std::string>*>(property);
+        bool typesMatch = foundProperty && typeid(propertyValue) == typeid(foundProperty->m_data);
+
+        if (!typesMatch)
         {
-            result = PSR_SUCCESS_EXISTED;
-            delete (*foundPair).second;
+            if (m_neverChangeTypeIfDifferent || !changeTypeIfDifferent)
+            {
+                result = PSR_FAILED_DIFF_TYPE;
+                ERROR_RECOVERABLE(Stringf("Attempted to set '%s' to a different type when it wasn't allowed.", propertyName.c_str()));
+                return result;
+            }
         }
-        else
-        {
-            result = PSR_FAILED_DIFF_TYPE;
-            ERROR_RECOVERABLE(Stringf("Attempted to Set %s to a different type when it wasn't allowed.", propertyName.c_str()));
-            return result;
-        }
+
+        result = PSR_SUCCESS_EXISTED;
+        delete foundProperty;
     }
     m_properties[propertyName] = static_cast<NamedPropertyBase*>(new TypedNameProperty<std::string>(propertyValue));
     return result;
