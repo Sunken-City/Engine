@@ -10,14 +10,14 @@
 
 //-----------------------------------------------------------------------------------
 Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition* definition, float initialRotationDegrees, const Vector2& initialVelocity, const Vector2& initialAcceleration)
-    : position(spawnPosition)
-    , velocity(initialVelocity)
+    : m_position(spawnPosition)
+    , m_velocity(initialVelocity)
     , acceleration(initialAcceleration)
-    , rotationDegrees(initialRotationDegrees)
-    , age(0.0f)
+    , m_rotationDegrees(initialRotationDegrees)
+    , m_age(0.0f)
 {
-    scale = definition->m_properties.Get<Range<Vector2>>(PROPERTY_INITIAL_SCALE).GetRandom();
-    maxAge = definition->m_properties.Get<Range<float>>(PROPERTY_PARTICLE_LIFETIME).GetRandom();
+    m_scale = definition->m_properties.Get<Range<Vector2>>(PROPERTY_INITIAL_SCALE).GetRandom();
+    m_maxAge = definition->m_properties.Get<Range<float>>(PROPERTY_PARTICLE_LIFETIME).GetRandom();
 }
 
 //-----------------------------------------------------------------------------------
@@ -122,14 +122,14 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
         float gravityScale = 0.0f;
         m_definition->m_properties.Get<float>("Gravity Scale", gravityScale);
         Vector2 acceleration = particle.acceleration + (Vector2(0.0f, -9.81f) * gravityScale);
-        particle.position += particle.velocity * deltaSeconds;
-        particle.velocity += acceleration * deltaSeconds;
-        particle.scale += scaleRateOfChangePerSecond * deltaSeconds;
+        particle.m_position += particle.m_velocity * deltaSeconds;
+        particle.m_velocity += acceleration * deltaSeconds;
+        particle.m_scale += scaleRateOfChangePerSecond * deltaSeconds;
 
-        particle.age += deltaSeconds;
+        particle.m_age += deltaSeconds;
         if (fadeoutEnabled)
         {
-            particle.tint.SetAlphaFloat(MathUtils::Clamp(1.0f - MathUtils::RangeMap(particle.age, 0.0f, particle.maxAge, 0.0f, 1.0f)));
+            particle.m_color.SetAlphaFloat(MathUtils::Clamp(1.0f - MathUtils::RangeMap(particle.m_age, 0.0f, particle.m_maxAge, 0.0f, 1.0f)));
         }
     }
 }
@@ -175,55 +175,19 @@ void ParticleEmitter::BuildParticles(BufferedMeshRenderer& renderer)
         Matrix4x4 rotation = Matrix4x4::IDENTITY;
         Matrix4x4 translation = Matrix4x4::IDENTITY;
 
-        //Make empty spaces in our vector.
-        verts.emplace_back();
-        verts.emplace_back();
-        verts.emplace_back();
-        verts.emplace_back();
-
-        //Calculate the bounding box for our sprite
-        //position, scale, rotation, virtual size
-        verts[0 + currentOffset].position = Vector2(-pivotPoint.x, -pivotPoint.y);
-        verts[1 + currentOffset].position = Vector2(spriteBounds.x - pivotPoint.x, -pivotPoint.y);
-        verts[2 + currentOffset].position = Vector2(-pivotPoint.x, spriteBounds.y - pivotPoint.y);
-        verts[3 + currentOffset].position = Vector2(spriteBounds.x - pivotPoint.x, spriteBounds.y - pivotPoint.y);
-
-        //This is skewed to accomodate for STBI loading in the images the wrong way.
-        verts[0 + currentOffset].uv = Vector2(uvMins.x, uvMaxs.y);
-        verts[1 + currentOffset].uv = uvMaxs;
-        verts[2 + currentOffset].uv = uvMins;
-        verts[3 + currentOffset].uv = Vector2(uvMaxs.x, uvMins.y);
-
-        verts[0 + currentOffset].color = particle.tint;
-        verts[1 + currentOffset].color = particle.tint;
-        verts[2 + currentOffset].color = particle.tint;
-        verts[3 + currentOffset].color = particle.tint;
-
         //Scale the bounding box
-        Matrix4x4::MatrixMakeScale(&scale, Vector3(particle.scale, 0.0f));
+        Matrix4x4::MatrixMakeScale(&scale, Vector3(particle.m_scale, 0.0f));
 
         //Rotate the bounding box
-        Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(particle.rotationDegrees));
+        Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(particle.m_rotationDegrees));
 
         //Translate the bounding box
-        Matrix4x4::MatrixMakeTranslation(&translation, Vector3(particle.position, 0.0f));
+        Matrix4x4::MatrixMakeTranslation(&translation, Vector3(particle.m_position, 0.0f));
 
         //Apply our transformations
         Matrix4x4 transform = scale * rotation * translation;
-        verts[0 + currentOffset].position = Vector2(Vector4(verts[0 + currentOffset].position, 0, 1) * transform);
-        verts[1 + currentOffset].position = Vector2(Vector4(verts[1 + currentOffset].position, 0, 1) * transform);
-        verts[2 + currentOffset].position = Vector2(Vector4(verts[2 + currentOffset].position, 0, 1) * transform);
-        verts[3 + currentOffset].position = Vector2(Vector4(verts[3 + currentOffset].position, 0, 1) * transform);
 
-        //Update indicies
-        indices.push_back(1 + currentOffset);
-        indices.push_back(2 + currentOffset);
-        indices.push_back(0 + currentOffset);
-        indices.push_back(1 + currentOffset);
-        indices.push_back(3 + currentOffset);
-        indices.push_back(2 + currentOffset);
-
-        renderer.m_builder.AddSprite(GetSpriteResource(), particle.tint, &transform);
+        renderer.m_builder.AddSprite(GetSpriteResource(), particle.m_color, &transform);
     } 
 
     renderer.m_builder.CopyToMesh(&renderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
@@ -240,7 +204,7 @@ void ParticleEmitter::SpawnParticle()
     spawnPosition += randomVectorOffset;
 
     m_particles.emplace_back(spawnPosition, m_definition, initialRotation, initialVelocity);
-    m_particles.back().tint = m_definition->m_properties.Get<RGBA>(PROPERTY_INITIAL_COLOR);
+    m_particles.back().m_color = m_definition->m_properties.Get<RGBA>(PROPERTY_INITIAL_COLOR);
 }
 
 //-----------------------------------------------------------------------------------
@@ -324,7 +288,9 @@ void ParticleSystem::Render(BufferedMeshRenderer& renderer)
             Texture* diffuse = emitter->m_spriteOverride ? emitter->m_spriteOverride->m_texture : emitter->m_definition->m_spriteResource->m_texture;
             emitter->m_definition->m_material->SetDiffuseTexture(diffuse);
             renderer.SetMaterial(emitter->m_definition->m_material);
+
             renderer.SetModelMatrix(Matrix4x4::IDENTITY);
+
             emitter->BuildParticles(renderer);
 #pragma todo("Remove this flush once we're ready to")
             renderer.FlushAndRender();
