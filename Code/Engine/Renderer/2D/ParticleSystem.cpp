@@ -103,7 +103,7 @@ void ParticleEmitter::Update(float deltaSeconds)
         UpdateParticles(deltaSeconds);
         CleanUpDeadParticles();
         SpawnParticles(deltaSeconds);
-        if ((m_secondsPerParticle == 0.0f || (m_maxEmitterAge > 0.0f && m_emitterAge > m_maxEmitterAge)) && m_particles.size() == 0)
+        if ((m_secondsPerParticle == 0.0f || (m_emitterAge > m_maxEmitterAge)) && m_particles.size() == 0)
         {
             m_isDead = true;
         }
@@ -115,6 +115,7 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
 {
     const bool fadeoutEnabled = m_definition->m_properties.Get<bool>(PROPERTY_FADEOUT_ENABLED);
     const Vector2 scaleRateOfChangePerSecond = m_definition->m_properties.Get<Range<Vector2>>(PROPERTY_DELTA_SCALE_PER_SECOND).GetRandom();
+    std::string debugName = m_definition->m_properties.Get<std::string>(PROPERTY_NAME);
 
     for (Particle& particle : m_particles)
     {
