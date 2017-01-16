@@ -8,6 +8,10 @@
 class Material;
 class SpriteResource;
 
+//NAMED CONSTANTS/////////////////////////////////////////////////////////////////////
+static const char* PROPERTY_FADEOUT_ENABLED = "Fadeout Enabled";
+static const char* PROPERTY_NAME = "Name";
+
 //-----------------------------------------------------------------------------------
 enum ParticleSystemType
 {

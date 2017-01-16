@@ -144,7 +144,7 @@ float Vector2::Dot(const Vector2& a, const Vector2& b)
 }
 
 //-----------------------------------------------------------------------------------
-float Vector2::CalculateTheta()
+float Vector2::CalculateThetaDegrees()
 {
     return MathUtils::RadiansToDegrees(atan2(y, x));
 }

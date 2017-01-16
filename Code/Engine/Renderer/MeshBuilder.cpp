@@ -1007,7 +1007,7 @@ void MeshBuilder::AddUVSphere(float radius, int numSegments, const RGBA& color /
 void MeshBuilder::AddIcoSphere(float radius, const RGBA& color /*= RGBA::WHITE*/, int numPasses /*= 3*/, const Vector3& offset /*= Vector3::ZERO*/)
 {
     Vector3 initialPoints[6] = { { 0, 0, radius },{ 0, 0, -radius },{ -radius, -radius, 0 },{ radius, -radius, 0 },{ radius, radius, 0 },{ -radius,  radius, 0 } };
-    Vector2 initialUVs[6] = { {0.5f, 0.5f}, {0.5f, 0.5f}, {1.0f, 1.0f}, {0.0f, 1.0f}, { 0.0f, 0.0f },{ 1.0f, 0.0f } };
+    Vector2 initialUVs[6] = { Vector2(0.5f, 0.5f), Vector2(0.5f, 0.5f), Vector2(1.0f, 1.0f), Vector2(0.0f, 1.0f), Vector2( 0.0f, 0.0f ),Vector2( 1.0f, 0.0f ) };
     SetColor(color);
     const int initialIndex = m_vertices.size();
 

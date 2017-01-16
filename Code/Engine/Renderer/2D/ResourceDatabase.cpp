@@ -34,7 +34,7 @@ void ResourceDatabase::RegisterSprite(std::string spriteName, std::string filePa
 {
     SpriteResource* resource = new SpriteResource();
     resource->m_texture = Texture::CreateOrGetTexture(filePath);
-    resource->m_pixelSize = resource->m_texture->m_texelSize;
+    resource->m_pixelSize = Vector2(resource->m_texture->m_texelSize);
     resource->m_uvBounds = AABB2::ZERO_TO_ONE;
     resource->m_virtualSize = (resource->m_pixelSize / static_cast<float>(SpriteGameRenderer::instance->m_importSize)) * (SpriteGameRenderer::instance->m_virtualSize);
     resource->m_pivotPoint = resource->m_virtualSize / 2.0f;
