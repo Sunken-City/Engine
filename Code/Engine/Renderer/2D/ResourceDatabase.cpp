@@ -65,6 +65,37 @@ SpriteResource* ResourceDatabase::EditSpriteResource(const std::string& resource
 }
 
 //-----------------------------------------------------------------------------------
+SpriteAnimationResource* ResourceDatabase::RegisterSpriteAnimation(std::string animationName)
+{
+    SpriteAnimationResource* resource = new SpriteAnimationResource();
+    m_spriteAnimationDatabase[std::hash<std::string>{}(animationName)] = resource;
+    resource->m_name = animationName;
+    return resource;
+}
+
+//-----------------------------------------------------------------------------------
+const SpriteAnimationResource* ResourceDatabase::GetSpriteAnimationResource(const std::string& resourceName)
+{
+    auto resourceIter = m_spriteAnimationDatabase.find(std::hash<std::string>{}(resourceName));
+    if (resourceIter == m_spriteAnimationDatabase.end())
+    {
+        ERROR_AND_DIE(Stringf("Attempted to find a ParticleSystemResource named %s, but it wasn't in the ParticleSystem database.", resourceName.c_str()));
+    }
+    return (*resourceIter).second;
+}
+
+//-----------------------------------------------------------------------------------
+SpriteAnimationResource* ResourceDatabase::EditSpriteAnimationResource(const std::string& resourceName)
+{
+    auto resourceIter = m_spriteAnimationDatabase.find(std::hash<std::string>{}(resourceName));
+    if (resourceIter == m_spriteAnimationDatabase.end())
+    {
+        ERROR_AND_DIE(Stringf("Attempted to find a ParticleSystemResource named %s, but it wasn't in the ParticleSystem database.", resourceName.c_str()));
+    }
+    return (*resourceIter).second;
+}
+
+//-----------------------------------------------------------------------------------
 ParticleSystemDefinition* ResourceDatabase::RegisterParticleSystem(std::string particleSystemName, ParticleSystemType type)
 {
     ParticleSystemDefinition* resource = new ParticleSystemDefinition(type);

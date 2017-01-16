@@ -10,6 +10,19 @@ class Material;
 class BufferedMeshRender;
 
 //-----------------------------------------------------------------------------------
+class SpriteAnimationResource
+{
+public:
+    SpriteAnimationResource() {};
+
+    std::string m_name;
+
+private:
+    //Prevent copy by value for these resources.
+    SpriteAnimationResource(const SpriteAnimationResource&) = delete;
+};
+
+//-----------------------------------------------------------------------------------
 class SpriteResource
 {
 public:

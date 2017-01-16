@@ -49,7 +49,7 @@ void Renderable2D::Disable()
 }
 
 //-----------------------------------------------------------------------------------
-void Renderable2D::Render(BufferedMeshRenderer& renderer)
+void Renderable2D::Render(BufferedMeshRenderer& )
 {
 
 }

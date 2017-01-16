@@ -165,12 +165,7 @@ void ParticleEmitter::BuildParticles(BufferedMeshRenderer& renderer)
     std::vector<unsigned int> indices;
     for (unsigned int i = 0; i < numParticles; ++i)
     {
-        int currentOffset = i * 4;
         Particle& particle = m_particles[i];
-        Vector2 pivotPoint = m_definition->m_spriteResource->m_pivotPoint;
-        Vector2 uvMins = m_definition->m_spriteResource->m_uvBounds.mins;
-        Vector2 uvMaxs = m_definition->m_spriteResource->m_uvBounds.maxs;
-        Vector2 spriteBounds = m_definition->m_spriteResource->m_virtualSize;
         Matrix4x4 scale = Matrix4x4::IDENTITY;
         Matrix4x4 rotation = Matrix4x4::IDENTITY;
         Matrix4x4 translation = Matrix4x4::IDENTITY;

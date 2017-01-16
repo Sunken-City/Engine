@@ -19,6 +19,10 @@ public:
     void RegisterSprite(std::string spriteName, std::string filePath);
     const SpriteResource* GetSpriteResource(const std::string& resourceName);
     SpriteResource* EditSpriteResource(const std::string& resourceName);
+    
+    SpriteAnimationResource* RegisterSpriteAnimation(std::string animationName);
+    const SpriteAnimationResource* GetSpriteAnimationResource(const std::string& resourceName);
+    SpriteAnimationResource* EditSpriteAnimationResource(const std::string& resourceName);
 
     ParticleSystemDefinition* RegisterParticleSystem(std::string particleSystemName, ParticleSystemType type);
     const ParticleSystemDefinition* GetParticleSystemResource(const std::string& resourceName);
@@ -29,5 +33,6 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::map<size_t, SpriteResource*> m_spriteDatabase;
+    std::map<size_t, SpriteAnimationResource*> m_spriteAnimationDatabase;
     std::map<size_t, ParticleSystemDefinition*> m_particleSystemDatabase;
 };
