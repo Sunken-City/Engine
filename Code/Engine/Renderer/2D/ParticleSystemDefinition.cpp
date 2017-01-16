@@ -15,6 +15,7 @@ ParticleSystemDefinition::~ParticleSystemDefinition()
 void ParticleSystemDefinition::AddEmitter(ParticleEmitterDefinition* emitter)
 {
     m_emitterDefinitions.push_back(emitter);
+    m_properties.m_neverChangeTypeIfDifferent = true;
 }
 
 //-----------------------------------------------------------------------------------
@@ -22,6 +23,8 @@ ParticleEmitterDefinition::ParticleEmitterDefinition(const SpriteResource* sprit
     : m_spriteResource(spriteResource)
 {
     m_material = m_spriteResource->m_defaultMaterial; 
+
+    m_properties.m_neverChangeTypeIfDifferent = true;
     m_properties.Set<RGBA>(PROPERTY_INITIAL_COLOR, RGBA::WHITE, false);
     m_properties.Set<bool>(PROPERTY_FADEOUT_ENABLED, false, false);
     m_properties.Set<float>(PROPERTY_PARTICLES_PER_SECOND, 1.0f, false);

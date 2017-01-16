@@ -122,18 +122,25 @@ public:
     {
         PropertySetResult result = PSR_SUCCESS;
         auto foundPair = m_properties.find(propertyName);
+
         if (foundPair != m_properties.end())
         {
-            if (changeTypeIfDifferent)
+            NamedPropertyBase* property = foundPair->second;
+            TypedNameProperty<T>* foundProperty = dynamic_cast<TypedNameProperty<T>*>(property);
+            bool typesMatch = foundProperty && typeid(propertyValue) == typeid(foundProperty->m_data);
+
+            if (!typesMatch)
             {
-                result = PSR_SUCCESS_EXISTED;
-                delete (*foundPair).second;
+                if(m_neverChangeTypeIfDifferent || !changeTypeIfDifferent)
+                {
+                    result = PSR_FAILED_DIFF_TYPE;
+                    ERROR_RECOVERABLE(Stringf("Attempted to set '%s' to a different type when it wasn't allowed.", propertyName.c_str()));
+                    return result;
+                }
             }
-            else
-            {
-                result = PSR_FAILED_DIFF_TYPE;
-                return result;
-            }
+
+            result = PSR_SUCCESS_EXISTED;
+            delete foundProperty;
         }
         m_properties[propertyName] = static_cast<NamedPropertyBase*>(new TypedNameProperty<T>(propertyValue));
         return result;
@@ -145,5 +152,6 @@ public:
 
     //VARIABLES/////////////////////////////////////////////////////////////////////
     std::map<std::string, NamedPropertyBase*> m_properties;
+    bool m_neverChangeTypeIfDifferent = false;
     static NamedProperties NONE;
 };
