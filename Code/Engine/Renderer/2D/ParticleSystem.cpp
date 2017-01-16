@@ -18,6 +18,10 @@ Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition
 {
     m_scale = definition->m_properties.Get<Range<Vector2>>(PROPERTY_INITIAL_SCALE).GetRandom();
     m_maxAge = definition->m_properties.Get<Range<float>>(PROPERTY_PARTICLE_LIFETIME).GetRandom();
+
+    Range<float> explosiveVelocityForce = 0.0f;
+    definition->m_properties.Get<Range<float>>(PROPERTY_EXPLOSIVE_VELOCITY_MAGNITUDE, explosiveVelocityForce);
+    m_velocity += Vector2::CreateFromPolar(explosiveVelocityForce.GetRandom(), m_rotationDegrees);
 }
 
 //-----------------------------------------------------------------------------------
