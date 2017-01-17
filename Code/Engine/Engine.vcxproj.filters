@@ -344,6 +344,9 @@
     <ClCompile Include="UI\Widgets\CheckboxWidget.cpp">
       <Filter>Engine\UI\Widgets</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\2D\TextRenderable2D.cpp">
+      <Filter>Engine\Renderer\2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -654,6 +657,9 @@
     </ClInclude>
     <ClInclude Include="Core\Keyframes.hpp">
       <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\2D\TextRenderable2D.hpp">
+      <Filter>Engine\Renderer\2D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
