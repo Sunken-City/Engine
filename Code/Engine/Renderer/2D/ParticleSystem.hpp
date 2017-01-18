@@ -24,6 +24,7 @@ struct Particle
     RGBA m_color;
     Vector2 m_scale;
     float m_rotationDegrees;
+    float m_angularVelocityDegrees = 0.0f;
     float m_age;
     float m_maxAge;
 };

@@ -18,6 +18,7 @@ Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition
 {
     m_scale = definition->m_properties.Get<Range<Vector2>>(PROPERTY_INITIAL_SCALE).GetRandom();
     m_maxAge = definition->m_properties.Get<Range<float>>(PROPERTY_PARTICLE_LIFETIME).GetRandom();
+    m_angularVelocityDegrees = definition->m_properties.Get<Range<float>>(PROPERTY_INITIAL_ANGULAR_VELOCITY_DEGREES).GetRandom();
 
     Range<float> explosiveVelocityForce = 0.0f;
     definition->m_properties.Get<Range<float>>(PROPERTY_EXPLOSIVE_VELOCITY_MAGNITUDE, explosiveVelocityForce);
@@ -129,6 +130,7 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
         particle.m_position += particle.m_velocity * deltaSeconds;
         particle.m_velocity += acceleration * deltaSeconds;
         particle.m_scale += scaleRateOfChangePerSecond * deltaSeconds;
+        particle.m_rotationDegrees += particle.m_angularVelocityDegrees * deltaSeconds;
 
         particle.m_age += deltaSeconds;
         if (fadeoutEnabled)

@@ -31,6 +31,7 @@ ParticleEmitterDefinition::ParticleEmitterDefinition(const SpriteResource* sprit
     m_properties.Set<Range<unsigned int>>(PROPERTY_INITIAL_NUM_PARTICLES, 0, false);
     m_properties.Set<Range<float>>(PROPERTY_PARTICLE_LIFETIME, 1.0f, false);
     m_properties.Set<Range<float>>(PROPERTY_INITIAL_ROTATION_DEGREES, 0.0f, false);
+    m_properties.Set<Range<float>>(PROPERTY_INITIAL_ANGULAR_VELOCITY_DEGREES, 0.0f, false);
     m_properties.Set<Range<float>>(PROPERTY_MAX_EMITTER_LIFETIME, FLT_MAX, false);
     m_properties.Set<Range<float>>(PROPERTY_SPAWN_RADIUS, 0.0f, false);
     m_properties.Set<Range<Vector2>>(PROPERTY_DELTA_SCALE_PER_SECOND, Vector2::ZERO, false);

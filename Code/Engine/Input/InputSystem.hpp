@@ -31,6 +31,10 @@ public:
         DEL = 0x2E, //VK_DELETE
         F5 = 0x74, //VK_F5
         F6 = 0x75, //VK_F6
+        F7 = 0x76, //VK_F7
+        F8 = 0x77, //VK_F8
+        F9 = 0x78, //VK_F9
+        F10 = 0x79, //VK_F10
         COMMA = 0xBC, //VK_OEM_COMMA
         PERIOD = 0xBE, //VK_OEM_PERIOD
         TILDE = 0xC0, //VK_OEM_3
