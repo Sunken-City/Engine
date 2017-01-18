@@ -35,6 +35,7 @@ const RGBA RGBA::GBBLACK(0x0B1920FF);
 const RGBA RGBA::GBLIGHTGREEN(0x86C270FF);
 const RGBA RGBA::GBDARKGREEN(0x2F6957FF);
 const RGBA RGBA::GBWHITE(0xF5FAEFFF);
+const RGBA RGBA::CLEAR(0xFFFFFF00);
 
 //-----------------------------------------------------------------------------------
 RGBA::RGBA() : red(0x00), green(0x00), blue(0x00), alpha(0xFF)

@@ -15,8 +15,8 @@ enum WidgetState
     PRESSED_WIDGET_STATE,
     DISABLED_WIDGET_STATE,
     HIDDEN_WIDGET_STATE,
-    NUM_STATES,
-    DEFAULT_STATE = NUM_STATES
+    NUM_WIDGET_STATES,
+    DEFAULT_STATE = NUM_WIDGET_STATES
 };
 
 //-----------------------------------------------------------------------------------
@@ -107,7 +107,7 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     mutable NamedProperties m_propertiesForAllStates;
-    mutable NamedProperties m_propertiesForState[NUM_STATES];
+    mutable NamedProperties m_propertiesForState[NUM_WIDGET_STATES];
     std::vector<WidgetBase*> m_children;
     std::string m_name;
     AABB2 m_bounds;

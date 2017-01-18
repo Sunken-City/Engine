@@ -80,6 +80,7 @@ public:
     static const RGBA GBLIGHTGREEN;
     static const RGBA GBDARKGREEN;
     static const RGBA GBWHITE;
+    static const RGBA CLEAR;
     static const int SHIFT_RED = 6 * 4;
     static const int SHIFT_GREEN = 4 * 4;
     static const int SHIFT_BLUE = 2 * 4;
