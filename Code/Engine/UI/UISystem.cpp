@@ -121,6 +121,33 @@ void UISystem::ReloadUI()
 }
 
 //-----------------------------------------------------------------------------------
+void UISystem::DeleteWidget(WidgetBase* widgetToDelete)
+{
+    if (!widgetToDelete)
+    {
+        return;
+    }
+    unsigned int numWidgets = m_childWidgets.size();
+    for (int i = 0; i < numWidgets; ++i)
+    {
+        WidgetBase* current = m_childWidgets[i];
+        if (widgetToDelete == current)
+        {
+            if (m_highlightedWidget == current)
+            {
+                m_highlightedWidget = nullptr;
+            }
+
+            delete current;
+            m_childWidgets[i] = m_childWidgets[numWidgets - 1];
+            m_childWidgets.pop_back();
+            return;
+        }
+    }
+    ERROR_RECOVERABLE("Attempted to delete a widget, but it wasn't found");
+}
+
+//-----------------------------------------------------------------------------------
 void UISystem::DeleteAllUI()
 {
     for (WidgetBase* child : m_childWidgets)

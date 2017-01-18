@@ -15,6 +15,7 @@ public:
     void Render() const;
     void LoadAndParseUIXML();
     void ReloadUI();
+    void DeleteWidget(WidgetBase* widgetToDelete);
     void DeleteAllUI();
     WidgetBase* CreateWidget(const std::string& widgetTypeName);
     WidgetBase* CreateWidget(XMLNode& node);
