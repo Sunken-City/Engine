@@ -51,7 +51,7 @@ public:
     int m_layer;
     Renderable2D* m_renderablesList;
     bool m_isEnabled;
-    float m_virtualScaleChange = 1.0f;
+    float m_virtualScaleMultiplier = 1.0f;
     AABB2 m_boundingVolume;
     std::vector<Material*> m_effectMaterials;
 };

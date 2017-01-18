@@ -212,7 +212,7 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinition& renderArea)
 {
-    RecalculateVirtualWidthAndHeight(renderArea, layer->m_virtualScaleChange);
+    RecalculateVirtualWidthAndHeight(renderArea, layer->m_virtualScaleMultiplier);
     UpdateCameraPosition(renderArea.m_cameraPosition);
     AABB2 renderBounds = GetVirtualBoundsAroundCameraCenter();
     if (layer->m_isEnabled)
