@@ -68,6 +68,7 @@ public:
     bool WasMouseButtonJustReleased(unsigned char mouseButtonCode);
     bool IsScrolling();
     bool HasFocus();
+    inline unsigned int GetFrameNumber() { return m_frameCounter; };
 
     //GETTERS//////////////////////////////////////////////////////////////////////////
     int GetScrollAmountThisFrame();
@@ -104,9 +105,9 @@ private:
     bool m_captureCursor;
     bool m_isScrolling;
     int m_linesScrolled;
-    int m_frameNumberKeyLastChanged[NUM_KEYS];
-    int m_frameNumberMouseButtonLastChanged[NUM_MOUSE_BUTTONS];
-    int m_frameCounter;
+    unsigned int m_frameNumberKeyLastChanged[NUM_KEYS];
+    unsigned int m_frameNumberMouseButtonLastChanged[NUM_MOUSE_BUTTONS];
+    unsigned int m_frameCounter;
     char m_lastPressedChar;
     Vector2Int m_cursorDelta;
     Vector2Int m_cursorPosition;

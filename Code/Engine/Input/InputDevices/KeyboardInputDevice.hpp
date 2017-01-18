@@ -8,7 +8,7 @@ public:
     KeyboardInputDevice() {};
     ~KeyboardInputDevice() {};
 
-    virtual void Update(float) override {}
+    virtual void Update(float) override;
 
     void SetKeyValue(unsigned char vkeyCode, bool isDown);
     InputValue* FindValue(unsigned char vkeyCode);

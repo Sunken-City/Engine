@@ -2,10 +2,12 @@
 #include "Engine/Math/Vector2.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include <algorithm>
+#include "InputSystem.hpp"
 
 //--------------------------------------------------------------
 void InputValue::SetValue(const float value)
 {
+    m_lastUpdatedFrameValue = InputSystem::instance->GetFrameNumber();
     if (value != m_currentValue)
     {
         m_previousValue = m_currentValue;

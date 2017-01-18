@@ -232,7 +232,7 @@ Vector2 UISystem::GetCursorVirtualPos()
 {
     Vector2 cursorPos = static_cast<Vector2>(InputSystem::instance->GetMousePos());
     Vector2 virtualCursorPos = ScreenToUIVirtualCoords(cursorPos);
-    DebuggerPrintf("X: %f, Y:%f\n", virtualCursorPos.x, virtualCursorPos.y);
+    //DebuggerPrintf("X: %f, Y:%f\n", virtualCursorPos.x, virtualCursorPos.y);
     return virtualCursorPos;
 }
 

@@ -1,6 +1,12 @@
 #include "Engine/Input/InputDevices/KeyboardInputDevice.hpp"
 
 //-----------------------------------------------------------------------------------
+void KeyboardInputDevice::Update(float)
+{
+
+}
+
+//-----------------------------------------------------------------------------------
 void KeyboardInputDevice::SetKeyValue(unsigned char vkeyCode, bool isDown)
 {
     m_keys[vkeyCode].SetValue(isDown ? 1.0f : 0.0f);

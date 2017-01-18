@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Core/Events/Event.hpp"
 #include "../Math/Vector2.hpp"
+#include "InputSystem.hpp"
 
 class InputMap;
 class Vector2;
@@ -47,8 +48,9 @@ public:
     inline bool IsUp() const { return (m_currentValue < m_deadzoneValue); }
     inline bool DownLastFrame() const { return (m_previousValue > 1.0f - m_deadzoneValue); }
     inline bool UpLastFrame() const { return (m_previousValue < m_deadzoneValue); }
-    inline bool WasJustReleased() const { return !IsDown() && DownLastFrame(); }
-    inline bool WasJustPressed() const { return !IsUp() && UpLastFrame(); }
+    inline bool UpdatedThisFrame() const { return m_lastUpdatedFrameValue == InputSystem::instance->GetFrameNumber(); }
+    inline bool WasJustReleased() const { return !IsDown() && DownLastFrame() && UpdatedThisFrame(); }
+    inline bool WasJustPressed() const { return !IsUp() && UpLastFrame() && UpdatedThisFrame(); }
     void SetValue(const float value);
     void OnChanged(const InputValue* value);
 
@@ -56,6 +58,7 @@ public:
     float m_previousValue;
     float m_currentValue;
     float m_deadzoneValue;
+    unsigned int m_lastUpdatedFrameValue = 0;
     Event<const InputValue*> m_onChange;
     Event<const InputValue*> m_onPress;
     Event<const InputValue*> m_onRelease;
