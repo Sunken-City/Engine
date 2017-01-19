@@ -330,3 +330,32 @@ void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, un
     ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerId, spawnPosition, rotationDegrees, spriteOverride);
     ASSERT_OR_DIE(newSystemToPlay->m_definition->m_type == ONE_SHOT, "Attempted to call PlayOneShotParticleEffect with a looping particle system. PlayOneShotParticleEffect is only used for one-shot particle systems.");
 }
+
+//-----------------------------------------------------------------------------------
+void RibbonParticleSystem::Update(float deltaSeconds)
+{
+    for (ParticleEmitter* emitter : m_emitters)
+    {
+    }
+    ParticleSystem::Update(deltaSeconds);
+}
+
+//-----------------------------------------------------------------------------------
+void RibbonParticleSystem::Render(BufferedMeshRenderer& renderer)
+{
+    for (ParticleEmitter* emitter : m_emitters)
+    {
+        if (emitter->m_particles.size() > 0)
+        {
+            Texture* diffuse = emitter->m_spriteOverride ? emitter->m_spriteOverride->m_texture : emitter->m_definition->m_spriteResource->m_texture;
+            emitter->m_definition->m_material->SetDiffuseTexture(diffuse);
+            renderer.SetMaterial(emitter->m_definition->m_material);
+
+            renderer.SetModelMatrix(Matrix4x4::IDENTITY);
+
+            emitter->BuildParticles(renderer);
+#pragma todo("Remove this flush once we're ready to")
+            renderer.FlushAndRender();
+        }
+    }
+}

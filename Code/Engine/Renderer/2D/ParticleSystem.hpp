@@ -85,3 +85,17 @@ public:
     const ParticleSystemDefinition* m_definition;
     bool m_isPaused = false;
 };
+
+//-----------------------------------------------------------------------------------
+class RibbonParticleSystem : public ParticleSystem
+{
+public:
+    RibbonParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow, const SpriteResource* spriteOverride = nullptr)
+        : ParticleSystem(systemName, orderingLayer, positionToFollow, spriteOverride)
+    {};
+    virtual ~RibbonParticleSystem() {};
+
+    //FUNCTIONS/////////////////////////////////////////////////////////////////////
+    virtual void Update(float deltaSeconds) override;
+    virtual void Render(BufferedMeshRenderer& renderer) override;
+};
