@@ -48,3 +48,9 @@ inline AABB2 operator+(AABB2 lhs, const Vector2& rhs)
     lhs += rhs;
     return lhs;
 }
+
+//-----------------------------------------------------------------------------------
+inline AABB2 operator*(const AABB2& lhs, float rhs)
+{
+    return AABB2(lhs.mins * rhs, lhs.maxs * rhs);
+}

@@ -12,12 +12,18 @@ public:
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void AddChild(Transform2D* child);
+    void RemoveChild(Transform2D* child);
+private:
     void SetParent(Transform2D* parent);
 
+public:
     //GETTERS/////////////////////////////////////////////////////////////////////
-    Vector2 GetPosition();
-    float GetRotationDegrees();
-    Vector2 GetScale();
+    Vector2 GetWorldPosition();
+    float GetWorldRotationDegrees();
+    Vector2 GetWorldScale();
+    Vector2 GetLocalPosition();
+    float GetLocalRotationDegrees();
+    Vector2 GetLocalScale();
 
     //SETTERS/////////////////////////////////////////////////////////////////////
     void SetPosition(const Vector2& position);

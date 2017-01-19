@@ -34,9 +34,9 @@ void TextRenderable2D::Render(BufferedMeshRenderer& renderer)
     Matrix4x4 scale = Matrix4x4::IDENTITY;
     Matrix4x4 rotation = Matrix4x4::IDENTITY;
     Matrix4x4 translation = Matrix4x4::IDENTITY;
-    Matrix4x4::MatrixMakeScale(&scale, Vector3(m_transform.GetScale(), 0.0f));
-    Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(m_transform.GetRotationDegrees()));
-    Matrix4x4::MatrixMakeTranslation(&translation, Vector3(m_transform.GetPosition(), 0.0f));
+    Matrix4x4::MatrixMakeScale(&scale, Vector3(m_transform.GetWorldScale(), 0.0f));
+    Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(m_transform.GetWorldRotationDegrees()));
+    Matrix4x4::MatrixMakeTranslation(&translation, Vector3(m_transform.GetWorldPosition(), 0.0f));
     renderer.SetModelMatrix(scale * rotation * translation);
 
     AABB2 bounds = m_font->CalcTextBounds(m_text, TEXT_SANITY_CONSTANT);

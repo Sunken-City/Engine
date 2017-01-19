@@ -213,7 +213,7 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinition& renderArea)
 {
     RecalculateVirtualWidthAndHeight(renderArea, layer->m_virtualScaleMultiplier);
-    UpdateCameraPosition(renderArea.m_cameraPosition);
+    UpdateCameraPositionInWorldBounds(renderArea.m_cameraPosition, layer->m_virtualScaleMultiplier);
     AABB2 renderBounds = GetVirtualBoundsAroundCameraCenter();
     if (layer->m_isEnabled)
     {
@@ -327,27 +327,22 @@ void SpriteGameRenderer::SetVirtualSize(float vsize)
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteGameRenderer::UpdateCameraPosition(const Vector2& newCameraPosition)
+void SpriteGameRenderer::UpdateCameraPositionInWorldBounds(const Vector2& newCameraPosition, float layerScale = 1.0f)
 {
-    UpdateCameraPositionInBounds(newCameraPosition, m_worldBounds);
-}
-
-//-----------------------------------------------------------------------------------
-void SpriteGameRenderer::UpdateCameraPositionInBounds(const Vector2& newCameraPosition, const AABB2& otherBounds)
-{
-    m_cameraPosition = newCameraPosition * -1.0f;
+    m_cameraPosition = newCameraPosition;
     AABB2 cameraBounds = GetVirtualBoundsAroundCameraCenter();
-    if (!otherBounds.IsPointOnOrInside(cameraBounds.mins))
+    AABB2 scaledWorldBounds = m_worldBounds * layerScale;
+    if (!scaledWorldBounds.IsPointOnOrInside(cameraBounds.mins))
     {
-        Vector2 correctionVector = Vector2::CalculateCorrectionVector(cameraBounds.mins, otherBounds.mins);
-        m_cameraPosition.x -= cameraBounds.mins.x < otherBounds.mins.x ? correctionVector.x : 0.0f;
-        m_cameraPosition.y -= cameraBounds.mins.y < otherBounds.mins.y ? correctionVector.y : 0.0f;
+        Vector2 correctionVector = Vector2::CalculateCorrectionVector(cameraBounds.mins, scaledWorldBounds.mins);
+        m_cameraPosition.x += cameraBounds.mins.x < scaledWorldBounds.mins.x ? correctionVector.x : 0.0f;
+        m_cameraPosition.y += cameraBounds.mins.y < scaledWorldBounds.mins.y ? correctionVector.y : 0.0f;
     }
-    if (!otherBounds.IsPointOnOrInside(cameraBounds.maxs))
+    if (!scaledWorldBounds.IsPointOnOrInside(cameraBounds.maxs))
     {
-        Vector2 correctionVector = Vector2::CalculateCorrectionVector(cameraBounds.maxs, otherBounds.maxs);
-        m_cameraPosition.x -= cameraBounds.maxs.x > otherBounds.maxs.x ? correctionVector.x : 0.0f;
-        m_cameraPosition.y -= cameraBounds.maxs.y > otherBounds.maxs.y ? correctionVector.y : 0.0f;
+        Vector2 correctionVector = Vector2::CalculateCorrectionVector(cameraBounds.maxs, scaledWorldBounds.maxs);
+        m_cameraPosition.x += cameraBounds.maxs.x > scaledWorldBounds.maxs.x ? correctionVector.x : 0.0f;
+        m_cameraPosition.y += cameraBounds.maxs.y > scaledWorldBounds.maxs.y ? correctionVector.y : 0.0f;
     }
 }
 
@@ -385,7 +380,7 @@ void SpriteGameRenderer::SetCameraPosition(const Vector2& newCameraPosition, int
 //-----------------------------------------------------------------------------------
 Vector2 SpriteGameRenderer::GetCameraPositionInWorld()
 {
-    return m_cameraPosition * -1.0f;
+    return m_cameraPosition;
 }
 
 //-----------------------------------------------------------------------------------
@@ -403,20 +398,19 @@ float SpriteGameRenderer::GetVirtualUnitsPerPixel()
 //-----------------------------------------------------------------------------------
 AABB2 SpriteGameRenderer::GetVirtualBoundsAroundCameraCenter()
 {
-    const Vector2 halfSize((m_virtualWidth / 2.0f), (m_virtualHeight / 2.0f));
-    const Vector2 worldSpaceCameraPosition = m_cameraPosition * -1.0f;
-    return AABB2(worldSpaceCameraPosition - halfSize, worldSpaceCameraPosition + halfSize);
+    const Vector2 halfSize((m_virtualWidth * 0.5f), (m_virtualHeight * 0.5f));
+    return AABB2(m_cameraPosition - halfSize, m_cameraPosition + halfSize);
 }
 
 //-----------------------------------------------------------------------------------
 AABB2 SpriteGameRenderer::GetVirtualBoundsAroundWorldCenter()
 {
-    const Vector2 halfSize(m_virtualWidth / 2.0f, m_virtualHeight / 2.0f);
+    const Vector2 halfSize(m_virtualWidth * 0.5f, m_virtualHeight * 0.5f);
     return AABB2(-halfSize, halfSize);
 }
 
 //-----------------------------------------------------------------------------------
-bool SpriteGameRenderer::IsInsideWorldBounds(const Vector2& attemptedPosition)
+bool SpriteGameRenderer::IsInsideWorldBounds(const Vector2& attemptedPosition, float layerScale)
 {
     return GetVirtualBoundsAroundCameraCenter().IsPointInside(attemptedPosition);
 }

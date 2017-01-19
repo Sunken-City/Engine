@@ -105,10 +105,8 @@ public:
     void SetCameraPosition(const Vector2& newCameraPosition, int viewportNumber = 0);
 
 private:
-    //Set the camera's position in virtual coordinates.
-    void UpdateCameraPosition(const Vector2& newCameraPosition);
     //Set the camera's position in a set of bounds other than the world bounds.
-    void UpdateCameraPositionInBounds(const Vector2& newCameraPosition, const AABB2& otherBounds);
+    void UpdateCameraPositionInWorldBounds(const Vector2& newCameraPosition, float layerScale);
 
 public:
     //GETTERS/////////////////////////////////////////////////////////////////////
@@ -116,7 +114,7 @@ public:
     float GetVirtualUnitsPerPixel();
     AABB2 GetVirtualBoundsAroundCameraCenter();
     AABB2 GetVirtualBoundsAroundWorldCenter();
-    bool IsInsideWorldBounds(const Vector2& attemptedPosition);
+    bool IsInsideWorldBounds(const Vector2& attemptedPosition, float layerScale = 1.0f);
     Vector2 GetCameraPositionInWorld();
 
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////

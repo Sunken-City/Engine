@@ -116,7 +116,7 @@ void Renderer::BeginOrtho(float width, float height, const Vector2& cameraOffset
     Matrix4x4 translation = Matrix4x4::IDENTITY;
     Matrix4x4 projection = Matrix4x4::IDENTITY;
     Matrix4x4::MatrixMakeProjectionOrthogonal(&projection, width, height, 0.f, 1.f);
-    Matrix4x4::MatrixMakeTranslation(&translation, Vector3(cameraOffset.x, cameraOffset.y, 0.0f));
+    Matrix4x4::MatrixMakeTranslation(&translation, Vector3(-cameraOffset.x, -cameraOffset.y, 0.0f));
     m_projStack.PushWithoutMultiply(projection);
     m_projStack.Push(translation);
 }
