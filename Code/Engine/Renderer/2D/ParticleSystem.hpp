@@ -40,6 +40,7 @@ public:
     virtual void UpdateParticles(float deltaSeconds);
     virtual void SpawnParticles(float deltaSeconds);
     virtual void CleanUpDeadParticles();
+    void BuildRibbonParticles(BufferedMeshRenderer& renderer);
     void BuildParticles(BufferedMeshRenderer& renderer);
     void SpawnParticle();
     const SpriteResource* GetSpriteResource();
