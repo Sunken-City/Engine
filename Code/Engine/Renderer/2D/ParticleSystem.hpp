@@ -96,3 +96,13 @@ public:
     virtual void Update(float deltaSeconds) override;
     virtual void Render(BufferedMeshRenderer& renderer) override;
 };
+
+//-----------------------------------------------------------------------------------
+struct RibbonParticlePiece
+{
+    RibbonParticlePiece(const Particle& particle) : m_particle(particle) {};
+
+    inline bool operator<(const RibbonParticlePiece& j) { return (m_particle.m_age < j.m_particle.m_age); };
+
+    Particle m_particle;
+};
