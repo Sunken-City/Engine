@@ -114,7 +114,7 @@ public:
     float GetVirtualUnitsPerPixel();
     AABB2 GetVirtualBoundsAroundCameraCenter();
     AABB2 GetVirtualBoundsAroundWorldCenter();
-    bool IsInsideWorldBounds(const Vector2& attemptedPosition, float layerScale = 1.0f);
+    bool IsInsideWorldBounds(const Vector2& attemptedPosition);
     Vector2 GetCameraPositionInWorld();
 
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////

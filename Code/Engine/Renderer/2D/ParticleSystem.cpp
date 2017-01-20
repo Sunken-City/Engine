@@ -12,7 +12,7 @@
 Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition* definition, float initialRotationDegrees, const Vector2& initialVelocity, const Vector2& initialAcceleration)
     : m_position(spawnPosition)
     , m_velocity(initialVelocity)
-    , acceleration(initialAcceleration)
+    , m_acceleration(initialAcceleration)
     , m_rotationDegrees(initialRotationDegrees)
     , m_age(0.0f)
 {
@@ -26,53 +26,21 @@ Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition
 }
 
 //-----------------------------------------------------------------------------------
-ParticleEmitter::ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDefinition* definition, Vector2* positionToFollow)
-    : m_parentSystem(parent)
-    , m_definition(definition)
-    , m_followablePosition(positionToFollow)
-    , m_rotationDegrees(0.0f)
-    , m_emitterAge(0.0f)
-    , m_timeSinceLastEmission(0.0f) 
-    , m_isDead(false)
-    , m_maxEmitterAge(definition->m_properties.Get<Range<float>>(PROPERTY_MAX_EMITTER_LIFETIME).GetRandom())
-    , m_particlesPerSecond(definition->m_properties.Get<float>(PROPERTY_PARTICLES_PER_SECOND))
-    , m_initialNumParticlesSpawn(definition->m_properties.Get<Range<unsigned int>>(PROPERTY_INITIAL_NUM_PARTICLES).GetRandom())
-{
-    if (positionToFollow)
-    {
-        m_position = *positionToFollow;
-        m_followablePosition = positionToFollow;
-    }
-    if (m_particlesPerSecond != 0.0f)
-    {
-        m_secondsPerParticle = 1.0f / m_particlesPerSecond;
-        SpawnParticles(m_secondsPerParticle * m_initialNumParticlesSpawn);
-    }
-    else
-    {
-        m_secondsPerParticle = 0.0f;
-        for (unsigned int i = 0; i < m_initialNumParticlesSpawn; ++i)
-        {
-            SpawnParticle();
-            //m_particles.emplace_back(m_position, m_definition, m_rotationDegrees);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------------
-ParticleEmitter::ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDefinition* definition, Vector2 positionToSpawn, float rotationDegrees)
+ParticleEmitter::ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDefinition* definition, const Transform2D& startingTransform, Transform2D* parentTransform)
     : m_parentSystem(parent)
     , m_definition(definition)
     , m_emitterAge(0.0f)
     , m_timeSinceLastEmission(0.0f)
     , m_isDead(false)
-    , m_rotationDegrees(rotationDegrees)
-    , m_position(positionToSpawn)
-    , m_followablePosition(nullptr)
+    , m_transform(startingTransform)
     , m_maxEmitterAge(definition->m_properties.Get<Range<float>>(PROPERTY_MAX_EMITTER_LIFETIME).GetRandom())
     , m_particlesPerSecond(definition->m_properties.Get<float>(PROPERTY_PARTICLES_PER_SECOND))
     , m_initialNumParticlesSpawn(definition->m_properties.Get<Range<unsigned int>>(PROPERTY_INITIAL_NUM_PARTICLES).GetRandom())
 {
+    if (parentTransform)
+    {
+        parentTransform->AddChild(&m_transform);
+    }
     if (m_particlesPerSecond != 0.0f)
     {
         m_secondsPerParticle = 1.0f / m_particlesPerSecond;
@@ -101,10 +69,6 @@ void ParticleEmitter::Update(float deltaSeconds)
     if (!m_isDead)
     {
         m_emitterAge += deltaSeconds;
-        if (m_followablePosition)
-        {
-            m_position = *m_followablePosition;
-        }
         UpdateParticles(deltaSeconds);
         CleanUpDeadParticles();
         SpawnParticles(deltaSeconds);
@@ -126,7 +90,7 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
     {
         float gravityScale = 0.0f;
         m_definition->m_properties.Get<float>("Gravity Scale", gravityScale);
-        Vector2 acceleration = particle.acceleration + (Vector2(0.0f, -9.81f) * gravityScale);
+        Vector2 acceleration = particle.m_acceleration + (Vector2(0.0f, -9.81f) * gravityScale);
         particle.m_position += particle.m_velocity * deltaSeconds;
         particle.m_velocity += acceleration * deltaSeconds;
         particle.m_scale += scaleRateOfChangePerSecond * deltaSeconds;
@@ -197,9 +161,9 @@ void ParticleEmitter::BuildParticles(BufferedMeshRenderer& renderer)
 //-----------------------------------------------------------------------------------
 void ParticleEmitter::SpawnParticle()
 {
-    Vector2 spawnPosition = m_position;
+    Vector2 spawnPosition = m_transform.GetWorldPosition();
     Vector2 randomVectorOffset = MathUtils::GetRandomVectorInCircle(m_definition->m_properties.Get<Range<float>>(PROPERTY_SPAWN_RADIUS).GetRandom());
-    float initialRotation = m_rotationDegrees + m_definition->m_properties.Get<Range<float>>(PROPERTY_INITIAL_ROTATION_DEGREES).GetRandom();
+    float initialRotation = m_transform.GetWorldRotationDegrees() + m_definition->m_properties.Get<Range<float>>(PROPERTY_INITIAL_ROTATION_DEGREES).GetRandom();
     Vector2 initialVelocity = m_definition->m_properties.Get<Range<Vector2>>(PROPERTY_INITIAL_VELOCITY).GetRandom();
     
     spawnPosition += randomVectorOffset;
@@ -229,26 +193,13 @@ void ParticleEmitter::SpawnParticles(float deltaSeconds)
 }
 
 //-----------------------------------------------------------------------------------
-ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow, const SpriteResource* spriteOverride)
+ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer, const Transform2D& startingTransform, Transform2D* parentTransform, const SpriteResource* spriteOverride)
     : Renderable2D(orderingLayer, true)
     , m_definition(ResourceDatabase::instance->GetParticleSystemResource(systemName))
 {
     for (const ParticleEmitterDefinition* emitterDefinition : m_definition->m_emitterDefinitions)
     {
-        ParticleEmitter* emitter = new ParticleEmitter(this, emitterDefinition, positionToFollow);
-        emitter->m_spriteOverride = spriteOverride;
-        m_emitters.push_back(emitter);
-    }
-}
-
-//-----------------------------------------------------------------------------------
-ParticleSystem::ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees, const SpriteResource* spriteOverride)
-    : Renderable2D(orderingLayer, true)
-    , m_definition(ResourceDatabase::instance->GetParticleSystemResource(systemName))
-{
-    for (const ParticleEmitterDefinition* emitterDefinition : m_definition->m_emitterDefinitions)
-    {
-        ParticleEmitter* emitter = new ParticleEmitter(this, emitterDefinition, positionToSpawn, rotationDegrees);
+        ParticleEmitter* emitter = new ParticleEmitter(this, emitterDefinition, startingTransform, parentTransform);
         emitter->m_spriteOverride = spriteOverride;
         m_emitters.push_back(emitter);
     }
@@ -316,18 +267,10 @@ void ParticleSystem::Destroy(ParticleSystem* systemToDestroy)
 }
 
 //-----------------------------------------------------------------------------------
-void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerId, Vector2* followingPosition, const SpriteResource* spriteOverride)
+void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerId, const Transform2D& startingTransform, Transform2D* parentTransform, const SpriteResource* spriteOverride)
 {
     //The SpriteGameRenderer cleans up these one-shot systems whenever they're finished playing.
-    ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerId, followingPosition, spriteOverride);
-    ASSERT_OR_DIE(newSystemToPlay->m_definition->m_type == ONE_SHOT, "Attempted to call PlayOneShotParticleEffect with a looping particle system. PlayOneShotParticleEffect is only used for one-shot particle systems.");
-}
-
-//-----------------------------------------------------------------------------------
-void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerId, Vector2 spawnPosition, float rotationDegrees, const SpriteResource* spriteOverride)
-{
-    //The SpriteGameRenderer cleans up these one-shot systems whenever they're finished playing.
-    ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerId, spawnPosition, rotationDegrees, spriteOverride);
+    ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerId, startingTransform, parentTransform, spriteOverride);
     ASSERT_OR_DIE(newSystemToPlay->m_definition->m_type == ONE_SHOT, "Attempted to call PlayOneShotParticleEffect with a looping particle system. PlayOneShotParticleEffect is only used for one-shot particle systems.");
 }
 

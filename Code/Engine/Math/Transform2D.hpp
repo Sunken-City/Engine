@@ -9,10 +9,14 @@ class Transform2D
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     Transform2D(const Vector2& pos = Vector2::ZERO, float rotDegrees = 0.0f, const Vector2& scale = Vector2::ONE, Transform2D* parent = nullptr);
+    ~Transform2D();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
+    Transform2D* GetParent() { return m_parent; };
     void AddChild(Transform2D* child);
     void RemoveChild(Transform2D* child);
+    void RemoveParent();
+
 private:
     void SetParent(Transform2D* parent);
 
