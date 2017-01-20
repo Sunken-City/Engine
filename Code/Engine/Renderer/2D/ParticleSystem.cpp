@@ -277,9 +277,6 @@ void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, un
 //-----------------------------------------------------------------------------------
 void RibbonParticleSystem::Update(float deltaSeconds)
 {
-    for (ParticleEmitter* emitter : m_emitters)
-    {
-    }
     ParticleSystem::Update(deltaSeconds);
 }
 
@@ -311,27 +308,44 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
     {
         return;
     }
-    MeshBuilder builder = MeshBuilder();
-    std::vector<Vertex_Sprite> verts;
-    std::vector<unsigned int> indices;
-    for (unsigned int i = 0; i < numParticles; ++i)
+
+    std::vector<RibbonParticlePiece> points;
+    points.emplace_back(m_particles[0]);
+    points[0].m_particle.m_position = m_transform.GetWorldPosition();
+    points[0].m_particle.m_age = 0;
+    for (Particle& particle : m_particles)
     {
-        Particle& particle = m_particles[i];
+        points.push_back(particle);
+    }
+    std::sort(points.begin() + 1, points.end());
+    unsigned int numPoints = points.size();
+    
+
+    for (unsigned int i = 1; i < numParticles; ++i)
+    {
+        Particle& particle = points[i].m_particle;
         Matrix4x4 scale = Matrix4x4::IDENTITY;
         Matrix4x4 rotation = Matrix4x4::IDENTITY;
         Matrix4x4 translation = Matrix4x4::IDENTITY;
 
         //Scale the bounding box
         Matrix4x4::MatrixMakeScale(&scale, Vector3(particle.m_scale, 0.0f));
-
         //Rotate the bounding box
         Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(particle.m_rotationDegrees));
-
         //Translate the bounding box
         Matrix4x4::MatrixMakeTranslation(&translation, Vector3(particle.m_position, 0.0f));
-
         //Apply our transformations
         Matrix4x4 transform = scale * rotation * translation;
+
+
+        Vector2 dispFromEmitterToNext = points[i].m_particle.m_position - points[i - 1].m_particle.m_position;
+        Vector2 perpDisp = Vector2(-dispFromEmitterToNext.y, dispFromEmitterToNext.x);
+        Vector2 normPerp = perpDisp.GetNorm();
+
+        Vector2 bottomLeft = points[i].m_particle.m_position - (normPerp * 1.0f);
+        Vector2 bottomRight = points[i].m_particle.m_position + (normPerp * 1.0f);
+        Vector2 topLeft = points[i - 1].m_particle.m_position - (normPerp * 1.0f);
+        Vector2 topRight = points[i - 1].m_particle.m_position + (normPerp * 1.0f);
 
         const SpriteResource* resource = GetSpriteResource();
         Vector2 pivotPoint = resource->m_pivotPoint;
@@ -339,18 +353,16 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
         Vector2 uvMaxs = resource->m_uvBounds.maxs;
         Vector2 spriteBounds = resource->m_virtualSize;
 
-        AABB2 bounds = AABB2(Vector2(Vector4(-pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f, 1.0f) * transform), Vector2(Vector4(spriteBounds.x - pivotPoint.x, -pivotPoint.y, 0.0f, 1.0f) * transform));
-        
         int startingVertex = renderer.m_builder.m_vertices.size();
         renderer.m_builder.SetColor(particle.m_color);
         renderer.m_builder.SetUV(Vector2(uvMins.x, uvMaxs.y));
-        renderer.m_builder.AddVertex(Vector3(Vector4(-pivotPoint.x, -pivotPoint.y, 0.0f, 1.0f) * transform));
+        renderer.m_builder.AddVertex(Vector3(bottomLeft, 0.0f));
         renderer.m_builder.SetUV(uvMaxs);
-        renderer.m_builder.AddVertex(Vector3(Vector4(spriteBounds.x - pivotPoint.x, -pivotPoint.y, 0.0f, 1.0f) * transform));
+        renderer.m_builder.AddVertex(Vector3(bottomRight, 0.0f));
         renderer.m_builder.SetUV(uvMins);
-        renderer.m_builder.AddVertex(Vector3(Vector4(-pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f, 1.0f) * transform));
+        renderer.m_builder.AddVertex(Vector3(topLeft, 0.0f));
         renderer.m_builder.SetUV(Vector2(uvMaxs.x, uvMins.y));
-        renderer.m_builder.AddVertex(Vector3(Vector4(spriteBounds.x - pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f, 1.0f) * transform));
+        renderer.m_builder.AddVertex(Vector3(topRight, 0.0f));
         renderer.m_builder.AddQuadIndices(startingVertex + 1, startingVertex + 0, startingVertex + 3, startingVertex + 2);
     }
 
