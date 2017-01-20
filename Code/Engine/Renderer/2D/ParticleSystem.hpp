@@ -105,4 +105,5 @@ struct RibbonParticlePiece
     inline bool operator<(const RibbonParticlePiece& j) { return (m_particle.m_age < j.m_particle.m_age); };
 
     Particle m_particle;
+    Vector2 m_perpendicularNormal = Vector2::ZERO;
 };

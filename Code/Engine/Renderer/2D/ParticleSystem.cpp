@@ -319,7 +319,35 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
     }
     std::sort(points.begin() + 1, points.end());
     unsigned int numPoints = points.size();
-    
+
+    for (unsigned int i = 0; i < numPoints; ++i)
+    {
+        if (i == 0)
+        {
+            Vector2 dispFromThisToNext = points[i + 1].m_particle.m_position - points[i].m_particle.m_position;
+            Vector2 perpDisp = Vector2(-dispFromThisToNext.y, dispFromThisToNext.x);
+            points[i].m_perpendicularNormal = perpDisp.GetNorm();
+        }
+        else if (i == numPoints - 1)
+        {
+            Vector2 dispFromPrevToThis = points[i].m_particle.m_position - points[i - 1].m_particle.m_position;
+            Vector2 perpDisp = Vector2(-dispFromPrevToThis.y, dispFromPrevToThis.x);
+            points[i].m_perpendicularNormal = perpDisp.GetNorm();
+        }
+        else
+        {
+            Vector2 dispFromPrevToThis = points[i].m_particle.m_position - points[i - 1].m_particle.m_position;
+            Vector2 perpDisp = Vector2(-dispFromPrevToThis.y, dispFromPrevToThis.x);
+            Vector2 prevPerp = perpDisp.GetNorm();
+
+            Vector2 dispFromThisToNext = points[i + 1].m_particle.m_position - points[i].m_particle.m_position;
+            perpDisp = Vector2(-dispFromThisToNext.y, dispFromThisToNext.x);
+            Vector2 nextPerp = perpDisp.GetNorm();
+
+            points[i].m_perpendicularNormal = Lerp<Vector2>(prevPerp, nextPerp, 0.5f);
+            points[i].m_perpendicularNormal.Normalize();
+        }
+    }
 
     for (unsigned int i = 1; i < numParticles; ++i)
     {
@@ -337,16 +365,13 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
         //Apply our transformations
         Matrix4x4 transform = scale * rotation * translation;
 
+        float halfWidth = MathUtils::Clamp(0.125f - MathUtils::RangeMap(particle.m_age, 0.0f, particle.m_maxAge, 0.0f, 0.125f));
 
-        Vector2 dispFromEmitterToNext = points[i].m_particle.m_position - points[i - 1].m_particle.m_position;
-        Vector2 perpDisp = Vector2(-dispFromEmitterToNext.y, dispFromEmitterToNext.x);
-        Vector2 normPerp = perpDisp.GetNorm();
-
-        Vector2 bottomLeft = points[i].m_particle.m_position - (normPerp * 1.0f);
-        Vector2 bottomRight = points[i].m_particle.m_position + (normPerp * 1.0f);
-        Vector2 topLeft = points[i - 1].m_particle.m_position - (normPerp * 1.0f);
-        Vector2 topRight = points[i - 1].m_particle.m_position + (normPerp * 1.0f);
-
+        Vector2 bottomLeft = points[i].m_particle.m_position - (points[i].m_perpendicularNormal * halfWidth);
+        Vector2 bottomRight = points[i].m_particle.m_position + (points[i].m_perpendicularNormal * halfWidth);
+        Vector2 topLeft = points[i - 1].m_particle.m_position - (points[i - 1].m_perpendicularNormal * halfWidth);
+        Vector2 topRight = points[i - 1].m_particle.m_position + (points[i - 1].m_perpendicularNormal * halfWidth);
+        
         const SpriteResource* resource = GetSpriteResource();
         Vector2 pivotPoint = resource->m_pivotPoint;
         Vector2 uvMins = resource->m_uvBounds.mins;
