@@ -296,9 +296,63 @@ void RibbonParticleSystem::Render(BufferedMeshRenderer& renderer)
 
             renderer.SetModelMatrix(Matrix4x4::IDENTITY);
 
-            emitter->BuildParticles(renderer);
+            emitter->BuildRibbonParticles(renderer);
 #pragma todo("Remove this flush once we're ready to")
             renderer.FlushAndRender();
         }
     }
+}
+
+//-----------------------------------------------------------------------------------
+void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
+{
+    unsigned int numParticles = m_particles.size();
+    if (numParticles == 0)
+    {
+        return;
+    }
+    MeshBuilder builder = MeshBuilder();
+    std::vector<Vertex_Sprite> verts;
+    std::vector<unsigned int> indices;
+    for (unsigned int i = 0; i < numParticles; ++i)
+    {
+        Particle& particle = m_particles[i];
+        Matrix4x4 scale = Matrix4x4::IDENTITY;
+        Matrix4x4 rotation = Matrix4x4::IDENTITY;
+        Matrix4x4 translation = Matrix4x4::IDENTITY;
+
+        //Scale the bounding box
+        Matrix4x4::MatrixMakeScale(&scale, Vector3(particle.m_scale, 0.0f));
+
+        //Rotate the bounding box
+        Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(particle.m_rotationDegrees));
+
+        //Translate the bounding box
+        Matrix4x4::MatrixMakeTranslation(&translation, Vector3(particle.m_position, 0.0f));
+
+        //Apply our transformations
+        Matrix4x4 transform = scale * rotation * translation;
+
+        const SpriteResource* resource = GetSpriteResource();
+        Vector2 pivotPoint = resource->m_pivotPoint;
+        Vector2 uvMins = resource->m_uvBounds.mins;
+        Vector2 uvMaxs = resource->m_uvBounds.maxs;
+        Vector2 spriteBounds = resource->m_virtualSize;
+
+        AABB2 bounds = AABB2(Vector2(Vector4(-pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f, 1.0f) * transform), Vector2(Vector4(spriteBounds.x - pivotPoint.x, -pivotPoint.y, 0.0f, 1.0f) * transform));
+        
+        int startingVertex = renderer.m_builder.m_vertices.size();
+        renderer.m_builder.SetColor(particle.m_color);
+        renderer.m_builder.SetUV(Vector2(uvMins.x, uvMaxs.y));
+        renderer.m_builder.AddVertex(Vector3(Vector4(-pivotPoint.x, -pivotPoint.y, 0.0f, 1.0f) * transform));
+        renderer.m_builder.SetUV(uvMaxs);
+        renderer.m_builder.AddVertex(Vector3(Vector4(spriteBounds.x - pivotPoint.x, -pivotPoint.y, 0.0f, 1.0f) * transform));
+        renderer.m_builder.SetUV(uvMins);
+        renderer.m_builder.AddVertex(Vector3(Vector4(-pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f, 1.0f) * transform));
+        renderer.m_builder.SetUV(Vector2(uvMaxs.x, uvMins.y));
+        renderer.m_builder.AddVertex(Vector3(Vector4(spriteBounds.x - pivotPoint.x, spriteBounds.y - pivotPoint.y, 0.0f, 1.0f) * transform));
+        renderer.m_builder.AddQuadIndices(startingVertex + 1, startingVertex + 0, startingVertex + 3, startingVertex + 2);
+    }
+
+    renderer.m_builder.CopyToMesh(&renderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
 }
