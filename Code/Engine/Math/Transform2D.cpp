@@ -11,6 +11,20 @@ Transform2D::Transform2D(const Vector2& pos, float rotDegrees, const Vector2& sc
 }
 
 //-----------------------------------------------------------------------------------
+Transform2D::~Transform2D()
+{
+    if (m_parent)
+    {
+        m_parent->RemoveChild(this);
+    }
+
+    for (Transform2D* child : m_children)
+    {
+        child->RemoveParent();
+    }
+}
+
+//-----------------------------------------------------------------------------------
 void Transform2D::AddChild(Transform2D* child)
 {
     m_children.push_back(child);
@@ -34,10 +48,17 @@ void Transform2D::RemoveChild(Transform2D* child)
         {
             m_children[i] = m_children[numChildren - 1];
             m_children.pop_back();
+            foundChild->RemoveParent();
             return;
         }
     }
     ERROR_RECOVERABLE("Didn't find a child transform to remove");
+}
+
+//-----------------------------------------------------------------------------------
+void Transform2D::RemoveParent()
+{
+    m_parent = nullptr;
 }
 
 //-----------------------------------------------------------------------------------

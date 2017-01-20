@@ -5,6 +5,7 @@
 #include "Engine/Renderer/Mesh.hpp"
 #include <vector>
 #include "Renderable2D.hpp"
+#include "../../Math/Transform2D.hpp"
 
 class ParticleEmitterDefinition;
 class ParticleSystemDefinition;
@@ -20,21 +21,20 @@ struct Particle
 
     Vector2 m_position;
     Vector2 m_velocity;
-    Vector2 acceleration;
-    RGBA m_color;
+    Vector2 m_acceleration;
     Vector2 m_scale;
     float m_rotationDegrees;
     float m_angularVelocityDegrees = 0.0f;
     float m_age;
     float m_maxAge;
+    RGBA m_color;
 };
 
 //-----------------------------------------------------------------------------------
 class ParticleEmitter
 {
 public:
-    ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDefinition* definition, Vector2* positionToFollow);
-    ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDefinition* definition, Vector2 positionToSpawn, float rotationDegrees = 0.0f);
+    ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDefinition* definition, const Transform2D& startingTransform, Transform2D* parentTransform = nullptr);
     virtual ~ParticleEmitter();
     virtual void Update(float deltaSeconds);
     virtual void UpdateParticles(float deltaSeconds);
@@ -45,14 +45,12 @@ public:
     const SpriteResource* GetSpriteResource();
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    const ParticleEmitterDefinition* m_definition;
-    ParticleSystem* m_parentSystem = nullptr;
     std::vector<Particle> m_particles;
-    Vector2 m_position;
-    Vector2* m_followablePosition = nullptr;
+    Transform2D m_transform;
+    const ParticleEmitterDefinition* m_definition;
     const SpriteResource* m_spriteOverride = nullptr;
+    ParticleSystem* m_parentSystem = nullptr;
     unsigned int m_initialNumParticlesSpawn;
-    float m_rotationDegrees;
     float m_emitterAge;
     float m_particlesPerSecond;
     float m_maxEmitterAge = FLT_MAX;
@@ -65,8 +63,7 @@ public:
 class ParticleSystem : public Renderable2D
 {
 public:
-    ParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow, const SpriteResource* spriteOverride = nullptr);
-    ParticleSystem(const std::string& systemName, int orderingLayer, Vector2 positionToSpawn, float rotationDegrees = 0.0f, const SpriteResource* spriteOverride = nullptr);
+    ParticleSystem(const std::string& systemName, int orderingLayer, const Transform2D& startingTransform, Transform2D* parentTransform = nullptr, const SpriteResource* spriteOverride = nullptr);
     virtual ~ParticleSystem();
     virtual void Update(float deltaSeconds) override;
     virtual void Render(BufferedMeshRenderer& renderer) override; 
@@ -77,8 +74,7 @@ public:
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
     static void DestroyImmediately(ParticleSystem* systemToDestroy);
     static void Destroy(ParticleSystem* systemToDestroy);
-    static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, Vector2* followingPosition, const SpriteResource* spriteOverride = nullptr);
-    static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, Vector2 spawnPosition, float rotationDegrees = 0.0f, const SpriteResource* spriteOverride = nullptr);
+    static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, const Transform2D& startingTransform, Transform2D* parentTransform = nullptr, const SpriteResource* spriteOverride = nullptr);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::vector<ParticleEmitter*> m_emitters;
@@ -90,8 +86,8 @@ public:
 class RibbonParticleSystem : public ParticleSystem
 {
 public:
-    RibbonParticleSystem(const std::string& systemName, int orderingLayer, Vector2* positionToFollow, const SpriteResource* spriteOverride = nullptr)
-        : ParticleSystem(systemName, orderingLayer, positionToFollow, spriteOverride)
+    RibbonParticleSystem(const std::string& systemName, int orderingLayer, const Transform2D& startingTransform, Transform2D* parentTransform = nullptr, const SpriteResource* spriteOverride = nullptr)
+        : ParticleSystem(systemName, orderingLayer, startingTransform, parentTransform, spriteOverride)
     {};
     virtual ~RibbonParticleSystem() {};
 

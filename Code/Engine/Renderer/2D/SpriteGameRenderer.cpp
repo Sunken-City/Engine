@@ -410,7 +410,7 @@ AABB2 SpriteGameRenderer::GetVirtualBoundsAroundWorldCenter()
 }
 
 //-----------------------------------------------------------------------------------
-bool SpriteGameRenderer::IsInsideWorldBounds(const Vector2& attemptedPosition, float layerScale)
+bool SpriteGameRenderer::IsInsideWorldBounds(const Vector2& attemptedPosition)
 {
     return GetVirtualBoundsAroundCameraCenter().IsPointInside(attemptedPosition);
 }
