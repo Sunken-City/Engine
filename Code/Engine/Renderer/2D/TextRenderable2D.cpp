@@ -39,9 +39,9 @@ void TextRenderable2D::Render(BufferedMeshRenderer& renderer)
     Matrix4x4::MatrixMakeTranslation(&translation, Vector3(m_transform.GetWorldPosition(), 0.0f));
     renderer.SetModelMatrix(scale * rotation * translation);
 
-    AABB2 bounds = m_font->CalcTextBounds(m_text, TEXT_SANITY_CONSTANT);
+    AABB2 bounds = m_font->CalcTextBounds(m_text, TEXT_SANITY_CONSTANT * m_fontSize);
     Vector2 size = Vector2(bounds.GetWidth(), bounds.GetHeight());
-    renderer.m_builder.AddText2D(size * -0.5f, m_text, TEXT_SANITY_CONSTANT, RGBA::WHITE, true, m_font);
+    renderer.m_builder.AddText2D(size * -0.5f, m_text, TEXT_SANITY_CONSTANT * m_fontSize, m_color, true, m_font);
     renderer.m_builder.CopyToMesh(&renderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
 
 #pragma todo("This should be unneccessary once we have batching done properly")
