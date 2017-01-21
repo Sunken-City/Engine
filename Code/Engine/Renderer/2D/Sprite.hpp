@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "Renderable2D.hpp"
+#include "../../Math/Transform2D.hpp"
 
 class Texture;
 class Material;
@@ -89,11 +90,9 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     const SpriteResource* m_spriteResource;
-    Vector2 m_position;
-    Vector2 m_scale;
-    RGBA m_tintColor;
     Material* m_material;
-    float m_rotationDegrees;
+    Transform2D m_transform;
+    RGBA m_tintColor;
 };
 
 //-----------------------------------------------------------------------------------

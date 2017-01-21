@@ -124,6 +124,7 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     ShaderProgram* m_defaultShader;
+    Transform2D m_bottomRight;
     RenderState m_defaultRenderState;
     unsigned int m_importSize; // What resolution we're authoring at, the standardized scale of the sprite in virtual space
     float m_virtualSize;
@@ -160,5 +161,5 @@ inline bool operator<(SpriteLayer lhs, const SpriteLayer& rhs)
 //-----------------------------------------------------------------------------------
 inline float LowerYComparison(Sprite* first, Sprite* second)
 {
-    return second->m_position.y - first->m_position.y;
+    return second->m_transform.GetWorldPosition().y - first->m_transform.GetWorldPosition().y;
 }

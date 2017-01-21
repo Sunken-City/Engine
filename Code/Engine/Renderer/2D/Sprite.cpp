@@ -5,9 +5,7 @@
 //-----------------------------------------------------------------------------------
 Sprite::Sprite(const std::string& resourceName, int orderingLayer, bool isEnabled) 
     : Renderable2D(orderingLayer, isEnabled)
-    , m_position(Vector2::ZERO)
-    , m_scale(Vector2::ONE)
-    , m_rotationDegrees(0.0f)
+    , m_transform()
     , m_tintColor(RGBA::WHITE)
     , m_material(nullptr)
 {
@@ -23,9 +21,11 @@ Sprite::~Sprite()
 //-----------------------------------------------------------------------------------
 AABB2 Sprite::GetBounds()
 {
-    const Vector2 mins((-m_spriteResource->m_pivotPoint.x) * m_scale.x, (-m_spriteResource->m_pivotPoint.y) * m_scale.y);
-    const Vector2 maxs((m_spriteResource->m_virtualSize.x - m_spriteResource->m_pivotPoint.x) * m_scale.x, (m_spriteResource->m_virtualSize.y - m_spriteResource->m_pivotPoint.y) * m_scale.y);
-    return AABB2(m_position + mins, m_position + maxs);
+    Vector2 pos = m_transform.GetWorldPosition();
+    Vector2 scale = m_transform.GetWorldScale();
+    const Vector2 mins((-m_spriteResource->m_pivotPoint.x) * scale.x, (-m_spriteResource->m_pivotPoint.y) * scale.y);
+    const Vector2 maxs((m_spriteResource->m_virtualSize.x - m_spriteResource->m_pivotPoint.x) * scale.x, (m_spriteResource->m_virtualSize.y - m_spriteResource->m_pivotPoint.y) * scale.y);
+    return AABB2(pos + mins, pos + maxs);
 }
 
 //-----------------------------------------------------------------------------------
@@ -61,13 +61,13 @@ void Sprite::PushSpriteToMesh(BufferedMeshRenderer& renderer)
     Matrix4x4 translation = Matrix4x4::IDENTITY;
     
     //Scale the bounding box
-    Matrix4x4::MatrixMakeScale(&scale, Vector3(m_scale, 0.0f));
+    Matrix4x4::MatrixMakeScale(&scale, Vector3(m_transform.GetWorldScale(), 0.0f));
 
     //Rotate the bounding box
-    Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(m_rotationDegrees));
+    Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(m_transform.GetWorldRotationDegrees()));
 
     //Translate the bounding box
-    Matrix4x4::MatrixMakeTranslation(&translation, Vector3(m_position, 0.0f));
+    Matrix4x4::MatrixMakeTranslation(&translation, Vector3(m_transform.GetWorldPosition(), 0.0f));
 
     //Apply our transformations
     renderer.SetModelMatrix(scale * rotation * translation);
