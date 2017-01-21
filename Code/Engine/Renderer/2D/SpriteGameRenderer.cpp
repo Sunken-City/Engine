@@ -215,8 +215,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
     RecalculateVirtualWidthAndHeight(renderArea, layer->m_virtualScaleMultiplier);
     UpdateCameraPositionInWorldBounds(renderArea.m_cameraPosition, layer->m_virtualScaleMultiplier);
     AABB2 renderBounds = GetVirtualBoundsAroundCameraCenter();
-
-    m_bottomRight.SetPosition(Vector2(m_virtualWidth * 0.5f, m_virtualHeight * -0.5f));
+    UpdateAnchorTransforms();
 
     if (layer->m_isEnabled)
     {
@@ -251,6 +250,15 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             Renderer::instance->ClearDepth();
         }
     }
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::UpdateAnchorTransforms()
+{
+    m_bottomRight.SetPosition(Vector2(m_virtualWidth * 0.5f, m_virtualHeight * -0.5f));
+    m_bottomLeft.SetPosition(Vector2(m_virtualWidth * -0.5f, m_virtualHeight * -0.5f));
+    m_topRight.SetPosition(Vector2(m_virtualWidth * 0.5f, m_virtualHeight * 0.5f));
+    m_topLeft.SetPosition(Vector2(m_virtualWidth * -0.5f, m_virtualHeight * 0.5f));
 }
 
 //-----------------------------------------------------------------------------------

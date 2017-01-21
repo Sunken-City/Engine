@@ -98,6 +98,17 @@ public:
     inline void ToggleLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Toggle(); };
     //void SortSpritesByXY(Renderable2D*& spriteList);
 
+    //ANCHORING/////////////////////////////////////////////////////////////////////
+    void UpdateAnchorTransforms();
+    inline void AnchorBottomRight(Transform2D* transformToAnchor) { m_bottomRight.AddChild(transformToAnchor); };
+    inline void AnchorBottomLeft(Transform2D* transformToAnchor) { m_bottomLeft.AddChild(transformToAnchor); };
+    inline void AnchorTopRight(Transform2D* transformToAnchor) { m_topRight.AddChild(transformToAnchor); };
+    inline void AnchorTopLeft(Transform2D* transformToAnchor) { m_topLeft.AddChild(transformToAnchor); };
+    inline void RemoveAnchorBottomRight(Transform2D* transformToAnchor) { m_bottomRight.RemoveChild(transformToAnchor); };
+    inline void RemoveAnchorBottomLeft(Transform2D* transformToAnchor) { m_bottomLeft.RemoveChild(transformToAnchor); };
+    inline void RemoveAnchorTopRight(Transform2D* transformToAnchor) { m_topRight.RemoveChild(transformToAnchor); };
+    inline void RemoveAnchorTopLeft(Transform2D* transformToAnchor) { m_topLeft.RemoveChild(transformToAnchor); };
+
     //SETTERS/////////////////////////////////////////////////////////////////////
     inline void SetClearColor(const RGBA& clearColor) { m_clearColor = clearColor; };
     inline void SetVirtualSize(float vsize);
@@ -124,14 +135,16 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     ShaderProgram* m_defaultShader;
-    Transform2D m_bottomRight;
     RenderState m_defaultRenderState;
     unsigned int m_importSize; // What resolution we're authoring at, the standardized scale of the sprite in virtual space
     float m_virtualSize;
     AABB2 m_worldBounds;
 
 private:
-    RGBA m_clearColor;
+    Transform2D m_bottomRight;
+    Transform2D m_bottomLeft;
+    Transform2D m_topRight;
+    Transform2D m_topLeft;
     BufferedMeshRenderer m_bufferedMeshRenderer;
     Vector2 m_screenResolution;
     Vector2 m_cameraPosition;
@@ -146,6 +159,7 @@ private:
     Framebuffer* m_effectFBO;
     unsigned int m_numSplitscreenViews;
     ViewportDefinition* m_viewportDefinitions;
+    RGBA m_clearColor;
     
     //CONSTANTS/////////////////////////////////////////////////////////////////////
     static const char* DEFAULT_VERT_SHADER;
