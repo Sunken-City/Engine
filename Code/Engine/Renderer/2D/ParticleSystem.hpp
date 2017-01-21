@@ -44,6 +44,7 @@ public:
     void BuildParticles(BufferedMeshRenderer& renderer);
     void SpawnParticle();
     const SpriteResource* GetSpriteResource();
+    void Flush();
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::vector<Particle> m_particles;
@@ -76,7 +77,7 @@ public:
     static void DestroyImmediately(ParticleSystem* systemToDestroy);
     static void Destroy(ParticleSystem* systemToDestroy);
     static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, const Transform2D& startingTransform, Transform2D* parentTransform = nullptr, const SpriteResource* spriteOverride = nullptr);
-
+    void Flush();
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::vector<ParticleEmitter*> m_emitters;
     const ParticleSystemDefinition* m_definition;

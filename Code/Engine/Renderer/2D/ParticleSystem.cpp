@@ -59,7 +59,7 @@ ParticleEmitter::ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDe
 //-----------------------------------------------------------------------------------
 ParticleEmitter::~ParticleEmitter()
 {
-    m_particles.clear();
+    Flush();
 }
 
 //-----------------------------------------------------------------------------------
@@ -179,6 +179,12 @@ const SpriteResource* ParticleEmitter::GetSpriteResource()
 }
 
 //-----------------------------------------------------------------------------------
+void ParticleEmitter::Flush()
+{
+    m_particles.clear();
+}
+
+//-----------------------------------------------------------------------------------
 void ParticleEmitter::SpawnParticles(float deltaSeconds)
 {
     if (m_secondsPerParticle > 0.0f && m_emitterAge < m_maxEmitterAge && !m_parentSystem->m_isPaused)
@@ -272,6 +278,15 @@ void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, un
     //The SpriteGameRenderer cleans up these one-shot systems whenever they're finished playing.
     ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerId, startingTransform, parentTransform, spriteOverride);
     ASSERT_OR_DIE(newSystemToPlay->m_definition->m_type == ONE_SHOT, "Attempted to call PlayOneShotParticleEffect with a looping particle system. PlayOneShotParticleEffect is only used for one-shot particle systems.");
+}
+
+//-----------------------------------------------------------------------------------
+void ParticleSystem::Flush()
+{
+    for (ParticleEmitter* emitter : m_emitters)
+    {
+        emitter->Flush();
+    }
 }
 
 //-----------------------------------------------------------------------------------
