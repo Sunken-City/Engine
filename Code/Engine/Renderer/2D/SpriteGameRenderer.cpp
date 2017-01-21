@@ -215,7 +215,8 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
     RecalculateVirtualWidthAndHeight(renderArea, layer->m_virtualScaleMultiplier);
     UpdateCameraPositionInWorldBounds(renderArea.m_cameraPosition, layer->m_virtualScaleMultiplier);
     AABB2 renderBounds = GetVirtualBoundsAroundCameraCenter();
-    m_bottomRight.SetPosition(renderBounds.GetBottomRight());
+
+    m_bottomRight.SetPosition(Vector2(m_virtualWidth * 0.5f, m_virtualHeight * -0.5f));
 
     if (layer->m_isEnabled)
     {
