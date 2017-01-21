@@ -48,12 +48,14 @@ public:
     void CleanUpDeadRenderables(bool cleanUpLiveRenderables = false);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    int m_layer;
-    Renderable2D* m_renderablesList;
-    bool m_isEnabled;
-    float m_virtualScaleMultiplier = 1.0f;
-    AABB2 m_boundingVolume;
     std::vector<Material*> m_effectMaterials;
+    AABB2 m_boundingVolume;
+    Renderable2D* m_renderablesList;
+    int m_layerIndex;
+    float m_virtualScaleMultiplier = 1.0f;
+    bool m_isEnabled;
+    bool m_isCullingEnabled = true;
+    bool m_isWorldSpaceLayer = true;
 };
 
 //-----------------------------------------------------------------------------------
@@ -152,7 +154,7 @@ private:
 //----------------------------------------------------------------------
 inline bool operator<(SpriteLayer lhs, const SpriteLayer& rhs)
 {
-    return lhs.m_layer < rhs.m_layer;
+    return lhs.m_layerIndex < rhs.m_layerIndex;
 }
 
 //-----------------------------------------------------------------------------------

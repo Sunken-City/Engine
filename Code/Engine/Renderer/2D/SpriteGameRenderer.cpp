@@ -53,7 +53,7 @@ const char* SpriteGameRenderer::DEFAULT_FRAG_SHADER =
 
 //-----------------------------------------------------------------------------------
 SpriteLayer::SpriteLayer(int layerIndex)
-    : m_layer(layerIndex)
+    : m_layerIndex(layerIndex)
     , m_renderablesList(nullptr)
     , m_isEnabled(true)
     , m_boundingVolume(SpriteGameRenderer::instance->m_worldBounds)
@@ -217,7 +217,8 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
     AABB2 renderBounds = GetVirtualBoundsAroundCameraCenter();
     if (layer->m_isEnabled)
     {
-        Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, m_cameraPosition);
+        Vector2 cameraPos = layer->m_isWorldSpaceLayer ? m_cameraPosition : Vector2::ZERO;
+        Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, cameraPos);
         {
             //SortSpritesByXY(layer->m_spriteList);
             Renderable2D* currentRenderable = layer->m_renderablesList;
@@ -225,7 +226,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             {
                 do
                 {
-                    if (!currentRenderable->IsCullable() || renderBounds.IsIntersecting(currentRenderable->GetBounds()))
+                    if (!layer->m_isCullingEnabled || !currentRenderable->IsCullable() || renderBounds.IsIntersecting(currentRenderable->GetBounds()))
                     {
                         currentRenderable->Render(m_bufferedMeshRenderer);
                     }
