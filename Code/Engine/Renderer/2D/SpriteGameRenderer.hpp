@@ -77,6 +77,16 @@ public:
         BOTTOM_RIGHT = BOTTOM | RIGHT,
     };
 
+    enum class PlayerVisibility
+    {
+        FIRST = BIT_FLAG(0),
+        SECOND = BIT_FLAG(1),
+        THIRD = BIT_FLAG(2),
+        FOURTH = BIT_FLAG(3),
+
+        ALL = FIRST | SECOND | THIRD | FOURTH,
+    };
+
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     SpriteGameRenderer(const RGBA& clearColor, unsigned int widthInPixels, unsigned int heightInPixels, unsigned int importSize, float virtualSize);
     ~SpriteGameRenderer();
@@ -129,7 +139,8 @@ public:
     AABB2 GetVirtualBoundsAroundWorldCenter();
     bool IsInsideWorldBounds(const Vector2& attemptedPosition);
     Vector2 GetCameraPositionInWorld();
-
+    static PlayerVisibility GetVisibilityFilterForPlayerNumber(unsigned int i);
+    
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
     static SpriteGameRenderer* instance;
 
@@ -159,6 +170,7 @@ private:
     Framebuffer* m_effectFBO;
     unsigned int m_numSplitscreenViews;
     ViewportDefinition* m_viewportDefinitions;
+    PlayerVisibility m_currentViewer = PlayerVisibility::FIRST;
     RGBA m_clearColor;
     
     //CONSTANTS/////////////////////////////////////////////////////////////////////

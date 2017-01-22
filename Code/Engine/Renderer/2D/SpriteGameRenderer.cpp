@@ -191,6 +191,7 @@ void SpriteGameRenderer::Render()
 {
     for (unsigned int i = 0; i < m_numSplitscreenViews; ++i)
     {
+        m_currentViewer = GetVisibilityFilterForPlayerNumber(i);
         RenderView(m_viewportDefinitions[i]);
     }
 }
@@ -228,9 +229,13 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             {
                 do
                 {
-                    if (!layer->m_isCullingEnabled || !currentRenderable->IsCullable() || renderBounds.IsIntersecting(currentRenderable->GetBounds()))
+                    bool canBeRendered = ((uchar)m_currentViewer & currentRenderable->m_viewableBy) > 0;
+                    if (canBeRendered)
                     {
-                        currentRenderable->Render(m_bufferedMeshRenderer);
+                        if (!layer->m_isCullingEnabled || !currentRenderable->IsCullable() || renderBounds.IsIntersecting(currentRenderable->GetBounds()))
+                        {
+                            currentRenderable->Render(m_bufferedMeshRenderer);
+                        }
                     }
                     currentRenderable = currentRenderable->next;
                 } while (currentRenderable != layer->m_renderablesList);
@@ -393,6 +398,22 @@ void SpriteGameRenderer::SetCameraPosition(const Vector2& newCameraPosition, int
 Vector2 SpriteGameRenderer::GetCameraPositionInWorld()
 {
     return m_cameraPosition;
+}
+
+SpriteGameRenderer::PlayerVisibility SpriteGameRenderer::GetVisibilityFilterForPlayerNumber(unsigned int playerNumber)
+{
+    switch (playerNumber)
+    {
+    case (0) :
+        return PlayerVisibility::FIRST;
+    case (1) :
+        return PlayerVisibility::SECOND;
+    case (2) :
+        return PlayerVisibility::THIRD;
+    case (3) :
+        return PlayerVisibility::FOURTH;
+    }
+    ERROR_AND_DIE("Passed in an invalid player number for getting the visibility filter.");
 }
 
 //-----------------------------------------------------------------------------------

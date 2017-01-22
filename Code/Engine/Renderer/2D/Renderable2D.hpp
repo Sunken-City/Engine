@@ -3,6 +3,8 @@
 class BufferedMeshRenderer;
 class AABB2;
 
+typedef unsigned char uchar;
+
 class Renderable2D
 {
 public:
@@ -25,4 +27,5 @@ public:
     int m_orderingLayer; //Drawing order is ordered by layer, smallest to largest
     bool m_isEnabled; //If disabled - does not get rendered
     bool m_isDead = false;
+    uchar m_viewableBy;
 };

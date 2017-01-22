@@ -5,6 +5,7 @@
 Renderable2D::Renderable2D(int orderingLayer, bool isEnabled)
     : m_isEnabled(false)
     , m_orderingLayer(-1)
+    , m_viewableBy((uchar)SpriteGameRenderer::PlayerVisibility::ALL)
 {
     m_orderingLayer = orderingLayer;
     if (isEnabled)

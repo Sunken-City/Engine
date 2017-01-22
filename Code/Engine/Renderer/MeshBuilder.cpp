@@ -176,7 +176,7 @@ void MeshBuilder::AppendToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, uns
 //-----------------------------------------------------------------------------------
 void MeshBuilder::ClearMesh(Mesh* mesh)
 {
-
+    UNUSED(mesh);
 }
 
 //-----------------------------------------------------------------------------------
