@@ -40,7 +40,12 @@ public:
 
     }
 
-    virtual ~InputValue() {};
+    virtual ~InputValue() 
+    {
+        m_onChange.UnregisterAllSubscriptions();
+        m_onPress.UnregisterAllSubscriptions();
+        m_onRelease.UnregisterAllSubscriptions();
+    };
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     inline float GetValue() const { return m_currentValue; }

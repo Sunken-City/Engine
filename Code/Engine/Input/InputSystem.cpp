@@ -57,6 +57,12 @@ InputSystem::InputSystem(void* hWnd, int maximumNumberOfControllers /*= 0*/)
 InputSystem::~InputSystem()
 {
     InputSystem::instance->m_OnUpdate.UnregisterMethod(m_keyboardDevice, &KeyboardInputDevice::Update);
+    InputSystem::instance->m_OnUpdate.UnregisterMethod(m_mouseDevice, &MouseInputDevice::Update);
+    for (int i = 0; i < m_maximumNumControllers; ++i)
+    {
+        m_OnUpdate.UnregisterMethod(m_xInputDevices[i], &XInputDevice::Update);
+    }
+
     delete m_keyboardDevice;
     delete m_mouseDevice;
 
@@ -217,6 +223,42 @@ void InputSystem::AdvanceFrameNumber()
     m_isScrolling = false;
     m_linesScrolled = 0;
     m_lastPressedChar = 0x00;
+}
+
+//-----------------------------------------------------------------------------------
+void InputSystem::ClearAndRecreateInputDevices()
+{
+    InputSystem::instance->m_OnUpdate.UnregisterMethod(m_keyboardDevice, &KeyboardInputDevice::Update);
+    InputSystem::instance->m_OnUpdate.UnregisterMethod(m_mouseDevice, &MouseInputDevice::Update);
+    for (int i = 0; i < m_maximumNumControllers; ++i)
+    {
+        m_OnUpdate.UnregisterMethod(m_xInputDevices[i], &XInputDevice::Update);
+    }
+    delete m_keyboardDevice;
+    delete m_mouseDevice;
+
+    for (int i = 0; i < m_maximumNumControllers; i++)
+    {
+        delete m_controllers[i];
+        delete m_xInputDevices[i];
+    }
+
+
+
+    m_keyboardDevice = new KeyboardInputDevice();
+    m_mouseDevice = new MouseInputDevice();
+    for (int i = 0; i < m_maximumNumControllers; i++)
+    {
+        m_controllers[i] = new XInputController(i);
+        m_xInputDevices[i] = new XInputDevice(m_controllers[i]);
+    }
+
+    m_OnUpdate.RegisterMethod(m_keyboardDevice, &KeyboardInputDevice::Update);
+    m_OnUpdate.RegisterMethod(m_mouseDevice, &MouseInputDevice::Update);
+    for (int i = 0; i < m_maximumNumControllers; ++i)
+    {
+        m_OnUpdate.RegisterMethod(m_xInputDevices[i], &XInputDevice::Update);
+    }
 }
 
 //-----------------------------------------------------------------------------------
