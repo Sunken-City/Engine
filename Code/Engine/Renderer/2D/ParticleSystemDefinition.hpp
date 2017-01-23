@@ -24,6 +24,7 @@ static const char* PROPERTY_MAX_EMITTER_LIFETIME = "Max Emitter Lifetime";
 static const char* PROPERTY_PARTICLES_PER_SECOND = "Particles per Second";
 static const char* PROPERTY_SPAWN_RADIUS = "Spawn Radius";
 static const char* PROPERTY_DELTA_SCALE_PER_SECOND = "Delta Scale Per Second";
+static const char* PROPERTY_WIDTH = "Width";
 
 //-----------------------------------------------------------------------------------
 enum ParticleSystemType

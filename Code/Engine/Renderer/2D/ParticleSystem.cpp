@@ -324,6 +324,9 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
         return;
     }
 
+    float width = m_definition->m_properties.Get<float>(PROPERTY_WIDTH);
+    float halfWidth = width * 0.5f;
+
     std::vector<RibbonParticlePiece> points;
     points.emplace_back(m_particles[0]);
     points[0].m_particle.m_position = m_transform.GetWorldPosition();
@@ -380,12 +383,12 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
         //Apply our transformations
         Matrix4x4 transform = scale * rotation * translation;
 
-        float halfWidth = MathUtils::Clamp(0.125f - MathUtils::RangeMap(particle.m_age, 0.0f, particle.m_maxAge, 0.0f, 0.125f));
+        float agedHalfWidth = MathUtils::Clamp(halfWidth - MathUtils::RangeMap(particle.m_age, 0.0f, particle.m_maxAge, 0.0f, halfWidth));
 
-        Vector2 bottomLeft = points[i].m_particle.m_position - (points[i].m_perpendicularNormal * halfWidth);
-        Vector2 bottomRight = points[i].m_particle.m_position + (points[i].m_perpendicularNormal * halfWidth);
-        Vector2 topLeft = points[i - 1].m_particle.m_position - (points[i - 1].m_perpendicularNormal * halfWidth);
-        Vector2 topRight = points[i - 1].m_particle.m_position + (points[i - 1].m_perpendicularNormal * halfWidth);
+        Vector2 bottomLeft = points[i].m_particle.m_position - (points[i].m_perpendicularNormal * agedHalfWidth);
+        Vector2 bottomRight = points[i].m_particle.m_position + (points[i].m_perpendicularNormal * agedHalfWidth);
+        Vector2 topLeft = points[i - 1].m_particle.m_position - (points[i - 1].m_perpendicularNormal * agedHalfWidth);
+        Vector2 topRight = points[i - 1].m_particle.m_position + (points[i - 1].m_perpendicularNormal * agedHalfWidth);
         
         const SpriteResource* resource = GetSpriteResource();
         Vector2 pivotPoint = resource->m_pivotPoint;
