@@ -128,7 +128,7 @@ void UISystem::DeleteWidget(WidgetBase* widgetToDelete)
         return;
     }
     unsigned int numWidgets = m_childWidgets.size();
-    for (int i = 0; i < numWidgets; ++i)
+    for (unsigned int i = 0; i < numWidgets; ++i)
     {
         WidgetBase* current = m_childWidgets[i];
         if (widgetToDelete == current)
