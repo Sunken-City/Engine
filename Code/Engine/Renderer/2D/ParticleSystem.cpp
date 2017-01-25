@@ -217,6 +217,7 @@ ParticleSystem::~ParticleSystem()
     {
         delete emitter;
     }
+    m_emitters.clear();
 }
 
 //-----------------------------------------------------------------------------------
