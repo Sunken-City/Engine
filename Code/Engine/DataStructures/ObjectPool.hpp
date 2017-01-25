@@ -5,7 +5,7 @@ class ObjectPool
 {
 	struct PoolNode
 	{
-		PoolNode *next;
+		PoolNode* next;
 	};
 
 public:

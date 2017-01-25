@@ -9,6 +9,7 @@ class Transform2D
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     Transform2D(const Vector2& pos = Vector2::ZERO, float rotDegrees = 0.0f, const Vector2& scale = Vector2::ONE, Transform2D* parent = nullptr);
+    Transform2D(const Transform2D& other);
     ~Transform2D();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
@@ -22,12 +23,12 @@ private:
 
 public:
     //GETTERS/////////////////////////////////////////////////////////////////////
-    Vector2 GetWorldPosition();
-    float GetWorldRotationDegrees();
-    Vector2 GetWorldScale();
-    Vector2 GetLocalPosition();
-    float GetLocalRotationDegrees();
-    Vector2 GetLocalScale();
+    Vector2 GetWorldPosition() const;
+    float GetWorldRotationDegrees() const;
+    Vector2 GetWorldScale() const;
+    Vector2 GetLocalPosition() const;
+    float GetLocalRotationDegrees() const;
+    Vector2 GetLocalScale() const;
 
     //SETTERS/////////////////////////////////////////////////////////////////////
     void SetPosition(const Vector2& position);

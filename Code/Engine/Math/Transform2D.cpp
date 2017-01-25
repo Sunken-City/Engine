@@ -11,6 +11,15 @@ Transform2D::Transform2D(const Vector2& pos, float rotDegrees, const Vector2& sc
 }
 
 //-----------------------------------------------------------------------------------
+Transform2D::Transform2D(const Transform2D& other)
+    : m_position(other.GetWorldPosition())
+    , m_rotationDegrees(other.GetWorldRotationDegrees())
+    , m_scale(other.GetWorldScale())
+{
+
+}
+
+//-----------------------------------------------------------------------------------
 Transform2D::~Transform2D()
 {
     if (m_parent)
@@ -68,7 +77,7 @@ void Transform2D::SetParent(Transform2D* parent)
 }
 
 //-----------------------------------------------------------------------------------
-Vector2 Transform2D::GetWorldPosition()
+Vector2 Transform2D::GetWorldPosition() const
 {
     if (m_parent)
     {
@@ -81,7 +90,7 @@ Vector2 Transform2D::GetWorldPosition()
 }
 
 //-----------------------------------------------------------------------------------
-float Transform2D::GetWorldRotationDegrees()
+float Transform2D::GetWorldRotationDegrees() const
 {
     if (m_parent)
     {
@@ -94,7 +103,7 @@ float Transform2D::GetWorldRotationDegrees()
 }
 
 //-----------------------------------------------------------------------------------
-Vector2 Transform2D::GetWorldScale()
+Vector2 Transform2D::GetWorldScale() const
 {
     if (m_parent)
     {
@@ -107,19 +116,19 @@ Vector2 Transform2D::GetWorldScale()
 }
 
 //-----------------------------------------------------------------------------------
-Vector2 Transform2D::GetLocalPosition()
+Vector2 Transform2D::GetLocalPosition() const
 {
     return m_position;
 }
 
 //-----------------------------------------------------------------------------------
-float Transform2D::GetLocalRotationDegrees()
+float Transform2D::GetLocalRotationDegrees() const
 {
     return m_rotationDegrees;
 }
 
 //-----------------------------------------------------------------------------------
-Vector2 Transform2D::GetLocalScale()
+Vector2 Transform2D::GetLocalScale() const
 {
     return m_scale;
 }

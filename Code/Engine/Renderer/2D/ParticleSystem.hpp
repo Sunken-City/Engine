@@ -15,7 +15,7 @@ class ParticleSystem;
 //-----------------------------------------------------------------------------------
 struct Particle
 {
-    Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition* definition, float rotationDegrees = 0.0f, const Vector2& initalVelocity = Vector2::ZERO, const Vector2& initialAcceleration = Vector2::ZERO);
+    Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition* definition, float rotationDegrees = 0.0f, const Vector2& initalVelocity = Vector2::ZERO, const Vector2& initialAcceleration = Vector2::ZERO, const RGBA& color = RGBA::WHITE);
 
     inline bool IsDead() { return m_age > m_maxAge; };
 
@@ -78,10 +78,12 @@ public:
     static void Destroy(ParticleSystem* systemToDestroy);
     static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, const Transform2D& startingTransform, Transform2D* parentTransform = nullptr, const SpriteResource* spriteOverride = nullptr);
     void Flush();
+
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::vector<ParticleEmitter*> m_emitters;
     const ParticleSystemDefinition* m_definition;
-    bool m_isPaused = false;
+    bool m_isPaused = false; 
+    RGBA m_colorOverride = RGBA::WHITE;
 };
 
 //-----------------------------------------------------------------------------------

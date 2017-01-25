@@ -7,14 +7,14 @@
 #include "Engine/Math/Matrix4x4.hpp"
 #include "Engine/Math/Vector3.hpp"
 #include "Engine/Renderer/2D/ResourceDatabase.hpp"
-
 //-----------------------------------------------------------------------------------
-Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition* definition, float initialRotationDegrees, const Vector2& initialVelocity, const Vector2& initialAcceleration)
+Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition* definition, float rotationDegrees /*= 0.0f*/, const Vector2& initalVelocity /*= Vector2::ZERO*/, const Vector2& initialAcceleration /*= Vector2::ZERO*/, const RGBA& color /*= RGBA::WHITE*/) 
     : m_position(spawnPosition)
-    , m_velocity(initialVelocity)
+    , m_velocity(initalVelocity)
     , m_acceleration(initialAcceleration)
-    , m_rotationDegrees(initialRotationDegrees)
+    , m_rotationDegrees(rotationDegrees)
     , m_age(0.0f)
+    , m_color(color)
 {
     m_scale = definition->m_properties.Get<Range<Vector2>>(PROPERTY_INITIAL_SCALE).GetRandom();
     m_maxAge = definition->m_properties.Get<Range<float>>(PROPERTY_PARTICLE_LIFETIME).GetRandom();
@@ -24,7 +24,6 @@ Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition
     definition->m_properties.Get<Range<float>>(PROPERTY_EXPLOSIVE_VELOCITY_MAGNITUDE, explosiveVelocityForce);
     m_velocity += Vector2::CreateFromPolar(explosiveVelocityForce.GetRandom(), m_rotationDegrees);
 }
-
 //-----------------------------------------------------------------------------------
 ParticleEmitter::ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDefinition* definition, const Transform2D& startingTransform, Transform2D* parentTransform)
     : m_parentSystem(parent)
@@ -167,9 +166,9 @@ void ParticleEmitter::SpawnParticle()
     Vector2 initialVelocity = m_definition->m_properties.Get<Range<Vector2>>(PROPERTY_INITIAL_VELOCITY).GetRandom();
     
     spawnPosition += randomVectorOffset;
-
-    m_particles.emplace_back(spawnPosition, m_definition, initialRotation, initialVelocity);
-    m_particles.back().m_color = m_definition->m_properties.Get<RGBA>(PROPERTY_INITIAL_COLOR);
+    
+    RGBA color = m_parentSystem->m_colorOverride == RGBA::WHITE ? m_definition->m_properties.Get<RGBA>(PROPERTY_INITIAL_COLOR) : m_parentSystem->m_colorOverride;
+    m_particles.emplace_back(spawnPosition, m_definition, initialRotation, initialVelocity, Vector2::ZERO, color);
 }
 
 //-----------------------------------------------------------------------------------
