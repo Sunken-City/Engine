@@ -349,6 +349,11 @@ void SpriteGameRenderer::UpdateCameraPositionInWorldBounds(const Vector2& newCam
     m_cameraPosition = newCameraPosition;
     AABB2 cameraBounds = GetVirtualBoundsAroundCameraCenter();
     AABB2 scaledWorldBounds = m_worldBounds * layerScale;
+    if (layerScale != 1.0f)
+    {
+        return;
+    }
+
     if (!scaledWorldBounds.IsPointOnOrInside(cameraBounds.mins))
     {
         Vector2 correctionVector = Vector2::CalculateCorrectionVector(cameraBounds.mins, scaledWorldBounds.mins);
