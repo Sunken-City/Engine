@@ -51,41 +51,38 @@ const char* SpriteGameRenderer::DEFAULT_FRAG_SHADER =
     }";
 
 //-----------------------------------------------------------------------------------
+//Based off of shader from: https://learnopengl.com/#!Advanced-Lighting/Bloom
 const char* SpriteGameRenderer::DEFAULT_BLUR_SHADER =
 "#version 410 core\n\
-//Based off of shader from: https://learnopengl.com/#!Advanced-Lighting/Bloom \
-out vec4 FragColor;\
-in vec2 passUV;\
 \
-uniform sampler2D gDiffuseTexture;\
-\
-uniform bool horizontal;\
-\
-uniform float weight[5] = float[](0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);\
-\
-void main()\
-{\
-    vec2 tex_offset = 1.0 / textureSize(gDiffuseTexture, 0); // gets size of single texel\
-    vec3 result = texture(gDiffuseTexture, passUV).rgb * weight[0]; // current fragment's contribution\
-    if (horizontal)\
+    uniform sampler2D gDiffuseTexture;\
+    uniform bool horizontal;\
+    uniform float weight[5] = float[](0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);\
+    in vec4 passColor;\
+    in vec2 passUV;\
+    out vec4 fragColor;\
+    void main()\
     {\
-        for (int i = 1; i < 5; ++i)\
+        vec2 tex_offset = 1.0 / textureSize(gDiffuseTexture, 0); /*Gets size of single texel*/\
+        vec3 result = texture(gDiffuseTexture, passUV).rgb * weight[0]; /*Current fragment's contribution*/\
+        if (horizontal)\
         {\
-            result += texture(gDiffuseTexture, passUV + vec2(tex_offset.x * i, 0.0)).rgb * weight[i];\
-            result += texture(gDiffuseTexture, passUV - vec2(tex_offset.x * i, 0.0)).rgb * weight[i];\
+            for (int i = 1; i < 5; ++i)\
+            {\
+                result += texture(gDiffuseTexture, passUV + vec2(tex_offset.x * i, 0.0)).rgb * weight[i];\
+                result += texture(gDiffuseTexture, passUV - vec2(tex_offset.x * i, 0.0)).rgb * weight[i];\
+            }\
         }\
-    }\
-    else\
-    {\
-        for (int i = 1; i < 5; ++i)\
+        else\
         {\
-            result += texture(gDiffuseTexture, passUV + vec2(0.0, tex_offset.y * i)).rgb * weight[i];\
-            result += texture(gDiffuseTexture, passUV - vec2(0.0, tex_offset.y * i)).rgb * weight[i];\
+            for (int i = 1; i < 5; ++i)\
+            {\
+                result += texture(gDiffuseTexture, passUV + vec2(0.0, tex_offset.y * i)).rgb * weight[i];\
+                result += texture(gDiffuseTexture, passUV - vec2(0.0, tex_offset.y * i)).rgb * weight[i];\
+            }\
         }\
-    }\
-    FragColor = vec4(result, 1.0);\
-}";
-
+        fragColor = vec4(result, 1.0);\
+    }";
 
 //-----------------------------------------------------------------------------------
 SpriteLayer::SpriteLayer(int layerIndex)
@@ -298,12 +295,12 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
 
         if (layer->m_isBloomEnabled)
         {
-            int numPasses = 0;
-            for (int i = 0; i < 1; ++i)
+            int numPasses = 10;
+            for (int i = 0; i < numPasses; ++i)
             {
                 m_effectFBO->Bind();
                 m_blurEffect->SetDiffuseTexture(m_currentFBO->m_colorTargets[0]);
-                m_blurEffect->SetBoolUniform("horizontal", true);
+                m_blurEffect->SetBoolUniform("horizontal", i % 2 == 0);
                 Renderer::instance->RenderFullScreenEffect(m_blurEffect);
                 Framebuffer* temporaryCurrentPointer = m_currentFBO;
                 m_currentFBO = m_effectFBO;
