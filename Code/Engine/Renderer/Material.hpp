@@ -75,6 +75,7 @@ public:
     inline void SetVec4Uniform(const char* name, const Vector4& value) { m_shaderProgram->SetVec4Uniform(name, value); };
     inline void SetVec3Uniform(const char* name, const Vector3& value) { m_shaderProgram->SetVec3Uniform(name, value); };
     inline void SetFloatUniform(const char* name, float value) { m_shaderProgram->SetFloatUniform(name, value); };
+    inline void SetBoolUniform(const char* name, bool value) { m_shaderProgram->SetBoolUniform(name, value); };
     inline void SetIntUniform(const char* name, int value) { m_shaderProgram->SetIntUniform(name, value); };
     inline void SetMatrix4x4Uniform(const char* name, Matrix4x4& value, unsigned int arrayIndex) { m_shaderProgram->SetMatrix4x4Uniform(name, value, arrayIndex); };
     inline void SetVec4Uniform(const char* name, const Vector4& value, unsigned int arrayIndex) { m_shaderProgram->SetVec4Uniform(name, value, arrayIndex); };

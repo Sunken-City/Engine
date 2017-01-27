@@ -9,7 +9,7 @@
 #include <vector>
 #include "Engine/Renderer/2D/ParticleSystem.hpp"
 #include "Engine/Renderer/2D/Renderable2D.hpp"
-#include "../BufferedMeshRenderer.hpp"
+#include "Engine/Renderer/BufferedMeshRenderer.hpp"
 
 #define BIT_FLAG(f) (1 << (f))
 
@@ -56,6 +56,7 @@ public:
     bool m_isEnabled;
     bool m_isCullingEnabled = true;
     bool m_isWorldSpaceLayer = true;
+    bool m_isBloomEnabled = false;
 };
 
 //-----------------------------------------------------------------------------------
@@ -170,12 +171,15 @@ private:
     Framebuffer* m_effectFBO;
     unsigned int m_numSplitscreenViews;
     ViewportDefinition* m_viewportDefinitions;
+    ShaderProgram* m_blurShader;
+    Material* m_blurEffect;
     PlayerVisibility m_currentViewer = PlayerVisibility::FIRST;
     RGBA m_clearColor;
     
     //CONSTANTS/////////////////////////////////////////////////////////////////////
     static const char* DEFAULT_VERT_SHADER;
     static const char* DEFAULT_FRAG_SHADER;
+    static const char* DEFAULT_BLUR_SHADER;
 };
 
 //----------------------------------------------------------------------
