@@ -169,10 +169,13 @@ private:
     float m_virtualHeight;
     Framebuffer* m_currentFBO;
     Framebuffer* m_effectFBO;
+    Framebuffer* m_blurFBO;
     unsigned int m_numSplitscreenViews;
     ViewportDefinition* m_viewportDefinitions;
     ShaderProgram* m_blurShader;
     Material* m_blurEffect;
+    ShaderProgram* m_comboShader;
+    Material* m_comboEffect;
     PlayerVisibility m_currentViewer = PlayerVisibility::FIRST;
     RGBA m_clearColor;
     
@@ -180,6 +183,7 @@ private:
     static const char* DEFAULT_VERT_SHADER;
     static const char* DEFAULT_FRAG_SHADER;
     static const char* DEFAULT_BLUR_SHADER;
+    static const char* DEFAULT_COMBO_SHADER;
 };
 
 //----------------------------------------------------------------------
