@@ -422,3 +422,16 @@ bool ShaderProgram::SetFloatUniform(const char* name, float value)
     }
     return false;
 }
+
+//-----------------------------------------------------------------------------------
+bool ShaderProgram::SetBoolUniform(const char* name, bool value)
+{
+    glUseProgram(m_shaderProgramID);
+    GLint loc = glGetUniformLocation(m_shaderProgramID, name);
+    if (loc >= 0)
+    {
+        glUniform1fv(loc, 1, (GLfloat*)&value); //location, number of elements, do you want gl to transpose matrix?, matrix
+        return true;
+    }
+    return false;
+}

@@ -50,6 +50,42 @@ const char* SpriteGameRenderer::DEFAULT_FRAG_SHADER =
         fragmentColor = passColor * diffuseColor;\
     }";
 
+//-----------------------------------------------------------------------------------
+const char* SpriteGameRenderer::DEFAULT_BLUR_SHADER =
+"#version 410 core\n\
+//Based off of shader from: https://learnopengl.com/#!Advanced-Lighting/Bloom \
+out vec4 FragColor;\
+in vec2 passUV;\
+\
+uniform sampler2D gDiffuseTexture;\
+\
+uniform bool horizontal;\
+\
+uniform float weight[5] = float[](0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);\
+\
+void main()\
+{\
+    vec2 tex_offset = 1.0 / textureSize(gDiffuseTexture, 0); // gets size of single texel\
+    vec3 result = texture(gDiffuseTexture, passUV).rgb * weight[0]; // current fragment's contribution\
+    if (horizontal)\
+    {\
+        for (int i = 1; i < 5; ++i)\
+        {\
+            result += texture(gDiffuseTexture, passUV + vec2(tex_offset.x * i, 0.0)).rgb * weight[i];\
+            result += texture(gDiffuseTexture, passUV - vec2(tex_offset.x * i, 0.0)).rgb * weight[i];\
+        }\
+    }\
+    else\
+    {\
+        for (int i = 1; i < 5; ++i)\
+        {\
+            result += texture(gDiffuseTexture, passUV + vec2(0.0, tex_offset.y * i)).rgb * weight[i];\
+            result += texture(gDiffuseTexture, passUV - vec2(0.0, tex_offset.y * i)).rgb * weight[i];\
+        }\
+    }\
+    FragColor = vec4(result, 1.0);\
+}";
+
 
 //-----------------------------------------------------------------------------------
 SpriteLayer::SpriteLayer(int layerIndex)
@@ -129,14 +165,21 @@ SpriteGameRenderer::SpriteGameRenderer(const RGBA& clearColor, unsigned int widt
     SetSplitscreen(1);
 
     m_defaultShader = ShaderProgram::CreateFromShaderStrings(DEFAULT_VERT_SHADER, DEFAULT_FRAG_SHADER);
+    m_blurShader = ShaderProgram::CreateFromShaderStrings(DEFAULT_VERT_SHADER, DEFAULT_BLUR_SHADER);
 
-    Texture* currentColorTarget = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::RGBA8);
+    m_blurEffect = new Material(m_blurShader, RenderState(RenderState::DepthTestingMode::OFF, RenderState::FaceCullingMode::RENDER_BACK_FACES, RenderState::BlendMode::ALPHA_BLEND));
+
+    Texture* currentColorTargets[2];
+    currentColorTargets[0] = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::RGBA8);
+    currentColorTargets[1] = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::RGBA8);
     Texture* currentDepthTex = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::D24S8);
-    m_currentFBO = Framebuffer::FramebufferCreate(1, &currentColorTarget, currentDepthTex);
+    m_currentFBO = Framebuffer::FramebufferCreate(2, currentColorTargets, currentDepthTex);
 
-    Texture* effectColorTarget = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::RGBA8);
+    Texture* effectColorTargets[2];
+    effectColorTargets[0] = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::RGBA8);
+    effectColorTargets[1] = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::RGBA8);
     Texture* effectDepthTex = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::D24S8);
-    m_effectFBO = Framebuffer::FramebufferCreate(1, &effectColorTarget, effectDepthTex);
+    m_effectFBO = Framebuffer::FramebufferCreate(2, effectColorTargets, effectDepthTex);
 }
 
 //-----------------------------------------------------------------------------------
@@ -150,10 +193,14 @@ SpriteGameRenderer::~SpriteGameRenderer()
     }
 
     delete m_defaultShader;
+    delete m_blurShader;
+    delete m_blurEffect;
     delete m_currentFBO->m_colorTargets[0];
+    delete m_currentFBO->m_colorTargets[1];
     delete m_currentFBO->m_depthStencilTarget;
     delete m_currentFBO;
     delete m_effectFBO->m_colorTargets[0];
+    delete m_effectFBO->m_colorTargets[1];
     delete m_effectFBO->m_depthStencilTarget;
     delete m_effectFBO;
 
@@ -206,6 +253,7 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
         RenderLayer(layerPair.second, renderArea);
     }
     //m_meshRenderer->m_material = nullptr;
+    m_currentFBO->ClearColorBuffer(1, RGBA::VAPORWAVE);
     Renderer::instance->FrameBufferCopyToBack(m_currentFBO, renderArea.m_viewportWidth, renderArea.m_viewportHeight, renderArea.m_bottomLeftX, renderArea.m_bottomLeftY);
     m_currentFBO->Unbind();
 }
@@ -220,6 +268,11 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
 
     if (layer->m_isEnabled)
     {
+        if (layer->m_isBloomEnabled)
+        {
+            m_currentFBO->ClearColorBuffer(0, RGBA::BLACK);
+        }
+
         Vector2 cameraPos = layer->m_isWorldSpaceLayer ? m_cameraPosition : Vector2::ZERO;
         Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, cameraPos);
         {
@@ -242,6 +295,22 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             }
         }
         Renderer::instance->EndOrtho();
+
+        if (layer->m_isBloomEnabled)
+        {
+            int numPasses = 0;
+            for (int i = 0; i < 1; ++i)
+            {
+                m_effectFBO->Bind();
+                m_blurEffect->SetDiffuseTexture(m_currentFBO->m_colorTargets[0]);
+                m_blurEffect->SetBoolUniform("horizontal", true);
+                Renderer::instance->RenderFullScreenEffect(m_blurEffect);
+                Framebuffer* temporaryCurrentPointer = m_currentFBO;
+                m_currentFBO = m_effectFBO;
+                m_effectFBO = temporaryCurrentPointer;
+                Renderer::instance->ClearDepth();
+            }
+        }
 
         for(Material* currentEffect : layer->m_effectMaterials) 
         {
