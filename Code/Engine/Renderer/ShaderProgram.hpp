@@ -62,7 +62,6 @@ public:
     bool SetIntUniform(const char* name, int value, unsigned int arrayIndex);
     bool SetFloatUniform(const char* name, float value);
     bool SetFloatUniform(const char* name, float value, unsigned int arrayIndex);
-    bool SetBoolUniform(const char* name, bool value);
 
 
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////

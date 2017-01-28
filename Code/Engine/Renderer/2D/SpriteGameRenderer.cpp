@@ -56,7 +56,7 @@ const char* SpriteGameRenderer::DEFAULT_BLUR_SHADER =
 "#version 410 core\n\
 \
     uniform sampler2D gDiffuseTexture;\
-    uniform bool horizontal;\
+    uniform float horizontal;\
     uniform float weight[5] = float[](0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);\
     in vec4 passColor;\
     in vec2 passUV;\
@@ -65,7 +65,7 @@ const char* SpriteGameRenderer::DEFAULT_BLUR_SHADER =
     {\
         vec2 tex_offset = 1.0 / textureSize(gDiffuseTexture, 0); /*Gets size of single texel*/\
         vec3 result = texture(gDiffuseTexture, passUV).rgb * weight[0]; /*Current fragment's contribution*/\
-        if (horizontal)\
+        if (horizontal > 0.5f)\
         {\
             for (int i = 1; i < 5; ++i)\
             {\
@@ -81,7 +81,7 @@ const char* SpriteGameRenderer::DEFAULT_BLUR_SHADER =
                 result += texture(gDiffuseTexture, passUV - vec2(0.0, tex_offset.y * i)).rgb * weight[i];\
             }\
         }\
-        fragColor = vec4(result, 1.0);\
+        fragColor = vec4(pow(result, vec3(0.85)), 1.0);\
     }";
 
 //-----------------------------------------------------------------------------------
@@ -93,19 +93,15 @@ in vec2 passUV;\
 \
 uniform sampler2D gDiffuseTexture;\
 uniform sampler2D gEmissiveTexture;\
-uniform float exposure;\
 \
 void main()\
 {\
-    const float gamma = 2.2;\
-    vec3 hdrColor = texture(gDiffuseTexture, passUV).rgb;\
+    vec3 sceneColor = texture(gDiffuseTexture, passUV).rgb;\
     vec3 bloomColor = texture(gEmissiveTexture, passUV).rgb;\
-    hdrColor += bloomColor; /*additive blending*/\
-                            /*tone mapping*/\
-    vec3 result = vec3(1.0) - exp(-hdrColor * exposure);\
-    /* also gamma correct while we're at it       */\
-    result = pow(result, vec3(1.0 / gamma));\
-    fragColor = vec4(result, 1.0f);\
+    vec3 ceiling = max(sceneColor, bloomColor);\
+    vec3 composite = sceneColor + bloomColor; /*additive blending*/\
+    vec3 result = min(composite, ceiling);\
+    fragColor = vec4(composite, 1.0f);\
 } ";
 
 //-----------------------------------------------------------------------------------
@@ -335,16 +331,16 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
         {
             m_blurFBO->Bind();
             m_blurEffect->SetDiffuseTexture(m_currentFBO->m_colorTargets[1]);
-            m_blurEffect->SetBoolUniform("horizontal", false);
+            m_blurEffect->SetFloatUniform("horizontal", 0.0f);
             Renderer::instance->RenderFullScreenEffect(m_blurEffect);
             Renderer::instance->ClearDepth();
 
-            int numPasses = 9;
+            int numPasses = 5;
             for (int i = 0; i < numPasses; ++i)
             {
                 m_effectFBO->Bind();
                 m_blurEffect->SetDiffuseTexture(m_blurFBO->m_colorTargets[0]);
-                m_blurEffect->SetBoolUniform("horizontal", i % 2 == 0);
+                m_blurEffect->SetFloatUniform("horizontal", i % 2 == 0 ? 1.0f : 0.0f);
                 Renderer::instance->RenderFullScreenEffect(m_blurEffect);
                 Framebuffer* temporaryCurrentPointer = m_blurFBO;
                 m_blurFBO = m_effectFBO;
@@ -355,7 +351,6 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             m_effectFBO->Bind();
             m_comboEffect->SetDiffuseTexture(m_currentFBO->m_colorTargets[0]);
             m_comboEffect->SetEmissiveTexture(m_blurFBO->m_colorTargets[0]);
-            m_comboEffect->SetFloatUniform("exposure", 1.0f);
             Renderer::instance->RenderFullScreenEffect(m_comboEffect);
             Framebuffer* temporaryCurrentPointer = m_currentFBO;
             m_currentFBO = m_effectFBO;
