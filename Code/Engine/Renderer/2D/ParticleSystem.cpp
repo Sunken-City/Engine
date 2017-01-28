@@ -370,6 +370,8 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
     for (unsigned int i = 1; i < numParticles; ++i)
     {
         Particle& particle = points[i].m_particle;
+        
+        //If we have a next particle, use it's color for the bottom two vertexes
         RGBA fadedColor = particle.m_color;
         if (i + 1 < numParticles)
         {
