@@ -370,6 +370,12 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
     for (unsigned int i = 1; i < numParticles; ++i)
     {
         Particle& particle = points[i].m_particle;
+        RGBA fadedColor = particle.m_color;
+        if (i + 1 < numParticles)
+        {
+            fadedColor = points[i + 1].m_particle.m_color;
+        }
+
         Matrix4x4 scale = Matrix4x4::IDENTITY;
         Matrix4x4 rotation = Matrix4x4::IDENTITY;
         Matrix4x4 translation = Matrix4x4::IDENTITY;
@@ -397,13 +403,16 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
         Vector2 spriteBounds = resource->m_virtualSize;
 
         int startingVertex = renderer.m_builder.m_vertices.size();
-        renderer.m_builder.SetColor(particle.m_color);
+        renderer.m_builder.SetColor(fadedColor);
         renderer.m_builder.SetUV(Vector2(uvMins.x, uvMaxs.y));
         renderer.m_builder.AddVertex(Vector3(bottomLeft, 0.0f));
+        renderer.m_builder.SetColor(fadedColor);
         renderer.m_builder.SetUV(uvMaxs);
         renderer.m_builder.AddVertex(Vector3(bottomRight, 0.0f));
+        renderer.m_builder.SetColor(particle.m_color);
         renderer.m_builder.SetUV(uvMins);
         renderer.m_builder.AddVertex(Vector3(topLeft, 0.0f));
+        renderer.m_builder.SetColor(particle.m_color);
         renderer.m_builder.SetUV(Vector2(uvMaxs.x, uvMins.y));
         renderer.m_builder.AddVertex(Vector3(topRight, 0.0f));
         renderer.m_builder.AddQuadIndices(startingVertex + 1, startingVertex + 0, startingVertex + 3, startingVertex + 2);
