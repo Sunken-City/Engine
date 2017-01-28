@@ -22,6 +22,19 @@ enum class SpriteAnimationLoopMode
 };
 
 //-----------------------------------------------------------------------------------
+enum class SpriteRecolorMode
+{
+    NONE = 0,
+    RGB = 0,
+    RBG,
+    GRB,
+    GBR,
+    BGR,
+    BRG,
+    LUMINENCE,
+};
+
+//-----------------------------------------------------------------------------------
 struct SpriteAnimationFrame
 {
     SpriteAnimationFrame(const SpriteResource* resource, float timeAtFrame) : m_resource(resource), m_timeAtFrame(timeAtFrame) {};
@@ -93,6 +106,7 @@ public:
     Material* m_material;
     Transform2D m_transform;
     RGBA m_tintColor;
+    SpriteRecolorMode m_recolorMode = SpriteRecolorMode::NONE;
 };
 
 //-----------------------------------------------------------------------------------
