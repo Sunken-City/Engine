@@ -31,6 +31,7 @@ public:
     void SetAlphaFloat(float alpha);
     Vector4 ToVec4() const;
     RGBA GetInverse() const;
+    float GetAlphaFloat() const;
 
     //OPERATORS//////////////////////////////////////////////////////////////////////////
     //Damp an RGBA color by a single value. Doesn't affect Alpha.
@@ -41,6 +42,7 @@ public:
         this->blue -= rhs;
         return *this;
     }
+
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
     unsigned char red;
     unsigned char green;

@@ -98,7 +98,9 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
         particle.m_age += deltaSeconds;
         if (fadeoutEnabled)
         {
-            particle.m_color.SetAlphaFloat(MathUtils::Clamp(1.0f - MathUtils::RangeMap(particle.m_age, 0.0f, particle.m_maxAge, 0.0f, 1.0f)));
+            float alphaAge = MathUtils::Clamp(1.0f - MathUtils::RangeMap(particle.m_age, 0.0f, particle.m_maxAge, 0.0f, 1.0f));
+            float newAlpha = Min<float>(particle.m_color.GetAlphaFloat(), alphaAge);
+            particle.m_color.SetAlphaFloat(newAlpha);
         }
     }
 }

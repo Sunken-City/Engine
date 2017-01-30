@@ -105,6 +105,12 @@ RGBA RGBA::GetInverse() const
 }
 
 //-----------------------------------------------------------------------------------
+float RGBA::GetAlphaFloat() const
+{
+    return (static_cast<float>(alpha) / 255.0f);
+}
+
+//-----------------------------------------------------------------------------------
 RGBA RGBA::CreateFromString(const std::string& textColor)
 {
     if (textColor.empty())
