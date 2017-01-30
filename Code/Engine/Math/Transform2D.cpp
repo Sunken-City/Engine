@@ -7,7 +7,10 @@ Transform2D::Transform2D(const Vector2& pos, float rotDegrees, const Vector2& sc
     , m_rotationDegrees(rotDegrees)
     , m_scale(scaleVal)
 {
-    SetParent(parent);
+    if (parent)
+    {
+        SetParent(parent);
+    }
 }
 
 //-----------------------------------------------------------------------------------
@@ -37,7 +40,7 @@ Transform2D::~Transform2D()
 void Transform2D::AddChild(Transform2D* child)
 {
     m_children.push_back(child);
-    child->SetParent(this);
+    child->m_parent = this;
 }
 
 //-----------------------------------------------------------------------------------
@@ -73,7 +76,7 @@ void Transform2D::RemoveParent()
 //-----------------------------------------------------------------------------------
 void Transform2D::SetParent(Transform2D* parent)
 {
-    m_parent = parent;
+    parent->AddChild(this);
 }
 
 //-----------------------------------------------------------------------------------
