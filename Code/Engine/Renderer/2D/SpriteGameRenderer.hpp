@@ -45,6 +45,7 @@ public:
     inline void Enable() { m_isEnabled = true; }
     inline void Disable() { m_isEnabled = false; }
     inline void Toggle() { m_isEnabled = !m_isEnabled; }
+    inline bool IsCullingEnabled() { return m_isCullingEnabled && m_isWorldSpaceLayer; };
     void CleanUpDeadRenderables(bool cleanUpLiveRenderables = false);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////

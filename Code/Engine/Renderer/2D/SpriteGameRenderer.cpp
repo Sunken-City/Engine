@@ -316,7 +316,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
                     bool canBeRendered = ((uchar)m_currentViewer & currentRenderable->m_viewableBy) > 0;
                     if (canBeRendered)
                     {
-                        if (!layer->m_isCullingEnabled || !currentRenderable->IsCullable() || renderBounds.IsIntersecting(currentRenderable->GetBounds()))
+                        if (!layer->IsCullingEnabled() || !currentRenderable->IsCullable() || renderBounds.IsIntersecting(currentRenderable->GetBounds()))
                         {
                             currentRenderable->Render(m_bufferedMeshRenderer);
                         }

@@ -19,7 +19,7 @@ TextRenderable2D::~TextRenderable2D()
 }
 
 //-----------------------------------------------------------------------------------
-void TextRenderable2D::Update(float deltaSeconds)
+void TextRenderable2D::Update(float)
 {
 
 }
