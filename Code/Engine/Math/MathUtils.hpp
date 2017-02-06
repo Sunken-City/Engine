@@ -50,7 +50,9 @@ public:
     static float RadiansToDegrees(float radians);
 
     //INTERPOLATION//////////////////////////////////////////////////////////////////////////
-    static float SmoothStep(float x);
+    static float SmoothStep(float inputZeroToOne);
+    static float SmoothStart2(float inputZeroToOne);
+    static float SmoothStop2(float inputZeroToOne);
     static float Lerp(float fraction, float initialValue, float endValue);
     static Vector2 Lerp(float fraction, const Vector2& initialValue, const Vector2& endValue);
     static Vector3 Lerp(float fraction, const Vector3& initialValue, const Vector3& endValue);

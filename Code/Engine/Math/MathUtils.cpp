@@ -7,6 +7,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <stdint.h>
+#include "../Core/ErrorWarningAssert.hpp"
 
 const float MathUtils::PI = 3.14159265358f;
 const float MathUtils::TWO_PI = 3.14159265358f * 2.0f;
@@ -93,7 +94,8 @@ float MathUtils::CalcDistSquaredBetweenPoints(const Vector2Int& pos1, const Vect
 //-----------------------------------------------------------------------------------
 float MathUtils::RangeMap(float inValue, float min1, float max1, float min2, float max2)
 {
-    //@TODO: Make sure max1 - min1 != 0
+    ASSERT_RECOVERABLE(max1 - min1 != 0, "Invalid range for range map");
+
     return min2 + ((max2 - min2) * ((inValue - min1) / (max1 - min1)));
 }
 
@@ -228,6 +230,19 @@ float MathUtils::SmoothStep(float x)
     float xSquared = x * x;
     float xCubed = xSquared * x;
     return ((3.0f * xSquared) - (2.0f * xCubed));
+}
+
+//-----------------------------------------------------------------------------------
+float MathUtils::SmoothStart2(float inputZeroToOne)
+{
+    return inputZeroToOne * inputZeroToOne;
+}
+
+//-----------------------------------------------------------------------------------
+float MathUtils::SmoothStop2(float inputZeroToOne)
+{
+    float oneMinusInput = 1.0f - inputZeroToOne;
+    return 1.0f - (oneMinusInput * oneMinusInput);
 }
 
 //-----------------------------------------------------------------------------------
