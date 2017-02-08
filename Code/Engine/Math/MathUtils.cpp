@@ -14,6 +14,12 @@ const float MathUtils::TWO_PI = 3.14159265358f * 2.0f;
 const float MathUtils::HALF_PI = 3.14159265358f / 2.0f;
 
 //-----------------------------------------------------------------------------------
+int MathUtils::LerpInt(float fraction, int initialValue, int endValue)
+{
+    return initialValue + static_cast<int>(fraction * static_cast<float>(endValue - initialValue));
+}
+
+//-----------------------------------------------------------------------------------
 float MathUtils::Lerp(float fraction, float initialValue, float endValue)
 {
     return initialValue + fraction * (endValue - initialValue);
