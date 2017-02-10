@@ -23,12 +23,14 @@ struct ViewportDefinition
 {
     ViewportDefinition() {};
 
+    Vector2 m_cameraPosition;
+    Vector2 m_screenshakeKnockbackBias = Vector2::ZERO;
     uint32_t m_bottomLeftX;
     uint32_t m_bottomLeftY;
     uint32_t m_viewportWidth;
     uint32_t m_viewportHeight;
     float m_viewportAspectRatio;
-    Vector2 m_cameraPosition;
+    float m_viewportScreenshakeMagnitude = 0.0f;
 };
 
 //-----------------------------------------------------------------------------------
@@ -97,6 +99,8 @@ public:
     void Update(float deltaSeconds);
     void Render();
     void RenderView(const ViewportDefinition& renderArea);
+    void CalculateScreenshakeForViewport(const ViewportDefinition &renderArea);
+    void DampScreenshake(unsigned int i);
     void UpdateScreenResolution(unsigned int widthInPixels, unsigned int heightInPixels);
     void RenderLayer(SpriteLayer* layer, const ViewportDefinition& renderArea);
     void RecalculateVirtualWidthAndHeight(const ViewportDefinition& renderArea, float layerVirtualSizeScaleFactor);
@@ -140,9 +144,10 @@ public:
     AABB2 GetVirtualBoundsAroundCameraCenter();
     AABB2 GetVirtualBoundsAroundWorldCenter();
     bool IsInsideWorldBounds(const Vector2& attemptedPosition);
-    Vector2 GetCameraPositionInWorld();
+    Vector2 GetCameraPositionInWorld(int viewportNumber = -1); //Default behavior is to grab the current camera position for the currently active viewport.
     static PlayerVisibility GetVisibilityFilterForPlayerNumber(unsigned int i);
-    
+    void AddScreenshakeMagnitude(float magnitude, const Vector2& direction = Vector2::ZERO, int viewportNumber = 0);
+
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
     static SpriteGameRenderer* instance;
 
@@ -161,6 +166,7 @@ private:
     BufferedMeshRenderer m_bufferedMeshRenderer;
     Vector2 m_screenResolution;
     Vector2 m_cameraPosition;
+    Vector2 m_screenshakeOffset = Vector2::ZERO;
     float m_aspectRatio;
     std::map<int, SpriteLayer*> m_layers;
     //The box (Size in game units of our screen)

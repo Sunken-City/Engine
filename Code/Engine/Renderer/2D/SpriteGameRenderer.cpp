@@ -12,6 +12,7 @@
 #include "Engine/Renderer/Framebuffer.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Time/Time.hpp"
+#include "../../Math/MathUtilities.hpp"
 
 //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
 SpriteGameRenderer* SpriteGameRenderer::instance = nullptr;
@@ -270,8 +271,16 @@ void SpriteGameRenderer::Render()
     for (unsigned int i = 0; i < m_numSplitscreenViews; ++i)
     {
         m_currentViewer = GetVisibilityFilterForPlayerNumber(i);
-        RenderView(m_viewportDefinitions[i]);
+        RenderView(m_viewportDefinitions[i]); DampScreenshake(i);
+
     }
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::DampScreenshake(unsigned int i)
+{
+    m_viewportDefinitions[i].m_viewportScreenshakeMagnitude *= 0.9f;
+    m_viewportDefinitions[i].m_screenshakeKnockbackBias *= 0.9f;
 }
 
 //-----------------------------------------------------------------------------------
@@ -279,6 +288,8 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 {
     m_currentFBO->Bind();
     Renderer::instance->ClearColor(m_clearColor);
+    CalculateScreenshakeForViewport(renderArea);
+
     for (auto layerPair : m_layers)
     {
         RenderLayer(layerPair.second, renderArea);
@@ -287,6 +298,14 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
     m_currentFBO->ClearColorBuffer(1, RGBA::VAPORWAVE);
     Renderer::instance->FrameBufferCopyToBack(m_currentFBO, renderArea.m_viewportWidth, renderArea.m_viewportHeight, renderArea.m_bottomLeftX, renderArea.m_bottomLeftY);
     m_currentFBO->Unbind();
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::CalculateScreenshakeForViewport(const ViewportDefinition &renderArea)
+{
+    float x = GetRandomFloatInRange(-renderArea.m_viewportScreenshakeMagnitude, renderArea.m_viewportScreenshakeMagnitude);
+    float y = GetRandomFloatInRange(-renderArea.m_viewportScreenshakeMagnitude, renderArea.m_viewportScreenshakeMagnitude);
+    m_screenshakeOffset = Vector2(x, y) + renderArea.m_screenshakeKnockbackBias;
 }
 
 //-----------------------------------------------------------------------------------
@@ -305,6 +324,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
         }
 
         Vector2 cameraPos = layer->m_isWorldSpaceLayer ? m_cameraPosition : Vector2::ZERO;
+        cameraPos += m_screenshakeOffset;
         Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, cameraPos);
         {
             //SortSpritesByXY(layer->m_spriteList);
@@ -515,11 +535,19 @@ void SpriteGameRenderer::SetCameraPosition(const Vector2& newCameraPosition, int
 }
 
 //-----------------------------------------------------------------------------------
-Vector2 SpriteGameRenderer::GetCameraPositionInWorld()
+Vector2 SpriteGameRenderer::GetCameraPositionInWorld(int viewportNumber)
 {
-    return m_cameraPosition;
+    if (viewportNumber == -1)
+    {
+        return m_cameraPosition;
+    }
+    else
+    {
+        return m_viewportDefinitions[viewportNumber].m_cameraPosition;
+    }
 }
 
+//-----------------------------------------------------------------------------------
 SpriteGameRenderer::PlayerVisibility SpriteGameRenderer::GetVisibilityFilterForPlayerNumber(unsigned int playerNumber)
 {
     switch (playerNumber)
@@ -534,6 +562,13 @@ SpriteGameRenderer::PlayerVisibility SpriteGameRenderer::GetVisibilityFilterForP
         return PlayerVisibility::FOURTH;
     }
     ERROR_AND_DIE("Passed in an invalid player number for getting the visibility filter.");
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::AddScreenshakeMagnitude(float magnitude, const Vector2& direction, int viewportNumber)
+{
+    SpriteGameRenderer::instance->m_viewportDefinitions[viewportNumber].m_viewportScreenshakeMagnitude += magnitude;
+    SpriteGameRenderer::instance->m_viewportDefinitions[viewportNumber].m_screenshakeKnockbackBias += direction;
 }
 
 //-----------------------------------------------------------------------------------
