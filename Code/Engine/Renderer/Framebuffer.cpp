@@ -98,6 +98,37 @@ void Framebuffer::FramebufferDelete(Framebuffer *fbo)
 }
 
 //-----------------------------------------------------------------------------------
+//Adds the color target by pushing back on the list of color targets.
+void Framebuffer::AddColorTarget(Texture* colorTarget)
+{
+    int targetNumber = m_colorTargets.size();
+    m_colorTargets.push_back(colorTarget); 
+
+    glBindFramebuffer(GL_FRAMEBUFFER, m_fboHandle);
+    glFramebufferTexture(GL_FRAMEBUFFER, //What we're attaching
+        GL_COLOR_ATTACHMENT0 + targetNumber, //Where we're attaching
+        colorTarget->m_openglTextureID, //OpenGL id
+        0); //Level - probably mipmap level
+    GL_CHECK_ERROR();
+
+    //Make sure everything was bound correctly, no errors!
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE)
+    {
+        ERROR_RECOVERABLE("Error occured while binding framebuffer");
+    }
+
+    //Revert to old state
+    glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+}
+
+//-----------------------------------------------------------------------------------
+void Framebuffer::FlushColorTargets()
+{
+    m_colorTargets.clear();
+}
+
+//-----------------------------------------------------------------------------------
 void Framebuffer::ClearColorBuffer(int bufferNumber, const RGBA& clearColor)
 {
     GLfloat colorData[4];
