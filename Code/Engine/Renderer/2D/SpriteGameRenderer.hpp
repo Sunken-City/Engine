@@ -180,8 +180,8 @@ private:
     unsigned int m_numSplitscreenViews;
     ViewportDefinition* m_viewportDefinitions;
     ShaderProgram* m_blurShader;
-    Material* m_blurEffect;
     ShaderProgram* m_comboShader;
+    Material* m_blurEffect;
     Material* m_comboEffect;
     PlayerVisibility m_currentViewer = PlayerVisibility::FIRST;
     RGBA m_clearColor;

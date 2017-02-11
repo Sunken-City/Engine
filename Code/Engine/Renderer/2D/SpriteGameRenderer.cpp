@@ -272,7 +272,6 @@ void SpriteGameRenderer::Render()
     {
         m_currentViewer = GetVisibilityFilterForPlayerNumber(i);
         RenderView(m_viewportDefinitions[i]); DampScreenshake(i);
-
     }
 }
 
