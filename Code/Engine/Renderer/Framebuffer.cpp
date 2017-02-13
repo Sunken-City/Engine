@@ -191,3 +191,11 @@ void Framebuffer::ClearDepthBuffer()
 {
     Renderer::instance->ClearDepth();
 }
+
+//-----------------------------------------------------------------------------------
+void Framebuffer::SwapColorTargets(unsigned int firstIndex, unsigned int secondIndex)
+{
+    Texture* temp = m_colorTargets[firstIndex];
+    SwapColorTarget(m_colorTargets[secondIndex], firstIndex);
+    SwapColorTarget(temp, secondIndex);
+}

@@ -13,6 +13,7 @@
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Time/Time.hpp"
 #include "../../Math/MathUtilities.hpp"
+#include "../../Input/InputSystem.hpp"
 
 //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
 SpriteGameRenderer* SpriteGameRenderer::instance = nullptr;
@@ -297,6 +298,23 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
     }
     //m_meshRenderer->m_material = nullptr;
 
+    if (InputSystem::instance->IsKeyDown('8'))
+    {
+        m_currentFBO->SwapColorTargets();
+    }
+    if (InputSystem::instance->IsKeyDown('9'))
+    {
+        Texture* tex = m_currentFBO->m_colorTargets[0];
+        m_currentFBO->SwapColorTarget(m_fullscreenTexturePool.GetUnusedTexture(), 0);
+        m_fullscreenTexturePool.ReturnToPool(tex);
+    }
+    if (InputSystem::instance->IsKeyDown('0'))
+    {
+        Texture* tex = m_currentFBO->m_colorTargets[0];
+        m_fullscreenTexturePool.ReturnToPool(m_fullscreenTexturePool.GetUnusedTexture());
+        m_currentFBO->SwapColorTarget(m_fullscreenTexturePool.GetUnusedTexture(), 0);
+        m_fullscreenTexturePool.ReturnToPool(tex);
+    }
     m_currentFBO->Bind();
     m_currentFBO->ClearColorBuffer(1, RGBA::VAPORWAVE);
     Renderer::instance->FrameBufferCopyToBack(m_currentFBO, renderArea.m_viewportWidth, renderArea.m_viewportHeight, renderArea.m_bottomLeftX, renderArea.m_bottomLeftY);
@@ -363,28 +381,33 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             m_blurFBO->Bind();
             m_blurFBO->ClearColorBuffer(0, RGBA::WHITE);
             Renderer::instance->ClearDepth();
+
             m_blurEffect->SetDiffuseTexture(m_currentFBO->m_colorTargets[1]);
             m_blurEffect->SetFloatUniform("horizontal", 0.0f);
             Renderer::instance->RenderFullScreenEffect(m_blurEffect);
             Renderer::instance->ClearDepth();
 
-            int numPasses = 5;
+            int numPasses = 6;
             for (int i = 0; i < numPasses; ++i)
             {
                 m_effectFBO->Bind();
+                Renderer::instance->ClearDepth();
                 m_blurEffect->SetDiffuseTexture(m_blurFBO->m_colorTargets[0]);
                 m_blurEffect->SetFloatUniform("horizontal", i % 2 == 0 ? 1.0f : 0.0f);
                 Renderer::instance->RenderFullScreenEffect(m_blurEffect);
+                m_effectFBO->Unbind();
                 m_effectFBO->SwapColorTargetWithFBO(m_blurFBO, 0);
-                Renderer::instance->ClearDepth();
             }
 
             m_effectFBO->Bind();
+            Renderer::instance->ClearDepth();
             m_comboEffect->SetDiffuseTexture(m_currentFBO->m_colorTargets[0]);
             m_comboEffect->SetEmissiveTexture(m_blurFBO->m_colorTargets[0]);
             Renderer::instance->RenderFullScreenEffect(m_comboEffect);
             Renderer::instance->ClearDepth();
+            m_effectFBO->Unbind();
             m_currentFBO->SwapColorTargetWithFBO(m_effectFBO, 0);
+            m_currentFBO->Bind();
 
             m_fullscreenTexturePool.ReturnToPool(m_effectFBO->m_colorTargets[0]);
             m_fullscreenTexturePool.ReturnToPool(m_blurFBO->m_colorTargets[0]);
