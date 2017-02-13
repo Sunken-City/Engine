@@ -13,7 +13,7 @@
 //-----------------------------------------------------------------------------------
 Framebuffer* Framebuffer::FramebufferCreate(size_t colorCount, Texture** inColorTargets, Texture* depthStencilTarget)
 {
-    ASSERT_OR_DIE(colorCount > 0, "Color count was negative");
+    ASSERT_OR_DIE(colorCount >= 0, "Color count was negative");
     Texture* color0 = inColorTargets[0];
     uint32_t width = color0->m_texelSize.x;
     uint32_t height = color0->m_texelSize.y;
@@ -103,6 +103,7 @@ void Framebuffer::AddColorTarget(Texture* colorTarget)
 {
     int targetNumber = m_colorTargets.size();
     m_colorTargets.push_back(colorTarget); 
+    m_colorCount = m_colorTargets.size();
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_fboHandle);
     glFramebufferTexture(GL_FRAMEBUFFER, //What we're attaching
@@ -146,9 +147,18 @@ void Framebuffer::SwapColorTarget(Texture* colorTarget, int index)
 }
 
 //-----------------------------------------------------------------------------------
+void Framebuffer::SwapColorTargetWithFBO(Framebuffer* otherFBO, int index)
+{
+    Texture* temp = m_colorTargets[index];
+    SwapColorTarget(otherFBO->m_colorTargets[index], index);
+    otherFBO->SwapColorTarget(temp, index);
+}
+
+//-----------------------------------------------------------------------------------
 void Framebuffer::FlushColorTargets()
 {
     m_colorTargets.clear();
+    m_colorCount = 0;
 }
 
 //-----------------------------------------------------------------------------------
@@ -174,4 +184,10 @@ void Framebuffer::Bind()
 void Framebuffer::Unbind()
 {
     Renderer::instance->BindFramebuffer(nullptr);
+}
+
+//-----------------------------------------------------------------------------------
+void Framebuffer::ClearDepthBuffer()
+{
+    Renderer::instance->ClearDepth();
 }

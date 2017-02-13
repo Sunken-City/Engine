@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <vector>
 #include "Engine/Math/Vector2Int.hpp"
 #include "../Core/Memory/UntrackedAllocator.hpp"
 
@@ -46,4 +47,22 @@ private:
     Texture(unsigned char* textureData, int numColorComponents, const Vector2Int& texelSize);
 
     static std::map<size_t, Texture*, std::less<size_t>, UntrackedAllocator<std::pair<size_t, Texture*>>> s_textureRegistry;
+};
+
+//-----------------------------------------------------------------------------------
+class TexturePool
+{
+public:
+    //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
+    TexturePool();
+    ~TexturePool();
+
+    //FUNCTIONS/////////////////////////////////////////////////////////////////////
+    void AddToPool(Texture* texture);
+    Texture* GetUnusedTexture();
+    void ReturnToPool(Texture* texture);
+
+    //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
+    std::vector<Texture*> m_texturesInUse;
+    std::vector<Texture*> m_availableTextures;
 };

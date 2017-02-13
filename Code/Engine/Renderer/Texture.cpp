@@ -260,3 +260,55 @@ Texture* Texture::CreateTextureFromData(const std::string& textureName, unsigned
     return texture;
 }
 
+//-----------------------------------------------------------------------------------
+TexturePool::TexturePool()
+{
+
+}
+
+//-----------------------------------------------------------------------------------
+TexturePool::~TexturePool()
+{
+    for (Texture* tex : m_availableTextures)
+    {
+        delete tex;
+    }
+    for (Texture* tex : m_texturesInUse)
+    {
+        delete tex;
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void TexturePool::AddToPool(Texture* texture)
+{
+    m_availableTextures.push_back(texture);
+}
+
+//-----------------------------------------------------------------------------------
+Texture* TexturePool::GetUnusedTexture()
+{
+    ASSERT_OR_DIE(m_availableTextures.size() > 0, "No more available textures in the texture pool");
+    Texture* texture = m_availableTextures.back();
+    m_availableTextures.pop_back();
+    m_texturesInUse.push_back(texture);
+    return texture;
+}
+
+//-----------------------------------------------------------------------------------
+void TexturePool::ReturnToPool(Texture* texture)
+{
+    m_availableTextures.push_back(texture);
+
+    unsigned int numTexInUse = m_texturesInUse.size();
+    for (unsigned int i = 0; i < numTexInUse; ++i)
+    {
+        if (m_texturesInUse[i] == texture)
+        {
+            m_texturesInUse[i] = m_texturesInUse[numTexInUse - 1];
+            m_texturesInUse.pop_back();
+            return;
+        }
+    }
+    ERROR_AND_DIE("Returned a texture to the texture pool that wasn't in use");
+}

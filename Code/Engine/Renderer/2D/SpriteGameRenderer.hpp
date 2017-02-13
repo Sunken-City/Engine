@@ -10,6 +10,7 @@
 #include "Engine/Renderer/2D/ParticleSystem.hpp"
 #include "Engine/Renderer/2D/Renderable2D.hpp"
 #include "Engine/Renderer/BufferedMeshRenderer.hpp"
+#include "Engine/Renderer/Texture.hpp"
 
 #define BIT_FLAG(f) (1 << (f))
 
@@ -183,6 +184,7 @@ private:
     ShaderProgram* m_comboShader;
     Material* m_blurEffect;
     Material* m_comboEffect;
+    TexturePool m_fullscreenTexturePool;
     PlayerVisibility m_currentViewer = PlayerVisibility::FIRST;
     RGBA m_clearColor;
     
