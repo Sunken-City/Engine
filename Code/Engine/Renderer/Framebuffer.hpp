@@ -12,11 +12,13 @@ public:
     static void FramebufferDelete(Framebuffer *fbo);
     void AddColorTarget(Texture* colorTarget); //Adds the color target by pushing back on the list of color targets.
     void SwapColorTarget(Texture* colorTarget, int index);
+    void SwapColorTargetWithFBO(Framebuffer* otherFBO, int index);
     void FlushColorTargets();
     void ClearColorBuffer(int bufferNumber, const RGBA& clearColor);
     void Bind();
     void Unbind();
-    
+    void ClearDepthBuffer();
+
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////////
     GLuint m_fboHandle;
     std::vector<Texture*> m_colorTargets;
