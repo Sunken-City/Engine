@@ -18,6 +18,7 @@ public:
     void Bind();
     void Unbind();
     void ClearDepthBuffer();
+    void SwapColorTargets(unsigned int firstIndex = 0, unsigned int secondIndex = 1);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////////
     GLuint m_fboHandle;
