@@ -438,8 +438,15 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
 
         Texture* effectCanvas = m_currentTexturePool->GetUnusedTexture();
         Renderer::instance->ClearDepth();
-        for(Material* currentEffect : layer->m_effectMaterials) 
+        for(const FullScreenEffect& effect: layer->m_fullScreenEffects) 
         {
+            bool canBeRendered = ((uchar)m_currentViewer & effect.m_visibilityFilter) > 0;
+            if (!canBeRendered)
+            {
+                continue;
+            }
+
+            Material* currentEffect = effect.m_material;
             Renderer::instance->SetRenderTargets(1, &effectCanvas, nullptr);
             currentEffect->SetDiffuseTexture(m_currentFBO->m_colorTargets[0]);
             currentEffect->SetFloatUniform("gTime", (float)GetCurrentTimeSeconds());
@@ -509,9 +516,11 @@ SpriteLayer* SpriteGameRenderer::CreateOrGetLayer(int layerNumber)
 }
 
 //-----------------------------------------------------------------------------------
-void SpriteGameRenderer::AddEffectToLayer(Material* effectMaterial, int layerNumber)
+void SpriteGameRenderer::AddEffectToLayer(Material* effectMaterial, int layerNumber, PlayerVisibility visibility /*= PlayerVisibility::ALL*/)
 {
-    CreateOrGetLayer(layerNumber)->m_effectMaterials.push_back(effectMaterial);
+    FullScreenEffect fullscreenEffect(effectMaterial);
+    fullscreenEffect.m_visibilityFilter = (uchar)visibility;
+    CreateOrGetLayer(layerNumber)->m_fullScreenEffects.push_back(fullscreenEffect);
 #pragma todo("This is going to cause a bug if we have multiple copies of the same material.")
     effectMaterial->SetFloatUniform("gStartTime", (float)GetCurrentTimeSeconds());
 }
@@ -522,11 +531,11 @@ void SpriteGameRenderer::RemoveEffectFromLayer(Material* effectMaterial, int lay
     SpriteLayer* layer = CreateOrGetLayer(layerNumber);
     if (layer)
     {
-        for (auto iter = layer->m_effectMaterials.begin(); iter != layer->m_effectMaterials.end(); ++iter)
+        for (auto iter = layer->m_fullScreenEffects.begin(); iter != layer->m_fullScreenEffects.end(); ++iter)
         {
-            if (effectMaterial == *iter)
+            if (effectMaterial == (*iter).m_material)
             {
-                layer->m_effectMaterials.erase(iter);
+                layer->m_fullScreenEffects.erase(iter);
                 return;
             }
         }

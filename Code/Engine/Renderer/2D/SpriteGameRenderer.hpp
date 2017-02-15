@@ -11,6 +11,7 @@
 #include "Engine/Renderer/2D/Renderable2D.hpp"
 #include "Engine/Renderer/BufferedMeshRenderer.hpp"
 #include "Engine/Renderer/Texture.hpp"
+#include "Engine/Renderer/FullScreenEffect.hpp"
 
 #define BIT_FLAG(f) (1 << (f))
 
@@ -52,7 +53,7 @@ public:
     void CleanUpDeadRenderables(bool cleanUpLiveRenderables = false);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    std::vector<Material*> m_effectMaterials;
+    std::vector<FullScreenEffect> m_fullScreenEffects;
     AABB2 m_boundingVolume;
     Renderable2D* m_renderablesList;
     int m_layerIndex;
@@ -108,7 +109,7 @@ public:
     void RegisterRenderable2D(Renderable2D* renderable);
     void UnregisterRenderable2D(Renderable2D* renderable);
     SpriteLayer* CreateOrGetLayer(int layerNumber);
-    void AddEffectToLayer(Material* effectMaterial, int layerNumber);
+    void AddEffectToLayer(Material* effectMaterial, int layerNumber, PlayerVisibility visibility = PlayerVisibility::ALL);
     void RemoveEffectFromLayer(Material* effectMaterial, int layerNumber);
     inline void EnableLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Enable(); };
     inline void DisableLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Disable(); };
