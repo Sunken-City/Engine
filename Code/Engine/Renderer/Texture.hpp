@@ -63,6 +63,11 @@ public:
     void ReturnToPool(Texture* texture);
     void FlushPool();
 
+    //QUERIES/////////////////////////////////////////////////////////////////////
+    inline bool HasAnyTextures() { return (m_texturesInUse.size() + m_availableTextures.size()) > 0; };
+    inline bool HasUnusedTextures() { return (m_availableTextures.size() > 0); };
+    inline bool HasInUseTextures() { return (m_texturesInUse.size() > 0); };
+
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::vector<Texture*> m_texturesInUse;
     std::vector<Texture*> m_availableTextures;
