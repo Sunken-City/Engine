@@ -77,7 +77,11 @@ Renderer::~Renderer()
     delete m_defaultShader;
     delete m_defaultMaterial;
     delete m_fboFullScreenEffectQuad->m_mesh;
-    delete m_fboFullScreenEffectQuad;
+    delete m_fboFullScreenEffectQuad; 
+    if (m_fboHandle != NULL)
+    {
+        glDeleteFramebuffers(1, &m_fboHandle);
+    }
 }
 
 //-----------------------------------------------------------------------------------
@@ -1010,6 +1014,7 @@ void Renderer::DrawTexturedFace(const Face& face, const Vector2& texCoordMins, c
 //-----------------------------------------------------------------------------------
 void Renderer::SetRenderTargets(size_t colorCount, Texture** inColorTargets, Texture* depthStencilTarget)
 {
+    static const int MAX_NUM_RENDER_TARGETS = 8;
     ASSERT_OR_DIE(colorCount > 0, "Color count wasn't > 0");
     Texture* color0 = inColorTargets[0];
     uint32_t width = color0->m_texelSize.x;
@@ -1026,13 +1031,11 @@ void Renderer::SetRenderTargets(size_t colorCount, Texture** inColorTargets, Tex
         ASSERT_OR_DIE(((uint32_t)depthStencilTarget->m_texelSize.x == width) && ((uint32_t)depthStencilTarget->m_texelSize.y == height), "Depth Stencil Target didn't match the height and width of the first target");
     }
 
-    if (m_fboHandle != NULL)
+    if (m_fboHandle == NULL)
     {
-        glBindFramebuffer(GL_FRAMEBUFFER, NULL);
-        glDeleteFramebuffers(1, &m_fboHandle);
+        glGenFramebuffers(1, &m_fboHandle);
+        ASSERT_OR_DIE(m_fboHandle != NULL, "Failed to grab fbo handle");
     }
-    glGenFramebuffers(1, &m_fboHandle);
-    ASSERT_OR_DIE(m_fboHandle != NULL, "Failed to grab fbo handle");
     
     //OpenGL initialization stuff
     //If you bound a framebuffer to your Renderer, be careful you didn't unbind just now...
@@ -1045,6 +1048,15 @@ void Renderer::SetRenderTargets(size_t colorCount, Texture** inColorTargets, Tex
         glFramebufferTexture(GL_FRAMEBUFFER, //What we're attaching
             GL_COLOR_ATTACHMENT0 + i, //Where we're attaching
             tex->m_openglTextureID, //OpenGL id
+            0); //Level - probably mipmap level
+        GL_CHECK_ERROR();
+    }
+    for (uint32_t i = colorCount; i < MAX_NUM_RENDER_TARGETS; i++)
+    {
+        Texture* tex = inColorTargets[i];
+        glFramebufferTexture(GL_FRAMEBUFFER, //What we're attaching
+            GL_COLOR_ATTACHMENT0 + i, //Where we're attaching
+            NULL, //OpenGL id
             0); //Level - probably mipmap level
         GL_CHECK_ERROR();
     }

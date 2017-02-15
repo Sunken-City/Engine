@@ -184,6 +184,7 @@ private:
     ShaderProgram* m_comboShader;
     Material* m_blurEffect;
     Material* m_comboEffect;
+    TexturePool* m_currentTexturePool;
     TexturePool m_fullscreenTexturePool;
     TexturePool m_viewTexturePool;
     PlayerVisibility m_currentViewer = PlayerVisibility::FIRST;
