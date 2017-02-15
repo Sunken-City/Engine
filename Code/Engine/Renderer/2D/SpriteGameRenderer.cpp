@@ -175,7 +175,7 @@ SpriteGameRenderer::SpriteGameRenderer(const RGBA& clearColor, unsigned int widt
     , m_cameraPosition(Vector2::ZERO)
     , m_worldBounds(-Vector2::MAX, Vector2::MAX)
     , m_currentFBO(nullptr)
-    , m_effectFBO(nullptr)
+    , m_fullscreenCompositeFBO(nullptr)
     , m_viewportDefinitions(nullptr)
     , m_bufferedMeshRenderer()
 {
@@ -196,22 +196,19 @@ SpriteGameRenderer::SpriteGameRenderer(const RGBA& clearColor, unsigned int widt
     Texture* effectColorTargets[2];
     effectColorTargets[0] = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::RGBA8);
     effectColorTargets[1] = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::RGBA8);
-    Texture* currentDepthTex = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::D24S8);
-    Texture* effectDepthTex = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::D24S8);
-    Texture* blurDepthTex = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::D24S8);
 
-    m_currentFBO = Framebuffer::FramebufferCreate(2, currentColorTargets, currentDepthTex);
-    m_effectFBO = Framebuffer::FramebufferCreate(2, effectColorTargets, effectDepthTex);
-    m_blurFBO = Framebuffer::FramebufferCreate(2, effectColorTargets, blurDepthTex);
+    Texture* fullscreenTargets[1];
+    fullscreenTargets[0] = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::RGBA8);
+
+    m_fullscreenCompositeFBO = Framebuffer::FramebufferCreate(1, fullscreenTargets, nullptr);
+    m_currentFBO = Framebuffer::FramebufferCreate(2, currentColorTargets, nullptr);
+    m_currentFBO->FlushColorTargets();
 
     m_fullscreenTexturePool.AddToPool(currentColorTargets[0]);
     m_fullscreenTexturePool.AddToPool(currentColorTargets[1]);
     m_fullscreenTexturePool.AddToPool(effectColorTargets[0]);
     m_fullscreenTexturePool.AddToPool(effectColorTargets[1]);
     m_currentTexturePool = &m_fullscreenTexturePool;
-    m_currentFBO->FlushColorTargets();
-    m_effectFBO->FlushColorTargets();
-    m_blurFBO->FlushColorTargets();
 }
 
 //-----------------------------------------------------------------------------------
@@ -229,12 +226,9 @@ SpriteGameRenderer::~SpriteGameRenderer()
     delete m_blurEffect;
     delete m_comboShader;
     delete m_comboEffect;
-    delete m_currentFBO->m_depthStencilTarget;
+    delete m_fullscreenCompositeFBO->m_colorTargets[0];
+    delete m_fullscreenCompositeFBO;
     delete m_currentFBO;
-    delete m_effectFBO->m_depthStencilTarget;
-    delete m_effectFBO;
-    delete m_blurFBO->m_depthStencilTarget;
-    delete m_blurFBO;
 
     for (auto layerPair : m_layers)
     {
@@ -268,6 +262,10 @@ void SpriteGameRenderer::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::Render()
 {
+    m_fullscreenCompositeFBO->Bind();
+    m_fullscreenCompositeFBO->ClearColorBuffer(0, RGBA::VAPORWAVE);
+    m_fullscreenCompositeFBO->Unbind();
+
     for (unsigned int i = 0; i < m_numSplitscreenViews; ++i)
     {
         if (m_viewTexturePool.HasAnyTextures())
@@ -281,6 +279,9 @@ void SpriteGameRenderer::Render()
         m_currentViewer = GetVisibilityFilterForPlayerNumber(i);
         RenderView(m_viewportDefinitions[i]); DampScreenshake(i);
     }
+    m_fullscreenCompositeFBO->Bind();
+    Renderer::instance->FrameBufferCopyToBack(m_fullscreenCompositeFBO, m_fullscreenCompositeFBO->m_pixelWidth, m_fullscreenCompositeFBO->m_pixelHeight);
+    m_fullscreenCompositeFBO->Unbind();
 }
 
 //-----------------------------------------------------------------------------------
@@ -293,6 +294,9 @@ void SpriteGameRenderer::DampScreenshake(unsigned int i)
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 {
+    static Mesh mesh;
+    static MeshRenderer meshRenderer(&mesh, Renderer::instance->m_defaultMaterial);
+
     m_currentFBO->AddColorTarget(m_currentTexturePool->GetUnusedTexture());
     m_currentFBO->AddColorTarget(m_currentTexturePool->GetUnusedTexture());
     m_currentFBO->Bind();
@@ -326,11 +330,27 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
     }
     m_currentFBO->Bind();
     m_currentFBO->ClearColorBuffer(1, RGBA::VAPORWAVE);
-    Renderer::instance->FrameBufferCopyToBack(m_currentFBO, renderArea.m_viewportWidth, renderArea.m_viewportHeight, renderArea.m_bottomLeftX, renderArea.m_bottomLeftY);
+    m_currentFBO->Unbind();
+
+    m_fullscreenCompositeFBO->Bind();
+    float bottomLeftX = MathUtils::RangeMap(renderArea.m_bottomLeftX, 0, m_screenResolution.x, -1.0f, 1.0f);
+    float bottomLeftY = MathUtils::RangeMap(renderArea.m_bottomLeftY, 0, m_screenResolution.y, -1.0f, 1.0f);
+    float topRightX = MathUtils::RangeMap(renderArea.m_bottomLeftX + renderArea.m_viewportWidth, 0, m_screenResolution.x, -1.0f, 1.0f);
+    float topRightY = MathUtils::RangeMap(renderArea.m_bottomLeftY + renderArea.m_viewportHeight, 0, m_screenResolution.y, -1.0f, 1.0f);
+    MeshBuilder builder;
+    Vector2 bottomLeft = Vector2(bottomLeftX, bottomLeftY);
+    Vector2 topRight = Vector2(topRightX, topRightY);
+    builder.AddTexturedAABB(AABB2(bottomLeft, topRight), Vector2::ZERO, Vector2::ONE, RGBA::WHITE);
+    builder.CopyToMesh(meshRenderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
+    Renderer::instance->m_defaultMaterial->SetDiffuseTexture(m_currentFBO->m_colorTargets[0]);
+    meshRenderer.Render();
+    m_fullscreenCompositeFBO->Unbind();
+    meshRenderer.m_mesh->CleanUpRenderObjects();
+    Renderer::instance->m_defaultMaterial->SetDiffuseTexture(Renderer::instance->m_defaultTexture);
+
     m_currentTexturePool->ReturnToPool(m_currentFBO->m_colorTargets[0]);
     m_currentTexturePool->ReturnToPool(m_currentFBO->m_colorTargets[1]);
     m_currentFBO->FlushColorTargets();
-    m_currentFBO->Unbind();
 }
 
 //-----------------------------------------------------------------------------------
@@ -569,6 +589,18 @@ void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
         m_viewportDefinitions[i].m_viewportAspectRatio = width / height;
         m_viewportDefinitions[i].m_cameraPosition = Vector2::ZERO;
     }
+
+    Texture* viewColorTargets[4];
+    viewColorTargets[0] = new Texture(m_screenResolution.x, m_screenResolution.y, Texture::TextureFormat::RGBA8);
+    viewColorTargets[1] = new Texture(m_screenResolution.x, m_screenResolution.y, Texture::TextureFormat::RGBA8);
+    viewColorTargets[2] = new Texture(m_screenResolution.x, m_screenResolution.y, Texture::TextureFormat::RGBA8);
+    viewColorTargets[3] = new Texture(m_screenResolution.x, m_screenResolution.y, Texture::TextureFormat::RGBA8);
+
+    m_viewTexturePool.FlushPool();
+    m_viewTexturePool.AddToPool(viewColorTargets[0]);
+    m_viewTexturePool.AddToPool(viewColorTargets[1]);
+    m_viewTexturePool.AddToPool(viewColorTargets[2]);
+    m_viewTexturePool.AddToPool(viewColorTargets[3]);
 }
 
 //-----------------------------------------------------------------------------------
