@@ -1008,6 +1008,68 @@ void Renderer::DrawTexturedFace(const Face& face, const Vector2& texCoordMins, c
 }
 
 //-----------------------------------------------------------------------------------
+void Renderer::SetRenderTargets(size_t colorCount, Texture** inColorTargets, Texture* depthStencilTarget)
+{
+    ASSERT_OR_DIE(colorCount > 0, "Color count wasn't > 0");
+    Texture* color0 = inColorTargets[0];
+    uint32_t width = color0->m_texelSize.x;
+    uint32_t height = color0->m_texelSize.y;
+
+    for (uint32_t i = 0; i < colorCount; ++i)
+    {
+        Texture* color = inColorTargets[i];
+        ASSERT_OR_DIE(((uint32_t)color->m_texelSize.x == width) && ((uint32_t)color->m_texelSize.y == height), "Color target didn't match the height and width of the first target");
+    }
+
+    if (nullptr != depthStencilTarget)
+    {
+        ASSERT_OR_DIE(((uint32_t)depthStencilTarget->m_texelSize.x == width) && ((uint32_t)depthStencilTarget->m_texelSize.y == height), "Depth Stencil Target didn't match the height and width of the first target");
+    }
+
+    if (m_fboHandle != NULL)
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+        glDeleteFramebuffers(1, &m_fboHandle);
+    }
+    glGenFramebuffers(1, &m_fboHandle);
+    ASSERT_OR_DIE(m_fboHandle != NULL, "Failed to grab fbo handle");
+    
+    //OpenGL initialization stuff
+    //If you bound a framebuffer to your Renderer, be careful you didn't unbind just now...
+    glBindFramebuffer(GL_FRAMEBUFFER, m_fboHandle);
+
+    //Bind our color targets to our FBO
+    for (uint32_t i = 0; i < colorCount; ++i)
+    {
+        Texture* tex = inColorTargets[i];
+        glFramebufferTexture(GL_FRAMEBUFFER, //What we're attaching
+            GL_COLOR_ATTACHMENT0 + i, //Where we're attaching
+            tex->m_openglTextureID, //OpenGL id
+            0); //Level - probably mipmap level
+        GL_CHECK_ERROR();
+    }
+
+    //Bind depth stencil if you have it.
+    if (nullptr != depthStencilTarget)
+    {
+        glFramebufferTexture(GL_FRAMEBUFFER,
+            GL_DEPTH_STENCIL_ATTACHMENT,
+            depthStencilTarget->m_openglTextureID,
+            0);
+        GL_CHECK_ERROR();
+    }
+
+    //Make sure everything was bound correctly, no errors!
+    GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (status != GL_FRAMEBUFFER_COMPLETE)
+    {
+        glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+        glDeleteFramebuffers(1, &m_fboHandle);
+        ERROR_RECOVERABLE("Error occured while binding framebuffer");
+    }
+}
+
+//-----------------------------------------------------------------------------------
 void Renderer::BindFramebuffer(Framebuffer* fbo)
 {
     if (m_fbo == fbo)

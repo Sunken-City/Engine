@@ -114,6 +114,7 @@ public:
     void DrawTexturedAABB3(const AABB3& bounds, const RGBA& color = RGBA::WHITE, const Vector2& texCoordMins = Vector2::ZERO, const Vector2& texCoordMaxs = Vector2::ONE, Texture* texture = nullptr);
     void DrawTexturedAABB(const AABB2& bounds, const Vector2& texCoordMins, const Vector2& texCoordMaxs, Texture* texture = nullptr, const RGBA& color = RGBA::WHITE);
     void DrawTexturedFace(const Face& face, const Vector2& texCoordMins, const Vector2& texCoordMaxs, Texture* texture = nullptr, const RGBA& color = RGBA::WHITE);
+    void SetRenderTargets(size_t colorCount, Texture** inColorTargets, Texture* depthStencilTarget);
     void BindFramebuffer(Framebuffer* fbo);
     void FrameBufferCopyToBack(Framebuffer* fbo, uint32_t drawingWidth, uint32_t drawingHeight, uint32_t bottomLeftX = 0, uint32_t bottomLeftY = 0, int colorTargetNumber = NULL);
     void RenderFullScreenEffect(Material* material);
@@ -156,4 +157,5 @@ public:
     Framebuffer* m_fbo;
     MatrixStack4x4 m_projStack;
     MatrixStack4x4 m_viewStack;
+    GLuint m_fboHandle = NULL;
 };

@@ -101,6 +101,13 @@ void Framebuffer::FramebufferDelete(Framebuffer *fbo)
 //Adds the color target by pushing back on the list of color targets.
 void Framebuffer::AddColorTarget(Texture* colorTarget)
 {
+    //Readjust sizes if we don't have any more color targets.
+    if (m_colorTargets.size() == 0)
+    {
+        m_pixelWidth = colorTarget->m_texelSize.x;
+        m_pixelHeight = colorTarget->m_texelSize.y;
+    }
+
     int targetNumber = m_colorTargets.size();
     m_colorTargets.push_back(colorTarget); 
     m_colorCount = m_colorTargets.size();
@@ -124,8 +131,9 @@ void Framebuffer::AddColorTarget(Texture* colorTarget)
 }
 
 //-----------------------------------------------------------------------------------
-void Framebuffer::SwapColorTarget(Texture* colorTarget, int index)
+Texture* Framebuffer::SwapColorTarget(Texture* colorTarget, int index)
 {
+    Texture* swappedOutTexture = m_colorTargets[index];
     m_colorTargets[index] = colorTarget;
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_fboHandle);
@@ -144,6 +152,7 @@ void Framebuffer::SwapColorTarget(Texture* colorTarget, int index)
 
     //Revert to old state
     glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+    return swappedOutTexture;
 }
 
 //-----------------------------------------------------------------------------------

@@ -185,6 +185,7 @@ private:
     Material* m_blurEffect;
     Material* m_comboEffect;
     TexturePool m_fullscreenTexturePool;
+    TexturePool m_viewTexturePool;
     PlayerVisibility m_currentViewer = PlayerVisibility::FIRST;
     RGBA m_clearColor;
     

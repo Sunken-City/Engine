@@ -107,7 +107,7 @@ void JobSystem::Shutdown()
 //-----------------------------------------------------------------------------------
 Job* JobSystem::CreateJob(JobWorkFunction* jobWorkFunction, void* data, JobCallbackFunction* finishedCallback)
 {
-    Job* newJob = m_jobAllocator.Alloc();
+    Job* newJob = m_jobAllocator.Alloc<Job>();
     newJob->workFunction = jobWorkFunction;
     newJob->data = data;
     newJob->finishedCallback = finishedCallback;
