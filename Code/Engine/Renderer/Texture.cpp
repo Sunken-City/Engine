@@ -317,4 +317,6 @@ void TexturePool::FlushPool()
     {
         delete tex;
     }
+    m_availableTextures.clear();
+    m_texturesInUse.clear();
 }

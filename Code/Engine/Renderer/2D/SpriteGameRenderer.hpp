@@ -176,8 +176,7 @@ private:
     float m_virtualWidth;
     float m_virtualHeight;
     Framebuffer* m_currentFBO;
-    Framebuffer* m_effectFBO;
-    Framebuffer* m_blurFBO;
+    Framebuffer* m_fullscreenCompositeFBO;
     unsigned int m_numSplitscreenViews;
     ViewportDefinition* m_viewportDefinitions;
     ShaderProgram* m_blurShader;
