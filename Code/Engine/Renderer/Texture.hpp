@@ -61,6 +61,7 @@ public:
     void AddToPool(Texture* texture);
     Texture* GetUnusedTexture();
     void ReturnToPool(Texture* texture);
+    void FlushPool();
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::vector<Texture*> m_texturesInUse;

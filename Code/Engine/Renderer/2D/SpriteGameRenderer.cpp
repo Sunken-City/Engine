@@ -415,24 +415,30 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             m_blurFBO->FlushColorTargets();
         }
 
-        m_effectFBO->AddColorTarget(m_fullscreenTexturePool.GetUnusedTexture());
-        m_effectFBO->Bind();
-        m_effectFBO->ClearDepthBuffer();
+        //m_effectFBO->AddColorTarget(m_fullscreenTexturePool.GetUnusedTexture());
+        //m_effectFBO->Bind();
+        //m_effectFBO->ClearDepthBuffer();
+        Texture* usedTexture = m_fullscreenTexturePool.GetUnusedTexture();
+        Renderer::instance->ClearDepth();
         for(Material* currentEffect : layer->m_effectMaterials) 
         {
-            m_effectFBO->Bind();
+            //m_effectFBO->Bind();
+            Renderer::instance->SetRenderTargets(1, &usedTexture, nullptr);
             currentEffect->SetDiffuseTexture(m_currentFBO->m_colorTargets[0]);
             currentEffect->SetFloatUniform("gTime", (float)GetCurrentTimeSeconds());
             Renderer::instance->RenderFullScreenEffect(currentEffect);
             Renderer::instance->ClearDepth();
-            m_effectFBO->Unbind();
-            m_currentFBO->SwapColorTargetWithFBO(m_effectFBO, 0);
+            //m_effectFBO->Unbind();
+            //m_currentFBO->SwapColorTargetWithFBO(m_effectFBO, 0);
+            Renderer::instance->BindFramebuffer(nullptr);
+            usedTexture = m_currentFBO->SwapColorTarget(usedTexture, 0);
             m_currentFBO->Bind();
             m_currentFBO->ClearDepthBuffer();
         }
-         m_fullscreenTexturePool.ReturnToPool(m_effectFBO->m_colorTargets[0]);
-         m_effectFBO->FlushColorTargets();
-         m_currentFBO->Bind();
+        m_fullscreenTexturePool.ReturnToPool(usedTexture);
+        //m_fullscreenTexturePool.ReturnToPool(m_effectFBO->m_colorTargets[0]);
+        //m_effectFBO->FlushColorTargets();
+        m_currentFBO->Bind();
     }
 }
 

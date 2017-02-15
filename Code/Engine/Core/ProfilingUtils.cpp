@@ -93,7 +93,7 @@ void ProfilingSystem::PushSample(const char* id)
     }
 
     //Create a profiling node
-    ProfileSample* newSample = m_sampleAllocator.Alloc();
+    ProfileSample* newSample = m_sampleAllocator.Alloc<ProfileSample>();
     newSample->id = id;
     newSample->startCount = GetCurrentPerformanceCount();
 

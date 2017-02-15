@@ -28,7 +28,7 @@ void PacketChannel::ReceiveOffSocket(sockaddr_in& fromAddress)
     size_t read = 0;
     do 
     {
-        TimeStampedPacket* timeStamped = m_pool.Alloc();
+        TimeStampedPacket* timeStamped = m_pool.Alloc<TimeStampedPacket>();
         read = m_socket.RecieveFrom(fromAddress, timeStamped->packet.m_buffer);
         timeStamped->packet.m_fromAddress = fromAddress;
         if (read > 0)

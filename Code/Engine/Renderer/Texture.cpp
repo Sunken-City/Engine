@@ -269,14 +269,7 @@ TexturePool::TexturePool()
 //-----------------------------------------------------------------------------------
 TexturePool::~TexturePool()
 {
-    for (Texture* tex : m_availableTextures)
-    {
-        delete tex;
-    }
-    for (Texture* tex : m_texturesInUse)
-    {
-        delete tex;
-    }
+    FlushPool();
 }
 
 //-----------------------------------------------------------------------------------
@@ -311,4 +304,17 @@ void TexturePool::ReturnToPool(Texture* texture)
         }
     }
     ERROR_AND_DIE("Returned a texture to the texture pool that wasn't in use");
+}
+
+//-----------------------------------------------------------------------------------
+void TexturePool::FlushPool()
+{
+    for (Texture* tex : m_availableTextures)
+    {
+        delete tex;
+    }
+    for (Texture* tex : m_texturesInUse)
+    {
+        delete tex;
+    }
 }
