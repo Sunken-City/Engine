@@ -170,7 +170,7 @@ float MathUtils::CalcShortestAngularDisplacement(float fromDegrees, float toDegr
 
 //-----------------------------------------------------------------------------------
 //Inclusive random
-int MathUtils::GetRandom(int minimum, int maximum)
+int MathUtils::GetRandomInt(int minimum, int maximum)
 {
     return Clamp(rand() % maximum + minimum, minimum, maximum);
 }
@@ -195,7 +195,7 @@ float MathUtils::GetRandomFloatFromZeroTo(float maximum)
 }
 
 //-----------------------------------------------------------------------------------
-float MathUtils::GetRandom(float minimum, float maximum)
+float MathUtils::GetRandomFloat(float minimum, float maximum)
 {
     return minimum + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (maximum - minimum)));
 }

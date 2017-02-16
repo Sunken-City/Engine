@@ -32,9 +32,9 @@ public:
     static float CalcShortestAngularDisplacement(float fromDegrees, float toDegrees);
 
     //RANDOM//////////////////////////////////////////////////////////////////////////
-    static int GetRandom(int minimum, int maximum);
+    static int GetRandomInt(int minimum, int maximum);
     static float GetRandom();
-    static float GetRandom(float minimum, float maximum);
+    static float GetRandomFloat(float minimum, float maximum);
     static int GetRandomIntFromZeroTo(int maximum);
     static float GetRandomFloatFromZeroTo(float maximum);
     static bool CoinFlip();

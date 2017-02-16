@@ -37,7 +37,7 @@ int Dice::Roll() const
     int diceRollResult = 0;
     for (int i = 0; i < m_numDice; ++i)
     {
-        diceRollResult += MathUtils::GetRandom(1, m_numSides) + m_bonusModifier;
+        diceRollResult += MathUtils::GetRandomInt(1, m_numSides) + m_bonusModifier;
     }
     return diceRollResult;
 }
