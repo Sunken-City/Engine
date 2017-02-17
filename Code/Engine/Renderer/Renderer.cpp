@@ -712,6 +712,7 @@ void Renderer::DeleteSampler(GLuint id)
     glDeleteSamplers(1, &id);
 }
 
+//-----------------------------------------------------------------------------------
 void Renderer::GLCheckError(const char* file, size_t line)
 {
 #ifdef CHECK_GL_ERRORS

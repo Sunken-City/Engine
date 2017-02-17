@@ -135,6 +135,9 @@ public:
     void SetSplitscreen(unsigned int numViews = 1);
     void SetCameraPosition(const Vector2& newCameraPosition, int viewportNumber = 0);
 
+    //DEBUG RENDERING/////////////////////////////////////////////////////////////////////
+    void DrawVertexArray(const Vertex_Sprite* vertexes, int numVertexes, Renderer::DrawMode drawMode = Renderer::DrawMode::QUADS);
+    void DrawPolygonOutline(const Vector2& center, float radius, int numSides, float radianOffset, const RGBA& color = RGBA::WHITE);
 private:
     //Set the camera's position in a set of bounds other than the world bounds.
     void UpdateCameraPositionInWorldBounds(const Vector2& newCameraPosition, float layerScale);
@@ -160,6 +163,10 @@ public:
     float m_virtualSize;
     AABB2 m_worldBounds;
 
+    //These guys shouldn't be public, but for the purpose of setting the correct ortho for debug drawing, it's worthwhile.
+    Vector2 m_cameraPosition;
+    float m_virtualWidth;
+    float m_virtualHeight;
 private:
     Transform2D m_bottomRight;
     Transform2D m_bottomLeft;
@@ -167,15 +174,12 @@ private:
     Transform2D m_topLeft;
     BufferedMeshRenderer m_bufferedMeshRenderer;
     Vector2 m_screenResolution;
-    Vector2 m_cameraPosition;
     Vector2 m_screenshakeOffset = Vector2::ZERO;
     float m_aspectRatio;
     std::map<int, SpriteLayer*> m_layers;
     //The box (Size in game units of our screen)
     float m_windowVirtualHeight;
     float m_windowVirtualWidth;
-    float m_virtualWidth;
-    float m_virtualHeight;
     Framebuffer* m_currentFBO;
     Framebuffer* m_fullscreenCompositeFBO;
     unsigned int m_numSplitscreenViews;

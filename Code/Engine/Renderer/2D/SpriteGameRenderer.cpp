@@ -277,7 +277,8 @@ void SpriteGameRenderer::Render()
             m_currentTexturePool = &m_fullscreenTexturePool;
         }
         m_currentViewer = GetVisibilityFilterForPlayerNumber(i);
-        RenderView(m_viewportDefinitions[i]); DampScreenshake(i);
+        RenderView(m_viewportDefinitions[i]); 
+        DampScreenshake(i);
     }
     m_fullscreenCompositeFBO->Bind();
     Renderer::instance->FrameBufferCopyToBack(m_fullscreenCompositeFBO, m_fullscreenCompositeFBO->m_pixelWidth, m_fullscreenCompositeFBO->m_pixelHeight);
@@ -616,6 +617,54 @@ void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
 void SpriteGameRenderer::SetCameraPosition(const Vector2& newCameraPosition, int viewportNumber /*= 0*/)
 {
     m_viewportDefinitions[viewportNumber].m_cameraPosition = newCameraPosition;
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::DrawVertexArray(const Vertex_Sprite* vertexes, int numVertexes, Renderer::DrawMode drawMode /*= Renderer::DrawMode::QUADS*/)
+{
+    if (numVertexes == 0)
+    {
+        return;
+    }
+    
+    m_bufferedMeshRenderer.m_builder.Begin();
+    for (int i = 0; i < numVertexes; ++i)
+    {
+        m_bufferedMeshRenderer.m_builder.SetColor(vertexes[i].color);
+        m_bufferedMeshRenderer.m_builder.SetUV(vertexes[i].uv);
+        m_bufferedMeshRenderer.m_builder.SetTBN(Vector3::ZERO, Vector3::ZERO, Vector3::ZERO);
+        m_bufferedMeshRenderer.m_builder.AddVertex(Vector3(vertexes[i].position, 0.0f));
+        m_bufferedMeshRenderer.m_builder.AddIndex(i);
+    }
+    m_bufferedMeshRenderer.m_builder.End();
+
+    m_bufferedMeshRenderer.m_builder.CopyToMesh(&m_bufferedMeshRenderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
+    m_bufferedMeshRenderer.m_mesh.m_drawMode = drawMode;
+    m_bufferedMeshRenderer.SetMaterial(Renderer::instance->m_defaultMaterial);
+    m_bufferedMeshRenderer.SetModelMatrix(Matrix4x4::IDENTITY);
+    GL_CHECK_ERROR();
+    m_bufferedMeshRenderer.FlushAndRender();
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::DrawPolygonOutline(const Vector2& center, float radius, int numSides, float radianOffset, const RGBA& color /*= RGBA::WHITE*/)
+{
+    Vertex_Sprite* vertexes = new Vertex_Sprite[numSides];
+    const float radiansTotal = 2.0f * MathUtils::PI;
+    const float radiansPerSide = radiansTotal / numSides;
+    int index = 0;
+
+    for (float radians = 0.0f; radians < radiansTotal; radians += radiansPerSide)
+    {
+        float adjustedRadians = radians + radianOffset;
+        float x = center.x + (radius * cos(adjustedRadians));
+        float y = center.y + (radius * sin(adjustedRadians));
+
+        vertexes[index].color = color;
+        vertexes[index++].position = Vector2(x, y);
+    }
+    DrawVertexArray(vertexes, numSides, Renderer::DrawMode::LINE_LOOP);
+    delete[] vertexes;
 }
 
 //-----------------------------------------------------------------------------------
