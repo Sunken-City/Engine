@@ -14,6 +14,7 @@
 #include "Engine/Time/Time.hpp"
 #include "../../Math/MathUtilities.hpp"
 #include "../../Input/InputSystem.hpp"
+#include <gl/GL.h>
 
 //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
 SpriteGameRenderer* SpriteGameRenderer::instance = nullptr;
@@ -379,6 +380,10 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
 
         Vector2 cameraPos = layer->m_isWorldSpaceLayer ? m_cameraPosition : Vector2::ZERO;
         cameraPos += m_screenshakeOffset;
+        int viewport[4];
+        glGetIntegerv(GL_VIEWPORT, viewport);
+
+        m_currentFBO->Bind();
         Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, cameraPos);
         {
             Renderable2D* currentRenderable = layer->m_renderablesList;
@@ -601,10 +606,10 @@ void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
     }
 
     Texture* viewColorTargets[4];
-    viewColorTargets[0] = new Texture(m_screenResolution.x, m_screenResolution.y, Texture::TextureFormat::RGBA8);
-    viewColorTargets[1] = new Texture(m_screenResolution.x, m_screenResolution.y, Texture::TextureFormat::RGBA8);
-    viewColorTargets[2] = new Texture(m_screenResolution.x, m_screenResolution.y, Texture::TextureFormat::RGBA8);
-    viewColorTargets[3] = new Texture(m_screenResolution.x, m_screenResolution.y, Texture::TextureFormat::RGBA8);
+    viewColorTargets[0] = new Texture(m_screenResolution.x / m_numSplitscreenViews, m_screenResolution.y, Texture::TextureFormat::RGBA8);
+    viewColorTargets[1] = new Texture(m_screenResolution.x / m_numSplitscreenViews, m_screenResolution.y, Texture::TextureFormat::RGBA8);
+    viewColorTargets[2] = new Texture(m_screenResolution.x / m_numSplitscreenViews, m_screenResolution.y, Texture::TextureFormat::RGBA8);
+    viewColorTargets[3] = new Texture(m_screenResolution.x / m_numSplitscreenViews, m_screenResolution.y, Texture::TextureFormat::RGBA8);
 
     m_viewTexturePool.FlushPool();
     m_viewTexturePool.AddToPool(viewColorTargets[0]);

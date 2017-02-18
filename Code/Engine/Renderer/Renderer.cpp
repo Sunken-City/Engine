@@ -1041,6 +1041,7 @@ void Renderer::SetRenderTargets(size_t colorCount, Texture** inColorTargets, Tex
     //OpenGL initialization stuff
     //If you bound a framebuffer to your Renderer, be careful you didn't unbind just now...
     glBindFramebuffer(GL_FRAMEBUFFER, m_fboHandle);
+    glViewport(0, 0, width, height);
 
     //Bind our color targets to our FBO
     for (uint32_t i = 0; i < colorCount; ++i)
@@ -1095,6 +1096,7 @@ void Renderer::BindFramebuffer(Framebuffer* fbo)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, NULL);
         #pragma TODO("Make aspect not hard-coded!!!")
+
         glViewport(0, 0, 1600, 900);
 
     }
