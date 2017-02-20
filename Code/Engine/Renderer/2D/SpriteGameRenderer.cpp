@@ -592,25 +592,27 @@ void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
     m_numSplitscreenViews = numViews;
     m_viewportDefinitions = new ViewportDefinition[m_numSplitscreenViews];
 
-    int screenOffsetX = static_cast<int>(m_screenResolution.x / m_numSplitscreenViews);
-    //int screenOffsetY = static_cast<int>(m_screenResolution.y / m_numSplitscreenViews);
+    int screenOffsetX = m_numSplitscreenViews == 4 ? static_cast<int>(m_screenResolution.x / 2.0f) : static_cast<int>(m_screenResolution.x / m_numSplitscreenViews);
+    int screenOffsetY = m_numSplitscreenViews == 4 ? static_cast<int>(m_screenResolution.y / 2.0f) : m_screenResolution.y;
     for (unsigned int i = 0; i < m_numSplitscreenViews; ++i)
     {
-        m_viewportDefinitions[i].m_bottomLeftX = i * screenOffsetX;
-        m_viewportDefinitions[i].m_bottomLeftY = 0;
+        int xOffset = m_numSplitscreenViews == 4 ? (i % 2) * screenOffsetX : i * screenOffsetX;
+        int yOffset = m_numSplitscreenViews == 4 ? screenOffsetY - ((i / 2) * screenOffsetY) : 0;
+        m_viewportDefinitions[i].m_bottomLeftX = xOffset;
+        m_viewportDefinitions[i].m_bottomLeftY = yOffset;
         float width = (float)screenOffsetX;
         m_viewportDefinitions[i].m_viewportWidth = (uint32_t)width;
-        float height = (float)m_screenResolution.y;
+        float height = (float)screenOffsetY;
         m_viewportDefinitions[i].m_viewportHeight = (uint32_t)height;
         m_viewportDefinitions[i].m_viewportAspectRatio = width / height;
         m_viewportDefinitions[i].m_cameraPosition = Vector2::ZERO;
     }
 
     Texture* viewColorTargets[4];
-    viewColorTargets[0] = new Texture(m_screenResolution.x / m_numSplitscreenViews, m_screenResolution.y, Texture::TextureFormat::RGBA8);
-    viewColorTargets[1] = new Texture(m_screenResolution.x / m_numSplitscreenViews, m_screenResolution.y, Texture::TextureFormat::RGBA8);
-    viewColorTargets[2] = new Texture(m_screenResolution.x / m_numSplitscreenViews, m_screenResolution.y, Texture::TextureFormat::RGBA8);
-    viewColorTargets[3] = new Texture(m_screenResolution.x / m_numSplitscreenViews, m_screenResolution.y, Texture::TextureFormat::RGBA8);
+    viewColorTargets[0] = new Texture((float)screenOffsetX, (float)screenOffsetY, Texture::TextureFormat::RGBA8);
+    viewColorTargets[1] = new Texture((float)screenOffsetX, (float)screenOffsetY, Texture::TextureFormat::RGBA8);
+    viewColorTargets[2] = new Texture((float)screenOffsetX, (float)screenOffsetY, Texture::TextureFormat::RGBA8);
+    viewColorTargets[3] = new Texture((float)screenOffsetX, (float)screenOffsetY, Texture::TextureFormat::RGBA8);
 
     m_viewTexturePool.FlushPool();
     m_viewTexturePool.AddToPool(viewColorTargets[0]);
