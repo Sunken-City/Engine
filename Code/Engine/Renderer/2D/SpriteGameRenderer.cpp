@@ -296,9 +296,6 @@ void SpriteGameRenderer::DampScreenshake(unsigned int i)
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 {
-    static Mesh mesh;
-    static MeshRenderer meshRenderer(&mesh, Renderer::instance->m_defaultMaterial);
-
     m_currentFBO->AddColorTarget(m_currentTexturePool->GetUnusedTexture());
     m_currentFBO->AddColorTarget(m_currentTexturePool->GetUnusedTexture());
     m_currentFBO->Bind();
@@ -335,21 +332,25 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
     m_currentFBO->Unbind();
 
     m_fullscreenCompositeFBO->Bind();
-    float bottomLeftX = MathUtils::RangeMap(renderArea.m_bottomLeftX, 0, m_screenResolution.x, -1.0f, 1.0f);
-    float bottomLeftY = MathUtils::RangeMap(renderArea.m_bottomLeftY, 0, m_screenResolution.y, -1.0f, 1.0f);
-    float topRightX = MathUtils::RangeMap(renderArea.m_bottomLeftX + renderArea.m_viewportWidth, 0, m_screenResolution.x, -1.0f, 1.0f);
-    float topRightY = MathUtils::RangeMap(renderArea.m_bottomLeftY + renderArea.m_viewportHeight, 0, m_screenResolution.y, -1.0f, 1.0f);
-    MeshBuilder builder;
-    Vector2 bottomLeft = Vector2(bottomLeftX, bottomLeftY);
-    Vector2 topRight = Vector2(topRightX, topRightY);
-    builder.AddTexturedAABB(AABB2(bottomLeft, topRight), Vector2::ZERO, Vector2::ONE, RGBA::WHITE);
-    builder.CopyToMesh(meshRenderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
-    Renderer::instance->m_defaultMaterial->SetDiffuseTexture(m_currentFBO->m_colorTargets[0]);
-    meshRenderer.Render();
-    m_fullscreenCompositeFBO->Unbind();
-    meshRenderer.m_mesh->CleanUpRenderObjects();
-    Renderer::instance->m_defaultMaterial->SetDiffuseTexture(Renderer::instance->m_defaultTexture);
+    {
+        float bottomLeftX = MathUtils::RangeMap(renderArea.m_bottomLeftX, 0, m_screenResolution.x, -1.0f, 1.0f);
+        float bottomLeftY = MathUtils::RangeMap(renderArea.m_bottomLeftY, 0, m_screenResolution.y, -1.0f, 1.0f);
+        float topRightX = MathUtils::RangeMap(renderArea.m_bottomLeftX + renderArea.m_viewportWidth, 0, m_screenResolution.x, -1.0f, 1.0f);
+        float topRightY = MathUtils::RangeMap(renderArea.m_bottomLeftY + renderArea.m_viewportHeight, 0, m_screenResolution.y, -1.0f, 1.0f);
 
+        Vector2 bottomLeft = Vector2(bottomLeftX, bottomLeftY);
+        Vector2 topRight = Vector2(topRightX, topRightY);
+        m_bufferedMeshRenderer.SetMaterial(Renderer::instance->m_defaultMaterial);
+        m_bufferedMeshRenderer.SetDiffuseTexture(m_currentFBO->m_colorTargets[0]);
+        m_bufferedMeshRenderer.SetModelMatrix(Matrix4x4::IDENTITY);
+        m_bufferedMeshRenderer.m_builder.AddTexturedAABB(AABB2(bottomLeft, topRight), Vector2::ZERO, Vector2::ONE, RGBA::WHITE);
+        m_bufferedMeshRenderer.m_builder.CopyToMesh(&m_bufferedMeshRenderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
+        m_bufferedMeshRenderer.FlushAndRender();
+    }
+    m_fullscreenCompositeFBO->Unbind();
+
+    m_bufferedMeshRenderer.m_mesh.CleanUpRenderObjects();
+    Renderer::instance->m_defaultMaterial->SetDiffuseTexture(Renderer::instance->m_defaultTexture);
     m_currentTexturePool->ReturnToPool(m_currentFBO->m_colorTargets[0]);
     m_currentTexturePool->ReturnToPool(m_currentFBO->m_colorTargets[1]);
     m_currentFBO->FlushColorTargets();
@@ -649,6 +650,18 @@ void SpriteGameRenderer::DrawVertexArray(const Vertex_Sprite* vertexes, int numV
     m_bufferedMeshRenderer.SetModelMatrix(Matrix4x4::IDENTITY);
     GL_CHECK_ERROR();
     m_bufferedMeshRenderer.FlushAndRender();
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::DrawLine(const Vector2& start, const Vector2& end, const RGBA& color/* = RGBA::WHITE*/, float lineThickness /*= 1.0f*/)
+{
+    glLineWidth(lineThickness);
+    Vertex_Sprite vertexes[2];
+    vertexes[0].position = start;
+    vertexes[1].position = end;
+    vertexes[0].color = color;
+    vertexes[1].color = color;
+    DrawVertexArray(vertexes, 2, Renderer::DrawMode::LINES);
 }
 
 //-----------------------------------------------------------------------------------

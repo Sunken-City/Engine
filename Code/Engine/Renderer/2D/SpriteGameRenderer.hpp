@@ -137,6 +137,7 @@ public:
 
     //DEBUG RENDERING/////////////////////////////////////////////////////////////////////
     void DrawVertexArray(const Vertex_Sprite* vertexes, int numVertexes, Renderer::DrawMode drawMode = Renderer::DrawMode::QUADS);
+    void DrawLine(const Vector2& start, const Vector2& end, const RGBA& color/* = RGBA::WHITE*/, float lineThickness /*= 1.0f*/);
     void DrawPolygonOutline(const Vector2& center, float radius, int numSides, float radianOffset, const RGBA& color = RGBA::WHITE);
 private:
     //Set the camera's position in a set of bounds other than the world bounds.
@@ -167,6 +168,9 @@ public:
     Vector2 m_cameraPosition;
     float m_virtualWidth;
     float m_virtualHeight;
+    //The box (Size in game units of our screen)
+    float m_windowVirtualHeight;
+    float m_windowVirtualWidth;
 private:
     Transform2D m_bottomRight;
     Transform2D m_bottomLeft;
@@ -177,9 +181,6 @@ private:
     Vector2 m_screenshakeOffset = Vector2::ZERO;
     float m_aspectRatio;
     std::map<int, SpriteLayer*> m_layers;
-    //The box (Size in game units of our screen)
-    float m_windowVirtualHeight;
-    float m_windowVirtualWidth;
     Framebuffer* m_currentFBO;
     Framebuffer* m_fullscreenCompositeFBO;
     unsigned int m_numSplitscreenViews;
