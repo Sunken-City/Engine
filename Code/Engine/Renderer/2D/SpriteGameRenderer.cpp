@@ -593,7 +593,7 @@ void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
     m_viewportDefinitions = new ViewportDefinition[m_numSplitscreenViews];
 
     int screenOffsetX = m_numSplitscreenViews == 4 ? static_cast<int>(m_screenResolution.x / 2.0f) : static_cast<int>(m_screenResolution.x / m_numSplitscreenViews);
-    int screenOffsetY = m_numSplitscreenViews == 4 ? static_cast<int>(m_screenResolution.y / 2.0f) : m_screenResolution.y;
+    int screenOffsetY = m_numSplitscreenViews == 4 ? static_cast<int>(m_screenResolution.y / 2.0f) : static_cast<int>(m_screenResolution.y);
     for (unsigned int i = 0; i < m_numSplitscreenViews; ++i)
     {
         int xOffset = m_numSplitscreenViews == 4 ? (i % 2) * screenOffsetX : i * screenOffsetX;
