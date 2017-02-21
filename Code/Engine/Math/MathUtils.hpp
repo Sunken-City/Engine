@@ -53,6 +53,7 @@ public:
     static float SmoothStep(float inputZeroToOne);
     static float SmoothStart2(float inputZeroToOne);
     static float SmoothStop2(float inputZeroToOne);
+    static float EaseInOut2(float inputZeroToOne);
     static int LerpInt(float fraction, int initialValue, int endValue);
     static float Lerp(float fraction, float initialValue, float endValue);
     static Vector2 Lerp(float fraction, const Vector2& initialValue, const Vector2& endValue);

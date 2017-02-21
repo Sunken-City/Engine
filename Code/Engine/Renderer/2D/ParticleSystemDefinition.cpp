@@ -27,6 +27,7 @@ ParticleEmitterDefinition::ParticleEmitterDefinition(const SpriteResource* sprit
     m_properties.m_neverChangeTypeIfDifferent = true;
     m_properties.Set<RGBA>(PROPERTY_INITIAL_COLOR, RGBA::WHITE, false);
     m_properties.Set<bool>(PROPERTY_FADEOUT_ENABLED, false, false);
+    m_properties.Set<bool>(PROPERTY_LOCK_PARTICLES_TO_EMITTER, false, false);
     m_properties.Set<float>(PROPERTY_PARTICLES_PER_SECOND, 1.0f, false);
     m_properties.Set<Range<unsigned int>>(PROPERTY_INITIAL_NUM_PARTICLES, 0, false);
     m_properties.Set<Range<float>>(PROPERTY_PARTICLE_LIFETIME, 1.0f, false);

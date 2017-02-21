@@ -9,7 +9,8 @@ class Material;
 class SpriteResource;
 
 //NAMED CONSTANTS/////////////////////////////////////////////////////////////////////
-static const char* PROPERTY_FADEOUT_ENABLED = "Fadeout Enabled"; 
+static const char* PROPERTY_FADEOUT_ENABLED = "Fadeout Enabled";
+static const char* PROPERTY_LOCK_PARTICLES_TO_EMITTER = "Lock Particles To Emitter";
 static const char* PROPERTY_GRAVITY_SCALE = "Gravity Scale";
 static const char* PROPERTY_EXPLOSIVE_VELOCITY_MAGNITUDE = "Explosive Velocity Magnitude";
 static const char* PROPERTY_NAME = "Name";

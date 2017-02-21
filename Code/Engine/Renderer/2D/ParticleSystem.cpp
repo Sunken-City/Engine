@@ -38,7 +38,7 @@ ParticleEmitter::ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDe
 {
     if (parentTransform)
     {
-        parentTransform->AddChild(&m_transform);
+        m_transform.SetParent(parentTransform);
     }
     if (m_particlesPerSecond != 0.0f)
     {
@@ -82,6 +82,7 @@ void ParticleEmitter::Update(float deltaSeconds)
 void ParticleEmitter::UpdateParticles(float deltaSeconds)
 {
     const bool fadeoutEnabled = m_definition->m_properties.Get<bool>(PROPERTY_FADEOUT_ENABLED);
+    const bool lockParticlesToEmitter = m_definition->m_properties.Get<bool>(PROPERTY_LOCK_PARTICLES_TO_EMITTER);
     const Vector2 scaleRateOfChangePerSecond = m_definition->m_properties.Get<Range<Vector2>>(PROPERTY_DELTA_SCALE_PER_SECOND).GetRandom();
     std::string debugName = m_definition->m_properties.Get<std::string>(PROPERTY_NAME);
 
@@ -94,6 +95,11 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
         particle.m_velocity += acceleration * deltaSeconds;
         particle.m_scale += scaleRateOfChangePerSecond * deltaSeconds;
         particle.m_rotationDegrees += particle.m_angularVelocityDegrees * deltaSeconds;
+
+        if (lockParticlesToEmitter)
+        {
+            particle.m_position = m_transform.GetWorldPosition();
+        }
 
         particle.m_age += deltaSeconds;
         if (fadeoutEnabled)

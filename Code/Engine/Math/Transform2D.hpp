@@ -15,12 +15,10 @@ public:
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     Transform2D* GetParent() { return m_parent; };
     void AddChild(Transform2D* child);
+    void SetParent(Transform2D* parent);
     void RemoveChild(Transform2D* child);
     void RemoveParent();
-
-private:
-    void SetParent(Transform2D* parent);
-
+    
 public:
     //GETTERS/////////////////////////////////////////////////////////////////////
     Vector2 GetWorldPosition() const;

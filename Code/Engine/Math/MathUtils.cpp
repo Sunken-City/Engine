@@ -231,6 +231,14 @@ float MathUtils::SinDegrees(float input)
 }
 
 //-----------------------------------------------------------------------------------
+float MathUtils::EaseInOut2(float inputZeroToOne)
+{
+    //(-(x*2 - 1)^2) + 1
+    float squaredComponent = ((inputZeroToOne * 2.0f) - 1.0f) * ((inputZeroToOne * 2.0f) - 1.0f);
+    return (-squaredComponent) + 1.0f;
+}
+
+//-----------------------------------------------------------------------------------
 float MathUtils::SmoothStep(float x)
 {
     float xSquared = x * x;
