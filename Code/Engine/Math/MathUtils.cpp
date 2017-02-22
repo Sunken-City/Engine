@@ -38,6 +38,12 @@ Vector3 MathUtils::Lerp(float fraction, const Vector3& initialValue, const Vecto
 }
 
 //-----------------------------------------------------------------------------------
+Vector2 MathUtils::GetRandomDirectionVector()
+{
+    return GetRandomVectorInCircle(1.0f);
+}
+
+//-----------------------------------------------------------------------------------
 Vector2 MathUtils::GetRandomVectorInCircle(float radius)
 {
     float t = TWO_PI * GetRandomFloatFromZeroTo(1.0f);
