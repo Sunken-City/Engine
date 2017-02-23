@@ -110,7 +110,7 @@ Vector2 Transform2D::GetWorldScale() const
 {
     if (m_parent)
     {
-        return m_scale + m_parent->GetWorldScale();
+        return m_scale * m_parent->GetWorldScale();
     }
     else
     {
