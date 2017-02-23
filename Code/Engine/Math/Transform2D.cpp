@@ -74,6 +74,15 @@ void Transform2D::RemoveParent()
 }
 
 //-----------------------------------------------------------------------------------
+Transform2D& Transform2D::operator=(const Transform2D& other)
+{
+    m_position = other.GetWorldPosition();
+    m_rotationDegrees = other.GetWorldRotationDegrees();
+    m_scale = other.GetWorldScale();
+    return *this;
+}
+
+//-----------------------------------------------------------------------------------
 void Transform2D::SetParent(Transform2D* parent)
 {
     parent->AddChild(this);

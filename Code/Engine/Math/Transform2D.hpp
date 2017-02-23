@@ -18,6 +18,8 @@ public:
     void SetParent(Transform2D* parent);
     void RemoveChild(Transform2D* child);
     void RemoveParent();
+
+    Transform2D& operator= (const Transform2D& other);
     
 public:
     //GETTERS/////////////////////////////////////////////////////////////////////
