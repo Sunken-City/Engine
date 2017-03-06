@@ -34,8 +34,11 @@ struct Particle
 class ParticleEmitter
 {
 public:
+    //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDefinition* definition, const Transform2D& startingTransform, Transform2D* parentTransform = nullptr);
     virtual ~ParticleEmitter();
+
+    //FUNCTIONS/////////////////////////////////////////////////////////////////////
     virtual void Update(float deltaSeconds);
     virtual void UpdateParticles(float deltaSeconds);
     virtual void SpawnParticles(float deltaSeconds);
