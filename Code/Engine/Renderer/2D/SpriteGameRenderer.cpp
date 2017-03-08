@@ -173,6 +173,7 @@ SpriteGameRenderer::SpriteGameRenderer(const RGBA& clearColor, unsigned int widt
     , m_importSize(importSize) //Artist's asset size. How big do you make the assets? 240p, 1080p, etc... (144p for gameboy zelda)
     , m_aspectRatio((float)widthInPixels/(float)heightInPixels)
     , m_defaultRenderState(RenderState::DepthTestingMode::OFF, RenderState::FaceCullingMode::CULL_BACK_FACES, RenderState::BlendMode::ALPHA_BLEND)
+    , m_additiveBlendRenderState(RenderState::DepthTestingMode::OFF, RenderState::FaceCullingMode::CULL_BACK_FACES, RenderState::BlendMode::ADDITIVE_BLEND)
     , m_cameraPosition(Vector2::ZERO)
     , m_worldBounds(-Vector2::MAX, Vector2::MAX)
     , m_currentFBO(nullptr)

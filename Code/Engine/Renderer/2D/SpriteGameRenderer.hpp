@@ -160,6 +160,7 @@ public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     ShaderProgram* m_defaultShader;
     RenderState m_defaultRenderState;
+    RenderState m_additiveBlendRenderState;
     unsigned int m_importSize; // What resolution we're authoring at, the standardized scale of the sprite in virtual space
     float m_virtualSize;
     AABB2 m_worldBounds;
