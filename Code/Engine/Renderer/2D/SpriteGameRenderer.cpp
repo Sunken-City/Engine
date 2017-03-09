@@ -334,10 +334,10 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 
     m_fullscreenCompositeFBO->Bind();
     {
-        float bottomLeftX = MathUtils::RangeMap(renderArea.m_bottomLeftX, 0, m_screenResolution.x, -1.0f, 1.0f);
-        float bottomLeftY = MathUtils::RangeMap(renderArea.m_bottomLeftY, 0, m_screenResolution.y, -1.0f, 1.0f);
-        float topRightX = MathUtils::RangeMap(renderArea.m_bottomLeftX + renderArea.m_viewportWidth, 0, m_screenResolution.x, -1.0f, 1.0f);
-        float topRightY = MathUtils::RangeMap(renderArea.m_bottomLeftY + renderArea.m_viewportHeight, 0, m_screenResolution.y, -1.0f, 1.0f);
+        float bottomLeftX = MathUtils::RangeMap((float)renderArea.m_bottomLeftX, 0, m_screenResolution.x, -1.0f, 1.0f);
+        float bottomLeftY = MathUtils::RangeMap((float)renderArea.m_bottomLeftY, 0, m_screenResolution.y, -1.0f, 1.0f);
+        float topRightX = MathUtils::RangeMap(static_cast<float>(renderArea.m_bottomLeftX + renderArea.m_viewportWidth), 0, m_screenResolution.x, -1.0f, 1.0f);
+        float topRightY = MathUtils::RangeMap(static_cast<float>(renderArea.m_bottomLeftY + renderArea.m_viewportHeight), 0, m_screenResolution.y, -1.0f, 1.0f);
 
         Vector2 bottomLeft = Vector2(bottomLeftX, bottomLeftY);
         Vector2 topRight = Vector2(topRightX, topRightY);
@@ -610,10 +610,10 @@ void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
     }
 
     Texture* viewColorTargets[4];
-    viewColorTargets[0] = new Texture((float)screenOffsetX, (float)screenOffsetY, Texture::TextureFormat::RGBA8);
-    viewColorTargets[1] = new Texture((float)screenOffsetX, (float)screenOffsetY, Texture::TextureFormat::RGBA8);
-    viewColorTargets[2] = new Texture((float)screenOffsetX, (float)screenOffsetY, Texture::TextureFormat::RGBA8);
-    viewColorTargets[3] = new Texture((float)screenOffsetX, (float)screenOffsetY, Texture::TextureFormat::RGBA8);
+    viewColorTargets[0] = new Texture((uint32_t)screenOffsetX, (uint32_t)screenOffsetY, Texture::TextureFormat::RGBA8);
+    viewColorTargets[1] = new Texture((uint32_t)screenOffsetX, (uint32_t)screenOffsetY, Texture::TextureFormat::RGBA8);
+    viewColorTargets[2] = new Texture((uint32_t)screenOffsetX, (uint32_t)screenOffsetY, Texture::TextureFormat::RGBA8);
+    viewColorTargets[3] = new Texture((uint32_t)screenOffsetX, (uint32_t)screenOffsetY, Texture::TextureFormat::RGBA8);
 
     m_viewTexturePool.FlushPool();
     m_viewTexturePool.AddToPool(viewColorTargets[0]);
