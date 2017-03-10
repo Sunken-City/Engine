@@ -82,6 +82,11 @@ public:
     static const RGBA GBLIGHTGREEN;
     static const RGBA GBDARKGREEN;
     static const RGBA GBWHITE;
+    static const RGBA MUDKIP_BLUE;
+    static const RGBA MUDKIP_ORANGE;
+    static const RGBA JOLTIK_YELLOW;
+    static const RGBA JOLTIK_PURPLE;
+    static const RGBA JOLTIK_DARK_PURPLE;
     static const RGBA CLEAR;
     static const int SHIFT_RED = 6 * 4;
     static const int SHIFT_GREEN = 4 * 4;
