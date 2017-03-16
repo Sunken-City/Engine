@@ -73,6 +73,8 @@ void SetBit(uchar& bitFlags, uchar bitMask);
 bool IsBitSet(uchar bitFlags, uchar bitMask);
 void ClearBit(uchar& bitFlags, uchar bitMask);
 
+int Mod(int a, int b);
+
 //INTERPOLATION//////////////////////////////////////////////////////////////////////////
 template <typename T>
 inline T Lerp(const T& initialValue, const T& endValue, const float fraction)

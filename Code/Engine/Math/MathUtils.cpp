@@ -290,3 +290,11 @@ void ClearBit(uchar& bitFlags, uchar bitMask)
 {
     bitFlags &= ~bitMask;
 }
+
+//-----------------------------------------------------------------------------------
+//Based off of the problem with the modulo operator here: http://stackoverflow.com/a/19288271/2619871
+int Mod(int a, int b)
+{
+    int r = a % b;
+    return r < 0 ? r + b : r;
+}
