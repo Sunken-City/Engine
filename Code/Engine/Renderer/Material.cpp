@@ -215,3 +215,10 @@ void Material::CleanUpRenderState() const
     m_renderState.ClearState();
     glUseProgram(NULL);
 }
+
+//-----------------------------------------------------------------------------------
+void Material::ReplaceSampler(unsigned int newSamplerID)
+{
+    Renderer::instance->DeleteSampler(m_samplerID);
+    m_samplerID = newSamplerID;
+}

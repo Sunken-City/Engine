@@ -191,6 +191,8 @@ SpriteGameRenderer::SpriteGameRenderer(const RGBA& clearColor, unsigned int widt
 
     m_blurEffect = new Material(m_blurShader, RenderState(RenderState::DepthTestingMode::OFF, RenderState::FaceCullingMode::RENDER_BACK_FACES, RenderState::BlendMode::ALPHA_BLEND));
     m_comboEffect = new Material(m_comboShader, RenderState(RenderState::DepthTestingMode::OFF, RenderState::FaceCullingMode::RENDER_BACK_FACES, RenderState::BlendMode::ALPHA_BLEND));
+    m_blurEffect->ReplaceSampler(Renderer::instance->CreateSampler(GL_NEAREST, GL_NEAREST, GL_CLAMP, GL_CLAMP));
+    m_comboEffect->ReplaceSampler(Renderer::instance->CreateSampler(GL_NEAREST, GL_NEAREST, GL_CLAMP, GL_CLAMP));
     
     Texture* currentColorTargets[2];
     currentColorTargets[0] = new Texture(widthInPixels, heightInPixels, Texture::TextureFormat::RGBA8);

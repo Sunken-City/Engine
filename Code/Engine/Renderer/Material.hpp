@@ -72,6 +72,7 @@ public:
     void SetTexture(const char* texName, unsigned int textureObjectID);
     void SetUpRenderState() const;
     void CleanUpRenderState() const;
+    void ReplaceSampler(unsigned int newSamplerID);
     inline void SetVec4Uniform(const char* name, const Vector4& value) { m_shaderProgram->SetVec4Uniform(name, value); };
     inline void SetVec3Uniform(const char* name, const Vector3& value) { m_shaderProgram->SetVec3Uniform(name, value); };
     inline void SetFloatUniform(const char* name, float value) { m_shaderProgram->SetFloatUniform(name, value); };
