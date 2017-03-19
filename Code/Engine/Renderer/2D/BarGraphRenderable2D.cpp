@@ -89,7 +89,7 @@ void BarGraphRenderable2D::Render(BufferedMeshRenderer& renderer)
 //-----------------------------------------------------------------------------------
 void BarGraphRenderable2D::SetPercentageFilled(float percentageFilledValue)
 {
+    m_animatedPercentageFilled = m_percentageFilled;
     m_percentageFilled = percentageFilledValue;
-    m_animatedPercentageFilled = 0.0f;
 }
 
