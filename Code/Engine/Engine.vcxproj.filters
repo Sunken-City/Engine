@@ -347,6 +347,9 @@
     <ClCompile Include="Renderer\2D\TextRenderable2D.cpp">
       <Filter>Engine\Renderer\2D</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\2D\BarGraphRenderable2D.cpp">
+      <Filter>Engine\Renderer\2D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -659,6 +662,9 @@
       <Filter>Engine\Core</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\2D\TextRenderable2D.hpp">
+      <Filter>Engine\Renderer\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\2D\BarGraphRenderable2D.hpp">
       <Filter>Engine\Renderer\2D</Filter>
     </ClInclude>
   </ItemGroup>

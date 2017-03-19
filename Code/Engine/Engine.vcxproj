@@ -71,6 +71,7 @@
     <ClCompile Include="Net\UDPIP\NetSession.cpp" />
     <ClCompile Include="Net\UDPIP\PacketChannel.cpp" />
     <ClCompile Include="Net\UDPIP\UDPSocket.cpp" />
+    <ClCompile Include="Renderer\2D\BarGraphRenderable2D.cpp" />
     <ClCompile Include="Renderer\2D\Renderable2D.cpp" />
     <ClCompile Include="Renderer\2D\ParticleSystem.cpp" />
     <ClCompile Include="Renderer\2D\ParticleSystemDefinition.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Net\UDPIP\NetSession.hpp" />
     <ClInclude Include="Net\UDPIP\PacketChannel.hpp" />
     <ClInclude Include="Net\UDPIP\UDPSocket.hpp" />
+    <ClInclude Include="Renderer\2D\BarGraphRenderable2D.hpp" />
     <ClInclude Include="Renderer\2D\Renderable2D.hpp" />
     <ClInclude Include="Renderer\2D\ParticleSystem.hpp" />
     <ClInclude Include="Renderer\2D\ParticleSystemDefinition.hpp" />
