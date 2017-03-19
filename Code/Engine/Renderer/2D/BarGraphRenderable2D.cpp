@@ -24,7 +24,7 @@ BarGraphRenderable2D::~BarGraphRenderable2D()
 //-----------------------------------------------------------------------------------
 void BarGraphRenderable2D::Update(float deltaSeconds)
 {
-
+    m_animatedPercentageFilled = MathUtils::Lerp(0.1f, m_animatedPercentageFilled, m_percentageFilled);
 }
 
 //-----------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ AABB2 BarGraphRenderable2D::GetBounds()
 //-----------------------------------------------------------------------------------
 void BarGraphRenderable2D::Render(BufferedMeshRenderer& renderer)
 {
-    m_material->SetFloatUniform("gPercentageFilled", m_percentageFilled);
+    m_material->SetFloatUniform("gPercentageFilled", m_animatedPercentageFilled);
     renderer.SetMaterial(m_material);
 
     unsigned int indices[6] = { 1, 2, 0, 1, 3, 2 };
@@ -60,7 +60,7 @@ void BarGraphRenderable2D::Render(BufferedMeshRenderer& renderer)
 
     if (m_isVertical)
     {
-        Vector2 filledMidpoint = Vector2(m_bounds.maxs.x, MathUtils::Lerp(m_percentageFilled, m_bounds.mins.y, m_bounds.maxs.y));
+        Vector2 filledMidpoint = Vector2(m_bounds.maxs.x, MathUtils::Lerp(Clamp01(m_animatedPercentageFilled), m_bounds.mins.y, m_bounds.maxs.y));
         Vector2 unfilledMidpoint = filledMidpoint;
         unfilledMidpoint.x = m_bounds.mins.x;
         filledBounds = AABB2(m_bounds.mins, filledMidpoint);
@@ -68,7 +68,7 @@ void BarGraphRenderable2D::Render(BufferedMeshRenderer& renderer)
     }
     else
     {
-        Vector2 filledMidpoint = Vector2(MathUtils::Lerp(m_percentageFilled, m_bounds.mins.x, m_bounds.maxs.x), m_bounds.maxs.y);
+        Vector2 filledMidpoint = Vector2(MathUtils::Lerp(Clamp01(m_animatedPercentageFilled), m_bounds.mins.x, m_bounds.maxs.x), m_bounds.maxs.y);
         Vector2 unfilledMidpoint = filledMidpoint;
         unfilledMidpoint.y = m_bounds.mins.y;
         filledBounds = AABB2(m_bounds.mins, filledMidpoint);
@@ -84,5 +84,12 @@ void BarGraphRenderable2D::Render(BufferedMeshRenderer& renderer)
 
 #pragma todo("This should be unneccessary once we have batching done properly")
     renderer.FlushAndRender();
+}
+
+//-----------------------------------------------------------------------------------
+void BarGraphRenderable2D::SetPercentageFilled(float percentageFilledValue)
+{
+    m_percentageFilled = percentageFilledValue;
+    m_animatedPercentageFilled = 0.0f;
 }
 

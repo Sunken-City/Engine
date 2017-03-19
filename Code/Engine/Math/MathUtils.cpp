@@ -298,3 +298,9 @@ int Mod(int a, int b)
     int r = a % b;
     return r < 0 ? r + b : r;
 }
+
+//-----------------------------------------------------------------------------------
+float Clamp01(float input)
+{
+    return Clamp<float>(input, 0.0f, 1.0f);
+}

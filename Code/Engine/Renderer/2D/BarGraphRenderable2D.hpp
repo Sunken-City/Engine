@@ -11,13 +11,14 @@ class BarGraphRenderable2D : public Renderable2D
 {
 public:
     //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
-    BarGraphRenderable2D(const AABB2& bounds, RGBA filledColor, RGBA unfilledColor = RGBA::GRAY, int orderingLayer = 0, bool isEnabled = true);
+    BarGraphRenderable2D(const AABB2& bounds, RGBA filledColor, RGBA unfilledColor = RGBA::CLEAR, int orderingLayer = 0, bool isEnabled = true);
     virtual ~BarGraphRenderable2D();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     virtual void Update(float deltaSeconds);
     virtual AABB2 GetBounds();
     virtual void Render(BufferedMeshRenderer& renderer);
+    void SetPercentageFilled(float percentageFilledValue);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     Material* m_material;
@@ -25,6 +26,9 @@ public:
     Transform2D m_transform;
     RGBA m_fillColor;
     RGBA m_unfilledColor;
-    float m_percentageFilled;
+
+private:
     bool m_isVertical = false;
+    float m_percentageFilled;
+    float m_animatedPercentageFilled = 0.0f;
 };

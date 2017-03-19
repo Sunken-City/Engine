@@ -74,6 +74,7 @@ bool IsBitSet(uchar bitFlags, uchar bitMask);
 void ClearBit(uchar& bitFlags, uchar bitMask);
 
 int Mod(int a, int b);
+float Clamp01(float input);
 
 //INTERPOLATION//////////////////////////////////////////////////////////////////////////
 template <typename T>
