@@ -22,8 +22,10 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     Material* m_material;
-    AABB2 m_bounds;
     Transform2D m_transform;
+    Transform2D m_filledMinsTransform;
+    Transform2D m_filledMaxsTransform;
+    AABB2 m_bounds;
     RGBA m_fillColor;
     RGBA m_unfilledColor;
 

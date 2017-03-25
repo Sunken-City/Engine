@@ -20,6 +20,9 @@ BarGraphRenderable2D::BarGraphRenderable2D(const AABB2& bounds, RGBA filledColor
         ASSERT_OR_DIE(AABB2::IsValid(m_bounds), "Invalid bounds passed into the bar graph");
     }
     m_isVertical = (m_bounds.GetWidth() < m_bounds.GetHeight());
+
+    m_filledMinsTransform.SetParent(&m_transform);
+    m_filledMaxsTransform.SetParent(&m_transform);
 }
 
 //-----------------------------------------------------------------------------------
@@ -94,12 +97,29 @@ void BarGraphRenderable2D::Render(BufferedMeshRenderer& renderer)
         unfilledBounds = AABB2(unfilledMidpoint, m_bounds.maxs);
     }
 
+    //If we're going the opposite way, swap the filled and unfilled bounds.
     if (m_isLeftToRight)
     {
         AABB2 temp = filledBounds;
         filledBounds = unfilledBounds;
         unfilledBounds = temp;
     }
+
+    //Update the transforms on the tips of the filled part.
+    Vector2 mins = filledBounds.mins;
+    Vector2 maxs = filledBounds.maxs;
+    if (m_isVertical)
+    {
+        mins.x += filledBounds.GetWidth() / 2.0f;
+        maxs.x -= filledBounds.GetWidth() / 2.0f;
+    }
+    else
+    {
+        mins.y += filledBounds.GetHeight() / 2.0f;
+        maxs.y -= filledBounds.GetHeight() / 2.0f;
+    }
+    m_filledMinsTransform.SetPosition(mins);
+    m_filledMaxsTransform.SetPosition(maxs);
 
     //Apply our transformations
     renderer.SetModelMatrix(scale * rotation * translation);
