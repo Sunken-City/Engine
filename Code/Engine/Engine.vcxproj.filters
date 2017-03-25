@@ -350,6 +350,9 @@
     <ClCompile Include="Renderer\2D\BarGraphRenderable2D.cpp">
       <Filter>Engine\Renderer\2D</Filter>
     </ClCompile>
+    <ClCompile Include="Core\RunInSeconds.cpp">
+      <Filter>Engine\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -666,6 +669,9 @@
     </ClInclude>
     <ClInclude Include="Renderer\2D\BarGraphRenderable2D.hpp">
       <Filter>Engine\Renderer\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\RunInSeconds.hpp">
+      <Filter>Engine\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

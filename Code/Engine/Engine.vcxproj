@@ -30,6 +30,7 @@
     <ClCompile Include="Core\Memory\MemoryOutputWindow.cpp" />
     <ClCompile Include="Core\Memory\MemoryTracking.cpp" />
     <ClCompile Include="Core\ProfilingUtils.cpp" />
+    <ClCompile Include="Core\RunInSeconds.cpp" />
     <ClCompile Include="Core\StringUtils.cpp" />
     <ClCompile Include="DataStructures\BytePacker.cpp" />
     <ClCompile Include="Fonts\BitmapFont.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="Core\Memory\MemoryUtils.hpp" />
     <ClInclude Include="Core\Memory\UntrackedAllocator.hpp" />
     <ClInclude Include="Core\ProfilingUtils.h" />
+    <ClInclude Include="Core\RunInSeconds.hpp" />
     <ClInclude Include="Core\StringUtils.hpp" />
     <ClInclude Include="DataStructures\BytePacker.hpp" />
     <ClInclude Include="DataStructures\InPlaceLinkedList.hpp" />
