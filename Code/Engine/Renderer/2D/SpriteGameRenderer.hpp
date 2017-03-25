@@ -111,6 +111,8 @@ public:
     SpriteLayer* CreateOrGetLayer(int layerNumber);
     void AddEffectToLayer(Material* effectMaterial, int layerNumber, PlayerVisibility visibility = PlayerVisibility::ALL);
     void RemoveEffectFromLayer(Material* effectMaterial, int layerNumber);
+    void EnableAllLayers();
+    void DisableAllLayers();
     inline void EnableLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Enable(); };
     inline void DisableLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Disable(); };
     inline void ToggleLayer(int layerNumber) { CreateOrGetLayer(layerNumber)->Toggle(); };
@@ -157,6 +159,12 @@ public:
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
     static SpriteGameRenderer* instance;
 
+    //CONSTANTS/////////////////////////////////////////////////////////////////////
+    static const char* DEFAULT_VERT_SHADER;
+    static const char* DEFAULT_FRAG_SHADER;
+    static const char* DEFAULT_BLUR_SHADER;
+    static const char* DEFAULT_COMBO_SHADER;
+
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     ShaderProgram* m_defaultShader;
     RenderState m_defaultRenderState;
@@ -172,6 +180,7 @@ public:
     //The box (Size in game units of our screen)
     float m_windowVirtualHeight;
     float m_windowVirtualWidth;
+
 private:
     Transform2D m_bottomRight;
     Transform2D m_bottomLeft;
@@ -195,12 +204,6 @@ private:
     TexturePool m_viewTexturePool;
     PlayerVisibility m_currentViewer = PlayerVisibility::FIRST;
     RGBA m_clearColor;
-    
-    //CONSTANTS/////////////////////////////////////////////////////////////////////
-    static const char* DEFAULT_VERT_SHADER;
-    static const char* DEFAULT_FRAG_SHADER;
-    static const char* DEFAULT_BLUR_SHADER;
-    static const char* DEFAULT_COMBO_SHADER;
 };
 
 //----------------------------------------------------------------------

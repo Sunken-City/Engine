@@ -44,6 +44,14 @@ Vector2 MathUtils::GetRandomDirectionVector()
 }
 
 //-----------------------------------------------------------------------------------
+Vector2 MathUtils::MakePolar(const Vector2& xyVector)
+{
+    float r = sqrt((xyVector.x * xyVector.x) + (xyVector.y * xyVector.y));
+    float theta = atan2(xyVector.y, xyVector.x);
+    return Vector2(r, theta);
+}
+
+//-----------------------------------------------------------------------------------
 Vector2 MathUtils::GetRandomVectorInCircle(float radius)
 {
     float t = TWO_PI * GetRandomFloatFromZeroTo(1.0f);
@@ -189,9 +197,10 @@ float MathUtils::GetRandom()
 
 //-----------------------------------------------------------------------------------
 //This function is NOT inclusive, as truncation occurs on the int.
+//AVOID USING, THIS CAN SOMETIMES BE INCLUSIVE, WTF?
 int MathUtils::GetRandomIntFromZeroTo(int maximum)
 {
-    return static_cast<int>(static_cast<float>(rand()) / (static_cast<float>(RAND_MAX) / static_cast<float>(maximum)));
+    return rand() % maximum;
 }
 
 //-----------------------------------------------------------------------------------

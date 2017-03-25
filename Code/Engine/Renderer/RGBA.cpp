@@ -40,6 +40,7 @@ const RGBA RGBA::MUDKIP_ORANGE(0xED8220FF);
 const RGBA RGBA::JOLTIK_YELLOW(0xF9E27CFF);
 const RGBA RGBA::JOLTIK_PURPLE(0x767EAFFF);
 const RGBA RGBA::JOLTIK_DARK_PURPLE(0x575876FF);
+const RGBA RGBA::PURPLE(0x8A1089FF);
 const RGBA RGBA::CLEAR(0xFFFFFF00);
 
 //-----------------------------------------------------------------------------------

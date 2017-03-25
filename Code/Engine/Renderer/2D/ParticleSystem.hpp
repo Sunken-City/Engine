@@ -54,6 +54,7 @@ public:
     Transform2D m_transform;
     const ParticleEmitterDefinition* m_definition;
     const SpriteResource* m_spriteOverride = nullptr;
+    Material* m_materialOverride = nullptr;
     ParticleSystem* m_parentSystem = nullptr;
     unsigned int m_initialNumParticlesSpawn;
     float m_emitterAge;
@@ -79,7 +80,7 @@ public:
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
     static void DestroyImmediately(ParticleSystem* systemToDestroy);
     static void Destroy(ParticleSystem* systemToDestroy);
-    static void PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, const Transform2D& startingTransform, Transform2D* parentTransform = nullptr, const SpriteResource* spriteOverride = nullptr);
+    static ParticleSystem* PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, const Transform2D& startingTransform, Transform2D* parentTransform = nullptr, const SpriteResource* spriteOverride = nullptr);
     void Flush();
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////

@@ -19,6 +19,8 @@ public:
     inline InputValue* GetRightStickMagnitude() { return &m_rightStickMagnitude; };
     inline InputVector2* GetLeftStick() { return &m_leftStick; };
     inline InputVector2* GetRightStick() { return &m_rightStick; };
+    inline InputVector2* GetInvertedLeftStick() { return &m_invertedLeftStick; };
+    inline InputVector2* GetInvertedRightStick() { return &m_invertedRightStick; };
 
 private:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
@@ -30,4 +32,6 @@ private:
     InputValue m_rightStickMagnitude;
     InputVector2 m_leftStick;
     InputVector2 m_rightStick;
+    InputVector2 m_invertedLeftStick;
+    InputVector2 m_invertedRightStick;
 };

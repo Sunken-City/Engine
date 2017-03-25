@@ -91,7 +91,7 @@ void Transform2D::SetParent(Transform2D* parent)
 //-----------------------------------------------------------------------------------
 Vector2 Transform2D::GetWorldPosition() const
 {
-    if (m_parent)
+    if (m_parent && m_applyParentTranslation)
     {
         return m_position + m_parent->GetWorldPosition();
     }
@@ -104,7 +104,7 @@ Vector2 Transform2D::GetWorldPosition() const
 //-----------------------------------------------------------------------------------
 float Transform2D::GetWorldRotationDegrees() const
 {
-    if (m_parent)
+    if (m_parent && m_applyParentRotation)
     {
         return m_rotationDegrees + m_parent->GetWorldRotationDegrees();
     }
@@ -117,7 +117,7 @@ float Transform2D::GetWorldRotationDegrees() const
 //-----------------------------------------------------------------------------------
 Vector2 Transform2D::GetWorldScale() const
 {
-    if (m_parent)
+    if (m_parent && m_applyParentScale)
     {
         return m_scale * m_parent->GetWorldScale();
     }

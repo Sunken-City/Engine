@@ -29,6 +29,7 @@ public:
 
 private:
     bool m_isVertical = false;
+    bool m_isLeftToRight = false;
     float m_percentageFilled;
     float m_animatedPercentageFilled = 0.0f;
 };

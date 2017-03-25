@@ -35,6 +35,7 @@ ParticleEmitter::ParticleEmitter(ParticleSystem* parent, const ParticleEmitterDe
     , m_maxEmitterAge(definition->m_properties.Get<Range<float>>(PROPERTY_MAX_EMITTER_LIFETIME).GetRandom())
     , m_particlesPerSecond(definition->m_properties.Get<float>(PROPERTY_PARTICLES_PER_SECOND))
     , m_initialNumParticlesSpawn(definition->m_properties.Get<Range<unsigned int>>(PROPERTY_INITIAL_NUM_PARTICLES).GetRandom())
+    , m_materialOverride(nullptr)
 {
     if (parentTransform)
     {
@@ -251,9 +252,10 @@ void ParticleSystem::Render(BufferedMeshRenderer& renderer)
     {
         if (emitter->m_particles.size() > 0)
         {
+            Material* material = emitter->m_materialOverride == nullptr ? emitter->m_definition->m_material : emitter->m_materialOverride;
+            renderer.SetMaterial(material);
             Texture* diffuse = emitter->m_spriteOverride ? emitter->m_spriteOverride->m_texture : emitter->m_definition->m_spriteResource->m_texture;
-            emitter->m_definition->m_material->SetDiffuseTexture(diffuse);
-            renderer.SetMaterial(emitter->m_definition->m_material);
+            material->SetDiffuseTexture(diffuse);
 
             renderer.SetModelMatrix(Matrix4x4::IDENTITY);
 
@@ -281,11 +283,12 @@ void ParticleSystem::Destroy(ParticleSystem* systemToDestroy)
 }
 
 //-----------------------------------------------------------------------------------
-void ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerId, const Transform2D& startingTransform, Transform2D* parentTransform, const SpriteResource* spriteOverride)
+ParticleSystem* ParticleSystem::PlayOneShotParticleEffect(const std::string& systemName, unsigned int const layerName, const Transform2D& startingTransform, Transform2D* parentTransform /*= nullptr*/, const SpriteResource* spriteOverride /*= nullptr*/)
 {
     //The SpriteGameRenderer cleans up these one-shot systems whenever they're finished playing.
-    ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerId, startingTransform, parentTransform, spriteOverride);
+    ParticleSystem* newSystemToPlay = new ParticleSystem(systemName, layerName, startingTransform, parentTransform, spriteOverride);
     ASSERT_OR_DIE(newSystemToPlay->m_definition->m_type == ONE_SHOT, "Attempted to call PlayOneShotParticleEffect with a looping particle system. PlayOneShotParticleEffect is only used for one-shot particle systems.");
+    return newSystemToPlay;
 }
 
 //-----------------------------------------------------------------------------------
@@ -370,7 +373,7 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
             perpDisp = Vector2(-dispFromThisToNext.y, dispFromThisToNext.x);
             Vector2 nextPerp = perpDisp.GetNorm();
 
-            points[i].m_perpendicularNormal = Lerp<Vector2>(prevPerp, nextPerp, 0.5f);
+            points[i].m_perpendicularNormal = Lerp<Vector2>(0.5f, prevPerp, nextPerp);
             points[i].m_perpendicularNormal.Normalize();
         }
     }

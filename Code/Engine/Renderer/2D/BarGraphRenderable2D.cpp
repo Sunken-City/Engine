@@ -9,10 +9,17 @@ BarGraphRenderable2D::BarGraphRenderable2D(const AABB2& bounds, RGBA filledColor
     , m_fillColor(filledColor)
     , m_unfilledColor(unfilledColor)
     , m_percentageFilled(0.5f)
-    , m_isVertical(bounds.GetWidth() < bounds.GetHeight())
     , m_material(Renderer::instance->m_defaultMaterial)
 {
-
+    if (!AABB2::IsValid(m_bounds))
+    {
+        m_isLeftToRight = true;
+        Vector2 temp = m_bounds.maxs;
+        m_bounds.maxs = m_bounds.mins;
+        m_bounds.mins = temp;
+        ASSERT_OR_DIE(AABB2::IsValid(m_bounds), "Invalid bounds passed into the bar graph");
+    }
+    m_isVertical = (m_bounds.GetWidth() < m_bounds.GetHeight());
 }
 
 //-----------------------------------------------------------------------------------
@@ -58,9 +65,16 @@ void BarGraphRenderable2D::Render(BufferedMeshRenderer& renderer)
     //Translate the bounding box
     Matrix4x4::MatrixMakeTranslation(&translation, Vector3(m_transform.GetWorldPosition(), 0.0f));
 
+    float fillPercentage = m_animatedPercentageFilled;
+
     if (m_isVertical)
     {
-        Vector2 filledMidpoint = Vector2(m_bounds.maxs.x, MathUtils::Lerp(Clamp01(m_animatedPercentageFilled), m_bounds.mins.y, m_bounds.maxs.y));
+        float blendAmount = Clamp01(fillPercentage);
+        if (m_isLeftToRight)
+        {
+            blendAmount = 1.0f - blendAmount;
+        }
+        Vector2 filledMidpoint = Vector2(m_bounds.maxs.x, MathUtils::Lerp(Clamp01(fillPercentage), m_bounds.mins.y, m_bounds.maxs.y));
         Vector2 unfilledMidpoint = filledMidpoint;
         unfilledMidpoint.x = m_bounds.mins.x;
         filledBounds = AABB2(m_bounds.mins, filledMidpoint);
@@ -68,13 +82,24 @@ void BarGraphRenderable2D::Render(BufferedMeshRenderer& renderer)
     }
     else
     {
-        Vector2 filledMidpoint = Vector2(MathUtils::Lerp(Clamp01(m_animatedPercentageFilled), m_bounds.mins.x, m_bounds.maxs.x), m_bounds.maxs.y);
+        float blendAmount = Clamp01(fillPercentage);
+        if (m_isLeftToRight)
+        {
+            blendAmount = 1.0f - blendAmount;
+        }
+        Vector2 filledMidpoint = Vector2(MathUtils::Lerp(blendAmount, m_bounds.mins.x, m_bounds.maxs.x), m_bounds.maxs.y);
         Vector2 unfilledMidpoint = filledMidpoint;
         unfilledMidpoint.y = m_bounds.mins.y;
         filledBounds = AABB2(m_bounds.mins, filledMidpoint);
         unfilledBounds = AABB2(unfilledMidpoint, m_bounds.maxs);
     }
 
+    if (m_isLeftToRight)
+    {
+        AABB2 temp = filledBounds;
+        filledBounds = unfilledBounds;
+        unfilledBounds = temp;
+    }
 
     //Apply our transformations
     renderer.SetModelMatrix(scale * rotation * translation);

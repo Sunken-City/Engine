@@ -10,6 +10,7 @@
 #include "Engine/Renderer/OpenGLExtensions.hpp"
 #include "Engine/Core/BuildConfig.hpp"
 #include "Engine/Core/Memory/MemoryTracking.hpp"
+#include "..\Math\Vector2.hpp"
 
 //-----------------------------------------------------------------------------------
 ShaderProgram::ShaderProgram()
@@ -292,7 +293,20 @@ bool ShaderProgram::SetUniform(const char* name, void* value)
 }
 
 //-----------------------------------------------------------------------------------
-bool ShaderProgram::SetVec3Uniform(const char *name, const Vector3 &value, unsigned int numElements)
+bool ShaderProgram::SetVec2Uniform(const char* name, const Vector2 &value)
+{
+    glUseProgram(m_shaderProgramID);
+    GLint loc = glGetUniformLocation(m_shaderProgramID, name);
+    if (loc >= 0)
+    {
+        glUniform2fv(loc, 1, (GLfloat*)&value);
+        return true;
+    }
+    return false;
+}
+
+//-----------------------------------------------------------------------------------
+bool ShaderProgram::SetVec3Uniform(const char *name, const Vector3& value, unsigned int numElements)
 {
     glUseProgram(m_shaderProgramID);
 #pragma TODO("THIS IS A PROBLEM. This is what we needed to get rid of. Don't call this from other functions!")

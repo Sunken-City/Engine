@@ -27,7 +27,7 @@ public:
     void Normalize();
     Vector2 GetNorm();
     float Dot(const Vector2& b) const;
-    inline float GetDirectionDegreesFromNormalizedVector() const { return MathUtils::RadiansToDegrees(MathUtils::HALF_PI - atan2f(y, x)); };
+    inline float GetDirectionDegrees() const { return MathUtils::RadiansToDegrees(MathUtils::HALF_PI - atan2f(y, x)); };
 
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
     static Vector2 CalculateCorrectionVector(const Vector2& position, const Vector2& goal);

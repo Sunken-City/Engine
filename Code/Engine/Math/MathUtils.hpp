@@ -59,7 +59,8 @@ public:
     static Vector2 Lerp(float fraction, const Vector2& initialValue, const Vector2& endValue);
     static Vector3 Lerp(float fraction, const Vector3& initialValue, const Vector3& endValue);
     static Vector2 GetRandomDirectionVector();
-
+    //Returns Vector2(R, theta);
+    static Vector2 MakePolar(const Vector2& xyVector);
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const float PI;
     static const float TWO_PI;
@@ -78,7 +79,7 @@ float Clamp01(float input);
 
 //INTERPOLATION//////////////////////////////////////////////////////////////////////////
 template <typename T>
-inline T Lerp(const T& initialValue, const T& endValue, const float fraction)
+inline T Lerp(const float fraction, const T& initialValue, const T& endValue)
 {
     return initialValue + fraction * (endValue - initialValue);
 }
@@ -187,7 +188,7 @@ public:
     //-----------------------------------------------------------------------------------
     T Get(const float t) const
     {
-        return Lerp(minValue, maxValue, t);
+        return Lerp(t, minValue, maxValue);
     }
 
     //-----------------------------------------------------------------------------------

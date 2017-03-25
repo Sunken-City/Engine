@@ -185,7 +185,7 @@ SpriteGameRenderer::SpriteGameRenderer(const RGBA& clearColor, unsigned int widt
     SetVirtualSize(virtualSize);
     SetSplitscreen(1);
 
-    m_defaultShader = ShaderProgram::CreateFromShaderStrings(DEFAULT_VERT_SHADER, DEFAULT_FRAG_SHADER);
+    m_defaultShader = new ShaderProgram("Data/Shaders/default2D.vert", "Data/Shaders/default2D.frag");//ShaderProgram::CreateFromShaderStrings(DEFAULT_VERT_SHADER, DEFAULT_FRAG_SHADER);
     m_blurShader = ShaderProgram::CreateFromShaderStrings(DEFAULT_VERT_SHADER, DEFAULT_BLUR_SHADER);
     m_comboShader = ShaderProgram::CreateFromShaderStrings(DEFAULT_VERT_SHADER, DEFAULT_COMBO_SHADER);
 
@@ -460,6 +460,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             Renderer::instance->SetRenderTargets(1, &effectCanvas, nullptr);
             currentEffect->SetDiffuseTexture(m_currentFBO->m_colorTargets[0]);
             currentEffect->SetFloatUniform("gTime", (float)GetCurrentTimeSeconds());
+            currentEffect->SetVec2Uniform("gWindowResolution", Vector2(m_windowVirtualWidth, m_windowVirtualHeight));
             Renderer::instance->RenderFullScreenEffect(currentEffect);
             Renderer::instance->ClearDepth();
             Renderer::instance->BindFramebuffer(nullptr);
@@ -549,6 +550,24 @@ void SpriteGameRenderer::RemoveEffectFromLayer(Material* effectMaterial, int lay
                 return;
             }
         }
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::DisableAllLayers()
+{
+    for (auto layerIter = m_layers.begin(); layerIter != m_layers.end(); ++layerIter)
+    {
+        layerIter->second->Disable();
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void SpriteGameRenderer::EnableAllLayers()
+{
+    for (auto layerIter = m_layers.begin(); layerIter != m_layers.end(); ++layerIter)
+    {
+        layerIter->second->Enable();
     }
 }
 

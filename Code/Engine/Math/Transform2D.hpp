@@ -35,11 +35,22 @@ public:
     void SetRotationDegrees(float rotationDegrees);
     void SetScale(const Vector2& scale);
 
+    //FUNCTIONS/////////////////////////////////////////////////////////////////////
+    inline void IgnoreParentTranslation() { m_applyParentTranslation = false; };
+    inline void IgnoreParentRotation() { m_applyParentRotation = false; };
+    inline void IgnoreParentScale() { m_applyParentScale = false; };
+    inline void ApplyParentTranslation() { m_applyParentTranslation = true; };
+    inline void ApplyParentRotation() { m_applyParentRotation = true; };
+    inline void ApplyParentScale() { m_applyParentScale = true; };
+
 private:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
+    std::vector<Transform2D*> m_children;
     Vector2 m_position;
-    float m_rotationDegrees;
     Vector2 m_scale;
     Transform2D* m_parent = nullptr;
-    std::vector<Transform2D*> m_children;
+    float m_rotationDegrees;
+    bool m_applyParentTranslation = true;
+    bool m_applyParentRotation = true;
+    bool m_applyParentScale = true;
 };

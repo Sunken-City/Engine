@@ -73,13 +73,17 @@ public:
     void SetUpRenderState() const;
     void CleanUpRenderState() const;
     void ReplaceSampler(unsigned int newSamplerID);
+    //NOTE: for the array passings, you have to address the uniform like this "gArray[CurrentIndex]:"
     inline void SetVec4Uniform(const char* name, const Vector4& value) { m_shaderProgram->SetVec4Uniform(name, value); };
     inline void SetVec3Uniform(const char* name, const Vector3& value) { m_shaderProgram->SetVec3Uniform(name, value); };
+    inline void SetVec2Uniform(const char* name, const Vector2& value) { m_shaderProgram->SetVec2Uniform(name, value); };
     inline void SetFloatUniform(const char* name, float value) { m_shaderProgram->SetFloatUniform(name, value); };
     inline void SetIntUniform(const char* name, int value) { m_shaderProgram->SetIntUniform(name, value); };
+
+    //DO NOT USE THESE. They're not actually working. The function for an array expects multiple passed in by reference, and I'm NOT passing any more than 1.
     inline void SetMatrix4x4Uniform(const char* name, Matrix4x4& value, unsigned int arrayIndex) { m_shaderProgram->SetMatrix4x4Uniform(name, value, arrayIndex); };
     inline void SetVec4Uniform(const char* name, const Vector4& value, unsigned int arrayIndex) { m_shaderProgram->SetVec4Uniform(name, value, arrayIndex); };
-    inline void SetVec3Uniform(const char* name, const Vector3& value, unsigned int arrayIndex) { m_shaderProgram->SetVec3Uniform(name, value, arrayIndex); };
+    inline void SetVec3Uniform(const char* name, const Vector3& value, unsigned int maxNumArrayIndexes) { m_shaderProgram->SetVec3Uniform(name, value, maxNumArrayIndexes); };
     inline void SetFloatUniform(const char* name, float value, unsigned int arrayIndex) { m_shaderProgram->SetFloatUniform(name, value, arrayIndex); };
     inline void SetIntUniform(const char* name, int value, unsigned int arrayIndex) { m_shaderProgram->SetIntUniform(name, value, arrayIndex); };
     
