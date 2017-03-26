@@ -34,6 +34,7 @@ BarGraphRenderable2D::~BarGraphRenderable2D()
 //-----------------------------------------------------------------------------------
 void BarGraphRenderable2D::Update(float deltaSeconds)
 {
+    UNUSED(deltaSeconds);
     m_animatedPercentageFilled = MathUtils::Lerp(0.1f, m_animatedPercentageFilled, m_percentageFilled);
 }
 
