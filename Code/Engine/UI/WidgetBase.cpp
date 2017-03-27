@@ -14,13 +14,13 @@ WidgetBase::WidgetBase()
     m_propertiesForAllStates.Set<Vector2>("Offset", Vector2::ZERO);
     m_propertiesForAllStates.Set<Vector2>("Size", Vector2::ONE);
     m_propertiesForAllStates.Set<Vector2>("Padding", Vector2::ZERO);
-    m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::KINDA_GRAY);
+    m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::LIGHT_GRAY);
     m_propertiesForAllStates.Set<RGBA>("BorderColor", RGBA::GRAY);
     m_propertiesForAllStates.Set<float>("Opacity", 1.0f);
     m_propertiesForAllStates.Set<float>("BorderWidth", 5.0f);
     SetProperty("BorderColor", RGBA::BLACK, DISABLED_WIDGET_STATE);
     SetProperty("TextColor", RGBA::GRAY, DISABLED_WIDGET_STATE);
-    SetProperty("BackgroundColor", RGBA::VERY_GRAY, DISABLED_WIDGET_STATE);
+    SetProperty("BackgroundColor", RGBA::DARK_GRAY, DISABLED_WIDGET_STATE);
 }
 
 //-----------------------------------------------------------------------------------

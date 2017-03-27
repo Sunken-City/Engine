@@ -14,7 +14,7 @@ ButtonWidget::ButtonWidget()
     SetProperty("BackgroundColor", RGBA::WHITE, HIGHLIGHTED_WIDGET_STATE);
     SetProperty("BackgroundColor", RGBA::GRAY, PRESSED_WIDGET_STATE);
     SetProperty("BorderColor", RGBA::WHITE, HIGHLIGHTED_WIDGET_STATE);
-    SetProperty("BorderColor", RGBA::VERY_GRAY, PRESSED_WIDGET_STATE);
+    SetProperty("BorderColor", RGBA::DARK_GRAY, PRESSED_WIDGET_STATE);
 }
 
 //-----------------------------------------------------------------------------------

@@ -69,9 +69,11 @@ public:
     static const RGBA CHOCOLATE;
     static const RGBA SADDLE_BROWN;
     static const RGBA MAROON;
-    static const RGBA KINDA_GRAY;
+    static const RGBA LIGHT_GRAY;
     static const RGBA GRAY;
-    static const RGBA VERY_GRAY;
+    static const RGBA GRAY1;
+    static const RGBA GRAY2;
+    static const RGBA DARK_GRAY;
     static const RGBA VAPORWAVE;
     static const RGBA DEADBEEF;
     static const RGBA FEEDFACE;
