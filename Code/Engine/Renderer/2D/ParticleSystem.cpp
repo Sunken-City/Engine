@@ -313,9 +313,10 @@ void RibbonParticleSystem::Render(BufferedMeshRenderer& renderer)
     {
         if (emitter->m_particles.size() > 0)
         {
+            Material* material = emitter->m_materialOverride == nullptr ? emitter->m_definition->m_material : emitter->m_materialOverride;
+            renderer.SetMaterial(material);
             Texture* diffuse = emitter->m_spriteOverride ? emitter->m_spriteOverride->m_texture : emitter->m_definition->m_spriteResource->m_texture;
-            emitter->m_definition->m_material->SetDiffuseTexture(diffuse);
-            renderer.SetMaterial(emitter->m_definition->m_material);
+            material->SetDiffuseTexture(diffuse);
 
             renderer.SetModelMatrix(Matrix4x4::IDENTITY);
 
