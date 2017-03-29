@@ -186,6 +186,10 @@ float MathUtils::CalcShortestAngularDisplacement(float fromDegrees, float toDegr
 //Inclusive random
 int MathUtils::GetRandomInt(int minimum, int maximum)
 {
+    if (minimum == 0 && maximum == 0)
+    {
+        return 0;
+    }
     return Clamp(rand() % maximum + minimum, minimum, maximum);
 }
 
@@ -299,6 +303,25 @@ void ClearBit(uchar& bitFlags, uchar bitMask)
 {
     bitFlags &= ~bitMask;
 }
+
+//-----------------------------------------------------------------------------------
+void SetBitUint(unsigned int& bitFlags, uchar bitMask)
+{
+    bitFlags |= bitMask;
+}
+
+//-----------------------------------------------------------------------------------
+bool IsBitSetUint(unsigned int bitFlags, uchar bitMask)
+{
+    return(bitFlags & bitMask) != 0;
+}
+
+//-----------------------------------------------------------------------------------
+void ClearBitUint(unsigned int& bitFlags, uchar bitMask)
+{
+    bitFlags &= ~bitMask;
+}
+
 
 //-----------------------------------------------------------------------------------
 //Based off of the problem with the modulo operator here: http://stackoverflow.com/a/19288271/2619871

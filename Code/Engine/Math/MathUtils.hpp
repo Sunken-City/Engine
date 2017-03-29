@@ -73,6 +73,9 @@ public:
 void SetBit(uchar& bitFlags, uchar bitMask);
 bool IsBitSet(uchar bitFlags, uchar bitMask);
 void ClearBit(uchar& bitFlags, uchar bitMask);
+void SetBitUint(unsigned int& bitFlags, uchar bitMask);
+bool IsBitSetUint(unsigned int bitFlags, uchar bitMask);
+void ClearBitUint(unsigned int& bitFlags, uchar bitMask);
 
 int Mod(int a, int b);
 float Clamp01(float input);
