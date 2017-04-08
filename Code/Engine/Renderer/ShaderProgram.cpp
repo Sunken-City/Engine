@@ -61,6 +61,7 @@ ShaderProgram* ShaderProgram::CreateFromShaderStrings(const char* vertShaderStri
         g_memoryAnalytics.TrackShaderAllocation();
     }
     #endif
+    shader->FindAllUniforms();
     return shader;
 }
 
@@ -263,6 +264,18 @@ void ShaderProgram::FindAllUniforms()
         m_uniforms[hashIndex] = uniform;
         delete nameBuffer;
     }
+}
+
+//-----------------------------------------------------------------------------------
+GLint ShaderProgram::GetBindPoint(size_t hashedName)
+{
+    GLint bindPoint = -1;
+    auto iter = m_uniforms.find(hashedName);
+    if (iter != m_uniforms.end())
+    {
+        bindPoint = iter->second.bindPoint;
+    }
+    return bindPoint;
 }
 
 //-----------------------------------------------------------------------------------
