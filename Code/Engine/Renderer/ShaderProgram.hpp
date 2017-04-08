@@ -26,7 +26,7 @@ struct Uniform
 
     std::string name;
     DataType type;
-    unsigned int bindPoint;
+    int bindPoint = -1;
     unsigned int size;
     unsigned int textureIndex;
 };
@@ -55,6 +55,7 @@ public:
     void ShaderProgramBindProperty(const char *name, GLint count, GLenum type, GLboolean normalize, GLsizei stride, GLsizei offset);
     void ShaderProgramBindIntegerProperty(const char *name, GLint count, GLenum type, GLsizei stride, GLsizei offset);
     void FindAllUniforms();
+    GLint GetBindPoint(size_t hashedName);
 
     //SETTING UNIFORMS/////////////////////////////////////////////////////////////////////
     bool SetUniform(size_t hashedName, void* value);

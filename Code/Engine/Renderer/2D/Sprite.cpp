@@ -39,7 +39,6 @@ AABB2 SpriteResource::GetDefaultBounds() const
 //-----------------------------------------------------------------------------------
 void Sprite::Render(BufferedMeshRenderer& renderer)
 {
-    m_material->SetIntUniform("gRecolorMode", (int)m_recolorMode);
     renderer.SetMaterial(m_material);
     renderer.SetDiffuseTexture(m_spriteResource->m_texture);
     PushSpriteToMesh(renderer);

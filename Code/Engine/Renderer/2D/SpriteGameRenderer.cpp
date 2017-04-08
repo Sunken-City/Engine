@@ -376,6 +376,10 @@ void SpriteGameRenderer::CalculateScreenshakeForViewport(const ViewportDefinitio
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinition& renderArea)
 {
+    static const size_t horizontalUniform = std::hash<std::string>{}("horizontal");
+    static const size_t gTimeUniform = std::hash<std::string>{}("gTime");
+    static const size_t gWindowResolutionUniform = std::hash<std::string>{}("gWindowResolution");
+
     RecalculateVirtualWidthAndHeight(renderArea, layer->m_virtualScaleMultiplier);
     UpdateCameraPositionInWorldBounds(renderArea.m_cameraPosition, layer->m_virtualScaleMultiplier);
     AABB2 renderBounds = GetVirtualBoundsAroundCameraCenter();
@@ -422,7 +426,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             Renderer::instance->SetRenderTargets(1, &blurCanvas, nullptr);
 
             m_blurEffect->SetDiffuseTexture(m_currentFBO->m_colorTargets[1]);
-            m_blurEffect->SetFloatUniform("horizontal", 0.0f);
+            m_blurEffect->SetFloatUniform(horizontalUniform, 0.0f);
             Renderer::instance->RenderFullScreenEffect(m_blurEffect);
 
             int numPasses = 6;
@@ -430,7 +434,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             {
                 Renderer::instance->SetRenderTargets(1, &effectCanvas, nullptr);
                 m_blurEffect->SetDiffuseTexture(blurCanvas);
-                m_blurEffect->SetFloatUniform("horizontal", i % 2 == 0 ? 1.0f : 0.0f);
+                m_blurEffect->SetFloatUniform(horizontalUniform, i % 2 == 0 ? 1.0f : 0.0f);
                 Renderer::instance->RenderFullScreenEffect(m_blurEffect);
 
                 Renderer::instance->BindFramebuffer(nullptr);
@@ -465,8 +469,8 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             Material* currentEffect = effect.m_material;
             Renderer::instance->SetRenderTargets(1, &effectCanvas, nullptr);
             currentEffect->SetDiffuseTexture(m_currentFBO->m_colorTargets[0]);
-            currentEffect->SetFloatUniform("gTime", (float)GetCurrentTimeSeconds());
-            currentEffect->SetVec2Uniform("gWindowResolution", Vector2(m_windowVirtualWidth, m_windowVirtualHeight));
+            currentEffect->SetFloatUniform(gTimeUniform, (float)GetCurrentTimeSeconds());
+            currentEffect->SetVec2Uniform(gWindowResolutionUniform, Vector2(m_windowVirtualWidth, m_windowVirtualHeight));
             Renderer::instance->RenderFullScreenEffect(currentEffect);
             Renderer::instance->ClearDepth();
             Renderer::instance->BindFramebuffer(nullptr);

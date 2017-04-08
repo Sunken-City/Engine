@@ -75,6 +75,12 @@ public:
     void ReplaceSampler(unsigned int newSamplerID);
     //NOTE: for the array passings, you have to address the uniform like this "gArray[CurrentIndex]:"
     inline bool SetUniform(size_t hashedName, void* value) { m_shaderProgram->SetUniform(hashedName, value); };
+    inline void SetVec4Uniform(size_t hashedName, const Vector4& value) { m_shaderProgram->SetVec4Uniform(m_shaderProgram->GetBindPoint(hashedName), value); };
+    inline void SetVec3Uniform(size_t hashedName, const Vector3& value) { m_shaderProgram->SetVec3Uniform(m_shaderProgram->GetBindPoint(hashedName), value); };
+    inline void SetVec2Uniform(size_t hashedName, const Vector2& value) { m_shaderProgram->SetVec2Uniform(m_shaderProgram->GetBindPoint(hashedName), value); };
+    inline void SetFloatUniform(size_t hashedName, float value) { m_shaderProgram->SetFloatUniform(m_shaderProgram->GetBindPoint(hashedName), value); };
+    inline void SetIntUniform(size_t hashedName, int value) { m_shaderProgram->SetIntUniform(m_shaderProgram->GetBindPoint(hashedName), value); };
+    //Slower variants of the above that constantly look up the indexes.
     inline void SetVec4Uniform(const char* name, const Vector4& value) { m_shaderProgram->SetVec4Uniform(name, value); };
     inline void SetVec3Uniform(const char* name, const Vector3& value) { m_shaderProgram->SetVec3Uniform(name, value); };
     inline void SetVec2Uniform(const char* name, const Vector2& value) { m_shaderProgram->SetVec2Uniform(name, value); };
