@@ -3,6 +3,7 @@
 #include <string>
 #include "Engine\Math\Transform2D.hpp"
 #include "..\RGBA.hpp"
+#include "..\AABB2.hpp"
 
 class BufferedMeshRenderer;
 class AABB2;
@@ -19,12 +20,13 @@ public:
     virtual void Update(float deltaSeconds) override;
     virtual void Render(BufferedMeshRenderer& renderer) override;
     virtual AABB2 GetBounds() override;
-    virtual bool IsCullable() override { return false; };
+    virtual bool IsCullable() override { return true; };
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::string m_text;
     Transform2D m_transform;
     BitmapFont* m_font;
     float m_fontSize = 1.0f;
+    AABB2 m_bounds;
     RGBA m_color = RGBA::WHITE;
 };
