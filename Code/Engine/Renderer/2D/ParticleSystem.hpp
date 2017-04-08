@@ -6,6 +6,7 @@
 #include <vector>
 #include "Renderable2D.hpp"
 #include "Engine/Math/Transform2D.hpp"
+#include "../AABB2.hpp"
 
 class ParticleEmitterDefinition;
 class ParticleSystemDefinition;
@@ -43,6 +44,7 @@ public:
     virtual void UpdateParticles(float deltaSeconds);
     virtual void SpawnParticles(float deltaSeconds);
     virtual void CleanUpDeadParticles();
+    virtual AABB2 GetBounds() { return m_boundingBox; };
     void BuildRibbonParticles(BufferedMeshRenderer& renderer);
     void BuildParticles(BufferedMeshRenderer& renderer);
     void SpawnParticle();
@@ -51,6 +53,7 @@ public:
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::vector<Particle> m_particles;
+    AABB2 m_boundingBox;
     Transform2D m_transform;
     const ParticleEmitterDefinition* m_definition;
     const SpriteResource* m_spriteOverride = nullptr;
@@ -73,7 +76,8 @@ public:
     virtual ~ParticleSystem();
     virtual void Update(float deltaSeconds) override;
     virtual void Render(BufferedMeshRenderer& renderer) override; 
-    virtual bool IsCullable() override { return false; };
+    virtual bool IsCullable() override { return true; };
+    virtual AABB2 GetBounds() override { return m_boundingBox; };
     inline void Pause() { m_isPaused = true; };
     inline void Unpause() { m_isPaused = false; };
 
@@ -86,6 +90,7 @@ public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     std::vector<ParticleEmitter*> m_emitters;
     const ParticleSystemDefinition* m_definition;
+    AABB2 m_boundingBox;
     bool m_isPaused = false; 
     RGBA m_colorOverride = RGBA::WHITE;
 };

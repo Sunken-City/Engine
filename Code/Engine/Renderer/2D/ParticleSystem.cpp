@@ -7,6 +7,7 @@
 #include "Engine/Math/Matrix4x4.hpp"
 #include "Engine/Math/Vector3.hpp"
 #include "Engine/Renderer/2D/ResourceDatabase.hpp"
+#include "../../Core/ProfilingUtils.h"
 //-----------------------------------------------------------------------------------
 Particle::Particle(const Vector2& spawnPosition, const ParticleEmitterDefinition* definition, float rotationDegrees /*= 0.0f*/, const Vector2& initalVelocity /*= Vector2::ZERO*/, const Vector2& initialAcceleration /*= Vector2::ZERO*/, const RGBA& color /*= RGBA::WHITE*/) 
     : m_position(spawnPosition)
@@ -86,6 +87,7 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
     const bool lockParticlesToEmitter = m_definition->m_properties.Get<bool>(PROPERTY_LOCK_PARTICLES_TO_EMITTER);
     const Vector2 scaleRateOfChangePerSecond = m_definition->m_properties.Get<Range<Vector2>>(PROPERTY_DELTA_SCALE_PER_SECOND).GetRandom();
     std::string debugName = m_definition->m_properties.Get<std::string>(PROPERTY_NAME);
+    m_boundingBox = AABB2::INVALID;
 
     for (Particle& particle : m_particles)
     {
@@ -96,6 +98,8 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
         particle.m_velocity += acceleration * deltaSeconds;
         particle.m_scale += scaleRateOfChangePerSecond * deltaSeconds;
         particle.m_rotationDegrees += particle.m_angularVelocityDegrees * deltaSeconds;
+        AABB2 particleBounds = AABB2(particle.m_position - particle.m_scale, particle.m_position + particle.m_scale);
+        m_boundingBox = AABB2::GetEncompassingAABB2(m_boundingBox, particleBounds);
 
         if (lockParticlesToEmitter)
         {
@@ -232,22 +236,27 @@ ParticleSystem::~ParticleSystem()
 //-----------------------------------------------------------------------------------
 void ParticleSystem::Update(float deltaSeconds)
 {
+    //ProfilingSystem::instance->PushSample("ParticleUpdate");
+    m_boundingBox = AABB2::INVALID;
     if (!m_isDead)
     {
         bool areAllEmittersDead = true;
         for (ParticleEmitter* emitter : m_emitters)
         {
             emitter->Update(deltaSeconds);
+            m_boundingBox = AABB2::GetEncompassingAABB2(m_boundingBox, emitter->GetBounds());
             //If any of the emitters isn't dead, this will become false
             areAllEmittersDead = areAllEmittersDead && emitter->m_isDead;
         }
         m_isDead = areAllEmittersDead;
     }
+    //ProfilingSystem::instance->PopSample("ParticleUpdate");
 }
 
 //-----------------------------------------------------------------------------------
 void ParticleSystem::Render(BufferedMeshRenderer& renderer)
 {
+    //ProfilingSystem::instance->PushSample("ParticleRender");
     for (ParticleEmitter* emitter : m_emitters)
     {
         if (emitter->m_particles.size() > 0)
@@ -264,6 +273,7 @@ void ParticleSystem::Render(BufferedMeshRenderer& renderer)
             renderer.FlushAndRender();
         }
     }
+    //ProfilingSystem::instance->PopSample("ParticleRender");
 }
 
 //-----------------------------------------------------------------------------------
@@ -309,6 +319,7 @@ void RibbonParticleSystem::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void RibbonParticleSystem::Render(BufferedMeshRenderer& renderer)
 {
+    //ProfilingSystem::instance->PushSample("RibbonParticleRender");
     for (ParticleEmitter* emitter : m_emitters)
     {
         if (emitter->m_particles.size() > 0)
@@ -325,6 +336,7 @@ void RibbonParticleSystem::Render(BufferedMeshRenderer& renderer)
             renderer.FlushAndRender();
         }
     }
+    //ProfilingSystem::instance->PopSample("RibbonParticleRender");
 }
 
 //-----------------------------------------------------------------------------------

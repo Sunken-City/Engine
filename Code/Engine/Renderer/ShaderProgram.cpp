@@ -238,6 +238,9 @@ void ShaderProgram::FindAllUniforms()
         case GL_FLOAT_VEC3:
             uniform.type = Uniform::DataType::VECTOR3;
             break;
+        case GL_FLOAT_VEC2:
+            uniform.type = Uniform::DataType::VECTOR2;
+            break;
         case GL_FLOAT:
             uniform.type = Uniform::DataType::FLOAT;
             break;

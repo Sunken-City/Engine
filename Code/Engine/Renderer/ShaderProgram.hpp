@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <map>
 
 class Vector2;
 class Vector3;
@@ -14,6 +15,7 @@ struct Uniform
     enum class DataType
     {
         MATRIX_4X4,
+        VECTOR2,
         VECTOR3,
         VECTOR4,
         FLOAT,
@@ -71,6 +73,7 @@ public:
     GLuint m_fragmentShaderID;
     GLuint m_shaderProgramID;
     std::vector<Uniform> m_uniforms;
+    //std::map<size_t, Uniform> m_uniforms;
 
 private:
     ShaderProgram(const ShaderProgram&);

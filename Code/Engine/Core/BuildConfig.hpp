@@ -11,6 +11,9 @@
 //Enable Profiling
 #define PROFILING_ENABLED
 
+//Enable checking for OpenGL Errors
+//#define CHECK_GL_ERRORS
+
 /*
 * 0 - All messages are logged
 * 1 - Default messages and above

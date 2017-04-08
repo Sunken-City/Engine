@@ -9,9 +9,10 @@
 #include "Engine/Core/ErrorWarningAssert.hpp"
 
 //-----------------------------------------------------------------------------------
-#define CHECK_GL_ERRORS
 #ifdef CHECK_GL_ERRORS
     #define GL_CHECK_ERROR()  Renderer::GLCheckError(__FILE__, __LINE__);
+#else
+    #define GL_CHECK_ERROR()
 #endif
 
 //-----------------------------------------------------------------------------------

@@ -15,6 +15,8 @@
 #include "../../Math/MathUtilities.hpp"
 #include "../../Input/InputSystem.hpp"
 #include <gl/GL.h>
+#include "../../Core/ProfilingUtils.h"
+#include "../../Core/StringUtils.hpp"
 
 //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
 SpriteGameRenderer* SpriteGameRenderer::instance = nullptr;
@@ -272,6 +274,7 @@ void SpriteGameRenderer::Render()
 
     for (unsigned int i = 0; i < m_numSplitscreenViews; ++i)
     {
+        ProfilingSystem::instance->PushSample("SplitscreenViewRender");
         if (m_viewTexturePool.HasAnyTextures())
         {
             m_currentTexturePool = &m_viewTexturePool;
@@ -283,6 +286,7 @@ void SpriteGameRenderer::Render()
         m_currentViewer = GetVisibilityFilterForPlayerNumber(i);
         RenderView(m_viewportDefinitions[i]); 
         DampScreenshake(i);
+        ProfilingSystem::instance->PopSample("SplitscreenViewRender");
     }
     m_fullscreenCompositeFBO->Bind();
     Renderer::instance->FrameBufferCopyToBack(m_fullscreenCompositeFBO, m_fullscreenCompositeFBO->m_pixelWidth, m_fullscreenCompositeFBO->m_pixelHeight);
@@ -309,7 +313,9 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 
     for (auto layerPair : m_layers)
     {
+        //ProfilingSystem::instance->PushSample("LayerRender");//CStringf("Layer[%i]Render", layerPair.second->m_layerIndex));
         RenderLayer(layerPair.second, renderArea);
+        //ProfilingSystem::instance->PopSample("LayerRender");//CStringf("Layer[%i]Render", layerPair.second->m_layerIndex));
     }
     //m_meshRenderer->m_material = nullptr;
 

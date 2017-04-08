@@ -27,7 +27,8 @@ public:
     Vector2 GetSmallestOutToInResolutionVector(const Vector2& pointOutside);
 
     //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
-    static AABB2 GetIntersectingAABB2(const AABB2& first, const AABB2& second);    
+    static AABB2 GetIntersectingAABB2(const AABB2& first, const AABB2& second);
+    static AABB2 GetEncompassingAABB2(const AABB2& first, const AABB2& second);
     static AABB2 CreateMinkowskiBox(const AABB2& original, float radius);
     static bool IsValid(const AABB2& aabb2ToValidate);
 
@@ -36,6 +37,7 @@ public:
 
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
     static const AABB2 ZERO_TO_ONE;
+    static const AABB2 INVALID;
 
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
     Vector2 mins;

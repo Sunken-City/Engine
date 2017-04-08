@@ -2,6 +2,7 @@
 #include <cmath>
 
 const AABB2 AABB2::ZERO_TO_ONE = AABB2(Vector2::ZERO, Vector2::ONE);
+const AABB2 AABB2::INVALID = AABB2(Vector2::ONE, -Vector2::ONE);
 
 //-----------------------------------------------------------------------------------
 AABB2::AABB2()
@@ -86,10 +87,30 @@ Vector2 AABB2::GetSmallestInToOutResolutionVector(const Vector2& pointInside)
 //-----------------------------------------------------------------------------------
 AABB2 AABB2::GetIntersectingAABB2(const AABB2& first, const AABB2& second)
 {
+    //todo: do invalid checks here.
     float minsX = first.mins.x > second.mins.x ? first.mins.x : second.mins.x;
     float minsY = first.mins.y > second.mins.y ? first.mins.y : second.mins.y;
     float maxsX = first.maxs.x < second.maxs.x ? first.maxs.x : second.maxs.x;
     float maxsY = first.maxs.y < second.maxs.y ? first.maxs.y : second.maxs.y;
+    return AABB2(Vector2(minsX, minsY), Vector2(maxsX, maxsY));
+}
+
+//-----------------------------------------------------------------------------------
+AABB2 AABB2::GetEncompassingAABB2(const AABB2& first, const AABB2& second)
+{
+    //If both are invalid, we should return something invalid anyway
+    if (!IsValid(first))
+    {
+        return second;
+    }
+    if (!IsValid(second))
+    {
+        return first;
+    }
+    float minsX = first.mins.x < second.mins.x ? first.mins.x : second.mins.x;
+    float minsY = first.mins.y < second.mins.y ? first.mins.y : second.mins.y;
+    float maxsX = first.maxs.x > second.maxs.x ? first.maxs.x : second.maxs.x;
+    float maxsY = first.maxs.y > second.maxs.y ? first.maxs.y : second.maxs.y;
     return AABB2(Vector2(minsX, minsY), Vector2(maxsX, maxsY));
 }
 
