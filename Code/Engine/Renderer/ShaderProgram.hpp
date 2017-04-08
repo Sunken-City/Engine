@@ -14,6 +14,7 @@ struct Uniform
     //ENUMS//////////////////////////////////////////////////////////////////////////
     enum class DataType
     {
+        SAMPLER_2D,
         MATRIX_4X4,
         VECTOR2,
         VECTOR3,
@@ -54,7 +55,19 @@ public:
     void ShaderProgramBindProperty(const char *name, GLint count, GLenum type, GLboolean normalize, GLsizei stride, GLsizei offset);
     void ShaderProgramBindIntegerProperty(const char *name, GLint count, GLenum type, GLsizei stride, GLsizei offset);
     void FindAllUniforms();
-    bool SetUniform(const char* name, void* value);
+
+    //SETTING UNIFORMS/////////////////////////////////////////////////////////////////////
+    bool SetUniform(size_t hashedName, void* value);
+    bool SetVec2Uniform(GLint bindPoint, const Vector2& value);
+    bool SetVec3Uniform(GLint bindPoint, const Vector3& value);
+    bool SetVec4Uniform(GLint bindPoint, const Vector4& value);
+    bool SetMatrix4x4Uniform(GLint bindPoint, const Matrix4x4& value);
+    bool SetFloatUniform(GLint bindPoint, float value);
+    bool SetIntUniform(GLint bindPoint, int value);
+
+
+    //DEPRECATED FUNCTIONS, AVOID USING:
+    //These functions look up the bind point every time, and will be removed in the future.
     bool SetVec2Uniform(const char* name, const Vector2& value);
     bool SetVec3Uniform(const char* name, const Vector3& value);
     bool SetVec3Uniform(const char *name, const Vector3& value, unsigned int arrayIndex);
@@ -72,8 +85,7 @@ public:
     GLuint m_vertexShaderID;
     GLuint m_fragmentShaderID;
     GLuint m_shaderProgramID;
-    std::vector<Uniform> m_uniforms;
-    //std::map<size_t, Uniform> m_uniforms;
+    std::map<size_t, Uniform> m_uniforms;
 
 private:
     ShaderProgram(const ShaderProgram&);

@@ -74,6 +74,7 @@ public:
     void CleanUpRenderState() const;
     void ReplaceSampler(unsigned int newSamplerID);
     //NOTE: for the array passings, you have to address the uniform like this "gArray[CurrentIndex]:"
+    inline bool SetUniform(size_t hashedName, void* value) { m_shaderProgram->SetUniform(hashedName, value); };
     inline void SetVec4Uniform(const char* name, const Vector4& value) { m_shaderProgram->SetVec4Uniform(name, value); };
     inline void SetVec3Uniform(const char* name, const Vector3& value) { m_shaderProgram->SetVec3Uniform(name, value); };
     inline void SetVec2Uniform(const char* name, const Vector2& value) { m_shaderProgram->SetVec2Uniform(name, value); };
