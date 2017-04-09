@@ -245,6 +245,7 @@ void ShaderProgram::FindAllAttributes()
         char* nameBuffer = new char[maxNameLength];
         glGetActiveAttrib(m_shaderProgramID, index, maxNameLength, NULL, &size, &type, nameBuffer);
         m_attributes[std::hash<std::string>{}(nameBuffer)] = glGetAttribLocation(m_shaderProgramID, nameBuffer);
+        delete nameBuffer;
     }
 }
 

@@ -537,11 +537,12 @@ SpriteLayer* SpriteGameRenderer::CreateOrGetLayer(int layerNumber)
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::AddEffectToLayer(Material* effectMaterial, int layerNumber, PlayerVisibility visibility /*= PlayerVisibility::ALL*/)
 {
+    static size_t gStartTimeUniform = std::hash<std::string>{}("gStartTime");
     FullScreenEffect fullscreenEffect(effectMaterial);
     fullscreenEffect.m_visibilityFilter = (uchar)visibility;
     CreateOrGetLayer(layerNumber)->m_fullScreenEffects.push_back(fullscreenEffect);
 #pragma todo("This is going to cause a bug if we have multiple copies of the same material.")
-    effectMaterial->SetFloatUniform("gStartTime", (float)GetCurrentTimeSeconds());
+    effectMaterial->SetFloatUniform(gStartTimeUniform, (float)GetCurrentTimeSeconds());
 }
 
 //-----------------------------------------------------------------------------------

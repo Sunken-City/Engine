@@ -63,6 +63,11 @@ Renderer::Renderer()
     m_defaultMaterial = new Material(m_defaultShader, RenderState(RenderState::DepthTestingMode::ON, RenderState::FaceCullingMode::RENDER_BACK_FACES, RenderState::BlendMode::ALPHA_BLEND));
     m_defaultMaterial->SetDiffuseTexture(m_defaultTexture);
 
+    m_depthWritingEnabled = true;
+    m_depthTestingEnabled = true;
+    m_faceCullingEnabled = false;
+    m_blendMode = RenderState::BlendMode::ALPHA_BLEND;
+
     //Making a generic and reusable quad for full screen effects. Material gets set when rendering the effect, but the mesh is the same.
     MeshBuilder builder;
     Mesh* fboEffectMesh = new Mesh();
@@ -317,37 +322,67 @@ void Renderer::Scale(float x, float y, float z)
 //-----------------------------------------------------------------------------------
 void Renderer::EnableAdditiveBlending()
 {
+    if (m_blendMode == RenderState::BlendMode::ADDITIVE_BLEND)
+    {
+        return;
+    }
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+    m_blendMode = RenderState::BlendMode::ADDITIVE_BLEND;
 }
 
 //-----------------------------------------------------------------------------------
 void Renderer::EnableAlphaBlending()
 {
+    if (m_blendMode == RenderState::BlendMode::ALPHA_BLEND)
+    {
+        return;
+    }
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    m_blendMode = RenderState::BlendMode::ALPHA_BLEND;
 }
 
 //-----------------------------------------------------------------------------------
 void Renderer::EnableInvertedBlending()
 {
+    if (m_blendMode == RenderState::BlendMode::INVERTED_BLEND)
+    {
+        return;
+    }
     glBlendFunc(GL_ONE_MINUS_DST_COLOR, GL_ZERO);
+    m_blendMode = RenderState::BlendMode::INVERTED_BLEND;
 }
 
 //-----------------------------------------------------------------------------------
 void Renderer::EnableDepthTest(bool usingDepthTest)
 {
+    if (m_depthTestingEnabled == usingDepthTest)
+    {
+        return;
+    }
     usingDepthTest ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+    m_depthTestingEnabled = usingDepthTest;
 }
 
 //-----------------------------------------------------------------------------------
 void Renderer::EnableDepthWrite()
 {
+    if (m_depthWritingEnabled)
+    {
+        return;
+    }
     glDepthMask(true);
+    m_depthWritingEnabled = true;
 }
 
 //-----------------------------------------------------------------------------------
 void Renderer::DisableDepthWrite()
 {
+    if (!m_depthWritingEnabled)
+    {
+        return;
+    }
     glDepthMask(false);
+    m_depthWritingEnabled = false;
 }
 
 //-----------------------------------------------------------------------------------
@@ -761,7 +796,12 @@ void Renderer::GLCheckError(const char* file, size_t line)
 //-----------------------------------------------------------------------------------
 void Renderer::EnableFaceCulling(bool enabled)
 {
+    if (m_faceCullingEnabled == enabled)
+    {
+        return;
+    }
     enabled ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+    m_faceCullingEnabled = enabled;
 }
 
 //-----------------------------------------------------------------------------------
