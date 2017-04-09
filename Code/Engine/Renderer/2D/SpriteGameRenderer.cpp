@@ -382,7 +382,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
 
     RecalculateVirtualWidthAndHeight(renderArea, layer->m_virtualScaleMultiplier);
     UpdateCameraPositionInWorldBounds(renderArea.m_cameraPosition, layer->m_virtualScaleMultiplier);
-    AABB2 renderBounds = GetVirtualBoundsAroundCameraCenter();
+    AABB2 renderBounds = GetVirtualBoundsAroundCameraCenter(); //GetDebuggingVirtualBoundsAroundCameraCenter ();
     UpdateAnchorTransforms();
 
     if (layer->m_isEnabled)
@@ -766,6 +766,14 @@ float SpriteGameRenderer::GetPixelsPerVirtualUnit()
 float SpriteGameRenderer::GetVirtualUnitsPerPixel()
 {
     return (this->m_windowVirtualHeight / this->m_screenResolution.y);
+}
+
+//-----------------------------------------------------------------------------------
+//Used to fake the bounds and test culling.
+AABB2 SpriteGameRenderer::GetDebuggingVirtualBoundsAroundCameraCenter()
+{
+    const Vector2 halfSize(2.0f);
+    return AABB2(m_cameraPosition - halfSize, m_cameraPosition + halfSize);
 }
 
 //-----------------------------------------------------------------------------------

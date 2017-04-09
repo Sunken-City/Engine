@@ -21,7 +21,11 @@ TextRenderable2D::~TextRenderable2D()
 //-----------------------------------------------------------------------------------
 void TextRenderable2D::Update(float)
 {
-
+    static const float TEXT_SANITY_CONSTANT = 0.05f;
+    m_bounds = m_font->CalcTextBounds(m_text, TEXT_SANITY_CONSTANT * m_fontSize * m_transform.GetWorldScale().x);
+    Vector2 size = Vector2(m_bounds.GetWidth(), m_bounds.GetHeight());
+    m_bounds += size * -0.5f;
+    m_bounds += m_transform.GetWorldPosition();
 }
 
 //-----------------------------------------------------------------------------------
@@ -44,6 +48,9 @@ void TextRenderable2D::Render(BufferedMeshRenderer& renderer)
     renderer.m_builder.AddText2D(size * -0.5f, m_text, TEXT_SANITY_CONSTANT * m_fontSize * m_transform.GetWorldScale().x, m_color, true, m_font);
     renderer.m_builder.CopyToMesh(&renderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
 
+    m_bounds += size * -0.5f;
+    m_bounds += m_transform.GetWorldPosition();
+
 #pragma todo("This should be unneccessary once we have batching done properly")
     renderer.FlushAndRender();
 }
@@ -51,5 +58,5 @@ void TextRenderable2D::Render(BufferedMeshRenderer& renderer)
 //-----------------------------------------------------------------------------------
 AABB2 TextRenderable2D::GetBounds()
 {
-    return AABB2();
+    return m_bounds;
 }
