@@ -455,7 +455,6 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
         }
 
         Texture* effectCanvas = m_currentTexturePool->GetUnusedTexture();
-        Renderer::instance->ClearDepth();
         for(const FullScreenEffect& effect: layer->m_fullScreenEffects) 
         {
             bool canBeRendered = ((uchar)m_currentViewer & effect.m_visibilityFilter) > 0;
@@ -470,7 +469,6 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             currentEffect->SetFloatUniform(gTimeUniform, (float)GetCurrentTimeSeconds());
             currentEffect->SetVec2Uniform(gWindowResolutionUniform, Vector2(m_windowVirtualWidth, m_windowVirtualHeight));
             Renderer::instance->RenderFullScreenEffect(currentEffect);
-            Renderer::instance->ClearDepth();
             Renderer::instance->BindFramebuffer(nullptr);
             effectCanvas = m_currentFBO->SwapColorTarget(effectCanvas, 0);
             m_currentFBO->Bind();
@@ -688,13 +686,15 @@ void SpriteGameRenderer::DrawVertexArray(const Vertex_Sprite* vertexes, int numV
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::DrawLine(const Vector2& start, const Vector2& end, const RGBA& color/* = RGBA::WHITE*/, float lineThickness /*= 1.0f*/)
 {
-    glLineWidth(lineThickness);
+    Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::OFF;
+    Renderer::instance->SetLineWidth(lineThickness);
     Vertex_Sprite vertexes[2];
     vertexes[0].position = start;
     vertexes[1].position = end;
     vertexes[0].color = color;
     vertexes[1].color = color;
     DrawVertexArray(vertexes, 2, Renderer::DrawMode::LINES);
+    Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::ON;
 }
 
 //-----------------------------------------------------------------------------------

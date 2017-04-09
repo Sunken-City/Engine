@@ -164,5 +164,11 @@ public:
     bool m_faceCullingEnabled;
     bool m_depthTestingEnabled;
     bool m_depthWritingEnabled;
+    float m_lineWidth = 0.0f;
+    float m_pointSize = 0.0f;
+    GLint m_viewportX = 0;
+    GLint m_viewportY = 0;
+    GLsizei m_viewportWidth = 0;
+    GLsizei m_viewportHeight = 0;
     GLuint m_fboHandle = NULL;
 };
