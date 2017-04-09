@@ -94,33 +94,40 @@ Material::~Material()
 //-----------------------------------------------------------------------------------
 void Material::SetMatrices(const Matrix4x4& model, const Matrix4x4& view, const Matrix4x4& projection)
 {
-    m_shaderProgram->SetMatrix4x4Uniform("gModel", model);
-    m_shaderProgram->SetMatrix4x4Uniform("gView", view);
-    m_shaderProgram->SetMatrix4x4Uniform("gProj", projection);
+    static size_t gModelUniform = std::hash<std::string>{}("gModel");
+    static size_t gViewUniform = std::hash<std::string>{}("gView");
+    static size_t gProjUniform = std::hash<std::string>{}("gProj");
+    m_shaderProgram->SetMatrix4x4Uniform(m_shaderProgram->GetBindPoint(gModelUniform), model);
+    m_shaderProgram->SetMatrix4x4Uniform(m_shaderProgram->GetBindPoint(gViewUniform), view);
+    m_shaderProgram->SetMatrix4x4Uniform(m_shaderProgram->GetBindPoint(gProjUniform), projection);
 }
 
 //-----------------------------------------------------------------------------------
 void Material::BindAvailableTextures() const
 {
+    static size_t gDiffuseTextureUniform = std::hash<std::string>{}("gDiffuseTexture");
+    static size_t gNormalTextureUniform = std::hash<std::string>{}("gNormalTexture");
+    static size_t gEmissiveTextureUniform = std::hash<std::string>{}("gEmissiveTexture");
+    static size_t gNoiseTextureUniform = std::hash<std::string>{}("gNoiseTexture");
     glActiveTexture(GL_TEXTURE0 + 0);
     glBindTexture(GL_TEXTURE_2D, m_diffuseID);
     glBindSampler(0, m_samplerID);
-    m_shaderProgram->SetIntUniform("gDiffuseTexture", 0);
+    m_shaderProgram->SetIntUniform(m_shaderProgram->GetBindPoint(gDiffuseTextureUniform), 0);
 
     glActiveTexture(GL_TEXTURE0 + 1);
     glBindTexture(GL_TEXTURE_2D, m_normalID);
     glBindSampler(1, m_samplerID);
-    m_shaderProgram->SetIntUniform("gNormalTexture", 1);
+    m_shaderProgram->SetIntUniform(m_shaderProgram->GetBindPoint(gNormalTextureUniform), 1);
 
     glActiveTexture(GL_TEXTURE0 + 2);
     glBindTexture(GL_TEXTURE_2D, m_emissiveID);
     glBindSampler(2, m_samplerID);
-    m_shaderProgram->SetIntUniform("gEmissiveTexture", 2);
+    m_shaderProgram->SetIntUniform(m_shaderProgram->GetBindPoint(gEmissiveTextureUniform), 2);
 
     glActiveTexture(GL_TEXTURE0 + 3);
     glBindTexture(GL_TEXTURE_2D, m_noiseID);
     glBindSampler(3, m_samplerID);
-    m_shaderProgram->SetIntUniform("gNoiseTexture", 3);
+    m_shaderProgram->SetIntUniform(m_shaderProgram->GetBindPoint(gNoiseTextureUniform), 3);
 }
 
 //-----------------------------------------------------------------------------------

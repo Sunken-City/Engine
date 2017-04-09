@@ -394,8 +394,6 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
 
         Vector2 cameraPos = layer->m_isWorldSpaceLayer ? m_cameraPosition : Vector2::ZERO;
         cameraPos += m_screenshakeOffset;
-        int viewport[4];
-        glGetIntegerv(GL_VIEWPORT, viewport);
 
         m_currentFBO->Bind();
         Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, cameraPos);
