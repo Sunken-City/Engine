@@ -87,6 +87,7 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
     const bool lockParticlesToEmitter = m_definition->m_properties.Get<bool>(PROPERTY_LOCK_PARTICLES_TO_EMITTER);
     const Vector2 scaleRateOfChangePerSecond = m_definition->m_properties.Get<Range<Vector2>>(PROPERTY_DELTA_SCALE_PER_SECOND).GetRandom();
     std::string debugName = m_definition->m_properties.Get<std::string>(PROPERTY_NAME);
+    const SpriteResource* resource = GetSpriteResource();
     m_boundingBox = AABB2::INVALID;
 
     for (Particle& particle : m_particles)
@@ -98,7 +99,11 @@ void ParticleEmitter::UpdateParticles(float deltaSeconds)
         particle.m_velocity += acceleration * deltaSeconds;
         particle.m_scale += scaleRateOfChangePerSecond * deltaSeconds;
         particle.m_rotationDegrees += particle.m_angularVelocityDegrees * deltaSeconds;
-        AABB2 particleBounds = AABB2(particle.m_position - particle.m_scale, particle.m_position + particle.m_scale);
+        
+        AABB2 particleBounds = resource->GetDefaultBounds();
+        particleBounds.mins *= particle.m_scale;
+        particleBounds.maxs *= particle.m_scale;
+        particleBounds += particle.m_position;
         m_boundingBox = AABB2::GetEncompassingAABB2(m_boundingBox, particleBounds);
 
         if (lockParticlesToEmitter)
@@ -332,6 +337,7 @@ void RibbonParticleSystem::Render(BufferedMeshRenderer& renderer)
             renderer.SetModelMatrix(Matrix4x4::IDENTITY);
 
             emitter->BuildRibbonParticles(renderer);
+
 #pragma todo("Remove this flush once we're ready to")
             renderer.FlushAndRender();
         }

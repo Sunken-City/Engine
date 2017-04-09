@@ -149,6 +149,7 @@ public:
     //GETTERS/////////////////////////////////////////////////////////////////////
     float GetPixelsPerVirtualUnit();
     float GetVirtualUnitsPerPixel();
+    AABB2 GetDebuggingVirtualBoundsAroundCameraCenter();
     AABB2 GetVirtualBoundsAroundCameraCenter();
     AABB2 GetVirtualBoundsAroundWorldCenter();
     bool IsInsideWorldBounds(const Vector2& attemptedPosition);
