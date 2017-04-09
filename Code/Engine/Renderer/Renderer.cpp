@@ -177,7 +177,17 @@ void Renderer::EndPerspective()
 //-----------------------------------------------------------------------------------
 void Renderer::SetViewport(GLint x, GLint y, GLsizei width, GLsizei height)
 {
+    if (x == m_viewportX && y == m_viewportY && width == m_viewportWidth && height == m_viewportHeight)
+    {
+        return;
+    }
+
     glViewport(x, y, width, height);
+
+    m_viewportX = x;
+    m_viewportY = y;
+    m_viewportWidth = width;
+    m_viewportHeight = height;
 }
 
 //-----------------------------------------------------------------------------------
@@ -262,13 +272,23 @@ void Renderer::SetColor(const RGBA& color)
 //-----------------------------------------------------------------------------------
 void Renderer::SetPointSize(float size)
 {
+    if (m_pointSize == size)
+    {
+        return;
+    }
     glPointSize(size);
+    m_pointSize = size;
 }
 
 //-----------------------------------------------------------------------------------
 void Renderer::SetLineWidth(float width)
 {
+    if (m_lineWidth == width)
+    {
+        return;
+    }
     glLineWidth(width);
+    m_lineWidth = width;
 }
 
 //-----------------------------------------------------------------------------------
@@ -1093,7 +1113,7 @@ void Renderer::SetRenderTargets(size_t colorCount, Texture** inColorTargets, Tex
     //OpenGL initialization stuff
     //If you bound a framebuffer to your Renderer, be careful you didn't unbind just now...
     glBindFramebuffer(GL_FRAMEBUFFER, m_fboHandle);
-    glViewport(0, 0, width, height);
+    Renderer::instance->SetViewport(0, 0, width, height);
 
     //Bind our color targets to our FBO
     for (uint32_t i = 0; i < colorCount; ++i)
@@ -1149,13 +1169,13 @@ void Renderer::BindFramebuffer(Framebuffer* fbo)
         glBindFramebuffer(GL_FRAMEBUFFER, NULL);
         #pragma TODO("Make aspect not hard-coded!!!")
 
-        glViewport(0, 0, 1600, 900);
+        Renderer::instance->SetViewport(0, 0, 1600, 900);
 
     }
     else
     {
         glBindFramebuffer(GL_FRAMEBUFFER, fbo->m_fboHandle);
-        glViewport(0, 0, fbo->m_pixelWidth, fbo->m_pixelHeight);
+        Renderer::instance->SetViewport(0, 0, fbo->m_pixelWidth, fbo->m_pixelHeight);
 
         GLenum renderTargets[32];
         memset(renderTargets, 0, sizeof(renderTargets));

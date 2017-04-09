@@ -149,7 +149,7 @@ void Material::UnbindAvailableTextures() const
     glBindTexture(GL_TEXTURE_2D, NULL);
     glBindSampler(0, NULL);
 
-    glActiveTexture(GL_TEXTURE0);
+    //glActiveTexture(GL_TEXTURE0); Removed for redundant state changes. Might need this boy later.
 }
 
 //-----------------------------------------------------------------------------------

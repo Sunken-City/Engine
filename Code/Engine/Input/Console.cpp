@@ -170,22 +170,25 @@ void Console::Render() const
     if (m_isActive)
     {
         Renderer::instance->BeginOrtho(Vector2(0.0f, 0.0f), Vector2(1600, 900));
-        Renderer::instance->EnableDepthTest(false);
-        Renderer::instance->DrawAABB(AABB2(Vector2(0, 0), Vector2(1600, 900)), RGBA(0x00000088));
-
-        Vector2 currentBaseline = Vector2::ONE * 10.0f;
-        Renderer::instance->DrawText2D(currentBaseline, std::string(m_currentLine), 1.0f, RGBA::WHITE, true, m_font);
-        unsigned int index = m_consoleHistory.size() - 1;
-        unsigned int numberOfLinesPrinted = 0;
-        for (auto reverseIterator = m_consoleHistory.rbegin(); reverseIterator != m_consoleHistory.rend(); ++reverseIterator, --index)
         {
-            currentBaseline += Vector2(0.0f, (float)m_font->m_maxHeight);
-            Renderer::instance->DrawText2D(currentBaseline, m_consoleHistory[index]->text, 1.0f, m_consoleHistory[index]->color, true, m_font);
-            numberOfLinesPrinted++;
-            if (numberOfLinesPrinted > MAX_CONSOLE_LINES)
+            Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::OFF;
+            Renderer::instance->DrawAABB(AABB2(Vector2(0, 0), Vector2(1600, 900)), RGBA(0x00000088));
+
+            Vector2 currentBaseline = Vector2::ONE * 10.0f;
+            Renderer::instance->DrawText2D(currentBaseline, std::string(m_currentLine), 1.0f, RGBA::WHITE, true, m_font);
+            unsigned int index = m_consoleHistory.size() - 1;
+            unsigned int numberOfLinesPrinted = 0;
+            for (auto reverseIterator = m_consoleHistory.rbegin(); reverseIterator != m_consoleHistory.rend(); ++reverseIterator, --index)
             {
-                break;
+                currentBaseline += Vector2(0.0f, (float)m_font->m_maxHeight);
+                Renderer::instance->DrawText2D(currentBaseline, m_consoleHistory[index]->text, 1.0f, m_consoleHistory[index]->color, true, m_font);
+                numberOfLinesPrinted++;
+                if (numberOfLinesPrinted > MAX_CONSOLE_LINES)
+                {
+                    break;
+                }
             }
+            Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::ON;
         }
         Renderer::instance->EndOrtho();
     }
