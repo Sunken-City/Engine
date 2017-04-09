@@ -8,6 +8,19 @@
 #include "Engine/Renderer/OpenGLExtensions.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 
+size_t inPositionAttrib = std::hash<std::string>{}("inPosition");
+size_t inColorAttrib = std::hash<std::string>{}("inColor");
+size_t inUV0Attrib = std::hash<std::string>{}("inUV0");
+size_t inTangentAttrib = std::hash<std::string>{}("inTangent");
+size_t inBitangentAttrib = std::hash<std::string>{}("inBitangent");
+size_t inNormalAttrib = std::hash<std::string>{}("inNormal");
+size_t inNormalizedGlyphPositionAttrib = std::hash<std::string>{}("inNormalizedGlyphPosition");
+size_t inNormalizedStringPositionAttrib = std::hash<std::string>{}("inNormalizedStringPosition");
+size_t inBoneWeightsAttrib = std::hash<std::string>{}("inBoneWeights");
+size_t inBoneIndicesAttrib = std::hash<std::string>{}("inBoneIndices");
+size_t inFloatData0Attrib = std::hash<std::string>{}("inFloatData0");
+
+
 //Defaults for the vertex master's uninitialized values
 //-----------------------------------------------------------------------------------
 Vertex_Master::Vertex_Master()
@@ -53,9 +66,9 @@ void Vertex_PCT::BindMeshToVAO(GLuint vao, GLuint vbo, GLuint ibo, ShaderProgram
 {
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    program->ShaderProgramBindProperty("inPosition", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCT), offsetof(Vertex_PCT, pos));
-    program->ShaderProgramBindProperty("inColor", 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex_PCT), offsetof(Vertex_PCT, color));
-    program->ShaderProgramBindProperty("inUV0", 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCT), offsetof(Vertex_PCT, texCoords));
+    program->ShaderProgramBindProperty(inPositionAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCT), offsetof(Vertex_PCT, pos));
+    program->ShaderProgramBindProperty(inColorAttrib, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex_PCT), offsetof(Vertex_PCT, color));
+    program->ShaderProgramBindProperty(inUV0Attrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCT), offsetof(Vertex_PCT, texCoords));
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
     if (ibo != NULL)
     {
@@ -71,11 +84,11 @@ void Vertex_PCUTB::BindMeshToVAO(GLuint vao, GLuint vbo, GLuint ibo, ShaderProgr
     GL_CHECK_ERROR();
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     GL_CHECK_ERROR();
-    program->ShaderProgramBindProperty("inPosition", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCUTB), offsetof(Vertex_PCUTB, pos));
-    program->ShaderProgramBindProperty("inColor", 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex_PCUTB), offsetof(Vertex_PCUTB, color));
-    program->ShaderProgramBindProperty("inUV0", 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCUTB), offsetof(Vertex_PCUTB, texCoords));
-    program->ShaderProgramBindProperty("inTangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCUTB), offsetof(Vertex_PCUTB, tangent));
-    program->ShaderProgramBindProperty("inBitangent", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCUTB), offsetof(Vertex_PCUTB, bitangent));
+    program->ShaderProgramBindProperty(inPositionAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCUTB), offsetof(Vertex_PCUTB, pos));
+    program->ShaderProgramBindProperty(inColorAttrib, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex_PCUTB), offsetof(Vertex_PCUTB, color));
+    program->ShaderProgramBindProperty(inUV0Attrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCUTB), offsetof(Vertex_PCUTB, texCoords));
+    program->ShaderProgramBindProperty(inTangentAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCUTB), offsetof(Vertex_PCUTB, tangent));
+    program->ShaderProgramBindProperty(inBitangentAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCUTB), offsetof(Vertex_PCUTB, bitangent));
     GL_CHECK_ERROR();
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
     GL_CHECK_ERROR();
@@ -104,11 +117,11 @@ void Vertex_TextPCT::BindMeshToVAO(GLuint vao, GLuint vbo, GLuint ibo, ShaderPro
 {
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    program->ShaderProgramBindProperty("inPosition", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_TextPCT), offsetof(Vertex_TextPCT, pos));
-    program->ShaderProgramBindProperty("inColor", 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex_TextPCT), offsetof(Vertex_TextPCT, color));
-    program->ShaderProgramBindProperty("inUV0", 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_TextPCT), offsetof(Vertex_TextPCT, texCoords));
-    program->ShaderProgramBindProperty("inNormalizedGlyphPosition", 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_TextPCT), offsetof(Vertex_TextPCT, normalizedGlyphPosition));
-    program->ShaderProgramBindProperty("inNormalizedStringPosition", 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_TextPCT), offsetof(Vertex_TextPCT, normalizedStringPosition));
+    program->ShaderProgramBindProperty(inPositionAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_TextPCT), offsetof(Vertex_TextPCT, pos));
+    program->ShaderProgramBindProperty(inColorAttrib, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex_TextPCT), offsetof(Vertex_TextPCT, color));
+    program->ShaderProgramBindProperty(inUV0Attrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_TextPCT), offsetof(Vertex_TextPCT, texCoords));
+    program->ShaderProgramBindProperty(inNormalizedGlyphPositionAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_TextPCT), offsetof(Vertex_TextPCT, normalizedGlyphPosition));
+    program->ShaderProgramBindProperty(inNormalizedStringPositionAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_TextPCT), offsetof(Vertex_TextPCT, normalizedStringPosition));
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
     if (ibo != NULL)
     {
@@ -134,12 +147,12 @@ void Vertex_SkinnedPCTN::BindMeshToVAO(GLuint vao, GLuint vbo, GLuint ibo, Shade
 {
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    program->ShaderProgramBindProperty("inPosition", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_SkinnedPCTN), offsetof(Vertex_SkinnedPCTN, pos));
-    program->ShaderProgramBindProperty("inColor", 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex_SkinnedPCTN), offsetof(Vertex_SkinnedPCTN, color));
-    program->ShaderProgramBindProperty("inUV0", 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_SkinnedPCTN), offsetof(Vertex_SkinnedPCTN, texCoords));
-    program->ShaderProgramBindProperty("inNormal", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_SkinnedPCTN), offsetof(Vertex_SkinnedPCTN, normal));
-    program->ShaderProgramBindIntegerProperty("inBoneIndices", 4, GL_INT, sizeof(Vertex_SkinnedPCTN), offsetof(Vertex_SkinnedPCTN, boneIndices));
-    program->ShaderProgramBindProperty("inBoneWeights", 4, GL_FLOAT, GL_FALSE, sizeof(Vertex_SkinnedPCTN), offsetof(Vertex_SkinnedPCTN, boneWeights));
+    program->ShaderProgramBindProperty(inPositionAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_SkinnedPCTN), offsetof(Vertex_SkinnedPCTN, pos));
+    program->ShaderProgramBindProperty(inColorAttrib, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex_SkinnedPCTN), offsetof(Vertex_SkinnedPCTN, color));
+    program->ShaderProgramBindProperty(inUV0Attrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_SkinnedPCTN), offsetof(Vertex_SkinnedPCTN, texCoords));
+    program->ShaderProgramBindProperty(inNormalAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_SkinnedPCTN), offsetof(Vertex_SkinnedPCTN, normal));
+    program->ShaderProgramBindIntegerProperty(inBoneIndicesAttrib, 4, GL_INT, sizeof(Vertex_SkinnedPCTN), offsetof(Vertex_SkinnedPCTN, boneIndices));
+    program->ShaderProgramBindProperty(inBoneWeightsAttrib, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex_SkinnedPCTN), offsetof(Vertex_SkinnedPCTN, boneWeights));
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
     if (ibo != NULL)
     {
@@ -163,10 +176,10 @@ void Vertex_PCTD::BindMeshToVAO(GLuint vao, GLuint vbo, GLuint ibo, ShaderProgra
 {
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    program->ShaderProgramBindProperty("inPosition", 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCTD), offsetof(Vertex_PCTD, pos));
-    program->ShaderProgramBindProperty("inColor", 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex_PCTD), offsetof(Vertex_PCTD, color));
-    program->ShaderProgramBindProperty("inUV0", 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCTD), offsetof(Vertex_PCTD, texCoords));
-    program->ShaderProgramBindProperty("inFloatData0", 4, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCTD), offsetof(Vertex_PCTD, floatData0));
+    program->ShaderProgramBindProperty(inPositionAttrib, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCTD), offsetof(Vertex_PCTD, pos));
+    program->ShaderProgramBindProperty(inColorAttrib, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex_PCTD), offsetof(Vertex_PCTD, color));
+    program->ShaderProgramBindProperty(inUV0Attrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCTD), offsetof(Vertex_PCTD, texCoords));
+    program->ShaderProgramBindProperty(inFloatData0Attrib, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex_PCTD), offsetof(Vertex_PCTD, floatData0));
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
     if (ibo != NULL)
     {
@@ -189,9 +202,9 @@ void Vertex_Sprite::BindMeshToVAO(GLuint vao, GLuint vbo, GLuint ibo, ShaderProg
 {
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    program->ShaderProgramBindProperty("inPosition", 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_Sprite), offsetof(Vertex_Sprite, position));
-    program->ShaderProgramBindProperty("inColor", 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex_Sprite), offsetof(Vertex_Sprite, color));
-    program->ShaderProgramBindProperty("inUV0", 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_Sprite), offsetof(Vertex_Sprite, uv));
+    program->ShaderProgramBindProperty(inPositionAttrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_Sprite), offsetof(Vertex_Sprite, position));
+    program->ShaderProgramBindProperty(inColorAttrib, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex_Sprite), offsetof(Vertex_Sprite, color));
+    program->ShaderProgramBindProperty(inUV0Attrib, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex_Sprite), offsetof(Vertex_Sprite, uv));
     glBindBuffer(GL_ARRAY_BUFFER, NULL);
     if (ibo != NULL)
     {

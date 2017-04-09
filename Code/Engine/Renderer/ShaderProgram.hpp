@@ -52,8 +52,9 @@ public:
     GLuint LoadShader(const char* filename, GLuint shaderType);
     GLuint LoadShaderFromString(const char* shaderCode, GLuint shaderType, const char* filename = nullptr);
     GLuint CreateAndLinkProgram(GLuint vs, GLuint fs);
-    void ShaderProgramBindProperty(const char *name, GLint count, GLenum type, GLboolean normalize, GLsizei stride, GLsizei offset);
-    void ShaderProgramBindIntegerProperty(const char *name, GLint count, GLenum type, GLsizei stride, GLsizei offset);
+    void ShaderProgramBindProperty(size_t hashedName, GLint count, GLenum type, GLboolean normalize, GLsizei stride, GLsizei offset);
+    void ShaderProgramBindIntegerProperty(size_t hashedName, GLint count, GLenum type, GLsizei stride, GLsizei offset);
+    void FindAllAttributes();
     void FindAllUniforms();
     void BindUniformBuffer(const char* uniformBlockName, GLint bindPoint);
     GLint GetBindPoint(size_t hashedName);
@@ -88,6 +89,7 @@ public:
     GLuint m_fragmentShaderID;
     GLuint m_shaderProgramID;
     std::map<size_t, Uniform> m_uniforms;
+    std::map<size_t, GLint> m_attributes;
 
 private:
     ShaderProgram(const ShaderProgram&);
