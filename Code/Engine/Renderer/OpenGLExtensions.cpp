@@ -26,6 +26,7 @@ PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = nullptr;
 PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = nullptr;
 PFNGLBINDVERTEXARRAYPROC glBindVertexArray = nullptr;
 PFNGLGETATTRIBLOCATIONPROC glGetAttribLocation = nullptr;
+PFNGLGETACTIVEATTRIBPROC glGetActiveAttrib = nullptr;
 PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = nullptr;
 PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = nullptr;
 PFNGLVERTEXATTRIBIPOINTERPROC glVertexAttribIPointer = nullptr;
@@ -92,6 +93,7 @@ void hookUpOpenGLPointers()
     glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)wglGetProcAddress("glDeleteVertexArrays");
     glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)wglGetProcAddress("glBindVertexArray");
     glGetAttribLocation = (PFNGLGETATTRIBLOCATIONPROC)wglGetProcAddress("glGetAttribLocation");
+    glGetActiveAttrib = (PFNGLGETACTIVEATTRIBPROC)wglGetProcAddress("glGetActiveAttrib");
     glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)wglGetProcAddress("glEnableVertexAttribArray");
     glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)wglGetProcAddress("glVertexAttribPointer");
     glVertexAttribIPointer = (PFNGLVERTEXATTRIBIPOINTERPROC)wglGetProcAddress("glVertexAttribIPointer");

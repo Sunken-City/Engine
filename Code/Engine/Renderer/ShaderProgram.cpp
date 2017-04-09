@@ -28,6 +28,7 @@ ShaderProgram::ShaderProgram(const char* vertShaderPath, const char* fragShaderP
     , m_fragmentShaderID(LoadShader(fragShaderPath, GL_FRAGMENT_SHADER))
     , m_shaderProgramID(CreateAndLinkProgram(m_vertexShaderID, m_fragmentShaderID))
 {
+    FindAllAttributes();
     FindAllUniforms();
     ASSERT_OR_DIE(m_vertexShaderID != NULL && m_fragmentShaderID != NULL, "Error: Vertex or Fragment Shader was null");
     ASSERT_OR_DIE(m_shaderProgramID != NULL, "Error: Program linking id was null");
@@ -61,6 +62,7 @@ ShaderProgram* ShaderProgram::CreateFromShaderStrings(const char* vertShaderStri
         g_memoryAnalytics.TrackShaderAllocation();
     }
     #endif
+    shader->FindAllAttributes();
     shader->FindAllUniforms();
     return shader;
 }
@@ -183,9 +185,17 @@ GLuint ShaderProgram::CreateAndLinkProgram(GLuint vertexShader, GLuint fragmentS
 }
 
 //-----------------------------------------------------------------------------------
-void ShaderProgram::ShaderProgramBindProperty(const char *name, GLint count, GLenum type, GLboolean normalize, GLsizei stride, GLsizei offset)
+void ShaderProgram::ShaderProgramBindProperty(size_t hashedName, GLint count, GLenum type, GLboolean normalize, GLsizei stride, GLsizei offset)
 {
-    GLint property = glGetAttribLocation(m_shaderProgramID, name);
+    GLint property = -1;
+    auto iter = m_attributes.find(hashedName);
+    if (iter != m_attributes.end())
+    {
+        property = iter->second;
+    }
+    //GLint property = glGetAttribLocation(m_shaderProgramID, name);
+    //property = glGetAttribLocation(m_shaderProgramID, "inColor");
+
     if (property >= 0)
     {
         glEnableVertexAttribArray(property);
@@ -200,9 +210,15 @@ void ShaderProgram::ShaderProgramBindProperty(const char *name, GLint count, GLe
 }
 
 //-----------------------------------------------------------------------------------
-void ShaderProgram::ShaderProgramBindIntegerProperty(const char *name, GLint count, GLenum type, GLsizei stride, GLsizei offset)
+void ShaderProgram::ShaderProgramBindIntegerProperty(size_t hashedName,  GLint count, GLenum type, GLsizei stride, GLsizei offset)
 {
-    GLint property = glGetAttribLocation(m_shaderProgramID, name);
+    GLint property = -1;
+    auto iter = m_attributes.find(hashedName);
+    if (iter != m_attributes.end())
+    {
+        property = iter->second;
+    }
+    //GLint property = glGetAttribLocation(m_shaderProgramID, name);
     if (property >= 0)
     {
         glEnableVertexAttribArray(property);
@@ -212,6 +228,23 @@ void ShaderProgram::ShaderProgramBindIntegerProperty(const char *name, GLint cou
             stride, //stride
             (GLvoid*)offset //From that point in memory, how far do we have to go to get the value?
             );
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void ShaderProgram::FindAllAttributes()
+{
+    GLint numberOfActiveAttributes;
+    glGetProgramiv(m_shaderProgramID, GL_ACTIVE_ATTRIBUTES, &numberOfActiveAttributes);
+    GLint maxNameLength;
+    glGetProgramiv(m_shaderProgramID, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxNameLength);
+    for (int index = 0; index < numberOfActiveAttributes; index++)
+    {
+        GLint size;
+        GLenum type;
+        char* nameBuffer = new char[maxNameLength];
+        glGetActiveAttrib(m_shaderProgramID, index, maxNameLength, NULL, &size, &type, nameBuffer);
+        m_attributes[std::hash<std::string>{}(nameBuffer)] = glGetAttribLocation(m_shaderProgramID, nameBuffer);
     }
 }
 
