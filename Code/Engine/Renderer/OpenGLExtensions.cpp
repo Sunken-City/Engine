@@ -4,6 +4,8 @@ PFNGLGENBUFFERSPROC glGenBuffers = nullptr;
 PFNGLDELETEBUFFERSPROC glDeleteBuffers = nullptr;
 PFNGLBINDBUFFERPROC glBindBuffer = nullptr;
 PFNGLBUFFERDATAPROC glBufferData = nullptr;
+PFNGLBINDBUFFERBASEPROC glBindBufferBase = nullptr;
+PFNGLBUFFERSUBDATAPROC glBufferSubData = nullptr;
 
 PFNGLCREATESHADERPROC glCreateShader = nullptr;
 PFNGLSHADERSOURCEPROC glShaderSource = nullptr;
@@ -43,6 +45,9 @@ PFNGLUNIFORM4IVPROC	glUniform4iv = nullptr;
 PFNGLCLEARBUFFERUIVPROC	glClearBufferuiv = nullptr;
 PFNGLCLEARBUFFERFVPROC	glClearBufferfv  = nullptr;
 
+PFNGLGETUNIFORMBLOCKINDEXPROC glGetUniformBlockIndex = nullptr;
+PFNGLUNIFORMBLOCKBINDINGPROC glUniformBlockBinding = nullptr;
+
 PFNGLBINDSAMPLERPROC glBindSampler = nullptr;
 PFNGLGENSAMPLERSPROC glGenSamplers = nullptr;
 PFNGLSAMPLERPARAMETERIPROC glSamplerParameteri = nullptr;
@@ -65,6 +70,8 @@ void hookUpOpenGLPointers()
     glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)wglGetProcAddress("glDeleteBuffers");
     glBindBuffer = (PFNGLBINDBUFFERPROC)wglGetProcAddress("glBindBuffer");
     glBufferData = (PFNGLBUFFERDATAPROC)wglGetProcAddress("glBufferData");
+    glBindBufferBase = (PFNGLBINDBUFFERBASEPROC)wglGetProcAddress("glBindBufferBase");
+    glBufferSubData = (PFNGLBUFFERSUBDATAPROC)wglGetProcAddress("glBufferSubData");
 
     glCreateShader = (PFNGLCREATESHADERPROC)wglGetProcAddress("glCreateShader");
     glShaderSource = (PFNGLSHADERSOURCEPROC)wglGetProcAddress("glShaderSource");
@@ -103,6 +110,8 @@ void hookUpOpenGLPointers()
 
     glClearBufferuiv = (PFNGLCLEARBUFFERUIVPROC)wglGetProcAddress("glClearBufferuiv");
     glClearBufferfv = (PFNGLCLEARBUFFERFVPROC)wglGetProcAddress("glClearBufferfv");
+    glGetUniformBlockIndex = (PFNGLGETUNIFORMBLOCKINDEXPROC)wglGetProcAddress("glGetUniformBlockIndex");
+    glUniformBlockBinding = (PFNGLUNIFORMBLOCKBINDINGPROC)wglGetProcAddress("glUniformBlockBinding");
 
     glBindSampler = (PFNGLBINDSAMPLERPROC)wglGetProcAddress("glBindSampler");
     glGenSamplers = (PFNGLGENSAMPLERSPROC)wglGetProcAddress("glGenSamplers");

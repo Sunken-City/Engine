@@ -142,6 +142,7 @@ public:
     void TranslateView(const Vector3& translation);
     void DeleteVAOHandle(GLuint m_vaoID);
     void ClearDepth(float depthValue = 1.0f);
+    GLuint CreateRenderBuffer(size_t size);
 
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const int CIRCLE_SIDES = 50;
