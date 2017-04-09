@@ -7,6 +7,7 @@
 #include "Engine/Math/Matrix4x4.hpp"
 #include "Engine/Math/MatrixStack4x4.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
+#include "Engine/Renderer/Material.hpp"
 
 //-----------------------------------------------------------------------------------
 #ifdef CHECK_GL_ERRORS
@@ -159,5 +160,9 @@ public:
     Framebuffer* m_fbo;
     MatrixStack4x4 m_projStack;
     MatrixStack4x4 m_viewStack;
+    RenderState::BlendMode m_blendMode;
+    bool m_faceCullingEnabled;
+    bool m_depthTestingEnabled;
+    bool m_depthWritingEnabled;
     GLuint m_fboHandle = NULL;
 };

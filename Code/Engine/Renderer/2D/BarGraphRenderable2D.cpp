@@ -47,7 +47,8 @@ AABB2 BarGraphRenderable2D::GetBounds()
 //-----------------------------------------------------------------------------------
 void BarGraphRenderable2D::Render(BufferedMeshRenderer& renderer)
 {
-    m_material->SetFloatUniform("gPercentageFilled", m_animatedPercentageFilled);
+    static size_t gPercentageFilledUniform = std::hash<std::string>{}("gPercentageFilled");
+    m_material->SetFloatUniform(gPercentageFilledUniform, m_animatedPercentageFilled);
     renderer.SetMaterial(m_material);
 
     unsigned int indices[6] = { 1, 2, 0, 1, 3, 2 };
