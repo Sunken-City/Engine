@@ -13,6 +13,8 @@ extern PFNGLGENBUFFERSPROC	glGenBuffers;
 extern PFNGLDELETEBUFFERSPROC glDeleteBuffers;
 extern PFNGLBINDBUFFERPROC glBindBuffer;
 extern PFNGLBUFFERDATAPROC glBufferData;
+extern PFNGLBINDBUFFERBASEPROC glBindBufferBase;
+extern PFNGLBUFFERSUBDATAPROC glBufferSubData;
 
 extern PFNGLCREATESHADERPROC glCreateShader;
 extern PFNGLSHADERSOURCEPROC glShaderSource;
@@ -51,6 +53,9 @@ extern PFNGLUNIFORM4IVPROC	glUniform4iv;
 
 extern PFNGLCLEARBUFFERUIVPROC	glClearBufferuiv;
 extern PFNGLCLEARBUFFERFVPROC	glClearBufferfv;
+
+extern PFNGLGETUNIFORMBLOCKINDEXPROC glGetUniformBlockIndex;
+extern PFNGLUNIFORMBLOCKBINDINGPROC	glUniformBlockBinding;
 
 extern PFNGLBINDSAMPLERPROC glBindSampler;
 extern PFNGLGENSAMPLERSPROC glGenSamplers;

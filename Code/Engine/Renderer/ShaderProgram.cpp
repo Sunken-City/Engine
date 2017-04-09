@@ -267,6 +267,13 @@ void ShaderProgram::FindAllUniforms()
 }
 
 //-----------------------------------------------------------------------------------
+void ShaderProgram::BindUniformBuffer(const char* uniformBlockName, GLint bindPoint)
+{
+    GLuint blockIndex = glGetUniformBlockIndex(m_shaderProgramID, uniformBlockName);
+    glUniformBlockBinding(m_shaderProgramID, blockIndex, bindPoint);
+}
+
+//-----------------------------------------------------------------------------------
 GLint ShaderProgram::GetBindPoint(size_t hashedName)
 {
     GLint bindPoint = -1;

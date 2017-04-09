@@ -657,6 +657,18 @@ void Renderer::ClearDepth(float depthValue)
 }
 
 //-----------------------------------------------------------------------------------
+GLuint Renderer::CreateRenderBuffer(size_t size)
+{
+    GLuint uboid;
+    glGenBuffers(1, &uboid);
+    //TODO: This could be more reusable, pass in the usage and target to make new kinds of disgusting buffers <3
+    glBindBuffer(GL_UNIFORM_BUFFER, uboid);
+    glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    return uboid;
+}
+
+//-----------------------------------------------------------------------------------
 void Renderer::UnbindIbo()
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);

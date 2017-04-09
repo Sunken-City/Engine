@@ -55,6 +55,7 @@ public:
     void ShaderProgramBindProperty(const char *name, GLint count, GLenum type, GLboolean normalize, GLsizei stride, GLsizei offset);
     void ShaderProgramBindIntegerProperty(const char *name, GLint count, GLenum type, GLsizei stride, GLsizei offset);
     void FindAllUniforms();
+    void BindUniformBuffer(const char* uniformBlockName, GLint bindPoint);
     GLint GetBindPoint(size_t hashedName);
 
     //SETTING UNIFORMS/////////////////////////////////////////////////////////////////////
