@@ -149,7 +149,10 @@ bool ProfilingSystem::DeleteSampleTree(ProfileSample* root)
 //-----------------------------------------------------------------------------------
 void ProfilingSystem::PrintNodeListView(ProfileSample* root, unsigned int depth)
 {
-    Console::instance->PrintLine(Stringf("%s%s%20.02fms\n", std::string(depth, '-').c_str(), root->id, root->GetDurationInSeconds() * 1000.0f));
+    std::string tag = Stringf("%s%s", std::string(depth, '-').c_str(), root->id);
+    float msTaken = root->GetDurationInSeconds() * 1000.0f;
+    float percentageTaken = (root->GetDurationInSeconds() / GetLastFrame()->GetDurationInSeconds()) * 100.0f;
+    Console::instance->PrintLine(Stringf("%-30s%10i%10.02fms%10.02f%%\n", tag.c_str(), 1, msTaken, percentageTaken));
     ProfileSample* currentChild = root->children;
     while (currentChild != nullptr)
     {
@@ -167,7 +170,7 @@ void ProfilingSystem::PrintTreeListView()
 {
     if (m_previousFrameRoot)
     {
-        Console::instance->PrintLine(Stringf("%s%10s%10s", "TAG", "CALLS", "TIME"));
+        Console::instance->PrintLine(Stringf("%-30s%10s%12s%11s", "TAG", "CALLS", "TIME", "%FRAME"));
         PrintNodeListView(m_previousFrameRoot, 0);
     }
 }
