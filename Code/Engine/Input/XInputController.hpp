@@ -55,6 +55,7 @@ public:
 
     //GETTERS//////////////////////////////////////////////////////////////////////////
     int GetControllerNumber();
+    void SetControllerNumber(int number) { m_controllerNumber = number; };
     float GetLeftStickMagnitude();
     float GetRightStickMagnitude();
     //Returns the normalized position of the left stick (from 0 to 1)
@@ -70,6 +71,7 @@ public:
 
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const int MAX_CONTROLLERS = 4;
+    static const int INVALID_CONTROLLER_NUMBER = -1;
     static const int MAX_VIBRATE = 65535;
     static const int LARGE_VIBRATE = 48000;
     static const int MEDIUM_VIBRATE = 32000;
@@ -80,7 +82,6 @@ public:
     static const float OUTER_DEADZONE;
 
 private:
-    static const int INVALID_CONTROLLER_NUMBER = -1;
 
     //HELPER FUNCTIONS//////////////////////////////////////////////////////////////////////////
     bool IsPressed(XINPUT_STATE &state, XboxButton button);

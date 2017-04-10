@@ -58,6 +58,8 @@ public:
     void Update(float deltaTime);
     void AdvanceFrameNumber();
     void ClearAndRecreateInputDevices();
+    void EnablePollingForXInputConnections();
+    void DisablePollingForXInputConnections();
 
     //SETTERS//////////////////////////////////////////////////////////////////////////
     void SetCursorPosition(Vector2Int newPosition);

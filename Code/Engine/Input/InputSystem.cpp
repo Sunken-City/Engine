@@ -4,6 +4,7 @@
 #include "Engine/Input/InputDevices/KeyboardInputDevice.hpp"
 #include "Engine/Input/InputDevices/MouseInputDevice.hpp"
 #include "InputDevices/XInputDevice.hpp"
+#include "../Core/ProfilingUtils.h"
 
 InputSystem* InputSystem::instance = nullptr;
 
@@ -74,13 +75,41 @@ InputSystem::~InputSystem()
 }
 
 //-----------------------------------------------------------------------------------
+void InputSystem::EnablePollingForXInputConnections()
+{
+    for (int i = 0; i < m_maximumNumControllers; i++)
+    {
+        XInputController* controller = m_controllers[i];
+        controller->SetControllerNumber(i);
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void InputSystem::DisablePollingForXInputConnections()
+{
+    for (int i = 0; i < m_maximumNumControllers; i++)
+    {
+        XInputController* controller = m_controllers[i];
+        if (!controller->IsConnected())
+        {
+            controller->SetControllerNumber(XInputController::INVALID_CONTROLLER_NUMBER);
+        }
+    }
+}
+
+
+//-----------------------------------------------------------------------------------
 void InputSystem::Update(float deltaSeconds)
 {
     //Controller Updates
+    ProfilingSystem::instance->PushSample("ControllerUpdates");
     for (int i = 0; i < m_maximumNumControllers; i++)
     {
+        ProfilingSystem::instance->PushSample("ControllerUpdate");
         m_controllers[i]->Update(deltaSeconds);
+        ProfilingSystem::instance->PopSample("ControllerUpdate");
     }
+    ProfilingSystem::instance->PopSample("ControllerUpdates");
 
     //Mouse Updates
     HWND hWnd = static_cast<HWND>(m_hWnd);

@@ -2,6 +2,7 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Math/Vector2.hpp"
 #include <cmath>
+#include "../Core/ProfilingUtils.h"
 
 const float XInputController::INNER_DEADZONE = 0.2f;
 const float XInputController::OUTER_DEADZONE = 0.98f;
@@ -25,9 +26,13 @@ void XInputController::Update(float deltaTime)
 {
     if (m_controllerNumber != INVALID_CONTROLLER_NUMBER)
     {
-        m_previousState = m_state;
+        m_previousState = m_state;    
+        ProfilingSystem::instance->PushSample("Memset");        
         memset(&m_state, 0, sizeof(m_state));
+        ProfilingSystem::instance->PopSample("Memset");
+        ProfilingSystem::instance->PushSample("GetXInputState");
         DWORD errorStatus = XInputGetState(m_controllerNumber, &m_state);
+        ProfilingSystem::instance->PopSample("GetXInputState");
         if (errorStatus == ERROR_SUCCESS)
         {
             m_isConnected = true;
@@ -38,11 +43,13 @@ void XInputController::Update(float deltaTime)
         }
         if (m_secondsToVibrate > 0)
         {
+            ProfilingSystem::instance->PushSample("Vibrate");
             m_secondsToVibrate -= deltaTime;
             if (m_secondsToVibrate <= 0.f)
             {
                 Vibrate(0, 0);
             }
+            ProfilingSystem::instance->PopSample("Vibrate");
         }
     }
 }

@@ -152,7 +152,8 @@ void ProfilingSystem::PrintNodeListView(ProfileSample* root, unsigned int depth)
     std::string tag = Stringf("%s%s", std::string(depth, '-').c_str(), root->id);
     float msTaken = root->GetDurationInSeconds() * 1000.0f;
     float percentageTaken = (root->GetDurationInSeconds() / GetLastFrame()->GetDurationInSeconds()) * 100.0f;
-    Console::instance->PrintLine(Stringf("%-30s%10i%10.02fms%10.02f%%\n", tag.c_str(), 1, msTaken, percentageTaken));
+    Console::instance->PrintLine(Stringf("%-30s%10i%10.02fms%10.02f%%\n", tag.c_str(), 1, msTaken, percentageTaken), RGBA(root->startCount, 1.0f, root->endCount, 1.0f));
+
     ProfileSample* currentChild = root->children;
     while (currentChild != nullptr)
     {
