@@ -700,6 +700,7 @@ void SpriteGameRenderer::DrawLine(const Vector2& start, const Vector2& end, cons
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::DrawPolygonOutline(const Vector2& center, float radius, int numSides, float radianOffset, const RGBA& color /*= RGBA::WHITE*/)
 {
+    Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::OFF;
     Vertex_Sprite* vertexes = new Vertex_Sprite[numSides];
     const float radiansTotal = 2.0f * MathUtils::PI;
     const float radiansPerSide = radiansTotal / numSides;
@@ -716,6 +717,7 @@ void SpriteGameRenderer::DrawPolygonOutline(const Vector2& center, float radius,
     }
     DrawVertexArray(vertexes, numSides, Renderer::DrawMode::LINE_LOOP);
     delete[] vertexes;
+    Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::ON;
 }
 
 //-----------------------------------------------------------------------------------
