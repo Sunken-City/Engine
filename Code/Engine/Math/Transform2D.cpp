@@ -68,6 +68,16 @@ void Transform2D::RemoveChild(Transform2D* child)
 }
 
 //-----------------------------------------------------------------------------------
+void Transform2D::DropChildrenInPlace()
+{
+    const Vector2 position = GetWorldPosition();
+    for (Transform2D* transform : m_children)
+    {
+        transform->SetPosition(transform->GetLocalPosition() + position);
+    }
+}
+
+//-----------------------------------------------------------------------------------
 void Transform2D::RemoveParent()
 {
     m_parent = nullptr;

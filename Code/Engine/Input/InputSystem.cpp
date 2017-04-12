@@ -102,14 +102,10 @@ void InputSystem::DisablePollingForXInputConnections()
 void InputSystem::Update(float deltaSeconds)
 {
     //Controller Updates
-    ProfilingSystem::instance->PushSample("ControllerUpdates");
     for (int i = 0; i < m_maximumNumControllers; i++)
     {
-        ProfilingSystem::instance->PushSample("ControllerUpdate");
         m_controllers[i]->Update(deltaSeconds);
-        ProfilingSystem::instance->PopSample("ControllerUpdate");
     }
-    ProfilingSystem::instance->PopSample("ControllerUpdates");
 
     //Mouse Updates
     HWND hWnd = static_cast<HWND>(m_hWnd);

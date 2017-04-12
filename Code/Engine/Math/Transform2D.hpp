@@ -17,6 +17,7 @@ public:
     void AddChild(Transform2D* child);
     void SetParent(Transform2D* parent);
     void RemoveChild(Transform2D* child);
+    void DropChildrenInPlace(); //Unparents all children, moving their positions to your local offset. This prevents them from going to 0,0 by default.
     void RemoveParent();
 
     Transform2D& operator= (const Transform2D& other);
