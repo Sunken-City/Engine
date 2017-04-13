@@ -313,9 +313,9 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 
     for (auto layerPair : m_layers)
     {
-        //ProfilingSystem::instance->PushSample("LayerRender");//CStringf("Layer[%i]Render", layerPair.second->m_layerIndex));
+        //ProfilingSystem::instance->PushSample(CStringf("Layer[%i]Render", layerPair.second->m_layerIndex));
         RenderLayer(layerPair.second, renderArea);
-        //ProfilingSystem::instance->PopSample("LayerRender");//CStringf("Layer[%i]Render", layerPair.second->m_layerIndex));
+        //ProfilingSystem::instance->PopSample(CStringf("Layer[%i]Render", layerPair.second->m_layerIndex));
     }
     //m_meshRenderer->m_material = nullptr;
 

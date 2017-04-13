@@ -6,7 +6,7 @@
 #include "Engine/Renderer/RGBA.hpp"
 
 //-----------------------------------------------------------------------------------------------
-const char* CStringf(const char* format, ...);
+const char* CStringf(const char* format, ...); //This function leaks memory like nobody's business.
 const std::string Stringf( const char* format, ... );
 const std::string Stringf( const int maxLength, const char* format, ... );
 std::vector<std::string>* SplitString(const std::string& inputString, const std::string& stringDelimiter);
