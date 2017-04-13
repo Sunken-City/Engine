@@ -1,6 +1,7 @@
 #include "Engine/Renderer/2D/TextRenderable2D.hpp"
 #include "SpriteGameRenderer.hpp"
 #include "Engine/Fonts/BitmapFont.hpp"
+#include "../../Core/ProfilingUtils.h"
 
 //-----------------------------------------------------------------------------------
 TextRenderable2D::TextRenderable2D(const std::string& text, const Transform2D& position, int orderingLayer, bool isEnabled)
@@ -31,28 +32,39 @@ void TextRenderable2D::Update(float)
 //-----------------------------------------------------------------------------------
 void TextRenderable2D::Render(BufferedMeshRenderer& renderer)
 {
+    ProfilingSystem::instance->PushSample("TextRenderable2D");
     static const float TEXT_SANITY_CONSTANT = 0.05f;
     renderer.SetMaterial(m_font->GetMaterial());
     renderer.SetDiffuseTexture(m_font->GetTexture());
 
+    Vector2 worldScale = m_transform.GetWorldScale();
     Matrix4x4 scale = Matrix4x4::IDENTITY;
     Matrix4x4 rotation = Matrix4x4::IDENTITY;
     Matrix4x4 translation = Matrix4x4::IDENTITY;
-    Matrix4x4::MatrixMakeScale(&scale, Vector3(m_transform.GetWorldScale(), 0.0f));
+    Matrix4x4::MatrixMakeScale(&scale, Vector3(worldScale, 0.0f));
     Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(m_transform.GetWorldRotationDegrees()));
     Matrix4x4::MatrixMakeTranslation(&translation, Vector3(m_transform.GetWorldPosition(), 0.0f));
     renderer.SetModelMatrix(scale * rotation * translation);
 
-    m_bounds = m_font->CalcTextBounds(m_text, TEXT_SANITY_CONSTANT * m_fontSize * m_transform.GetWorldScale().x);
-    Vector2 size = Vector2(m_bounds.GetWidth(), m_bounds.GetHeight());
-    renderer.m_builder.AddText2D(size * -0.5f, m_text, TEXT_SANITY_CONSTANT * m_fontSize * m_transform.GetWorldScale().x, m_color, true, m_font);
-    renderer.m_builder.CopyToMesh(&renderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
+    float finalScale = TEXT_SANITY_CONSTANT * m_fontSize * worldScale.x;
+    //m_bounds = m_font->CalcTextBounds(m_text, finalScale);
+    Vector2 size = Vector2(m_bounds.GetWidth() * -0.5f, m_bounds.GetHeight() * -0.5f);
 
-    m_bounds += size * -0.5f;
-    m_bounds += m_transform.GetWorldPosition();
+    ProfilingSystem::instance->PushSample("AddingText");
+    renderer.m_builder.AddText2D(size, m_text, finalScale, m_color, true, m_font);
+    ProfilingSystem::instance->PopSample("AddingText");
+    ProfilingSystem::instance->PushSample("CopyToMesh");
+    renderer.m_builder.CopyToMesh(&renderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
+    ProfilingSystem::instance->PopSample("CopyToMesh");
+
+    //m_bounds += size * -0.5f;
+    //m_bounds += m_transform.GetWorldPosition();
 
 #pragma todo("This should be unneccessary once we have batching done properly")
+    ProfilingSystem::instance->PushSample("Flush&Render");
     renderer.FlushAndRender();
+    ProfilingSystem::instance->PopSample("Flush&Render");
+    ProfilingSystem::instance->PopSample("TextRenderable2D");
 }
 
 //-----------------------------------------------------------------------------------
