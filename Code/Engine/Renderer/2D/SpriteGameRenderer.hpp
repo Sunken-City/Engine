@@ -181,6 +181,7 @@ public:
     //The box (Size in game units of our screen)
     float m_windowVirtualHeight;
     float m_windowVirtualWidth;
+    PlayerVisibility m_playerViewerForViewport[4] = { PlayerVisibility::FIRST, PlayerVisibility::SECOND, PlayerVisibility::THIRD, PlayerVisibility::FOURTH };
 
 private:
     Transform2D m_bottomRight;

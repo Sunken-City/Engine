@@ -283,7 +283,7 @@ void SpriteGameRenderer::Render()
         {
             m_currentTexturePool = &m_fullscreenTexturePool;
         }
-        m_currentViewer = GetVisibilityFilterForPlayerNumber(i);
+        m_currentViewer = m_playerViewerForViewport[i];
         RenderView(m_viewportDefinitions[i]); 
         DampScreenshake(i);
         ProfilingSystem::instance->PopSample("SplitscreenViewRender");
