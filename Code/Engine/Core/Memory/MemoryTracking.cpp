@@ -4,6 +4,7 @@
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Core/StringUtils.hpp"
 #include "Engine/Input/Console.hpp"
+#include "../ProfilingUtils.h"
 
 MemoryMetadata* g_memoryMetadataList = nullptr;
 
@@ -148,6 +149,12 @@ MemoryMetadata::~MemoryMetadata()
 //-----------------------------------------------------------------------------------
 void MemoryMetadata::AddMemoryMetadataToList(MemoryMetadata* stackToAdd)
 {
+#ifdef PROFILING_ENABLED
+    if (ProfilingSystem::instance && ProfilingSystem::instance->m_activeSample)
+    {
+        ProfilingSystem::instance->m_activeSample->AddAllocation(stackToAdd->sizeOfAllocInBytes);
+    }
+#endif
     if (!g_memoryMetadataList)
     {
         g_memoryMetadataList = stackToAdd;

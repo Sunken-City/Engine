@@ -43,9 +43,10 @@ struct ProfileSample
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     ProfileSample() : id(nullptr), startCount(0), endCount(0), parent(nullptr), children(nullptr), prev(nullptr), next(nullptr) {};
     inline double GetDurationInSeconds() { return PerformanceCountToSeconds(endCount) - PerformanceCountToSeconds(startCount); };
+    inline void AddAllocation(size_t allocationSize) { sizeAllocs += allocationSize; ++numAllocs; };
+    //inline void GetDurationInSeconds(ProfileSample* other) { PerformanceCountToSeconds(endCount) - PerformanceCountToSeconds(startCount); };
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    const char* id;
     uint64_t startCount;
     uint64_t endCount;
     ProfileSample* parent;
@@ -53,6 +54,11 @@ struct ProfileSample
     //Sibling pointers
     ProfileSample* prev;
     ProfileSample* next;
+    const char* id;
+    size_t sizeAllocs = 0;
+    size_t numAllocs = 0;
+    //unsigned int numCalls;
+    //double averageTime = -1.0;
 };
 
 //-----------------------------------------------------------------------------------
