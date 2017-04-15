@@ -414,6 +414,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
                     currentRenderable = currentRenderable->next;
                 } while (currentRenderable != layer->m_renderablesList);
             }
+            m_bufferedMeshRenderer.FlushAndRender();
         }
         Renderer::instance->EndOrtho();
 

@@ -126,7 +126,7 @@ void MeshBuilder::CopyToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsig
     unsigned int vertexSize = sizeofVertex; //mesh->vdefn->vertexSize;
     unsigned int vertex_buffer_size = vertexCount * vertexSize;
 
-    byte* vertexBuffer = new byte[vertex_buffer_size];
+    byte* vertexBuffer = (byte*)_alloca(vertex_buffer_size); //allocates on the stack, falls off later.
     byte* currentBufferIndex = vertexBuffer;
 
 //	mesh->m_verts.clear();
@@ -137,8 +137,6 @@ void MeshBuilder::CopyToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsig
     }
     mesh->Init(vertexBuffer, vertexCount, sizeofVertex, m_indices.data(), m_indices.size(), bindMeshFunction);
     mesh->m_drawMode = this->m_drawMode;
-    // Make sure we clean up after ourselves
-    delete vertexBuffer;
     Flush();
 }
 
