@@ -712,6 +712,17 @@ void Renderer::ClearDepth(float depthValue)
 }
 
 //-----------------------------------------------------------------------------------
+void Renderer::UseShaderProgram(GLuint shaderProgramID)
+{
+    if (shaderProgramID == m_currentShaderProgramId)
+    {
+        return;
+    }
+    glUseProgram(shaderProgramID);
+    m_currentShaderProgramId = shaderProgramID;
+}
+
+//-----------------------------------------------------------------------------------
 GLuint Renderer::CreateRenderBuffer(size_t size)
 {
     GLuint uboid;

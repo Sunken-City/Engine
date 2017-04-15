@@ -56,7 +56,6 @@ void Mesh::RenderFromIBO(GLuint vaoID, Material* material) const
     //Draw with IBO
     glDrawElements(Renderer::instance->GetDrawMode(m_drawMode), m_numIndices, GL_UNSIGNED_INT, (GLvoid*)0);
     material->CleanUpRenderState();
-    glUseProgram(NULL);
     glBindVertexArray(NULL);
 }
 
