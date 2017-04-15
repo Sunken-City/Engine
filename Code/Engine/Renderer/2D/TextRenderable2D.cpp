@@ -32,7 +32,7 @@ void TextRenderable2D::Update(float)
 //-----------------------------------------------------------------------------------
 void TextRenderable2D::Render(BufferedMeshRenderer& renderer)
 {
-    ProfilingSystem::instance->PushSample("TextRenderable2D");
+    //ProfilingSystem::instance->PushSample("TextRenderable2D");
     static const float TEXT_SANITY_CONSTANT = 0.05f;
     renderer.SetMaterial(m_font->GetMaterial());
     renderer.SetDiffuseTexture(m_font->GetTexture());
@@ -50,21 +50,21 @@ void TextRenderable2D::Render(BufferedMeshRenderer& renderer)
     //m_bounds = m_font->CalcTextBounds(m_text, finalScale);
     Vector2 size = Vector2(m_bounds.GetWidth() * -0.5f, m_bounds.GetHeight() * -0.5f);
 
-    ProfilingSystem::instance->PushSample("AddingText");
+    //ProfilingSystem::instance->PushSample("AddingText");
     renderer.m_builder.AddText2D(size, m_text, finalScale, m_color, true, m_font);
-    ProfilingSystem::instance->PopSample("AddingText");
-    ProfilingSystem::instance->PushSample("CopyToMesh");
+    //ProfilingSystem::instance->PopSample("AddingText");
+    //ProfilingSystem::instance->PushSample("CopyToMesh");
     renderer.m_builder.CopyToMesh(&renderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
-    ProfilingSystem::instance->PopSample("CopyToMesh");
+    //ProfilingSystem::instance->PopSample("CopyToMesh");
 
     //m_bounds += size * -0.5f;
     //m_bounds += m_transform.GetWorldPosition();
 
 #pragma todo("This should be unneccessary once we have batching done properly")
-    ProfilingSystem::instance->PushSample("Flush&Render");
+    //ProfilingSystem::instance->PushSample("Flush&Render");
     renderer.FlushAndRender();
-    ProfilingSystem::instance->PopSample("Flush&Render");
-    ProfilingSystem::instance->PopSample("TextRenderable2D");
+    //ProfilingSystem::instance->PopSample("Flush&Render");
+    //ProfilingSystem::instance->PopSample("TextRenderable2D");
 }
 
 //-----------------------------------------------------------------------------------

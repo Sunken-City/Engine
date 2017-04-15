@@ -143,6 +143,7 @@ public:
     void TranslateView(const Vector3& translation);
     void DeleteVAOHandle(GLuint m_vaoID);
     void ClearDepth(float depthValue = 1.0f);
+    void UseShaderProgram(GLuint shaderProgramID);
     GLuint CreateRenderBuffer(size_t size);
 
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
@@ -171,4 +172,5 @@ public:
     GLsizei m_viewportWidth = 0;
     GLsizei m_viewportHeight = 0;
     GLuint m_fboHandle = NULL;
+    GLuint m_currentShaderProgramId = NULL;
 };

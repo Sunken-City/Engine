@@ -213,14 +213,14 @@ void Material::SetTexture(const char*, unsigned int)
 void Material::SetUpRenderState() const
 {
     m_renderState.SetState();
-    glUseProgram(m_shaderProgram->m_shaderProgramID);
+    Renderer::instance->UseShaderProgram(m_shaderProgram->m_shaderProgramID);
 }
 
 //-----------------------------------------------------------------------------------
 void Material::CleanUpRenderState() const
 {
     m_renderState.ClearState();
-    glUseProgram(NULL);
+    Renderer::instance->UseShaderProgram(NULL);
 }
 
 //-----------------------------------------------------------------------------------

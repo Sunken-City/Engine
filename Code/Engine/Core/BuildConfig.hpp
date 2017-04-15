@@ -21,7 +21,7 @@
 * 3 - Severe messages only
 * 4 - No messages are logged
 */
-#define LOG_LEVEL_THRESHOLD 0
+#define LOG_LEVEL_THRESHOLD 4
 
 //Maximum number of log files to keep. Adding another log over this amount will delete the oldest log.
 #define MAX_LOG_HISTORY 5
@@ -30,4 +30,4 @@
 #define FORWARD_LOG_TO_OUTPUT_WINDOW
 
 //Forwards log messages to the console after logging them.
-#define FORWARD_LOG_TO_CONSOLE
+//#define FORWARD_LOG_TO_CONSOLE
