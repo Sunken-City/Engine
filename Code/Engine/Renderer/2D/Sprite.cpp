@@ -51,16 +51,11 @@ void Sprite::Render(BufferedMeshRenderer& renderer)
     renderer.SetMaterial(m_material);
     renderer.SetDiffuseTexture(m_spriteResource->m_texture);
     PushSpriteToMesh(renderer);
-
-#pragma todo("This should be unneccessary once we have batching done properly")
-    renderer.FlushAndRender();
 }
 
 //-----------------------------------------------------------------------------------
 void Sprite::PushSpriteToMesh(BufferedMeshRenderer& renderer)
 {
-    unsigned int indices[6] = { 1, 2, 0, 1, 3, 2 };
-    Vertex_Sprite verts[4];
     Vector2 pivotPoint = m_spriteResource->m_pivotPoint;
     Vector2 uvMins = m_spriteResource->m_uvBounds.mins;
     Vector2 uvMaxs = m_spriteResource->m_uvBounds.maxs;
@@ -79,9 +74,8 @@ void Sprite::PushSpriteToMesh(BufferedMeshRenderer& renderer)
     Matrix4x4::MatrixMakeTranslation(&translation, Vector3(m_transform.GetWorldPosition(), 0.0f));
 
     //Apply our transformations
-    renderer.SetModelMatrix(scale * rotation * translation);
-    renderer.m_builder.AddSprite(m_spriteResource, m_tintColor);
-    renderer.m_builder.CopyToMesh(&renderer.m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
+    Matrix4x4 model = scale * rotation * translation;
+    renderer.m_builder.AddSprite(m_spriteResource, m_tintColor, &model);
 }
 
 //-----------------------------------------------------------------------------------
