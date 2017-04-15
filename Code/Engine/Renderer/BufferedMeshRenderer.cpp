@@ -31,7 +31,14 @@ void BufferedMeshRenderer::FlushAndRender()
 {
     if (m_mesh.m_numVerts == 0)
     {
-        return;
+        if (m_builder.m_vertices.size() != 0)
+        {
+            m_builder.CopyToMesh(&m_mesh, &Vertex_Sprite::Copy, sizeof(Vertex_Sprite), &Vertex_Sprite::BindMeshToVAO);
+        }
+        else
+        {
+            return;
+        }
     }
     m_renderer.Render();
     m_mesh.CleanUpRenderObjects();
