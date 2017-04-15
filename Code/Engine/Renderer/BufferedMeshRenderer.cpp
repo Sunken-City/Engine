@@ -2,6 +2,7 @@
 #include "Engine/Renderer/Vertex.hpp"
 #include "Engine/Renderer/Texture.hpp"
 #include "Engine/Renderer/Material.hpp"
+#include "../Core/ProfilingUtils.h"
 
 //-----------------------------------------------------------------------------------
 BufferedMeshRenderer::BufferedMeshRenderer()
@@ -41,6 +42,8 @@ void BufferedMeshRenderer::FlushAndRender()
         }
     }
     m_renderer.Render();
+    ProfilingSystem::instance->m_activeSample->numDrawCalls += 1;
+
     m_mesh.CleanUpRenderObjects();
 }
 

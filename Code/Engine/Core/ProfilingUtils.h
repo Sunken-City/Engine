@@ -57,6 +57,7 @@ struct ProfileSample
     const char* id;
     size_t sizeAllocs = 0;
     size_t numAllocs = 0;
+    size_t numDrawCalls = 0;
     //unsigned int numCalls;
     //double averageTime = -1.0;
 };

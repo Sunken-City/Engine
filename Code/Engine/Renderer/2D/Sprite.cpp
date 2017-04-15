@@ -37,6 +37,15 @@ AABB2 SpriteResource::GetDefaultBounds() const
 }
 
 //-----------------------------------------------------------------------------------
+void SpriteResource::SetUVBounds(const AABB2& bounds)
+{
+    m_uvBounds = bounds;
+    //TODO: This should be the appropriate thing to do, but it causes bugs everywhere because I wrote everything wrong XD
+    //Vector2 uvScale = Vector2(m_uvBounds.GetWidth(), m_uvBounds.GetHeight());
+    //m_virtualSize *= uvScale;
+}
+
+//-----------------------------------------------------------------------------------
 void Sprite::Render(BufferedMeshRenderer& renderer)
 {
     renderer.SetMaterial(m_material);
