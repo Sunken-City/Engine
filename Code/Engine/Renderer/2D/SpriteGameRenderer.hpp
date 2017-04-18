@@ -156,6 +156,7 @@ public:
     AABB2 GetVirtualBoundsAroundWorldCenter();
     bool IsInsideWorldBounds(const Vector2& attemptedPosition);
     Vector2 GetCameraPositionInWorld(int viewportNumber = -1); //Default behavior is to grab the current camera position for the currently active viewport.
+    int GetViewportNumberForPlayerNumber(unsigned int playerNumber);
     static PlayerVisibility GetVisibilityFilterForPlayerNumber(unsigned int i);
     void AddScreenshakeMagnitude(float magnitude, const Vector2& direction = Vector2::ZERO, int viewportNumber = 0);
 
