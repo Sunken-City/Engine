@@ -115,6 +115,7 @@ SpriteLayer::SpriteLayer(int layerIndex)
     , m_renderablesList(nullptr)
     , m_isEnabled(true)
     , m_boundingVolume(SpriteGameRenderer::instance->m_worldBounds)
+    , m_layerName(CStringf("SpriteLayer[%i]", layerIndex))
 {
 
 }
@@ -122,6 +123,7 @@ SpriteLayer::SpriteLayer(int layerIndex)
 //-----------------------------------------------------------------------------------
 SpriteLayer::~SpriteLayer()
 {
+    delete m_layerName;
     Renderable2D* currentRenderable = m_renderablesList;
     if (currentRenderable)
     {
@@ -313,9 +315,9 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 
     for (auto layerPair : m_layers)
     {
-        //ProfilingSystem::instance->PushSample(CStringf("Layer[%i]Render", layerPair.second->m_layerIndex));
+        ProfilingSystem::instance->PushSample(layerPair.second->m_layerName);
         RenderLayer(layerPair.second, renderArea);
-        //ProfilingSystem::instance->PopSample(CStringf("Layer[%i]Render", layerPair.second->m_layerIndex));
+        ProfilingSystem::instance->PopSample(layerPair.second->m_layerName);
     }
     //m_meshRenderer->m_material = nullptr;
 
@@ -398,6 +400,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
         m_currentFBO->Bind();
         Renderer::instance->BeginOrtho(m_virtualWidth, m_virtualHeight, cameraPos);
         {
+            m_bufferedMeshRenderer.SetModelMatrix(Matrix4x4::IDENTITY);
             Renderable2D* currentRenderable = layer->m_renderablesList;
             if (currentRenderable)
             {
@@ -428,7 +431,7 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
             m_blurEffect->SetFloatUniform(horizontalUniform, 0.0f);
             Renderer::instance->RenderFullScreenEffect(m_blurEffect);
 
-            int numPasses = 6;
+            int numPasses = layer->m_numBloomPasses;
             for (int i = 0; i < numPasses; ++i)
             {
                 Renderer::instance->SetRenderTargets(1, &effectCanvas, nullptr);
