@@ -56,7 +56,9 @@ public:
     std::vector<FullScreenEffect> m_fullScreenEffects;
     AABB2 m_boundingVolume;
     Renderable2D* m_renderablesList;
+    const char* m_layerName;
     int m_layerIndex;
+    int m_numBloomPasses = 6;
     float m_virtualScaleMultiplier = 1.0f;
     bool m_isEnabled;
     bool m_isCullingEnabled = true;
