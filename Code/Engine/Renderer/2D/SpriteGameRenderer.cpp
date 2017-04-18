@@ -620,7 +620,7 @@ void SpriteGameRenderer::SetSplitscreen(unsigned int numViews /*= 1*/)
 {
     if (m_viewportDefinitions)
     {
-        delete m_viewportDefinitions;
+        delete[] m_viewportDefinitions;
     }
     m_numSplitscreenViews = numViews;
     m_viewportDefinitions = new ViewportDefinition[m_numSplitscreenViews];
@@ -738,6 +738,22 @@ Vector2 SpriteGameRenderer::GetCameraPositionInWorld(int viewportNumber)
 }
 
 //-----------------------------------------------------------------------------------
+int SpriteGameRenderer::GetViewportNumberForPlayerNumber(unsigned int playerNumber)
+{
+    PlayerVisibility visiblity = GetVisibilityFilterForPlayerNumber(playerNumber);
+    int viewportNumber = -1;
+    for (int i = 0; i < 4; ++i)
+    {
+        if (m_playerViewerForViewport[i] == visiblity)
+        {
+            viewportNumber = i;
+            break;
+        }
+    }
+    return viewportNumber;
+}
+
+//-----------------------------------------------------------------------------------
 SpriteGameRenderer::PlayerVisibility SpriteGameRenderer::GetVisibilityFilterForPlayerNumber(unsigned int playerNumber)
 {
     switch (playerNumber)
@@ -757,6 +773,12 @@ SpriteGameRenderer::PlayerVisibility SpriteGameRenderer::GetVisibilityFilterForP
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::AddScreenshakeMagnitude(float magnitude, const Vector2& direction, int viewportNumber)
 {
+    //TODO: This is a horrible, HORRIBLE thesis week hack. Please remove this.
+    viewportNumber = GetViewportNumberForPlayerNumber(viewportNumber);
+    if (viewportNumber == -1 || viewportNumber > m_numSplitscreenViews)
+    {
+        return;
+    }
     SpriteGameRenderer::instance->m_viewportDefinitions[viewportNumber].m_viewportScreenshakeMagnitude += magnitude;
     SpriteGameRenderer::instance->m_viewportDefinitions[viewportNumber].m_screenshakeKnockbackBias += direction;
 }
