@@ -25,10 +25,10 @@ public:
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
     Material* m_material;
     Mesh* m_mesh;
+    Matrix4x4 m_model;
 
 private:
     GLuint m_vaoID;
-    Matrix4x4 m_model;
 
     MeshRenderer(const MeshRenderer&);
 };

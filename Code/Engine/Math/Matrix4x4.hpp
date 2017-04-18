@@ -60,6 +60,18 @@ public:
     };
 };
 
+//-----------------------------------------------------------------------------------
+inline bool operator==(const Matrix4x4& lhs, const Matrix4x4& rhs)
+{
+    return (lhs.column[0] == rhs.column[0]) && (lhs.column[1] == rhs.column[1]) && (lhs.column[2] == rhs.column[2]) && (lhs.column[3] == rhs.column[3]);
+}
+
+//-----------------------------------------------------------------------------------
+inline bool operator!=(const Matrix4x4& lhs, const Matrix4x4& rhs)
+{
+    return !(lhs == rhs);
+}
+
 //----------------------------------------------------------------------
 inline Matrix4x4 operator*(const Matrix4x4& lhs, const Matrix4x4& rhs)
 {

@@ -50,7 +50,11 @@ void BufferedMeshRenderer::FlushAndRender()
 //-----------------------------------------------------------------------------------
 void BufferedMeshRenderer::SetModelMatrix(const Matrix4x4& model)
 {
-    m_renderer.SetModelMatrix(model);
+    if (m_renderer.m_model != model)
+    {
+        FlushAndRender();
+        m_renderer.SetModelMatrix(model);
+    }
 }
 
 //-----------------------------------------------------------------------------------

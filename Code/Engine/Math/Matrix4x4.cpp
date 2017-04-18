@@ -443,6 +443,7 @@ void Matrix4x4::SetTranslation(const Vector3& offset)
     data[11] = offset.z;
 }
 
+//-----------------------------------------------------------------------------------
 Vector3 Matrix4x4::GetTranslation() const
 {
     return Vector3(data[3], data[7], data[11]);
