@@ -32,7 +32,7 @@ void TextRenderable2D::Update(float)
 //-----------------------------------------------------------------------------------
 void TextRenderable2D::Render(BufferedMeshRenderer& renderer)
 {
-    //ProfilingSystem::instance->PushSample("TextRenderable2D");
+    ProfilingSystem::instance->PushSample("TextRenderable2D");
     static const float TEXT_SANITY_CONSTANT = 0.05f;
     renderer.SetMaterial(m_font->GetMaterial());
     renderer.SetDiffuseTexture(m_font->GetTexture());
@@ -61,7 +61,7 @@ void TextRenderable2D::Render(BufferedMeshRenderer& renderer)
 
     //ProfilingSystem::instance->PushSample("Flush&Render");
     //ProfilingSystem::instance->PopSample("Flush&Render");
-    //ProfilingSystem::instance->PopSample("TextRenderable2D");
+    ProfilingSystem::instance->PopSample("TextRenderable2D");
 }
 
 //-----------------------------------------------------------------------------------

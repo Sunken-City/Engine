@@ -34,6 +34,7 @@ ProfilingSystem::~ProfilingSystem()
     {
         m_sampleAllocator.Free(m_currentFrameRoot);
     }
+    g_profilingResults.clear();
 }
 
 //-----------------------------------------------------------------------------------
@@ -175,7 +176,59 @@ void ProfilingSystem::PrintTreeListView()
     {
         Console::instance->PrintLine(Stringf("%-30s%12s%12s%12s%12s%11s", "TAG", "NUM DRAWS", "NUM ALLOCS", "SIZE ALLOCS", "TIME", "%FRAME"));
         PrintNodeListView(m_previousFrameRoot, 0);
+        GenerateProfilingReport();
     }
+}
+
+//-----------------------------------------------------------------------------------
+bool ProfilingSystem::AddProfileNode(ProfileSample* root)
+{
+    if (root == nullptr)
+    {
+        return false;
+    }
+    else
+    {
+        ProfileSample* currentChild = root->children;
+        if (currentChild == nullptr)
+        {
+            return false;
+        }
+        do
+        {
+            bool foundSameTag = false;
+            for (ProfileReportNode& node : g_profilingResults)
+            {
+                if (strcmp(node.m_id, currentChild->id) == 0) //Same sample, add a call
+                {
+                    foundSameTag = true;
+                    node.AddSample(currentChild->GetDurationInSeconds());
+                    break;
+                }
+            }
+            if (!foundSameTag) //Add the new sample
+            {
+                ProfileReportNode currentNode;
+                currentNode.m_id = currentChild->id;
+                currentNode.m_start = currentChild->startCount;
+                currentNode.m_end = currentChild->endCount;
+                currentNode.AddSample(currentChild->GetDurationInSeconds());
+                g_profilingResults.push_back(currentNode);
+            }
+
+            currentChild = currentChild->next;
+            AddProfileNode(currentChild);
+        } while (currentChild != root->children);
+        return true;
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void ProfilingSystem::GenerateProfilingReport()
+{
+    g_profilingResults.clear();
+
+    AddProfileNode(m_previousFrameRoot);
 }
 
 //-----------------------------------------------------------------------------------

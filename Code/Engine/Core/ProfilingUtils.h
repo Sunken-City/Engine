@@ -28,6 +28,7 @@ public:
     ProfileReportNode() : m_lastSample(0.0), m_numSamples(0), m_minSample(0.0), m_maxSample(0.0), m_averageSample(0.0) {};
     void AddSample(double sampleTime);
 
+    const char* m_id;
     double m_lastSample;
     unsigned long long m_numSamples;
     double m_minSample;
@@ -76,6 +77,8 @@ public:
     //The sample id here is unused, just used for readability for pushing and popping samples.
     void PopSample(const char* id = "");
     void PrintTreeListView();
+    bool AddProfileNode(ProfileSample* root);
+    void GenerateProfilingReport();
     double GetAverageFrameDuration();
     ProfileSample* GetLastFrame();
     inline bool IsEnabled() const { return m_isEnabled; };
