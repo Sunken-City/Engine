@@ -8,6 +8,7 @@
 #include "Engine/Fonts/BitmapFont.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "2D/Sprite.hpp"
+#include "../Core/ProfilingUtils.h"
 
 extern MeshBuilder* g_loadedMeshBuilder;
 extern Mesh* g_loadedMesh;
@@ -112,7 +113,7 @@ MeshBuilder* MeshBuilder::Merge(MeshBuilder* meshBuilderArray, unsigned int numb
 }
 
 //-----------------------------------------------------------------------------------
-void MeshBuilder::CopyToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsigned int sizeofVertex, Mesh::BindMeshToVAOForVertex* bindMeshFunction)
+void MeshBuilder::CopyToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsigned int sizeofVertex, BindMeshToVAOForVertex* bindMeshFunction)
 {
     // First, we need to allocate a buffer to copy 
     // our vertices into, that matches what the mesh
@@ -135,13 +136,21 @@ void MeshBuilder::CopyToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsig
         copyFunction(m_vertices[vertex_index], currentBufferIndex);
         currentBufferIndex += vertexSize;
     }
-    mesh->Init(vertexBuffer, vertexCount, sizeofVertex, m_indices.data(), m_indices.size(), bindMeshFunction);
+    if (ProfilingSystem::instance)
+    {
+        ProfilingSystem::instance->PushSample("Mesh Init");
+    }
+    mesh->Update(vertexBuffer, vertexCount, sizeofVertex, m_indices.data(), m_indices.size(), bindMeshFunction, true);
+    if (ProfilingSystem::instance)
+    {
+        ProfilingSystem::instance->PopSample("Mesh Init");
+    }
     mesh->m_drawMode = this->m_drawMode;
     Flush();
 }
 
 //-----------------------------------------------------------------------------------
-void MeshBuilder::AppendToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsigned int sizeofVertex, Mesh::BindMeshToVAOForVertex* bindMeshFunction)
+void MeshBuilder::AppendToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsigned int sizeofVertex, BindMeshToVAOForVertex* bindMeshFunction)
 {
     // First, we need to allocate a buffer to copy 
     // our vertices into, that matches what the mesh
@@ -164,7 +173,7 @@ void MeshBuilder::AppendToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, uns
         copyFunction(m_vertices[vertex_index], currentBufferIndex);
         currentBufferIndex += vertexSize;
     }
-    mesh->Init(vertexBuffer, vertexCount, sizeofVertex, m_indices.data(), m_indices.size(), bindMeshFunction);
+    mesh->Update(vertexBuffer, vertexCount, sizeofVertex, m_indices.data(), m_indices.size(), bindMeshFunction);
     mesh->m_drawMode = this->m_drawMode;
     // Make sure we clean up after ourselves
     delete vertexBuffer;

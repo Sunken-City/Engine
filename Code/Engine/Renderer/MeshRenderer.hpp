@@ -6,9 +6,10 @@
 class Material;
 class Mesh;
 
+typedef unsigned int GLuint;
+typedef void (BindMeshToVAOForVertex)(GLuint vao, GLuint vbo, GLuint ibo, ShaderProgram* program);
 class MeshRenderer
 {
-    typedef unsigned int GLuint;
 public:
     //CONSTRUCTORS//////////////////////////////////////////////////////////////////////////
     MeshRenderer();
@@ -29,6 +30,8 @@ public:
 
 private:
     GLuint m_vaoID;
+    mutable BindMeshToVAOForVertex* m_lastVertexBindFunctionPointer = nullptr;
 
     MeshRenderer(const MeshRenderer&);
+    void BindToVAO() const;
 };

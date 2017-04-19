@@ -11,11 +11,11 @@ class Material;
 struct Vertex_PCUTB;
 
 
+typedef unsigned int GLuint;
+typedef void (BindMeshToVAOForVertex)(GLuint vao, GLuint vbo, GLuint ibo, ShaderProgram* program);
 class Mesh
 {
-    typedef unsigned int GLuint;
 public:
-    typedef void (BindMeshToVAOForVertex)(GLuint vao, GLuint vbo, GLuint ibo, ShaderProgram* program);
     //CONSTRUCTORS//////////////////////////////////////////////////////////////////////////
     Mesh();
     ~Mesh();
@@ -24,7 +24,7 @@ public:
     void RenderFromIBO(GLuint vaoID, Material* material) const;
 
     //HELPER FUNCTIONS//////////////////////////////////////////////////////////////////////////
-    void Init(void* vertexData, unsigned int numVertices, unsigned int sizeofVertex, void* indexData, unsigned int numIndices, BindMeshToVAOForVertex* BindMeshFunction, bool dynamicDraw = false);
+    void Update(void* vertexData, unsigned int numVertices, unsigned int sizeofVertex, void* indexData, unsigned int numIndices, BindMeshToVAOForVertex* BindMeshFunction, bool dynamicDraw = false);
     void BindToVAO(GLuint m_vaoID, ShaderProgram* m_shaderProgram);
     void CleanUpRenderObjects();
 

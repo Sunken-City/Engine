@@ -28,6 +28,7 @@
 #include "Engine/Core/BuildConfig.hpp"
 #include "Engine/Core/Memory/MemoryTracking.hpp"
 #include "Engine/Time/Time.hpp"
+#include "../Core/ProfilingUtils.h"
 
 #pragma comment( lib, "opengl32" ) // Link in the OpenGL32.lib static library
 #pragma comment( lib, "Glu32" ) // Link in the Glu32.lib static library
@@ -1233,6 +1234,8 @@ void Renderer::FrameBufferCopyToBack(Framebuffer* fbo, uint32_t drawingWidth, ui
 //-----------------------------------------------------------------------------------
 void Renderer::RenderFullScreenEffect(Material* material)
 {
+    ProfilingSystem::instance->PushSample("RenderFullScreenEffect");
     m_fboFullScreenEffectQuad->m_material = material;
     m_fboFullScreenEffectQuad->Render();
+    ProfilingSystem::instance->PopSample("RenderFullScreenEffect");
 }

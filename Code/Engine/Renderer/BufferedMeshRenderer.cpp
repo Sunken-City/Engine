@@ -30,6 +30,7 @@ void BufferedMeshRenderer::SetMaterial(Material* newMat)
 //-----------------------------------------------------------------------------------
 void BufferedMeshRenderer::FlushAndRender()
 {
+    ProfilingSystem::instance->PushSample("FlushAndRender");
     if (m_mesh.m_numVerts == 0)
     {
         if (m_builder.m_vertices.size() != 0)
@@ -38,6 +39,7 @@ void BufferedMeshRenderer::FlushAndRender()
         }
         else
         {
+            ProfilingSystem::instance->PopSample("FlushAndRender");
             return;
         }
     }
@@ -45,6 +47,7 @@ void BufferedMeshRenderer::FlushAndRender()
     ProfilingSystem::instance->m_activeSample->numDrawCalls += 1;
 
     m_mesh.CleanUpRenderObjects();
+    ProfilingSystem::instance->PopSample("FlushAndRender");
 }
 
 //-----------------------------------------------------------------------------------

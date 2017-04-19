@@ -13,6 +13,7 @@
 #include "..\Math\Vector2.hpp"
 #include <xstddef>
 #include "Renderer.hpp"
+#include "../Core/ProfilingUtils.h"
 
 //-----------------------------------------------------------------------------------
 ShaderProgram::ShaderProgram()
@@ -311,11 +312,19 @@ void ShaderProgram::BindUniformBuffer(const char* uniformBlockName, GLint bindPo
 //-----------------------------------------------------------------------------------
 GLint ShaderProgram::GetBindPoint(size_t hashedName)
 {
+    if (ProfilingSystem::instance->IsEnabled())
+    {
+        ProfilingSystem::instance->PushSample("GetBindPoint");
+    }
     GLint bindPoint = -1;
     auto iter = m_uniforms.find(hashedName);
     if (iter != m_uniforms.end())
     {
         bindPoint = iter->second.bindPoint;
+    }
+    if (ProfilingSystem::instance->IsEnabled())
+    {
+        ProfilingSystem::instance->PopSample("GetBindPoint");
     }
     return bindPoint;
 }

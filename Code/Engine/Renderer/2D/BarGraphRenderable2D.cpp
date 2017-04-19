@@ -1,6 +1,7 @@
 #include "Engine/Renderer/2D/BarGraphRenderable2D.hpp"
 #include "Engine/Renderer/Material.hpp"
 #include "../BufferedMeshRenderer.hpp"
+#include "../../Core/ProfilingUtils.h"
 
 //-----------------------------------------------------------------------------------
 BarGraphRenderable2D::BarGraphRenderable2D(const AABB2& bounds, RGBA filledColor, RGBA unfilledColor /*= RGBA::GRAY*/, int orderingLayer /*= 0*/, bool isEnabled /*= true*/)
@@ -47,6 +48,7 @@ AABB2 BarGraphRenderable2D::GetBounds()
 //-----------------------------------------------------------------------------------
 void BarGraphRenderable2D::Render(BufferedMeshRenderer& renderer)
 {
+    ProfilingSystem::instance->PushSample("BarGraphRenderable2D");
     static size_t gPercentageFilledUniform = std::hash<std::string>{}("gPercentageFilled");
     m_material->SetFloatUniform(gPercentageFilledUniform, m_animatedPercentageFilled);
     renderer.SetMaterial(m_material);
@@ -131,6 +133,7 @@ void BarGraphRenderable2D::Render(BufferedMeshRenderer& renderer)
 
 #pragma todo("This should be unneccessary once we have batching done properly")
     renderer.FlushAndRender();
+    ProfilingSystem::instance->PopSample("BarGraphRenderable2D");
 }
 
 //-----------------------------------------------------------------------------------

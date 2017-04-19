@@ -241,7 +241,7 @@ ParticleSystem::~ParticleSystem()
 //-----------------------------------------------------------------------------------
 void ParticleSystem::Update(float deltaSeconds)
 {
-    //ProfilingSystem::instance->PushSample("ParticleUpdate");
+    ProfilingSystem::instance->PushSample("ParticleUpdate");
     m_boundingBox = AABB2::INVALID;
     if (!m_isDead)
     {
@@ -255,13 +255,13 @@ void ParticleSystem::Update(float deltaSeconds)
         }
         m_isDead = areAllEmittersDead;
     }
-    //ProfilingSystem::instance->PopSample("ParticleUpdate");
+    ProfilingSystem::instance->PopSample("ParticleUpdate");
 }
 
 //-----------------------------------------------------------------------------------
 void ParticleSystem::Render(BufferedMeshRenderer& renderer)
 {
-    //ProfilingSystem::instance->PushSample("ParticleRender");
+    ProfilingSystem::instance->PushSample("ParticleRender");
     for (ParticleEmitter* emitter : m_emitters)
     {
         if (emitter->m_particles.size() > 0)
@@ -278,7 +278,7 @@ void ParticleSystem::Render(BufferedMeshRenderer& renderer)
             renderer.FlushAndRender();
         }
     }
-    //ProfilingSystem::instance->PopSample("ParticleRender");
+    ProfilingSystem::instance->PopSample("ParticleRender");
 }
 
 //-----------------------------------------------------------------------------------
@@ -318,13 +318,15 @@ void ParticleSystem::Flush()
 //-----------------------------------------------------------------------------------
 void RibbonParticleSystem::Update(float deltaSeconds)
 {
+    ProfilingSystem::instance->PushSample("RibbonParticleUpdate");
     ParticleSystem::Update(deltaSeconds);
+    ProfilingSystem::instance->PopSample("RibbonParticleUpdate");
 }
 
 //-----------------------------------------------------------------------------------
 void RibbonParticleSystem::Render(BufferedMeshRenderer& renderer)
 {
-    //ProfilingSystem::instance->PushSample("RibbonParticleRender");
+    ProfilingSystem::instance->PushSample("RibbonParticleRender");
     for (ParticleEmitter* emitter : m_emitters)
     {
         if (emitter->m_particles.size() > 0)
@@ -342,7 +344,7 @@ void RibbonParticleSystem::Render(BufferedMeshRenderer& renderer)
             renderer.FlushAndRender();
         }
     }
-    //ProfilingSystem::instance->PopSample("RibbonParticleRender");
+    ProfilingSystem::instance->PopSample("RibbonParticleRender");
 }
 
 //-----------------------------------------------------------------------------------
@@ -357,6 +359,7 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
     float width = m_definition->m_properties.Get<float>(PROPERTY_WIDTH);
     float halfWidth = width * 0.5f;
 
+    ProfilingSystem::instance->PushSample("RibbonParticleVectorShit");
     std::vector<RibbonParticlePiece> points;
     points.emplace_back(m_particles[0]);
     points[0].m_particle.m_position = m_transform.GetWorldPosition();
@@ -366,6 +369,7 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
         points.push_back(particle);
     }
     std::sort(points.begin() + 1, points.end());
+    ProfilingSystem::instance->PopSample("RibbonParticleVectorShit");
     unsigned int numPoints = points.size();
 
     for (unsigned int i = 0; i < numPoints; ++i)

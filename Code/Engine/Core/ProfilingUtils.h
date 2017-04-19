@@ -22,23 +22,6 @@ extern std::vector<ProfileReportNode, UntrackedAllocator<ProfileReportNode>> g_p
 
 //STRUCTS/////////////////////////////////////////////////////////////////////
 //-----------------------------------------------------------------------------------
-struct ProfileReportNode
-{
-public:
-    ProfileReportNode() : m_lastSample(0.0), m_numSamples(0), m_minSample(0.0), m_maxSample(0.0), m_averageSample(0.0) {};
-    void AddSample(double sampleTime);
-
-    const char* m_id;
-    double m_lastSample;
-    unsigned long long m_numSamples;
-    double m_minSample;
-    double m_maxSample;
-    double m_averageSample;
-    uint64_t m_start;
-    uint64_t m_end;
-};
-
-//-----------------------------------------------------------------------------------
 struct ProfileSample
 {
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
@@ -61,6 +44,32 @@ struct ProfileSample
     size_t numDrawCalls = 0;
     //unsigned int numCalls;
     //double averageTime = -1.0;
+};
+
+//-----------------------------------------------------------------------------------
+struct ProfileReportNode
+{
+public:
+    ProfileReportNode() : m_lastTime(0.0), m_numSamples(0), m_minTime(0.0), m_maxTime(0.0), m_averageTime(0.0) {};
+    void AddSample(ProfileSample* otherSample);
+    void CalculatePercentage(double frameTime) { m_framePercentage = static_cast<float>(m_totalTime / frameTime); };
+    inline bool operator<(const ProfileReportNode& other) { return (m_totalSelfTime > other.m_totalSelfTime); }; //This is intentional for sorting yes I'm evil.
+    double GetTimeForChildren(ProfileSample* otherSample);
+    const char* m_id;
+    double m_lastTime;
+    unsigned long long m_numSamples;
+    double m_minTime;
+    double m_maxTime;
+    double m_averageTime;
+    double m_totalChildTime = 0.0;
+    double m_totalSelfTime = 0.0;
+    double m_totalTime = 0.0;
+    size_t m_sizeAllocs = 0;
+    size_t m_numAllocs = 0;
+    size_t m_numDrawCalls = 0;
+    float m_framePercentage = 0.0f;
+    uint64_t m_start;
+    uint64_t m_end;
 };
 
 //-----------------------------------------------------------------------------------

@@ -391,7 +391,9 @@ void SpriteGameRenderer::RenderLayer(SpriteLayer* layer, const ViewportDefinitio
     {
         if (layer->m_isBloomEnabled)
         {
+            ProfilingSystem::instance->PushSample("ClearColorBufferForBloom");
             m_currentFBO->ClearColorBuffer(1, RGBA::BLACK);
+            ProfilingSystem::instance->PopSample("ClearColorBufferForBloom");
         }
 
         Vector2 cameraPos = layer->m_isWorldSpaceLayer ? m_cameraPosition : Vector2::ZERO;

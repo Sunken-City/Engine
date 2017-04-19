@@ -13,6 +13,7 @@
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include "Engine/Renderer/OpenGLExtensions.hpp"
+#include "../Core/ProfilingUtils.h"
 
 //-----------------------------------------------------------------------------------
 Mesh::Mesh()
@@ -51,17 +52,19 @@ Mesh::~Mesh()
 //-----------------------------------------------------------------------------------
 void Mesh::RenderFromIBO(GLuint vaoID, Material* material) const
 {
+    ProfilingSystem::instance->PushSample("RenderFromIBO");
     glBindVertexArray(vaoID);
     material->SetUpRenderState();
     //Draw with IBO
     glDrawElements(Renderer::instance->GetDrawMode(m_drawMode), m_numIndices, GL_UNSIGNED_INT, (GLvoid*)0);
-    material->CleanUpRenderState();
+    //material->CleanUpRenderState();
     glBindVertexArray(NULL);
+    ProfilingSystem::instance->PopSample("RenderFromIBO");
 }
 
 //Pushes data over to the GPU and creates the buffers. The mesh doesn't store any of the vertexes or indexes, just the buffer locations.
 //-----------------------------------------------------------------------------------
-void Mesh::Init(void* vertexData, unsigned int numVertices, unsigned int sizeofVertex, void* indexData, unsigned int numIndices, BindMeshToVAOForVertex* BindMeshFunction, bool dynamicDraw)
+void Mesh::Update(void* vertexData, unsigned int numVertices, unsigned int sizeofVertex, void* indexData, unsigned int numIndices, BindMeshToVAOForVertex* BindMeshFunction, bool dynamicDraw)
 {
     m_numVerts = numVertices;
     m_numIndices = numIndices;

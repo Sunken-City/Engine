@@ -4,6 +4,7 @@
 #include "Engine/Renderer/Mesh.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Renderer/Vertex.hpp"
+#include "../Core/ProfilingUtils.h"
 
 //-----------------------------------------------------------------------------------
 MeshRenderer::MeshRenderer()
@@ -35,17 +36,41 @@ MeshRenderer::~MeshRenderer()
     }
 }
 
+
+//-----------------------------------------------------------------------------------
+void MeshRenderer::BindToVAO() const
+{
+    m_mesh->BindToVAO(m_vaoID, m_material->m_shaderProgram);
+//     if (m_lastVertexBindFunctionPointer != m_mesh->m_vertexBindFunctionPointer)
+//     {
+//         m_lastVertexBindFunctionPointer = m_mesh->m_vertexBindFunctionPointer;
+//         m_vertexBindFunctionPointer(m_vaoID, )
+//     }
+}
+
 //-----------------------------------------------------------------------------------
 void MeshRenderer::Render() const
 {
+    ProfilingSystem::instance->PushSample("MeshRendererRender");
+
+    ProfilingSystem::instance->PushSample("SetMatsAndBindTextures");
     m_material->SetMatrices(m_model, Renderer::instance->m_viewStack.GetTop(), Renderer::instance->m_projStack.GetTop());
     m_material->BindAvailableTextures();
-    m_mesh->BindToVAO(m_vaoID, m_material->m_shaderProgram);
+    ProfilingSystem::instance->PopSample("SetMatsAndBindTextures");
+
+    ProfilingSystem::instance->PushSample("BindToVAO");
+    BindToVAO();
+    ProfilingSystem::instance->PopSample("BindToVAO");
     GL_CHECK_ERROR();
+
     m_mesh->RenderFromIBO(m_vaoID, m_material);
     GL_CHECK_ERROR();
+    ProfilingSystem::instance->PushSample("UnbindIBO&Tex");
     Renderer::instance->UnbindIbo();
     m_material->UnbindAvailableTextures();
+    ProfilingSystem::instance->PopSample("UnbindIBO&Tex");
+
+    ProfilingSystem::instance->PopSample("MeshRendererRender");
 }
 
 //-----------------------------------------------------------------------------------

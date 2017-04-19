@@ -1,6 +1,7 @@
 #include "Engine/Renderer/2D/Sprite.hpp"
 #include "Engine/Renderer/2D/SpriteGameRenderer.hpp"
 #include "Engine/Renderer/2D/ResourceDatabase.hpp"
+#include "../../Core/ProfilingUtils.h"
 
 //-----------------------------------------------------------------------------------
 Sprite::Sprite(const std::string& resourceName, int orderingLayer, bool isEnabled) 
@@ -48,9 +49,11 @@ void SpriteResource::SetUVBounds(const AABB2& bounds)
 //-----------------------------------------------------------------------------------
 void Sprite::Render(BufferedMeshRenderer& renderer)
 {
+    ProfilingSystem::instance->PushSample("SpriteRenderable");
     renderer.SetMaterial(m_material);
     renderer.SetDiffuseTexture(m_spriteResource->m_texture);
     PushSpriteToMesh(renderer);
+    ProfilingSystem::instance->PopSample("SpriteRenderable");
 }
 
 //-----------------------------------------------------------------------------------

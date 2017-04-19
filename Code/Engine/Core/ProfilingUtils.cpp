@@ -5,10 +5,12 @@
 #include "Engine/Input/Console.hpp"
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <algorithm>
 using namespace std::chrono;
 
 std::vector<ProfileReportNode, UntrackedAllocator<ProfileReportNode>> g_profilingResults;
 ProfilingSystem* ProfilingSystem::instance = nullptr;
+extern int g_frameNumber;
 
 #ifdef PROFILING_ENABLED
 
@@ -19,7 +21,7 @@ ProfilingSystem::ProfilingSystem()
     , m_currentFrameRoot(nullptr)
     , m_previousFrameRoot(nullptr)
     , m_activeSample(nullptr)
-    , m_sampleAllocator(2048)
+    , m_sampleAllocator(2048 * 8)
 {
 }
 
@@ -202,7 +204,7 @@ bool ProfilingSystem::AddProfileNode(ProfileSample* root)
                 if (strcmp(node.m_id, currentChild->id) == 0) //Same sample, add a call
                 {
                     foundSameTag = true;
-                    node.AddSample(currentChild->GetDurationInSeconds());
+                    node.AddSample(currentChild);
                     break;
                 }
             }
@@ -212,7 +214,7 @@ bool ProfilingSystem::AddProfileNode(ProfileSample* root)
                 currentNode.m_id = currentChild->id;
                 currentNode.m_start = currentChild->startCount;
                 currentNode.m_end = currentChild->endCount;
-                currentNode.AddSample(currentChild->GetDurationInSeconds());
+                currentNode.AddSample(currentChild);
                 g_profilingResults.push_back(currentNode);
             }
 
@@ -229,6 +231,24 @@ void ProfilingSystem::GenerateProfilingReport()
     g_profilingResults.clear();
 
     AddProfileNode(m_previousFrameRoot);
+
+    for (ProfileReportNode& node : g_profilingResults)
+    {
+        node.CalculatePercentage(m_previousFrameRoot->GetDurationInSeconds());
+    }
+
+    std::sort(g_profilingResults.begin(), g_profilingResults.end());
+
+    DebuggerPrintf("---===Frame impact report===---\n");
+    DebuggerPrintf("Frame %i's time: %10.02fms\n", g_frameNumber, m_previousFrameRoot->GetDurationInSeconds() * 1000.0f);
+    DebuggerPrintf("///TOP///\n");
+    DebuggerPrintf("%-25s%12s%12s%12s%12s%12s%12s%12s%12s%11s\n", "TAG", "NUM CALLS", "NUM DRAWS", "NUM ALLOCS", "SIZE ALLOCS", "SELF TIME", "TOTAL TIME", "MAX TIME", "AVG TIME", "PERCENTAGE");
+    for (ProfileReportNode& node : g_profilingResults)
+    {
+        DebuggerPrintf("%-25s%12i%12i%12i%12i%10.02fms%10.02fms%10.02fms%10.02fms%10.02f%%\n", node.m_id, (int)node.m_numSamples, node.m_numDrawCalls, node.m_numAllocs, node.m_sizeAllocs, (float)node.m_totalSelfTime * 1000.0f, (float)node.m_totalTime * 1000.0f, (float)node.m_maxTime * 1000.0f, (float)node.m_averageTime * 1000.0f, node.m_framePercentage * 100.0f);
+    }
+    DebuggerPrintf("///BOTTOM///\n");
+    DebuggerPrintf("---===End of Frame impact report===---\n");
 }
 
 //-----------------------------------------------------------------------------------
@@ -266,17 +286,42 @@ double PerformanceCountToSeconds(uint64_t& performanceCount)
 }
 
 //-----------------------------------------------------------------------------------
-void ProfileReportNode::AddSample(double sampleTime)
+void ProfileReportNode::AddSample(ProfileSample* otherSample)
 {
-    m_lastSample = sampleTime;
-    m_minSample = (sampleTime < m_minSample) ? sampleTime : m_minSample;
-    m_maxSample = (sampleTime > m_maxSample) ? sampleTime : m_maxSample;
-// 	double currentRollingAverage = m_averageSample;
-// 	double currentRollingAverageExpanded = currentRollingAverage * m_numSamples;
-    m_averageSample *= 0.97;
-    m_averageSample += (0.03 * m_lastSample);
+    double sampleTime = otherSample->GetDurationInSeconds();
+    m_sizeAllocs += otherSample->numAllocs;
+    m_numAllocs += otherSample->numAllocs;
+    m_numDrawCalls += otherSample->numDrawCalls;
+    m_lastTime = sampleTime;
+    m_minTime = (sampleTime < m_minTime) ? sampleTime : m_minTime;
+    m_maxTime = (sampleTime > m_maxTime) ? sampleTime : m_maxTime;
+    double currentRollingAverage = m_averageTime;
+    double currentRollingAverageExpanded = currentRollingAverage * m_numSamples;
+    //m_averageSample *= 0.97;
+    //m_averageSample += (0.03 * m_lastSample);
+    m_totalTime += sampleTime;
+    m_totalChildTime += GetTimeForChildren(otherSample);
+    m_totalSelfTime = m_totalTime - m_totalChildTime;
     m_numSamples++;
-// 	m_averageSample = (currentRollingAverageExpanded + m_lastSample) / m_numSamples;
+    m_averageTime = (currentRollingAverageExpanded + m_lastTime) / m_numSamples;
+}
+
+//-----------------------------------------------------------------------------------
+double ProfileReportNode::GetTimeForChildren(ProfileSample* otherSample)
+{
+    double childrenTime = 0.0;
+    ProfileSample* currentChild = otherSample->children;
+    if (currentChild == nullptr)
+    {
+        return childrenTime;
+    }
+
+    do
+    {
+        childrenTime += currentChild->GetDurationInSeconds();
+        currentChild = currentChild->next;
+    } while (currentChild != otherSample->children);
+    return childrenTime;
 }
 
 //-----------------------------------------------------------------------------------
