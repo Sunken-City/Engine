@@ -65,6 +65,8 @@ void ProfilingSystem::EndPreviousFrame()
     m_previousFrameRoot = m_currentFrameRoot;
 
     PopSample();
+    m_rollingAverageFrametime *= 0.97;
+    m_rollingAverageFrametime += (0.03 * m_previousFrameRoot->GetDurationInSeconds());
 }
 
 
@@ -174,6 +176,12 @@ void ProfilingSystem::PrintTreeListView()
         Console::instance->PrintLine(Stringf("%-30s%12s%12s%12s%12s%11s", "TAG", "NUM DRAWS", "NUM ALLOCS", "SIZE ALLOCS", "TIME", "%FRAME"));
         PrintNodeListView(m_previousFrameRoot, 0);
     }
+}
+
+//-----------------------------------------------------------------------------------
+double ProfilingSystem::GetAverageFrameDuration()
+{
+    return m_rollingAverageFrametime;
 }
 
 //-----------------------------------------------------------------------------------

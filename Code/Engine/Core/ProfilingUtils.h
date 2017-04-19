@@ -76,6 +76,7 @@ public:
     //The sample id here is unused, just used for readability for pushing and popping samples.
     void PopSample(const char* id = "");
     void PrintTreeListView();
+    double GetAverageFrameDuration();
     ProfileSample* GetLastFrame();
     inline bool IsEnabled() const { return m_isEnabled; };
     inline bool IsDisabled() const { return !m_isEnabled; };
@@ -98,6 +99,7 @@ private:
     void PrintNodeListView(ProfileSample* root, unsigned int depth);
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
+    double m_rollingAverageFrametime = 0.0f;
     bool m_isEnabled;
     bool m_intentToEnable;
 };
