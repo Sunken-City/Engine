@@ -44,7 +44,9 @@ void BufferedMeshRenderer::FlushAndRender()
         }
     }
     m_renderer.Render();
+#ifdef PROFILING_ENABLED
     ProfilingSystem::instance->m_activeSample->numDrawCalls += 1;
+#endif
 
     m_mesh.CleanUpRenderObjects();
     ProfilingSystem::instance->PopSample("FlushAndRender");

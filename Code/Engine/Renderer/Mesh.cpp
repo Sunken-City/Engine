@@ -69,7 +69,7 @@ void Mesh::Update(void* vertexData, unsigned int numVertices, unsigned int sizeo
     m_numVerts = numVertices;
     m_numIndices = numIndices;
     m_vertexBindFunctionPointer = BindMeshFunction;
-    m_vbo = Renderer::instance->GenerateBufferID();
+    m_vbo = Renderer::instance->GenerateBufferID(); //Check to make sure this is a deleted VBO first.
     GL_CHECK_ERROR();
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeofVertex * numVertices, vertexData, dynamicDraw ? GL_DYNAMIC_DRAW : GL_STATIC_DRAW);

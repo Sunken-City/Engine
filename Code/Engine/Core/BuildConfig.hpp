@@ -9,7 +9,7 @@
 #define TRACK_MEMORY 1
 
 //Enable Profiling
-#define PROFILING_ENABLED
+//#define PROFILING_ENABLED
 
 //Enable checking for OpenGL Errors
 //#define CHECK_GL_ERRORS
