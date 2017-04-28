@@ -22,8 +22,8 @@ public:
     virtual bool IsCullable() { return true; };
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
-    Renderable2D* prev;
-    Renderable2D* next;
+    Renderable2D* prev; //In-place linked list, points to the previous renderable in the list
+    Renderable2D* next; //In-place linked list, points to the next renderable in the list
     int m_orderingLayer; //Drawing order is ordered by layer, smallest to largest
     bool m_isEnabled; //If disabled - does not get rendered
     bool m_isDead = false;

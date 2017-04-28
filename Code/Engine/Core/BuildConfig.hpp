@@ -6,7 +6,7 @@
 * 2 - Insanely Verbose (Every new, every free)
 * Not defined = no memory tracking
 */
-#define TRACK_MEMORY 1
+//#define TRACK_MEMORY 1
 
 //Enable Profiling
 //#define PROFILING_ENABLED
