@@ -58,9 +58,9 @@ void MeshRenderer::Render() const
     m_material->BindAvailableTextures();
     ProfilingSystem::instance->PopSample("SetMatsAndBindTextures");
 
-    ProfilingSystem::instance->PushSample("BindToVAO");
+    //ProfilingSystem::instance->PushSample("BindToVAO");
     BindToVAO();
-    ProfilingSystem::instance->PopSample("BindToVAO");
+    //ProfilingSystem::instance->PopSample("BindToVAO");
     GL_CHECK_ERROR();
 
     m_mesh->RenderFromIBO(m_vaoID, m_material);

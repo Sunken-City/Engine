@@ -8,7 +8,7 @@
 BufferedMeshRenderer::BufferedMeshRenderer()
     : m_renderer(&m_mesh, Renderer::instance->m_defaultMaterial)
 {
-
+    m_mesh.m_dynamicDraw = true;
 }
 
 //-----------------------------------------------------------------------------------
@@ -44,11 +44,12 @@ void BufferedMeshRenderer::FlushAndRender()
         }
     }
     m_renderer.Render();
+    m_mesh.MarkMeshEmpty();
+    //m_mesh.CleanUpRenderObjects();
 #ifdef PROFILING_ENABLED
     ProfilingSystem::instance->m_activeSample->numDrawCalls += 1;
 #endif
 
-    m_mesh.CleanUpRenderObjects();
     ProfilingSystem::instance->PopSample("FlushAndRender");
 }
 

@@ -50,7 +50,7 @@ public:
     MeshBuilder();
     ~MeshBuilder();
 
-    void Flush();
+    void ClearVertsAndIndices();
 
     //MEMBER FUNCTIONS//////////////////////////////////////////////////////////////////////////
     void Begin();

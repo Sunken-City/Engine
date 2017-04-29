@@ -22,9 +22,10 @@ public:
 
     //FUNCTIONS//////////////////////////////////////////////////////////////////////////
     void RenderFromIBO(GLuint vaoID, Material* material) const;
+    void MarkMeshEmpty();
 
     //HELPER FUNCTIONS//////////////////////////////////////////////////////////////////////////
-    void Update(void* vertexData, unsigned int numVertices, unsigned int sizeofVertex, void* indexData, unsigned int numIndices, BindMeshToVAOForVertex* BindMeshFunction, bool dynamicDraw = false);
+    void Update(void* vertexData, unsigned int numVertices, unsigned int sizeofVertex, void* indexData, unsigned int numIndices, BindMeshToVAOForVertex* BindMeshFunction);
     void BindToVAO(GLuint m_vaoID, ShaderProgram* m_shaderProgram);
     void CleanUpRenderObjects();
 
@@ -33,7 +34,12 @@ public:
     GLuint m_ibo;
     unsigned int m_numVerts;
     unsigned int m_numIndices;
-    BindMeshToVAOForVertex* m_vertexBindFunctionPointer;
+    unsigned int m_vboBufferSize = 0;
+    unsigned int m_iboBufferSize = 0;
+    bool m_dynamicDraw = false;
+    bool m_isDirty = false;
+    BindMeshToVAOForVertex* m_vertexBindFunctionPointer = nullptr;
+    ShaderProgram* m_lastUsedShaderProgram = nullptr;
     Renderer::DrawMode m_drawMode;
 
 private:
