@@ -51,7 +51,7 @@ public:
     };
 
     //CONSTRUCTORS//////////////////////////////////////////////////////////////////////////
-    InputSystem(void* hWnd, int maximumNumberOfControllers = 0);
+    InputSystem(void* hWnd, int maximumNumberOfControllers = 0, int windowWidth = 1600, int windowHeight = 900);
     ~InputSystem();
 
     //FUNCTIONS//////////////////////////////////////////////////////////////////////////
@@ -100,16 +100,13 @@ public:
     
 private:
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
-#pragma todo("These need to not be hard-coded, we're gonna have a bad time")
-    static const int SNAP_BACK_X = 800;
-    static const int SNAP_BACK_Y = 600;
     
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
+    int m_mouseSnapBackX;
+    int m_mouseSnapBackY;
     bool m_isKeyDown[NUM_KEYS];
     bool m_isMouseDown[NUM_MOUSE_BUTTONS];
-    bool m_isCursorVisible;
     bool m_hasFocus;
-    bool m_captureCursor;
     bool m_isScrolling;
     int m_linesScrolled;
     unsigned int m_frameNumberKeyLastChanged[NUM_KEYS];

@@ -9,20 +9,20 @@
 InputSystem* InputSystem::instance = nullptr;
 
 //-----------------------------------------------------------------------------------
-InputSystem::InputSystem(void* hWnd, int maximumNumberOfControllers /*= 0*/)
+InputSystem::InputSystem(void* hWnd, int maximumNumberOfControllers /*= 0*/, int windowWidth /*= 1600*/, int windowHeight /*= 900*/) 
 : m_frameCounter(0)
 , m_cursorDelta(0, 0)
 , m_cursorPosition(0, 0)
-, m_isCursorVisible(false)
 , m_hasFocus(false)
 , m_hWnd(hWnd)
 , m_isScrolling(false)
 , m_linesScrolled(0)
 , m_maximumNumControllers(maximumNumberOfControllers)
-, m_lastPressedChar(0x00) //NULL character
-, m_captureCursor(false)
+, m_lastPressedChar(NULL) //NULL character
 , m_keyboardDevice(new KeyboardInputDevice())
 , m_mouseDevice(new MouseInputDevice())
+, m_mouseSnapBackX(windowWidth / 2)
+, m_mouseSnapBackY(windowHeight / 2)
 {
     //Only initialize the number of controllers we need for the game.
     for (int i = 0; i < m_maximumNumControllers; i++)
@@ -116,15 +116,16 @@ void InputSystem::Update(float deltaSeconds)
         BOOL success = GetCursorPos(&cursorPos);
         if (success)
         {
-            if (ScreenToClient(hWnd, &cursorPos))
+            //If we're captured, don't convert the coordinates to client space.
+            if (m_mouseDevice->m_captureCursor || ScreenToClient(hWnd, &cursorPos))
             {
                 m_cursorPosition = Vector2Int(cursorPos.x, cursorPos.y);
-                m_cursorDelta.x = cursorPos.x - SNAP_BACK_X;
-                m_cursorDelta.y = cursorPos.y - SNAP_BACK_Y;
+                m_cursorDelta.x = cursorPos.x - m_mouseSnapBackX;
+                m_cursorDelta.y = cursorPos.y - m_mouseSnapBackY;
                 m_mouseDevice->SetDelta(m_cursorDelta);
-                if (!m_isCursorVisible && m_captureCursor)
+                if (!m_mouseDevice->m_isCursorVisible && m_mouseDevice->m_captureCursor)
                 {
-                    SetCursorPos(SNAP_BACK_X, SNAP_BACK_Y);
+                    SetCursorPos(m_mouseSnapBackX, m_mouseSnapBackY);
                 }
             }
 

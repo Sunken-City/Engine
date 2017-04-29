@@ -94,6 +94,12 @@ public:
     inline bool IsDisabled() const { return !m_isEnabled; };
     inline void SetEnabled(bool enabled) { m_intentToEnable = enabled; };
 
+#ifdef PROFILING_ENABLED
+    static inline bool IsProfilingEnabled() { return ProfilingSystem::instance && ProfilingSystem::instance->IsEnabled(); };
+#else
+    static inline bool IsProfilingEnabled() { return false; };
+#endif // PROFILING_ENABLED
+
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
     static ProfilingSystem* instance;
 
