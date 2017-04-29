@@ -38,7 +38,8 @@ extern AnimationMotion* g_loadedMotion;
         float scale = args.HasArgs(2) ? args.GetFloatArgument(1) : 1.0f;
         Matrix4x4 transform;
         Matrix4x4::MatrixMakeScale(&transform, scale);
-        
+
+        Console::instance->PrintLine("Loading, stretch and take a deep breath. c:", RGBA::CYAN);
         SceneImport* import = FbxLoadSceneFromFile(filename.c_str(), Matrix4x4::IDENTITY, false, transform);
         if (import == nullptr)
         {

@@ -127,10 +127,10 @@ void MeshBuilder::CopyToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsig
     unsigned int vertexSize = sizeofVertex; //mesh->vdefn->vertexSize;
     unsigned int vertex_buffer_size = vertexCount * vertexSize;
 
-    byte* vertexBuffer = (byte*)_alloca(vertex_buffer_size); //allocates on the stack, falls off later.
+    byte* vertexBuffer = new byte[vertex_buffer_size];
+    //if (small enough) vertexBuffer = (byte*)_alloca(vertex_buffer_size); //_alloca would on the stack, falls off later. Removed because of stack overflow reasons ;P
     byte* currentBufferIndex = vertexBuffer;
 
-//	mesh->m_verts.clear();
     for (unsigned int vertex_index = 0;	vertex_index < vertexCount;	++vertex_index) 
     {
         copyFunction(m_vertices[vertex_index], currentBufferIndex);
