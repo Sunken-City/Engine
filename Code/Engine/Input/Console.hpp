@@ -73,6 +73,7 @@ private:
     char* m_cursorPointer;
     char m_characterAtCursor;
     float m_timeSinceCursorBlink;
+    float m_timeSinceRepeatHeld = 0.0f;
     unsigned int m_commandHistoryIndex;
     std::vector<ColoredText*> m_consoleHistory;
     std::vector<std::string> m_commandHistory;

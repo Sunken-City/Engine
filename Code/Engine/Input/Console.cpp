@@ -74,11 +74,13 @@ void Console::ParseKey(char currentChar)
     {
         *m_cursorPointer = currentChar;
         m_cursorPointer++;
+        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::BACKSPACE) && m_cursorPointer != m_currentLine)
     {
         m_cursorPointer--;
         *m_cursorPointer = '\0';
+        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::ENTER))
     {
@@ -95,14 +97,17 @@ void Console::ParseKey(char currentChar)
         }
         m_cursorPointer = m_currentLine;
         memset(m_currentLine, 0x00, MAX_LINE_LENGTH);
+        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::LEFT) && m_cursorPointer != m_currentLine)
     {
         m_cursorPointer--;
+        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::RIGHT) && m_cursorPointer != (m_currentLine + MAX_LINE_LENGTH))
     {
         m_cursorPointer++;
+        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::UP) && m_commandHistoryIndex > 0)
     {
@@ -110,6 +115,7 @@ void Console::ParseKey(char currentChar)
         memset(m_currentLine, 0x00, MAX_LINE_LENGTH);
         --m_commandHistoryIndex;
         strcpy_s(m_currentLine, MAX_LINE_LENGTH, m_commandHistory[m_commandHistoryIndex].c_str());
+        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::DOWN) && m_commandHistoryIndex < m_commandHistory.size() - 1)
     {
@@ -117,10 +123,12 @@ void Console::ParseKey(char currentChar)
         memset(m_currentLine, 0x00, MAX_LINE_LENGTH);
         ++m_commandHistoryIndex;
         strcpy_s(m_currentLine, MAX_LINE_LENGTH, m_commandHistory[m_commandHistoryIndex].c_str());
+        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::HOME))
     {
         m_cursorPointer = m_currentLine;
+        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::END))
     {
@@ -133,6 +141,7 @@ void Console::ParseKey(char currentChar)
                 break;
             }
         }
+        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::DEL))
     {
@@ -147,6 +156,7 @@ void Console::ParseKey(char currentChar)
                 break;
             }
         }
+        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
     }
 }
 
@@ -166,8 +176,8 @@ void Console::Render() const
 
             if (m_renderCursor)
             {
-                int numChars = (m_cursorPointer - m_currentLine) / sizeof(char);
-                AABB2 textBounds = m_font->CalcTextBounds(currentLine.substr(0, numChars), 1.0f);
+                int numCharsIntoString = (m_cursorPointer - m_currentLine) / sizeof(char);
+                AABB2 textBounds = m_font->CalcTextBounds(currentLine.substr(0, numCharsIntoString), 1.0f);
                 float currentTextWidth = textBounds.GetWidth();
                 float currentTextHeight = textBounds.GetHeight();
                 Vector3 cursorBottom(currentBaseline.x + currentTextWidth, currentBaseline.y, 0.0f);

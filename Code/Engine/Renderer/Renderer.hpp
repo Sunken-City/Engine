@@ -8,6 +8,7 @@
 #include "Engine/Math/MatrixStack4x4.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Renderer/Material.hpp"
+#include "Engine/Core/BuildConfig.hpp"
 
 //-----------------------------------------------------------------------------------
 #ifdef CHECK_GL_ERRORS
