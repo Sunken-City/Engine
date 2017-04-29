@@ -360,7 +360,6 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
     }
     m_fullscreenCompositeFBO->Unbind();
 
-    m_bufferedMeshRenderer.m_mesh.CleanUpRenderObjects();
     Renderer::instance->m_defaultMaterial->SetDiffuseTexture(Renderer::instance->m_defaultTexture);
     m_currentTexturePool->ReturnToPool(m_currentFBO->m_colorTargets[0]);
     m_currentTexturePool->ReturnToPool(m_currentFBO->m_colorTargets[1]);

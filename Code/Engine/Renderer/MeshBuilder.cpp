@@ -66,11 +66,11 @@ MeshBuilder::MeshBuilder()
 //-----------------------------------------------------------------------------------
 MeshBuilder::~MeshBuilder()
 {
-    Flush();
+    ClearVertsAndIndices();
 }
 
 //-----------------------------------------------------------------------------------
-void MeshBuilder::Flush()
+void MeshBuilder::ClearVertsAndIndices()
 {
     m_vertices.clear();
     m_indices.clear();
@@ -140,13 +140,13 @@ void MeshBuilder::CopyToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsig
     {
         ProfilingSystem::instance->PushSample("Mesh Init");
     }
-    mesh->Update(vertexBuffer, vertexCount, sizeofVertex, m_indices.data(), m_indices.size(), bindMeshFunction, true);
+    mesh->Update(vertexBuffer, vertexCount, sizeofVertex, m_indices.data(), m_indices.size(), bindMeshFunction);
     if (ProfilingSystem::instance)
     {
         ProfilingSystem::instance->PopSample("Mesh Init");
     }
     mesh->m_drawMode = this->m_drawMode;
-    Flush();
+    ClearVertsAndIndices();
 }
 
 //-----------------------------------------------------------------------------------
