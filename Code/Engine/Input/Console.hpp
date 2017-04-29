@@ -49,6 +49,11 @@ public:
     inline bool IsActive() { return m_isActive; };
     inline bool IsEmpty() { return (m_cursorPointer == m_currentLine && *m_cursorPointer == '\0'); };
     static void RegisterCommand(const char* commandName, ConsoleCommandFunctionPointer consoleFunction);
+    inline void BlinkCursor()
+    {
+        m_timeSinceCursorBlink = 0;
+        m_renderCursor = true;
+    };
 
     //VARIABLES//////////////////////////////////////////////////////////////////////////
     static Console* instance;
@@ -71,6 +76,8 @@ private:
     bool m_renderCursor = false;
     char* m_currentLine;
     char* m_cursorPointer;
+    char* m_leftmostSelectionCharacter = NULL;
+    char* m_rightmostSelectionCharacter = NULL;
     char m_characterAtCursor;
     float m_timeSinceCursorBlink;
     float m_timeSinceRepeatHeld = 0.0f;

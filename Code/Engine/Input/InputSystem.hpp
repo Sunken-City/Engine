@@ -19,6 +19,7 @@ public:
         TAB = 0x09, //VK_TAB
         ENTER = 0x0D, //VK_RETURN
         SHIFT = 0x10, //VK_SHIFT
+        CTRL = 0x11, //VK_CONTROL
         ESC = 0x1B, //VK_ESCAPE
         PAGE_UP = 0x21, //VK_PRIOR
         PAGE_DOWN = 0x22, //VK_NEXT

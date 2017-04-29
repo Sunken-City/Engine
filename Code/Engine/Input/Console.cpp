@@ -56,6 +56,9 @@ void Console::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void Console::ParseKey(char currentChar)
 {
+    bool controlHeldDown = InputSystem::instance->IsKeyDown(InputSystem::ExtraKeys::CTRL);
+    bool isShiftDown = InputSystem::instance->IsKeyDown(InputSystem::ExtraKeys::SHIFT);
+
     if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::ESC))
     {
         *m_cursorPointer = m_characterAtCursor;
@@ -74,13 +77,13 @@ void Console::ParseKey(char currentChar)
     {
         *m_cursorPointer = currentChar;
         m_cursorPointer++;
-        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
+        BlinkCursor();
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::BACKSPACE) && m_cursorPointer != m_currentLine)
     {
         m_cursorPointer--;
         *m_cursorPointer = '\0';
-        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
+        BlinkCursor();
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::ENTER))
     {
@@ -97,17 +100,41 @@ void Console::ParseKey(char currentChar)
         }
         m_cursorPointer = m_currentLine;
         memset(m_currentLine, 0x00, MAX_LINE_LENGTH);
-        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
+        BlinkCursor();
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::LEFT) && m_cursorPointer != m_currentLine)
     {
-        m_cursorPointer--;
-        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
+        if (controlHeldDown)
+        {
+            char* current = --m_cursorPointer;
+            while (!(current == m_currentLine || *current == ' '))
+            {
+                --current;
+            }
+            m_cursorPointer = current;
+        }
+        else
+        {
+            --m_cursorPointer;
+        }
+        BlinkCursor();
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::RIGHT) && m_cursorPointer != (m_currentLine + MAX_LINE_LENGTH))
     {
-        m_cursorPointer++;
-        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
+        if (controlHeldDown)
+        {
+            char* current = ++m_cursorPointer;
+            while (!(current == '\0' || *current == ' '))
+            {
+                ++current;
+            }
+            m_cursorPointer = current;
+        }
+        else
+        {
+            ++m_cursorPointer;
+        }
+        BlinkCursor();
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::UP) && m_commandHistoryIndex > 0)
     {
@@ -115,7 +142,7 @@ void Console::ParseKey(char currentChar)
         memset(m_currentLine, 0x00, MAX_LINE_LENGTH);
         --m_commandHistoryIndex;
         strcpy_s(m_currentLine, MAX_LINE_LENGTH, m_commandHistory[m_commandHistoryIndex].c_str());
-        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
+        BlinkCursor();
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::DOWN) && m_commandHistoryIndex < m_commandHistory.size() - 1)
     {
@@ -123,12 +150,12 @@ void Console::ParseKey(char currentChar)
         memset(m_currentLine, 0x00, MAX_LINE_LENGTH);
         ++m_commandHistoryIndex;
         strcpy_s(m_currentLine, MAX_LINE_LENGTH, m_commandHistory[m_commandHistoryIndex].c_str());
-        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
+        BlinkCursor();
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::HOME))
     {
         m_cursorPointer = m_currentLine;
-        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
+        BlinkCursor();
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::END))
     {
@@ -141,7 +168,7 @@ void Console::ParseKey(char currentChar)
                 break;
             }
         }
-        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
+        BlinkCursor();
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::DEL))
     {
@@ -156,7 +183,7 @@ void Console::ParseKey(char currentChar)
                 break;
             }
         }
-        m_timeSinceCursorBlink = CURSOR_BLINK_RATE_SECONDS;
+        BlinkCursor();
     }
 }
 
