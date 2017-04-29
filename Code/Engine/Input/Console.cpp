@@ -166,7 +166,8 @@ void Console::Render() const
 
             if (m_renderCursor)
             {
-                AABB2 textBounds = m_font->CalcTextBounds(currentLine, 1.0f);
+                int numChars = (m_cursorPointer - m_currentLine) / sizeof(char);
+                AABB2 textBounds = m_font->CalcTextBounds(currentLine.substr(0, numChars), 1.0f);
                 float currentTextWidth = textBounds.GetWidth();
                 float currentTextHeight = textBounds.GetHeight();
                 Vector3 cursorBottom(currentBaseline.x + currentTextWidth, currentBaseline.y, 0.0f);
