@@ -68,6 +68,7 @@ private:
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
     bool m_isActive;
     bool m_isCursorShowing;
+    bool m_renderCursor = false;
     char* m_currentLine;
     char* m_cursorPointer;
     char m_characterAtCursor;

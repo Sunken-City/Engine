@@ -14,7 +14,6 @@ std::map<const char*, const char*, std::less<const char*>, UntrackedAllocator<st
 const float Console::CHARACTER_HEIGHT = 20.0f;
 const float Console::CHARACTER_WIDTH = 15.0f;
 const float Console::CURSOR_BLINK_RATE_SECONDS = 0.5f;
-const char Console::CURSOR_CHARACTER = 0x7C; //| , 0xDB []
 
 //-----------------------------------------------------------------------------------
 Console::Console()
@@ -22,7 +21,6 @@ Console::Console()
     , m_cursorPointer(m_currentLine)
     , m_isActive(false)
     , m_isCursorShowing(false)
-    , m_characterAtCursor(CURSOR_CHARACTER)
     , m_timeSinceCursorBlink(0.0f)
     , m_font(BitmapFont::CreateOrGetFont("FixedSys"))
     , m_commandHistoryIndex(0)
@@ -42,21 +40,15 @@ void Console::Update(float deltaSeconds)
     if (m_isActive)
     {
         m_consoleUpdate.Trigger();
-        m_timeSinceCursorBlink += deltaSeconds;
-
-        if (*m_cursorPointer != CURSOR_CHARACTER)
-        {
-            m_characterAtCursor = *m_cursorPointer;
-        }
 
         char currentChar = InputSystem::instance->GetLastPressedChar();
         ParseKey(currentChar);
 
+        m_timeSinceCursorBlink += deltaSeconds;
         if (m_timeSinceCursorBlink >= CURSOR_BLINK_RATE_SECONDS)
         {
             m_timeSinceCursorBlink = 0.0f;
-            m_isCursorShowing = !m_isCursorShowing;
-            *m_cursorPointer = m_isCursorShowing ? CURSOR_CHARACTER : m_characterAtCursor;
+            m_renderCursor = !m_renderCursor;
         }
     }
 }
@@ -85,13 +77,11 @@ void Console::ParseKey(char currentChar)
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::BACKSPACE) && m_cursorPointer != m_currentLine)
     {
-        *m_cursorPointer = m_characterAtCursor;
         m_cursorPointer--;
         *m_cursorPointer = '\0';
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::ENTER))
     {
-        *m_cursorPointer = m_characterAtCursor;
         if (IsEmpty())
         {
             DeactivateConsole();
@@ -108,12 +98,10 @@ void Console::ParseKey(char currentChar)
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::LEFT) && m_cursorPointer != m_currentLine)
     {
-        *m_cursorPointer = m_characterAtCursor;
         m_cursorPointer--;
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::RIGHT) && m_cursorPointer != (m_currentLine + MAX_LINE_LENGTH))
     {
-        *m_cursorPointer = m_characterAtCursor;
         m_cursorPointer++;
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::UP) && m_commandHistoryIndex > 0)
@@ -132,12 +120,10 @@ void Console::ParseKey(char currentChar)
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::HOME))
     {
-        *m_cursorPointer = m_characterAtCursor;
         m_cursorPointer = m_currentLine;
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::END))
     {
-        *m_cursorPointer = m_characterAtCursor;
         for (int i = 0; i < MAX_LINE_LENGTH; i++)
         {
             char* currentIndex = m_cursorPointer + i;
@@ -175,7 +161,19 @@ void Console::Render() const
             Renderer::instance->DrawAABB(AABB2(Vector2(0, 0), Vector2(1600, 900)), RGBA(0x00000088));
 
             Vector2 currentBaseline = Vector2::ONE * 10.0f;
-            Renderer::instance->DrawText2D(currentBaseline, std::string(m_currentLine), 1.0f, RGBA::WHITE, true, m_font);
+            std::string currentLine = std::string(m_currentLine);
+            Renderer::instance->DrawText2D(currentBaseline, currentLine, 1.0f, RGBA::WHITE, true, m_font);
+
+            if (m_renderCursor)
+            {
+                AABB2 textBounds = m_font->CalcTextBounds(currentLine, 1.0f);
+                float currentTextWidth = textBounds.GetWidth();
+                float currentTextHeight = textBounds.GetHeight();
+                Vector3 cursorBottom(currentBaseline.x + currentTextWidth, currentBaseline.y, 0.0f);
+                Vector3 cursorTop(currentBaseline.x + currentTextWidth, currentBaseline.y + currentTextHeight, 0.0f);
+                Renderer::instance->DrawLine(cursorBottom, cursorTop, RGBA::WHITE, 2.0f);
+            }
+
             unsigned int index = m_consoleHistory.size() - 1;
             unsigned int numberOfLinesPrinted = 0;
             for (auto reverseIterator = m_consoleHistory.rbegin(); reverseIterator != m_consoleHistory.rend(); ++reverseIterator, --index)

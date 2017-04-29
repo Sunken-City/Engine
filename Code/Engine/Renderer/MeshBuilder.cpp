@@ -147,6 +147,7 @@ void MeshBuilder::CopyToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsig
     }
     mesh->m_drawMode = this->m_drawMode;
     ClearVertsAndIndices();
+    delete vertexBuffer;
 }
 
 //-----------------------------------------------------------------------------------
