@@ -6,6 +6,7 @@
 #include "Engine/Renderer/AABB2.hpp"
 #include "Engine/Fonts/BitmapFont.hpp"
 #include <cmath>
+#include "../Core/StringUtils.hpp"
 
 Console* Console::instance = nullptr;
 std::map<size_t, ConsoleCommandFunctionPointer, std::less<size_t>, UntrackedAllocator<std::pair<size_t, ConsoleCommandFunctionPointer>>>* g_consoleCommands = nullptr;
@@ -58,6 +59,18 @@ void Console::ParseKey(char currentChar)
 {
     bool controlHeldDown = InputSystem::instance->IsKeyDown(InputSystem::ExtraKeys::CTRL);
     bool isShiftDown = InputSystem::instance->IsKeyDown(InputSystem::ExtraKeys::SHIFT);
+
+    if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::TAB))
+    {
+//         std::string commandLine(m_currentLine);
+//         std::vector<std::string>* tokenizedString = SplitString(commandLine, " ");
+//         if (tokenizedString->size() == 1)
+//         {
+//             std::string partialCommandName = tokenizedString->at(0);
+//         }
+// 
+//         delete tokenizedString;
+    }
 
     if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::ESC))
     {

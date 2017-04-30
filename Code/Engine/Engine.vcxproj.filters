@@ -353,6 +353,9 @@
     <ClCompile Include="Core\RunInSeconds.cpp">
       <Filter>Engine\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Math\Transform3D.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -672,6 +675,9 @@
     </ClInclude>
     <ClInclude Include="Core\RunInSeconds.hpp">
       <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Transform3D.hpp">
+      <Filter>Engine\Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
