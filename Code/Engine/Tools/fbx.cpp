@@ -15,14 +15,22 @@ extern AnimationMotion* g_loadedMotion;
 #if defined(TOOLS_BUILD)
     //For tools only
     #include "ThirdParty/FBX/include/fbxsdk.h"
-#include "../Math/Vector4Int.hpp"
+    #include "../Math/Vector4Int.hpp"
+    #include "../Input/InputOutputUtils.hpp"
     #pragma comment(lib, "libfbxsdk-md.lib")
 
     //-----------------------------------------------------------------------------------
     CONSOLE_COMMAND(fbxlist)
     {
         std::string filename = args.GetStringArgument(0);
-        FbxListScene(filename.c_str());
+        if (!FileExists(filename))
+        {
+            Console::instance->PrintLine(Stringf("Could not find file %s to list out", filename.c_str()), RGBA::RED);
+        }
+        else
+        {
+            FbxListScene(filename.c_str());
+        }
     }
 
     //-----------------------------------------------------------------------------------
@@ -34,6 +42,11 @@ extern AnimationMotion* g_loadedMotion;
             return;
         }
         std::string filename = args.GetStringArgument(0);
+        if (!FileExists(filename))
+        {
+            Console::instance->PrintLine(Stringf("Could not find file %s to load", filename.c_str()), RGBA::RED);
+            return;
+        }
 
         float scale = args.HasArgs(2) ? args.GetFloatArgument(1) : 1.0f;
         Matrix4x4 transform;

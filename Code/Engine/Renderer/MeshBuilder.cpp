@@ -9,6 +9,7 @@
 #include "Engine/Math/MathUtils.hpp"
 #include "2D/Sprite.hpp"
 #include "../Core/ProfilingUtils.h"
+#include "../Input/InputOutputUtils.hpp"
 
 extern MeshBuilder* g_loadedMeshBuilder;
 extern Mesh* g_loadedMesh;
@@ -40,6 +41,11 @@ CONSOLE_COMMAND(loadmesh)
         return;
     }
     std::string filename = args.GetStringArgument(0);
+    if (!FileExists(filename))
+    {
+        Console::instance->PrintLine(Stringf("Could not find file %s to load", filename.c_str()), RGBA::RED);
+        return;
+    }
     if (g_loadedMeshBuilder)
     {
         delete g_loadedMeshBuilder;
