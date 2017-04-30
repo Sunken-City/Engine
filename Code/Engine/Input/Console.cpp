@@ -73,16 +73,33 @@ void Console::ParseKey(char currentChar)
             memset(m_currentLine, 0x00, MAX_LINE_LENGTH);
         }
     }
-    if (currentChar > 0x1F && m_cursorPointer != (m_currentLine + MAX_LINE_LENGTH))
+    if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::BACKSPACE) && m_cursorPointer != m_currentLine)
     {
-        *m_cursorPointer = currentChar;
-        m_cursorPointer++;
-        BlinkCursor();
-    }
-    else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::BACKSPACE) && m_cursorPointer != m_currentLine)
-    {
-        m_cursorPointer--;
-        *m_cursorPointer = '\0';
+        --m_cursorPointer;
+        int numCharactersToDelete = 1;
+
+        if (controlHeldDown)
+        {
+            char* current = ++m_cursorPointer;
+            while (!(current == m_currentLine || *current == ' '))
+            {
+                --current;
+            }
+            numCharactersToDelete = m_cursorPointer - current; 
+            m_cursorPointer = current;
+        }
+
+        const int maxLengthInFrontOfCursor = MAX_LINE_LENGTH - (m_cursorPointer - m_currentLine);
+        for (int i = 0; i < maxLengthInFrontOfCursor; i++)
+        {
+            char* currentIndex = m_cursorPointer + i;
+            char* nextIndex = currentIndex + numCharactersToDelete;
+            *currentIndex = *nextIndex;
+            if (*nextIndex == '\0')
+            {
+                break;
+            }
+        }
         BlinkCursor();
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::ENTER))
@@ -172,17 +189,45 @@ void Console::ParseKey(char currentChar)
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::DEL))
     {
+        int numCharactersToDelete = 1;
+        if (controlHeldDown)
+        {
+            char* current = m_cursorPointer + 1;
+            while (!(current == '\0' || *current == ' '))
+            {
+                ++current;
+            }
+            numCharactersToDelete = current - m_cursorPointer;
+        }
+
         const int maxLengthInFrontOfCursor = MAX_LINE_LENGTH - (m_cursorPointer - m_currentLine);
         for (int i = 0; i < maxLengthInFrontOfCursor; i++)
         {
             char* currentIndex = m_cursorPointer + i;
-            char* nextIndex = currentIndex + 1;
+            char* nextIndex = currentIndex + numCharactersToDelete;
             *currentIndex = *nextIndex;
             if (*nextIndex == '\0')
             {
                 break;
             }
         }
+        BlinkCursor();
+    }
+    else if (currentChar > 0x1F && m_cursorPointer != (m_currentLine + MAX_LINE_LENGTH))
+    {
+        if (*m_cursorPointer == '\0')
+        {
+            if ((m_cursorPointer + 1) != (m_currentLine + MAX_LINE_LENGTH))
+            {
+                *(m_cursorPointer + 1) = '\0';
+            }
+            else
+            {
+                return;
+            }
+        }
+        *m_cursorPointer = currentChar;
+        m_cursorPointer++;
         BlinkCursor();
     }
 }
