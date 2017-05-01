@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "Engine/Math/Vector3.hpp"
+#include "Matrix4x4.hpp"
 
 //-----------------------------------------------------------------------------------
 class Transform3D
@@ -19,6 +20,7 @@ public:
     void RemoveChild(Transform3D* child);
     void DropChildrenInPlace(); //Unparents all children, moving their positions to your local offset. This prevents them from going to 0,0 by default.
     void RemoveParent();
+    Matrix4x4 GetModelMatrix();
 
     Transform3D& operator= (const Transform3D& other);
 

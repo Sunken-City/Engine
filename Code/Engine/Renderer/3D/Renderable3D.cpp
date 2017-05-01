@@ -13,9 +13,11 @@ Renderable3D::~Renderable3D()
 //-----------------------------------------------------------------------------------
 void Renderable3D::Update(float deltaSeconds)
 {
+    
 }
 
 //-----------------------------------------------------------------------------------
 void Renderable3D::Render() const
 {
+    m_meshRenderer.Render();
 }
