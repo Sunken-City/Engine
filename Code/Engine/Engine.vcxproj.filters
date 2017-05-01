@@ -69,6 +69,9 @@
     <Filter Include="Engine\UI\Widgets">
       <UniqueIdentifier>{ab0f991d-396b-4616-93f0-3901560232e2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\Renderer\3D">
+      <UniqueIdentifier>{392ffcf2-3334-4177-880e-67d8951cc8ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\Vector2.cpp">
@@ -352,6 +355,15 @@
     </ClCompile>
     <ClCompile Include="Core\RunInSeconds.cpp">
       <Filter>Engine\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\Transform3D.cpp">
+      <Filter>Engine\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\3D\ForwardRenderer.cpp">
+      <Filter>Engine\Renderer\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\3D\Renderable3D.cpp">
+      <Filter>Engine\Renderer\3D</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -672,6 +684,15 @@
     </ClInclude>
     <ClInclude Include="Core\RunInSeconds.hpp">
       <Filter>Engine\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Transform3D.hpp">
+      <Filter>Engine\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\3D\ForwardRenderer.hpp">
+      <Filter>Engine\Renderer\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\3D\Renderable3D.hpp">
+      <Filter>Engine\Renderer\3D</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
