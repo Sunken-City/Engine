@@ -1,8 +1,26 @@
 //---------------------------------------------------------------------------
 #include "Engine/Audio/Audio.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
+#include "Engine/Input/Console.hpp"
 
 AudioSystem* AudioSystem::instance = nullptr;
+
+CONSOLE_COMMAND(playsound)
+{
+	if (!args.HasArgs(1))
+	{
+		Console::instance->PrintLine("playsound <filename>", RGBA::RED);
+		return;
+	}
+	std::string filepath = args.GetStringArgument(0);
+	SoundID song = AudioSystem::instance->CreateOrGetSound(filepath);
+	if (song == MISSING_SOUND_ID)
+	{
+		Console::instance->PrintLine("Could not find file.", RGBA::RED);
+		return;
+	}
+	AudioSystem::instance->PlaySound(song);
+}
 
 //---------------------------------------------------------------------------
 AudioSystem::AudioSystem()
