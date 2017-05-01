@@ -81,6 +81,8 @@
     <ClCompile Include="Renderer\2D\Sprite.cpp" />
     <ClCompile Include="Renderer\2D\SpriteGameRenderer.cpp" />
     <ClCompile Include="Renderer\2D\TextRenderable2D.cpp" />
+    <ClCompile Include="Renderer\3D\ForwardRenderer.cpp" />
+    <ClCompile Include="Renderer\3D\Renderable3D.cpp" />
     <ClCompile Include="Renderer\AABB2.cpp" />
     <ClCompile Include="Renderer\AABB3.cpp" />
     <ClCompile Include="Renderer\AnimationMotion.cpp" />
@@ -190,6 +192,8 @@
     <ClInclude Include="Renderer\2D\Sprite.hpp" />
     <ClInclude Include="Renderer\2D\SpriteGameRenderer.hpp" />
     <ClInclude Include="Renderer\2D\TextRenderable2D.hpp" />
+    <ClInclude Include="Renderer\3D\ForwardRenderer.hpp" />
+    <ClInclude Include="Renderer\3D\Renderable3D.hpp" />
     <ClInclude Include="Renderer\AABB2.hpp" />
     <ClInclude Include="Renderer\AABB3.hpp" />
     <ClInclude Include="Renderer\AnimationMotion.hpp" />
