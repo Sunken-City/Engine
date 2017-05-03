@@ -10,9 +10,10 @@
 #include "2D/Sprite.hpp"
 #include "../Core/ProfilingUtils.h"
 #include "../Input/InputOutputUtils.hpp"
+#include <queue>
 
 extern MeshBuilder* g_loadedMeshBuilder;
-extern Mesh* g_loadedMesh;
+extern std::queue<Mesh*> g_loadedMeshes;
 
 //-----------------------------------------------------------------------------------
 #if defined(TOOLS_BUILD)
@@ -36,25 +37,27 @@ CONSOLE_COMMAND(savemesh)
 //-----------------------------------------------------------------------------------
 CONSOLE_COMMAND(loadmesh)
 {
-	if (!args.HasArgs(1))
-	{
-		Console::instance->PrintLine("loadMesh <filename>", RGBA::RED);
-		return;
-	}
-	std::string filename = args.GetStringArgument(0);
-	if (!FileExists(filename))
-	{
-		Console::instance->PrintLine(Stringf("Could not find file %s to load", filename.c_str()), RGBA::RED);
-		return;
-	}
-	if (g_loadedMeshBuilder)
-	{
-		delete g_loadedMeshBuilder;
-	}
-	g_loadedMeshBuilder = new MeshBuilder();
-	g_loadedMeshBuilder->ReadFromFile(filename.c_str());
-	g_loadedMesh = new Mesh();
-	g_loadedMeshBuilder->CopyToMesh(g_loadedMesh, &Vertex_PCUTB::Copy, sizeof(Vertex_PCUTB), &Vertex_PCUTB::BindMeshToVAO);
+    if (!args.HasArgs(1))
+    {
+        Console::instance->PrintLine("loadMesh <filename>", RGBA::RED);
+        return;
+    }
+    std::string filename = args.GetStringArgument(0);
+    if (!FileExists(filename))
+    {
+        Console::instance->PrintLine(Stringf("Could not find file %s to load", filename.c_str()), RGBA::RED);
+        return;
+    }
+    if (g_loadedMeshBuilder)
+    {
+        delete g_loadedMeshBuilder;
+    }
+    g_loadedMeshBuilder = new MeshBuilder();
+    g_loadedMeshBuilder->ReadFromFile(filename.c_str());
+    
+    Mesh* currentMesh = new Mesh();
+    g_loadedMeshes.push(currentMesh);
+    g_loadedMeshBuilder->CopyToMesh(currentMesh, &Vertex_PCUTB::Copy, sizeof(Vertex_PCUTB), &Vertex_PCUTB::BindMeshToVAO);
 }
 
 //-----------------------------------------------------------------------------------
@@ -597,9 +600,16 @@ uint32_t MeshBuilder::ReadDataMask(IBinaryReader& reader)
         {
             mask |= (1 << FLOAT_DATA0_BIT);
         }
+        if (str)
+        {
+            delete str;
+        }
         size = reader.ReadString(str, 64);
     }
-    delete str;
+    if (str)
+    {
+        delete str;
+    }
     return mask;
 }
 
