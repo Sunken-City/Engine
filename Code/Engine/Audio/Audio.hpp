@@ -30,6 +30,15 @@ public:
     float GetFrequency(SoundID soundID);
     static AudioSystem* instance;
 
+    //CONSTANTS/////////////////////////////////////////////////////////////////////
+    static constexpr float RPM_45_AT_33_FREQUENCY_MULTIPLIER = 33.333333f / 45.0f; //33.333RPM / 45RPM
+    static constexpr float RPM_33_AT_45_FREQUENCY_MULTIPLIER = 1.0f / RPM_45_AT_33_FREQUENCY_MULTIPLIER; //45RPM / 33.333RPM
+    static constexpr float RPM_16_AT_33_FREQUENCY_MULTIPLIER = 33.333333f / 16.66666f;
+    static constexpr float RPM_33_AT_16_FREQUENCY_MULTIPLIER = 1.0f / RPM_16_AT_33_FREQUENCY_MULTIPLIER;
+    static constexpr float RPM_16_AT_45_FREQUENCY_MULTIPLIER = 45.0f / 16.66666f;
+    static constexpr float RPM_45_AT_16_FREQUENCY_MULTIPLIER = 1.0f / RPM_16_AT_45_FREQUENCY_MULTIPLIER;
+    //TODO: Add 76 and 80RPM
+
 protected:
     void InitializeFMOD();
     void ValidateResult( FMOD_RESULT result );

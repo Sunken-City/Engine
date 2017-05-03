@@ -7,19 +7,19 @@ AudioSystem* AudioSystem::instance = nullptr;
 
 CONSOLE_COMMAND(playsound)
 {
-	if (!args.HasArgs(1))
-	{
-		Console::instance->PrintLine("playsound <filename>", RGBA::RED);
-		return;
-	}
-	std::string filepath = args.GetStringArgument(0);
-	SoundID song = AudioSystem::instance->CreateOrGetSound(filepath);
-	if (song == MISSING_SOUND_ID)
-	{
-		Console::instance->PrintLine("Could not find file.", RGBA::RED);
-		return;
-	}
-	AudioSystem::instance->PlaySound(song);
+    if (!args.HasArgs(1))
+    {
+        Console::instance->PrintLine("playsound <filename>", RGBA::RED);
+        return;
+    }
+    std::string filepath = args.GetStringArgument(0);
+    SoundID song = AudioSystem::instance->CreateOrGetSound(filepath);
+    if (song == MISSING_SOUND_ID)
+    {
+        Console::instance->PrintLine("Could not find file.", RGBA::RED);
+        return;
+    }
+    AudioSystem::instance->PlaySound(song);
 }
 
 //---------------------------------------------------------------------------
@@ -205,7 +205,12 @@ void AudioSystem::PlaySound( SoundID soundID, float volumeLevel )
     m_fmodSystem->playSound( FMOD_CHANNEL_FREE, sound, false, &channelAssignedToSound );
     if( channelAssignedToSound )
     {
-        channelAssignedToSound->setVolume( volumeLevel );
+        channelAssignedToSound->setVolume(volumeLevel);
+        
+        float frequency = 0.0f;
+        channelAssignedToSound->getFrequency(&frequency);
+        float multiplier = 1.0f;
+        channelAssignedToSound->setFrequency(frequency * multiplier);
     }
     m_channels[soundID] = channelAssignedToSound;
 }

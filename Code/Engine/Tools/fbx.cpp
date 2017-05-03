@@ -379,6 +379,7 @@ extern AnimationMotion* g_loadedMotion;
         Vector2 uv;
         if (GetUV(uv, mesh, polyIndex, vertIndex, 0))
         {
+            uv.y = 1.0f - uv.y; //STBI loads in textures upside down, this fixes it.
             builder.SetUV(uv);
         }
 
