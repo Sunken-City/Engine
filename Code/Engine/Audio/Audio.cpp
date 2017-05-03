@@ -206,11 +206,6 @@ void AudioSystem::PlaySound( SoundID soundID, float volumeLevel )
     if( channelAssignedToSound )
     {
         channelAssignedToSound->setVolume(volumeLevel);
-        
-        float frequency = 0.0f;
-        channelAssignedToSound->getFrequency(&frequency);
-        float multiplier = 1.0f;
-        channelAssignedToSound->setFrequency(frequency * multiplier);
     }
     m_channels[soundID] = channelAssignedToSound;
 }
@@ -240,4 +235,32 @@ void AudioSystem::ValidateResult( FMOD_RESULT result )
         DebuggerPrintf( "AUDIO SYSTEM ERROR: Got error result code %d.\n", result );
         __debugbreak();
     }
+}
+
+//-----------------------------------------------------------------------------------
+bool AudioSystem::IsPlaying(AudioChannelHandle channel)
+{
+    if (!channel)
+    {
+        return false;
+    }
+
+    bool isPlaying = false;
+    FMOD::Channel* channelAssignedToSound = static_cast<FMOD::Channel*>(channel);
+    channelAssignedToSound->isPlaying(&isPlaying);
+    return isPlaying;
+}
+
+//-----------------------------------------------------------------------------------
+AudioChannelHandle AudioSystem::GetChannel(SoundID songHandle)
+{
+    AudioChannelHandle channelHandle = nullptr;
+
+    auto foundChannel = m_channels.find(songHandle);
+    if (foundChannel != m_channels.end())
+    {
+        channelHandle = (*foundChannel).second;
+    }
+
+    return channelHandle;
 }

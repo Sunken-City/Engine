@@ -26,8 +26,11 @@ public:
     void StopChannel(AudioChannelHandle channel);
     void StopSound(SoundID soundID);
     void MultiplyCurrentFrequency(SoundID soundID, float multiplier);
-    void SetFrequency(SoundID soundID, float frequency);
+    void SetFrequency(SoundID soundID, float frequency); //Do not use this if you're trying to use a small value!
     float GetFrequency(SoundID soundID);
+    AudioChannelHandle GetChannel(SoundID m_currentlyPlayingSong);
+    bool IsPlaying(AudioChannelHandle channel);
+
     static AudioSystem* instance;
 
     //CONSTANTS/////////////////////////////////////////////////////////////////////
@@ -42,7 +45,6 @@ public:
 protected:
     void InitializeFMOD();
     void ValidateResult( FMOD_RESULT result );
-
 protected:
     FMOD::System*							m_fmodSystem;
     std::map< std::string, SoundID >		m_registeredSoundIDs;
