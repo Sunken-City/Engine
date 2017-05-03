@@ -50,12 +50,14 @@ public:
     MeshBuilder();
     ~MeshBuilder();
 
-    void ClearVertsAndIndices();
+    //STATIC FUNCTIONS/////////////////////////////////////////////////////////////////////
+    static Mesh* LoadMesh(const std::string& filePath);
+    static MeshBuilder* Merge(MeshBuilder* meshBuilderArray, unsigned int numberOfMeshes);
 
     //MEMBER FUNCTIONS//////////////////////////////////////////////////////////////////////////
     void Begin();
     void End();
-    static MeshBuilder* Merge(MeshBuilder* meshBuilderArray, unsigned int numberOfMeshes);
+    void ClearVertsAndIndices();
     void CopyToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsigned int sizeofVertex, BindMeshToVAOForVertex* bindMeshFunction);
     void AppendToMesh(Mesh* mesh, VertexCopyCallback* copyFunction, unsigned int sizeofVertex, BindMeshToVAOForVertex* bindMeshFunction);
     void ClearMesh(Mesh* mesh);

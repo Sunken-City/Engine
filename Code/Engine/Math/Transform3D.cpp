@@ -91,11 +91,12 @@ Matrix4x4 Transform3D::GetModelMatrix()
     Matrix4x4 translation = Matrix4x4::IDENTITY;
 
     Matrix4x4::MatrixMakeScale(&scale, GetWorldScale());
-    Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(GetWorldRotationDegrees()));
-    Matrix4x4::MatrixMakeTranslation(&translation, GetWorldPosition());
+    Vector3 rotationVector = GetWorldRotationDegrees();
+    Matrix4x4::MatrixMakeRotationEuler(&rotation, MathUtils::DegreesToRadians(rotationVector.y), MathUtils::DegreesToRadians(rotationVector.x), MathUtils::DegreesToRadians(rotationVector.z), GetWorldPosition());
+    //Matrix4x4::MatrixMakeTranslation(&translation, GetWorldPosition());
 
     //Apply our transformations
-    return (scale * rotation * translation);
+    return (scale * rotation);
 }
 
 //-----------------------------------------------------------------------------------
@@ -127,7 +128,7 @@ Vector3 Transform3D::GetWorldPosition() const
 }
 
 //-----------------------------------------------------------------------------------
-float Transform3D::GetWorldRotationDegrees() const
+Vector3 Transform3D::GetWorldRotationDegrees() const
 {
     if (m_parent && m_applyParentRotation)
     {
@@ -159,7 +160,7 @@ Vector3 Transform3D::GetLocalPosition() const
 }
 
 //-----------------------------------------------------------------------------------
-float Transform3D::GetLocalRotationDegrees() const
+Vector3 Transform3D::GetLocalRotationDegrees() const
 {
     return m_rotationDegrees;
 }
@@ -177,7 +178,7 @@ void Transform3D::SetPosition(const Vector3& position)
 }
 
 //-----------------------------------------------------------------------------------
-void Transform3D::SetRotationDegrees(float rotationDegrees)
+void Transform3D::SetRotationDegrees(const Vector3& rotationDegrees)
 {
     m_rotationDegrees = rotationDegrees;
 }

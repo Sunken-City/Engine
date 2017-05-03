@@ -79,6 +79,21 @@ MeshBuilder::~MeshBuilder()
 }
 
 //-----------------------------------------------------------------------------------
+Mesh* MeshBuilder::LoadMesh(const std::string& filePath)
+{
+    if (g_loadedMeshBuilder)
+    {
+        delete g_loadedMeshBuilder;
+    }
+    g_loadedMeshBuilder = new MeshBuilder();
+    g_loadedMeshBuilder->ReadFromFile(filePath.c_str());
+
+    Mesh* currentMesh = new Mesh();
+    g_loadedMeshBuilder->CopyToMesh(currentMesh, &Vertex_PCUTB::Copy, sizeof(Vertex_PCUTB), &Vertex_PCUTB::BindMeshToVAO);
+    return currentMesh;
+}
+
+//-----------------------------------------------------------------------------------
 void MeshBuilder::ClearVertsAndIndices()
 {
     m_vertices.clear();
