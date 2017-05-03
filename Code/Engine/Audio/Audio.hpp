@@ -29,6 +29,7 @@ public:
     void SetFrequency(SoundID soundID, float frequency); //Do not use this if you're trying to use a small value!
     float GetFrequency(SoundID soundID);
     AudioChannelHandle GetChannel(SoundID m_currentlyPlayingSong);
+    void PrintTag(SoundID soundID);
     bool IsPlaying(AudioChannelHandle channel);
 
     static AudioSystem* instance;

@@ -190,6 +190,22 @@ unsigned char* Texture::GetImageData()
 }
 
 //-----------------------------------------------------------------------------------
+RGBA Texture::GetOrCalculateAverageColor()
+{
+    //See http://docs.gl/es2/glGenerateMipmap next time.
+    uchar pixel;
+//     glActiveTexture(GL_TEXTURE0);
+//     glBindTexture(GL_TEXTURE_2D, m_openglTextureID);
+//     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 1, 1);
+//     GL_CHECK_ERROR();
+//     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &pixel);
+//     GL_CHECK_ERROR();
+//     glGenerateMipmap(GL_TEXTURE_2D);
+//     GL_CHECK_ERROR();
+    return RGBA(pixel);
+}
+
+//-----------------------------------------------------------------------------------
 Texture::~Texture()
 {
     glDeleteTextures(1, &m_openglTextureID);

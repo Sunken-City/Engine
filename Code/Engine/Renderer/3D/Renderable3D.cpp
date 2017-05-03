@@ -26,6 +26,11 @@ void Renderable3D::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void Renderable3D::Render()
 {
+    if (!m_isEnabled)
+    {
+        return;
+    }
+
     m_meshRenderer.SetModelMatrix(m_transform.GetModelMatrix());
     m_meshRenderer.Render();
 }

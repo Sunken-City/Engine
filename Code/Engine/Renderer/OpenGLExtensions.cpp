@@ -55,6 +55,8 @@ PFNGLSAMPLERPARAMETERIPROC glSamplerParameteri = nullptr;
 PFNGLDELETESAMPLERSPROC	glDeleteSamplers = nullptr;
 PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv = nullptr;
 PFNGLACTIVETEXTUREPROC glActiveTexture = nullptr;
+PFNGLTEXSTORAGE2DPROC glTexStorage2D = nullptr;
+PFNGLGENERATEMIPMAPPROC glGenerateMipmap = nullptr;
 
 PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers = nullptr;
 PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer = nullptr;
@@ -121,6 +123,8 @@ void hookUpOpenGLPointers()
     glDeleteSamplers = (PFNGLDELETESAMPLERSPROC)wglGetProcAddress("glDeleteSamplers");
     glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)wglGetProcAddress("glUniformMatrix4fv");
     glActiveTexture = (PFNGLACTIVETEXTUREPROC)wglGetProcAddress("glActiveTexture");
+    glTexStorage2D = (PFNGLTEXSTORAGE2DPROC)wglGetProcAddress("glTexStorage2D");
+    glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)wglGetProcAddress("glGenerateMipmap");
 
     glGenFramebuffers = (PFNGLGENFRAMEBUFFERSPROC)wglGetProcAddress("glGenFramebuffers");
     glBindFramebuffer = (PFNGLBINDFRAMEBUFFERPROC)wglGetProcAddress("glBindFramebuffer");

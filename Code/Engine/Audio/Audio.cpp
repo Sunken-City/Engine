@@ -264,3 +264,64 @@ AudioChannelHandle AudioSystem::GetChannel(SoundID songHandle)
 
     return channelHandle;
 }
+
+//-----------------------------------------------------------------------------------
+void AudioSystem::PrintTag(SoundID soundID)
+{
+    // TODO: support other non-standard tags (LAME tag, windows properties)
+    unsigned int numSounds = m_registeredSounds.size();
+    if (soundID < 0 || soundID >= numSounds)
+        return;
+
+    FMOD::Sound* sound = m_registeredSounds[soundID];
+    if (!sound)
+        return;
+
+    int numTags;
+    sound->getNumTags(&numTags, NULL);
+
+    FMOD_TAG** fileTags = new FMOD_TAG*[numTags];
+    for (int i = 0; i < numTags; ++i)
+    {
+        fileTags[i] = new FMOD_TAG();
+    }
+    
+    int x = 0;
+    for (int i = 0; i < numTags; ++i)
+    {
+        FMOD_RESULT result = sound->getTag(NULL, i, fileTags[i]);
+        const char* name = fileTags[i]->name;
+        switch (fileTags[i]->datatype)
+        {
+        case FMOD_TAGDATATYPE_BINARY:
+            x++;
+            break;
+        case FMOD_TAGDATATYPE_INT:
+            break;
+        case FMOD_TAGDATATYPE_FLOAT:
+            break;
+        case FMOD_TAGDATATYPE_STRING:
+            break;
+        case FMOD_TAGDATATYPE_STRING_UTF16:
+            break;
+        case FMOD_TAGDATATYPE_STRING_UTF16BE:
+            break;
+        case FMOD_TAGDATATYPE_STRING_UTF8:
+            break;
+        case FMOD_TAGDATATYPE_CDTOC:
+            break;
+        case FMOD_TAGDATATYPE_MAX:
+            break;
+        case FMOD_TAGDATATYPE_FORCEINT:
+            break;
+        default:
+            break;
+        }
+    }
+
+    for (int i = 0; i < numTags; ++i)
+    {
+        delete fileTags[i];
+    }
+    delete fileTags;
+}

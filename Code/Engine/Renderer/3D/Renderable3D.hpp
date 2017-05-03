@@ -13,8 +13,11 @@ public:
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void Update(float deltaSeconds);
     void Render();
+    void Hide() { m_isEnabled = false; }
+    void Show() { m_isEnabled = true; }
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     MeshRenderer m_meshRenderer;
     Transform3D m_transform;
+    bool m_isEnabled = true;
 };
