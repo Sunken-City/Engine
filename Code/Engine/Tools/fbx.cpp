@@ -50,6 +50,10 @@ extern AnimationMotion* g_loadedMotion;
         }
 
         float scale = args.HasArgs(2) ? args.GetFloatArgument(1) : 1.0f;
+        if (args.HasArgs(2))
+        {
+            shouldMerge = true; //this is awful just a hack.
+        }
         Matrix4x4 transform;
         Matrix4x4::MatrixMakeScale(&transform, scale);
 

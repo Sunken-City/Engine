@@ -57,7 +57,7 @@ CONSOLE_COMMAND(loadmesh)
     
     Mesh* currentMesh = new Mesh();
     g_loadedMeshes.push(currentMesh);
-    g_loadedMeshBuilder->CopyToMesh(currentMesh, &Vertex_PCUTB::Copy, sizeof(Vertex_PCUTB), &Vertex_PCUTB::BindMeshToVAO);
+    g_loadedMeshBuilder->CopyToMesh(currentMesh, &Vertex_SkinnedPCTN::Copy, sizeof(Vertex_SkinnedPCTN), &Vertex_SkinnedPCTN::BindMeshToVAO);
 }
 
 //-----------------------------------------------------------------------------------
@@ -89,7 +89,7 @@ Mesh* MeshBuilder::LoadMesh(const std::string& filePath)
     g_loadedMeshBuilder->ReadFromFile(filePath.c_str());
 
     Mesh* currentMesh = new Mesh();
-    g_loadedMeshBuilder->CopyToMesh(currentMesh, &Vertex_PCUTB::Copy, sizeof(Vertex_PCUTB), &Vertex_PCUTB::BindMeshToVAO);
+    g_loadedMeshBuilder->CopyToMesh(currentMesh, &Vertex_SkinnedPCTN::Copy, sizeof(Vertex_SkinnedPCTN), &Vertex_SkinnedPCTN::BindMeshToVAO);
     return currentMesh;
 }
 
