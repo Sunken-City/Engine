@@ -368,6 +368,9 @@
     <ClCompile Include="Renderer\3D\Scene3D.cpp">
       <Filter>Engine\Renderer\3D</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\3D\Camera3D.cpp">
+      <Filter>Engine\Renderer\3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -698,6 +701,9 @@
       <Filter>Engine\Renderer\3D</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\3D\Scene3D.hpp">
+      <Filter>Engine\Renderer\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\3D\Camera3D.hpp">
       <Filter>Engine\Renderer\3D</Filter>
     </ClInclude>
   </ItemGroup>
