@@ -106,6 +106,7 @@
     <ClCompile Include="Renderer\SpriteAnim.cpp" />
     <ClCompile Include="Renderer\SpriteSheet.cpp" />
     <ClCompile Include="Renderer\Texture.cpp" />
+    <ClCompile Include="Renderer\UniformBuffer.cpp" />
     <ClCompile Include="Renderer\Vertex.cpp" />
     <ClCompile Include="TextRendering\StringEffectFragment.cpp" />
     <ClCompile Include="TextRendering\TextBox.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="Renderer\SpriteAnim.hpp" />
     <ClInclude Include="Renderer\SpriteSheet.hpp" />
     <ClInclude Include="Renderer\Texture.hpp" />
+    <ClInclude Include="Renderer\UniformBuffer.hpp" />
     <ClInclude Include="Renderer\Vertex.hpp" />
     <ClInclude Include="TextRendering\StringEffectFragment.hpp" />
     <ClInclude Include="TextRendering\TextBox.hpp" />

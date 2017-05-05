@@ -9,6 +9,7 @@
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Renderer/Material.hpp"
 #include "Engine/Core/BuildConfig.hpp"
+#include "UniformBuffer.hpp"
 
 //-----------------------------------------------------------------------------------
 #ifdef CHECK_GL_ERRORS
@@ -145,7 +146,8 @@ public:
     void DeleteVAOHandle(GLuint m_vaoID);
     void ClearDepth(float depthValue = 1.0f);
     void UseShaderProgram(GLuint shaderProgramID);
-    GLuint CreateRenderBuffer(size_t size);
+    GLuint CreateRenderBuffer(size_t size, void* data = nullptr);
+    void BindUniform(unsigned int bindPoint, UniformBuffer& buffer);
 
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const int CIRCLE_SIDES = 50;

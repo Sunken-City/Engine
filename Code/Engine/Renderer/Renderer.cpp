@@ -724,15 +724,22 @@ void Renderer::UseShaderProgram(GLuint shaderProgramID)
 }
 
 //-----------------------------------------------------------------------------------
-GLuint Renderer::CreateRenderBuffer(size_t size)
+GLuint Renderer::CreateRenderBuffer(size_t size, void* data /*= nullptr*/)
 {
     GLuint uboid;
     glGenBuffers(1, &uboid);
     //TODO: This could be more reusable, pass in the usage and target to make new kinds of disgusting buffers <3
     glBindBuffer(GL_UNIFORM_BUFFER, uboid);
-    glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, size, data, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     return uboid;
+}
+
+//-----------------------------------------------------------------------------------
+void Renderer::BindUniform(unsigned int bindPoint, UniformBuffer& buffer)
+{
+    buffer.CopyToGPU();
+    glBindBufferBase(GL_UNIFORM_BLOCK, bindPoint, buffer.m_bufferHandle);
 }
 
 //-----------------------------------------------------------------------------------
