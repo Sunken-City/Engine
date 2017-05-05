@@ -28,6 +28,7 @@
 #include "Engine/Core/BuildConfig.hpp"
 #include "Engine/Core/Memory/MemoryTracking.hpp"
 #include "Engine/Time/Time.hpp"
+#include "Engine/Math/Vector2Int.hpp"
 #include "../Core/ProfilingUtils.h"
 
 #pragma comment( lib, "opengl32" ) // Link in the OpenGL32.lib static library
@@ -37,9 +38,6 @@ Renderer* Renderer::instance = nullptr;
 
 const unsigned char Renderer::plainWhiteTexel[3] = { 255, 255, 255 };
 
-const extern int WINDOW_PHYSICAL_WIDTH;
-const extern int WINDOW_PHYSICAL_HEIGHT;
-
 //TEMP
 static GLuint gVBO = NULL;
 static GLuint gVAO = NULL;
@@ -48,12 +46,13 @@ static GLuint gSampler = NULL;
 static GLuint gDiffuseTex = NULL;
 
 //-----------------------------------------------------------------------------------
-Renderer::Renderer()
+Renderer::Renderer(const Vector2Int& windowSize) 
     : m_defaultTexture(Texture::CreateTextureFromData("PlainWhite", const_cast<uchar*>(plainWhiteTexel), 3, Vector2Int::ONE))
     , m_fbo(nullptr)
     , m_fboFullScreenEffectQuad(nullptr)
     , m_defaultMaterial(nullptr)
     , m_defaultShader(nullptr)
+    , m_windowSize(windowSize)
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1179,9 +1178,8 @@ void Renderer::BindFramebuffer(Framebuffer* fbo)
     if (fbo == nullptr)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, NULL);
-        #pragma TODO("Make aspect not hard-coded!!!")
 
-        Renderer::instance->SetViewport(0, 0, 1600, 900);
+        Renderer::instance->SetViewport(0, 0, m_windowSize.x, m_windowSize.y);
 
     }
     else
