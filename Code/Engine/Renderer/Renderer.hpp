@@ -9,6 +9,7 @@
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Renderer/Material.hpp"
 #include "Engine/Core/BuildConfig.hpp"
+#include "../Math/Vector2Int.hpp"
 #include "UniformBuffer.hpp"
 
 //-----------------------------------------------------------------------------------
@@ -57,7 +58,7 @@ public:
 
 
     //CONSTRUCTORS//////////////////////////////////////////////////////////////////////////
-    Renderer();
+    Renderer(const Vector2Int& windowSize);
     ~Renderer();
 
     //FUNCTIONS//////////////////////////////////////////////////////////////////////////
@@ -153,9 +154,9 @@ public:
     static const int CIRCLE_SIDES = 50;
     static const int HEXAGON_SIDES = 6;
     static const unsigned char plainWhiteTexel[3];
-
-    //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
     static Renderer* instance;
+
+    //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////v
     BitmapFont* m_defaultFont;
     Texture* m_defaultTexture;
     ShaderProgram* m_defaultShader;
@@ -165,6 +166,7 @@ public:
     MatrixStack4x4 m_projStack;
     MatrixStack4x4 m_viewStack;
     RenderState::BlendMode m_blendMode;
+    Vector2Int m_windowSize;
     bool m_faceCullingEnabled;
     bool m_depthTestingEnabled;
     bool m_depthWritingEnabled;
