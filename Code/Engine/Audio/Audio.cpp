@@ -22,6 +22,23 @@ CONSOLE_COMMAND(playsound)
 	AudioSystem::instance->PlaySound(song);
 }
 
+CONSOLE_COMMAND(getsongmetadata)
+{
+	if (!args.HasArgs(1))
+	{
+		Console::instance->PrintLine("getsongmetadata <filename>", RGBA::RED);
+		return;
+	}
+	std::string filepath = args.GetStringArgument(0);
+	SoundID song = AudioSystem::instance->CreateOrGetSound(filepath);
+	if (song == MISSING_SOUND_ID)
+	{
+		Console::instance->PrintLine("Could not find file.", RGBA::RED);
+		return;
+	}
+	//AudioSystem::instance->
+}
+
 //---------------------------------------------------------------------------
 AudioSystem::AudioSystem()
     : m_fmodSystem( nullptr )
@@ -236,3 +253,53 @@ void AudioSystem::ValidateResult( FMOD_RESULT result )
         __debugbreak();
     }
 }
+
+void AudioSystem::PrintTag(SoundID soundID)
+{
+	// TODO: support other non-standard tags (LAME tag, windows properties)
+	TagLib::FileRef audioFile("IF.mp3");
+	TagLib::String artist = audioFile.tag()->artist();
+	printf("Artist: %s\n", artist.toCString());
+
+	unsigned int numSounds = m_registeredSounds.size();
+	if (soundID < 0 || soundID >= numSounds)
+		return;
+
+	FMOD::Sound* sound = m_registeredSounds[soundID];
+	if (!sound)
+		return;
+
+	int numTags;
+	sound->getNumTags(&numTags, NULL);
+
+	FMOD_TAG** fileTags = new FMOD_TAG*[numTags];
+	for (int i = 0; i < numTags; ++i)
+	{
+		fileTags[i] = new FMOD_TAG();
+	}
+
+	for (int i = 0; i < numTags; ++i)
+	{
+		FMOD_RESULT result = sound->getTag(NULL, i, fileTags[i]);
+		Console::instance->PrintLine(fileTags[i]->name, RGBA::MUDKIP_ORANGE);
+		if (fileTags[i]->datatype == FMOD_TAGDATATYPE_STRING)
+		{
+			Console::instance->PrintLine((const char*)fileTags[i]->data, RGBA::MUDKIP_ORANGE);
+		}
+		else if (fileTags[i]->datatype == FMOD_TAGDATATYPE_INT)
+		{
+			Console::instance->PrintLine((const char*)((const int*)fileTags[i]->data), RGBA::MUDKIP_ORANGE);
+		}
+		else if (fileTags[i]->datatype == FMOD_TAGDATATYPE_FLOAT)
+		{
+			Console::instance->PrintLine((const char*)((const float*)fileTags[i]->data), RGBA::MUDKIP_ORANGE);
+		}
+	}
+
+	for (int i = 0; i < numTags; ++i)
+	{
+		delete fileTags[i];
+	}
+	delete fileTags;
+}
+
