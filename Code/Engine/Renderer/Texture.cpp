@@ -65,8 +65,10 @@ Texture::Texture(const std::string& imageFilePath)
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );  // one of: GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_LINEAR
 
     GLenum bufferFormat = GL_RGBA; // the format our source pixel data is currently in; any of: GL_RGB, GL_RGBA, GL_LUMINANCE, GL_LUMINANCE_ALPHA, ...
-    if( numComponents == 3 )
+    if (numComponents == 3)
         bufferFormat = GL_RGB;
+    else if (numComponents == 1)
+        bufferFormat = GL_RED;
 
     // #FIXME: What happens if numComponents is neither 3 nor 4?
 
@@ -187,6 +189,22 @@ Texture::Texture(uint32_t width, uint32_t height, TextureFormat format)
 unsigned char* Texture::GetImageData()
 {
     return m_imageData;
+}
+
+//-----------------------------------------------------------------------------------
+RGBA Texture::GetOrCalculateAverageColor()
+{
+    //See http://docs.gl/es2/glGenerateMipmap next time.
+    uchar pixel;
+//     glActiveTexture(GL_TEXTURE0);
+//     glBindTexture(GL_TEXTURE_2D, m_openglTextureID);
+//     glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA8, 1, 1);
+//     GL_CHECK_ERROR();
+//     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, &pixel);
+//     GL_CHECK_ERROR();
+//     glGenerateMipmap(GL_TEXTURE_2D);
+//     GL_CHECK_ERROR();
+    return RGBA(pixel);
 }
 
 //-----------------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 #pragma once
 #include "Engine/Renderer/MeshBuilder.hpp"
 #include <vector>
+#include <queue>
 
 class Mesh;
 class Matrix4x4;
@@ -19,5 +20,5 @@ public:
 void FbxListScene(const char* filename);
 SceneImport* FbxLoadSceneFromFile(const char* fbxFilename, const Matrix4x4& engineBasis, bool isEngineBasisRightHanded, const Matrix4x4& transform);
 
-extern Mesh* g_loadedMesh;
+extern std::queue<Mesh*> g_loadedMeshes;
 

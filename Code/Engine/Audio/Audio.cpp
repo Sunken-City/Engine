@@ -7,19 +7,19 @@ AudioSystem* AudioSystem::instance = nullptr;
 
 CONSOLE_COMMAND(playsound)
 {
-	if (!args.HasArgs(1))
-	{
-		Console::instance->PrintLine("playsound <filename>", RGBA::RED);
-		return;
-	}
-	std::string filepath = args.GetStringArgument(0);
-	SoundID song = AudioSystem::instance->CreateOrGetSound(filepath);
-	if (song == MISSING_SOUND_ID)
-	{
-		Console::instance->PrintLine("Could not find file.", RGBA::RED);
-		return;
-	}
-	AudioSystem::instance->PlaySound(song);
+    if (!args.HasArgs(1))
+    {
+        Console::instance->PrintLine("playsound <filename>", RGBA::RED);
+        return;
+    }
+    std::string filepath = args.GetStringArgument(0);
+    SoundID song = AudioSystem::instance->CreateOrGetSound(filepath);
+    if (song == MISSING_SOUND_ID)
+    {
+        Console::instance->PrintLine("Could not find file.", RGBA::RED);
+        return;
+    }
+    AudioSystem::instance->PlaySound(song);
 }
 
 CONSOLE_COMMAND(getsongmetadata)
@@ -222,7 +222,7 @@ void AudioSystem::PlaySound( SoundID soundID, float volumeLevel )
     m_fmodSystem->playSound( FMOD_CHANNEL_FREE, sound, false, &channelAssignedToSound );
     if( channelAssignedToSound )
     {
-        channelAssignedToSound->setVolume( volumeLevel );
+        channelAssignedToSound->setVolume(volumeLevel);
     }
     m_channels[soundID] = channelAssignedToSound;
 }
@@ -257,9 +257,9 @@ void AudioSystem::ValidateResult( FMOD_RESULT result )
 void AudioSystem::PrintTag(SoundID soundID)
 {
 	// TODO: support other non-standard tags (LAME tag, windows properties)
-	TagLib::FileRef audioFile("IF.mp3");
-	TagLib::String artist = audioFile.tag()->artist();
-	printf("Artist: %s\n", artist.toCString());
+	//TagLib::FileRef audioFile("IF.mp3");
+	//TagLib::String artist = audioFile.tag()->artist();
+	//printf("Artist: %s\n", artist.toCString());
 
 	unsigned int numSounds = m_registeredSounds.size();
 	if (soundID < 0 || soundID >= numSounds)
@@ -301,5 +301,33 @@ void AudioSystem::PrintTag(SoundID soundID)
 		delete fileTags[i];
 	}
 	delete fileTags;
+}
+
+//-----------------------------------------------------------------------------------
+bool AudioSystem::IsPlaying(AudioChannelHandle channel)
+{
+    if (!channel)
+    {
+        return false;
+    }
+
+    bool isPlaying = false;
+    FMOD::Channel* channelAssignedToSound = static_cast<FMOD::Channel*>(channel);
+    channelAssignedToSound->isPlaying(&isPlaying);
+    return isPlaying;
+}
+
+//-----------------------------------------------------------------------------------
+AudioChannelHandle AudioSystem::GetChannel(SoundID songHandle)
+{
+    AudioChannelHandle channelHandle = nullptr;
+
+    auto foundChannel = m_channels.find(songHandle);
+    if (foundChannel != m_channels.end())
+    {
+        channelHandle = (*foundChannel).second;
+    }
+
+    return channelHandle;
 }
 

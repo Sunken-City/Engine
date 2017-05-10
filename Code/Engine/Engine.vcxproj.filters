@@ -365,6 +365,13 @@
     <ClCompile Include="Renderer\3D\Renderable3D.cpp">
       <Filter>Engine\Renderer\3D</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer\3D\Scene3D.cpp">
+      <Filter>Engine\Renderer\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\3D\Camera3D.cpp">
+      <Filter>Engine\Renderer\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer\UniformBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -694,5 +701,12 @@
     <ClInclude Include="Renderer\3D\Renderable3D.hpp">
       <Filter>Engine\Renderer\3D</Filter>
     </ClInclude>
+    <ClInclude Include="Renderer\3D\Scene3D.hpp">
+      <Filter>Engine\Renderer\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\3D\Camera3D.hpp">
+      <Filter>Engine\Renderer\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer\UniformBuffer.hpp" />
   </ItemGroup>
 </Project>

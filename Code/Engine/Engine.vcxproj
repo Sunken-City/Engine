@@ -81,8 +81,10 @@
     <ClCompile Include="Renderer\2D\Sprite.cpp" />
     <ClCompile Include="Renderer\2D\SpriteGameRenderer.cpp" />
     <ClCompile Include="Renderer\2D\TextRenderable2D.cpp" />
+    <ClCompile Include="Renderer\3D\Camera3D.cpp" />
     <ClCompile Include="Renderer\3D\ForwardRenderer.cpp" />
     <ClCompile Include="Renderer\3D\Renderable3D.cpp" />
+    <ClCompile Include="Renderer\3D\Scene3D.cpp" />
     <ClCompile Include="Renderer\AABB2.cpp" />
     <ClCompile Include="Renderer\AABB3.cpp" />
     <ClCompile Include="Renderer\AnimationMotion.cpp" />
@@ -104,6 +106,7 @@
     <ClCompile Include="Renderer\SpriteAnim.cpp" />
     <ClCompile Include="Renderer\SpriteSheet.cpp" />
     <ClCompile Include="Renderer\Texture.cpp" />
+    <ClCompile Include="Renderer\UniformBuffer.cpp" />
     <ClCompile Include="Renderer\Vertex.cpp" />
     <ClCompile Include="TextRendering\StringEffectFragment.cpp" />
     <ClCompile Include="TextRendering\TextBox.cpp" />
@@ -192,8 +195,10 @@
     <ClInclude Include="Renderer\2D\Sprite.hpp" />
     <ClInclude Include="Renderer\2D\SpriteGameRenderer.hpp" />
     <ClInclude Include="Renderer\2D\TextRenderable2D.hpp" />
+    <ClInclude Include="Renderer\3D\Camera3D.hpp" />
     <ClInclude Include="Renderer\3D\ForwardRenderer.hpp" />
     <ClInclude Include="Renderer\3D\Renderable3D.hpp" />
+    <ClInclude Include="Renderer\3D\Scene3D.hpp" />
     <ClInclude Include="Renderer\AABB2.hpp" />
     <ClInclude Include="Renderer\AABB3.hpp" />
     <ClInclude Include="Renderer\AnimationMotion.hpp" />
@@ -215,6 +220,7 @@
     <ClInclude Include="Renderer\SpriteAnim.hpp" />
     <ClInclude Include="Renderer\SpriteSheet.hpp" />
     <ClInclude Include="Renderer\Texture.hpp" />
+    <ClInclude Include="Renderer\UniformBuffer.hpp" />
     <ClInclude Include="Renderer\Vertex.hpp" />
     <ClInclude Include="TextRendering\StringEffectFragment.hpp" />
     <ClInclude Include="TextRendering\TextBox.hpp" />

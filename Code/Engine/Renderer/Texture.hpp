@@ -4,6 +4,7 @@
 #include <vector>
 #include "Engine/Math/Vector2Int.hpp"
 #include "../Core/Memory/UntrackedAllocator.hpp"
+#include "RGBA.hpp"
 
 class Texture
 {
@@ -34,6 +35,7 @@ public:
     //GETTERS//////////////////////////////////////////////////////////////////////////
     static Texture* GetTextureByName(const std::string& imageFilePath);
     unsigned char* GetImageData();
+    RGBA GetOrCalculateAverageColor();
 
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
     unsigned int m_openglTextureID;

@@ -80,7 +80,7 @@ void UISystem::Update(float deltaSeconds)
 void UISystem::Render() const
 {
     Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::OFF;
-    Renderer::instance->BeginOrtho(Vector2::ZERO, Vector2(1600, 900));
+    Renderer::instance->BeginOrtho(Vector2::ZERO, Vector2(1600, 900)); //Assuming a virtual coordinate system.
     {
         for (WidgetBase* widget : m_childWidgets)
         {

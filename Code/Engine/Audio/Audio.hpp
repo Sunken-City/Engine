@@ -5,9 +5,9 @@
 
 #pragma comment( lib, "ThirdParty/fmod/fmodex_vc" ) // Link in the fmodex_vc.lib static library
 #include "ThirdParty/fmod/fmod.hpp"
-#include "ThirdParty/taglib/include/taglib/taglib.h" // Temporary
-#include "ThirdParty/taglib/include/taglib/fileref.h"
-#include "ThirdParty/taglib/include/taglib/tag.h"
+//#include "ThirdParty/taglib/include/taglib/taglib.h" // Temporary
+//#include "ThirdParty/taglib/include/taglib/fileref.h"
+//#include "ThirdParty/taglib/include/taglib/tag.h"
 #include <string>
 #include <vector>
 #include <map>
@@ -30,14 +30,25 @@ public:
     void StopSound(SoundID soundID);
 	void PrintTag(SoundID soundID);
     void MultiplyCurrentFrequency(SoundID soundID, float multiplier);
-    void SetFrequency(SoundID soundID, float frequency);
+    void SetFrequency(SoundID soundID, float frequency); //Do not use this if you're trying to use a small value!
     float GetFrequency(SoundID soundID);
+    AudioChannelHandle GetChannel(SoundID m_currentlyPlayingSong);
+    bool IsPlaying(AudioChannelHandle channel);
+
     static AudioSystem* instance;
+
+    //CONSTANTS/////////////////////////////////////////////////////////////////////
+    static constexpr float RPM_45_AT_33_FREQUENCY_MULTIPLIER = 33.333333f / 45.0f; //33.333RPM / 45RPM
+    static constexpr float RPM_33_AT_45_FREQUENCY_MULTIPLIER = 1.0f / RPM_45_AT_33_FREQUENCY_MULTIPLIER; //45RPM / 33.333RPM
+    static constexpr float RPM_16_AT_33_FREQUENCY_MULTIPLIER = 33.333333f / 16.66666f;
+    static constexpr float RPM_33_AT_16_FREQUENCY_MULTIPLIER = 1.0f / RPM_16_AT_33_FREQUENCY_MULTIPLIER;
+    static constexpr float RPM_16_AT_45_FREQUENCY_MULTIPLIER = 45.0f / 16.66666f;
+    static constexpr float RPM_45_AT_16_FREQUENCY_MULTIPLIER = 1.0f / RPM_16_AT_45_FREQUENCY_MULTIPLIER;
+    //TODO: Add 76 and 80RPM
 
 protected:
     void InitializeFMOD();
     void ValidateResult( FMOD_RESULT result );
-
 protected:
     FMOD::System*							m_fmodSystem;
     std::map< std::string, SoundID >		m_registeredSoundIDs;

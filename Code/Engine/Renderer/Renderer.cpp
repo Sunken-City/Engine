@@ -28,6 +28,7 @@
 #include "Engine/Core/BuildConfig.hpp"
 #include "Engine/Core/Memory/MemoryTracking.hpp"
 #include "Engine/Time/Time.hpp"
+#include "Engine/Math/Vector2Int.hpp"
 #include "../Core/ProfilingUtils.h"
 
 #pragma comment( lib, "opengl32" ) // Link in the OpenGL32.lib static library
@@ -37,9 +38,6 @@ Renderer* Renderer::instance = nullptr;
 
 const unsigned char Renderer::plainWhiteTexel[3] = { 255, 255, 255 };
 
-const extern int WINDOW_PHYSICAL_WIDTH;
-const extern int WINDOW_PHYSICAL_HEIGHT;
-
 //TEMP
 static GLuint gVBO = NULL;
 static GLuint gVAO = NULL;
@@ -48,12 +46,13 @@ static GLuint gSampler = NULL;
 static GLuint gDiffuseTex = NULL;
 
 //-----------------------------------------------------------------------------------
-Renderer::Renderer()
+Renderer::Renderer(const Vector2Int& windowSize) 
     : m_defaultTexture(Texture::CreateTextureFromData("PlainWhite", const_cast<uchar*>(plainWhiteTexel), 3, Vector2Int::ONE))
     , m_fbo(nullptr)
     , m_fboFullScreenEffectQuad(nullptr)
     , m_defaultMaterial(nullptr)
     , m_defaultShader(nullptr)
+    , m_windowSize(windowSize)
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -724,15 +723,22 @@ void Renderer::UseShaderProgram(GLuint shaderProgramID)
 }
 
 //-----------------------------------------------------------------------------------
-GLuint Renderer::CreateRenderBuffer(size_t size)
+GLuint Renderer::CreateRenderBuffer(size_t size, void* data /*= nullptr*/)
 {
     GLuint uboid;
     glGenBuffers(1, &uboid);
     //TODO: This could be more reusable, pass in the usage and target to make new kinds of disgusting buffers <3
     glBindBuffer(GL_UNIFORM_BUFFER, uboid);
-    glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_UNIFORM_BUFFER, size, data, GL_DYNAMIC_DRAW);
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
     return uboid;
+}
+
+//-----------------------------------------------------------------------------------
+void Renderer::BindUniform(unsigned int bindPoint, UniformBuffer& buffer)
+{
+    buffer.CopyToGPU();
+    glBindBufferBase(GL_UNIFORM_BLOCK, bindPoint, buffer.m_bufferHandle);
 }
 
 //-----------------------------------------------------------------------------------
@@ -1179,9 +1185,8 @@ void Renderer::BindFramebuffer(Framebuffer* fbo)
     if (fbo == nullptr)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, NULL);
-        #pragma TODO("Make aspect not hard-coded!!!")
 
-        Renderer::instance->SetViewport(0, 0, 1600, 900);
+        Renderer::instance->SetViewport(0, 0, m_windowSize.x, m_windowSize.y);
 
     }
     else

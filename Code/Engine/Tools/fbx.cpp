@@ -7,7 +7,7 @@
 #include "Engine/Renderer/Skeleton.hpp"
 #include "Engine/Renderer/AnimationMotion.hpp"
 
-Mesh* g_loadedMesh = nullptr;
+std::queue<Mesh*> g_loadedMeshes;
 MeshBuilder* g_loadedMeshBuilder = nullptr;
 extern Skeleton* g_loadedSkeleton;
 extern AnimationMotion* g_loadedMotion;
@@ -36,6 +36,7 @@ extern AnimationMotion* g_loadedMotion;
     //-----------------------------------------------------------------------------------
     CONSOLE_COMMAND(fbxload)
     {
+        bool shouldMerge = false; //TODO: expose this as a flag so that we can merge unity chan and other meshes that need it.
         if (!(args.HasArgs(2) || args.HasArgs(1)))
         {
             Console::instance->PrintLine("fbxLoad <file path> <scale>", RGBA::RED);
@@ -49,6 +50,10 @@ extern AnimationMotion* g_loadedMotion;
         }
 
         float scale = args.HasArgs(2) ? args.GetFloatArgument(1) : 1.0f;
+        if (args.HasArgs(2))
+        {
+            shouldMerge = true; //this is awful just a hack.
+        }
         Matrix4x4 transform;
         Matrix4x4::MatrixMakeScale(&transform, scale);
 
@@ -63,16 +68,40 @@ extern AnimationMotion* g_loadedMotion;
         {
             Console::instance->PrintLine(Stringf("Loaded '%s'. Had %i meshes.", filename.c_str(), import->meshes.size()));
             DebuggerPrintf("Loaded '%s'. Had %i meshes.", filename.c_str(), import->meshes.size());
-            g_loadedMesh = new Mesh();
-            g_loadedMeshBuilder = MeshBuilder::Merge(import->meshes.data(), import->meshes.size());
-            g_loadedMeshBuilder->AddLinearIndices();
-            std::string outFileName(filename);
-            outFileName = outFileName.substr(0, outFileName.length() - 3);
-            outFileName += "picomesh";
-            g_loadedMeshBuilder->WriteToFile(outFileName.c_str());
-            g_loadedMeshBuilder->CopyToMesh(g_loadedMesh, &Vertex_SkinnedPCTN::Copy, sizeof(Vertex_SkinnedPCTN), &Vertex_SkinnedPCTN::BindMeshToVAO);
-            g_loadedSkeleton = import->skeletons.size() > 0 ? import->skeletons[0] : nullptr;
-            g_loadedMotion = import->motions.size() > 0 ? import->motions[0] : nullptr;
+
+            if (shouldMerge) //This currently pulls in all of the other loading skeleton code and motion under here. We'll want to re-enable support for these later.
+            {
+                Mesh* currentMesh = new Mesh();
+                g_loadedMeshes.push(currentMesh);
+
+                g_loadedMeshBuilder = MeshBuilder::Merge(import->meshes.data(), import->meshes.size());
+                g_loadedMeshBuilder->AddLinearIndices();
+                std::string outFileName(filename);
+                outFileName = outFileName.substr(0, outFileName.length() - 4);
+                outFileName += ".picomesh";
+                g_loadedMeshBuilder->WriteToFile(outFileName.c_str());
+                g_loadedMeshBuilder->CopyToMesh(currentMesh, &Vertex_SkinnedPCTN::Copy, sizeof(Vertex_SkinnedPCTN), &Vertex_SkinnedPCTN::BindMeshToVAO);
+                g_loadedSkeleton = import->skeletons.size() > 0 ? import->skeletons[0] : nullptr;
+                g_loadedMotion = import->motions.size() > 0 ? import->motions[0] : nullptr;
+            }
+            else
+            {
+                int numLoadedMeshes = import->meshes.size();
+
+                for (int i = 0; i < numLoadedMeshes; ++i)
+                {
+                    MeshBuilder& builder = import->meshes[i];
+                    builder.AddLinearIndices();
+                    Mesh* currentMesh = new Mesh();
+                    g_loadedMeshes.push(currentMesh);
+
+                    std::string outFileName(filename);
+                    outFileName = outFileName.substr(0, outFileName.length() - 4);
+                    outFileName += Stringf("_%i.picomesh", i);
+                    builder.WriteToFile(outFileName.c_str());
+                    builder.CopyToMesh(currentMesh, &Vertex_SkinnedPCTN::Copy, sizeof(Vertex_SkinnedPCTN), &Vertex_SkinnedPCTN::BindMeshToVAO);
+                }
+            }
         }
         delete import;
     }
@@ -379,6 +408,7 @@ extern AnimationMotion* g_loadedMotion;
         Vector2 uv;
         if (GetUV(uv, mesh, polyIndex, vertIndex, 0))
         {
+            uv.y = 1.0f - uv.y; //STBI loads in textures upside down, this fixes it.
             builder.SetUV(uv);
         }
 

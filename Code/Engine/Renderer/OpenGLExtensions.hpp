@@ -64,6 +64,8 @@ extern PFNGLSAMPLERPARAMETERIPROC glSamplerParameteri;
 extern PFNGLDELETESAMPLERSPROC	glDeleteSamplers;
 extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
+extern PFNGLTEXSTORAGE2DPROC glTexStorage2D;
+extern PFNGLGENERATEMIPMAPPROC glGenerateMipmap;
 
 extern PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers;
 extern PFNGLBINDFRAMEBUFFERPROC glBindFramebuffer;
