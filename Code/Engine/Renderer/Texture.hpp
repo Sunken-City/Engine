@@ -30,6 +30,7 @@ public:
     ~Texture();
     static Texture* CreateOrGetTexture(const std::string& imageFilePath);
     static Texture* CreateTextureFromData(const std::string& textureName, unsigned char* textureData, int numComponents, const Vector2Int& texelSize);
+    static Texture* CreateUnregisteredTextureFromData(unsigned char* textureData, size_t bufferLength);
     static void CleanUpTextureRegistry();
 
     //GETTERS//////////////////////////////////////////////////////////////////////////
@@ -47,6 +48,7 @@ public:
 private:
     Texture(const std::string& imageFilePath);
     Texture(unsigned char* textureData, int numColorComponents, const Vector2Int& texelSize);
+    Texture(unsigned char* textureData, size_t bufferSize);
 
     static std::map<size_t, Texture*, std::less<size_t>, UntrackedAllocator<std::pair<size_t, Texture*>>> s_textureRegistry;
 };

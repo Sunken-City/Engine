@@ -4,12 +4,21 @@
 #undef PlaySound
 
 #pragma comment( lib, "ThirdParty/fmod/fmodex_vc" ) // Link in the fmodex_vc.lib static library
-#pragma comment( lib, "ThirdParty/taglib/lib/tag.lib" )
-//#pragma comment( lib, "ThirdParty/taglib/lib/libtag.a" ) // Link in the libtag.a static library
+#ifdef _DEBUG
+#pragma comment( lib, "ThirdParty/taglib/lib/tag_debug" )
+#else
+#pragma comment( lib, "ThirdParty/taglib/lib/tag" )
+#endif
+//#pragma comment( lib, "ThirdParty/taglib/lib/libtaglib.a" ) // Link in the libtag.a static library
 //#pragma comment( lib, "ThirdParty/taglib/lib/libtag_c.a" ) // Link in the libtag_c.a static library
 #include "ThirdParty/fmod/fmod.hpp"
 #include "ThirdParty/taglib/include/taglib/taglib.h" // Temporary
 #include "ThirdParty/taglib/include/taglib/fileref.h"
+#include "ThirdParty/taglib/include/taglib/id3v2tag.h"
+#include "ThirdParty/taglib/include/taglib/id3v2frame.h"
+#include "ThirdParty/taglib/include/taglib/id3v2header.h"
+#include "ThirdParty/taglib/include/taglib/mpegfile.h"
+#include "ThirdParty/taglib/include/taglib/attachedpictureframe.h"
 #include "ThirdParty/taglib/include/taglib/tag.h"
 #include <string>
 #include <vector>
@@ -31,7 +40,7 @@ public:
     void Update(float deltaSeconds); // Must be called at regular intervals (e.g. every frame)
     void StopChannel(AudioChannelHandle channel);
     void StopSound(SoundID soundID);
-	void PrintTag(SoundID soundID);
+    void PrintTag(SoundID soundID);
     void MultiplyCurrentFrequency(SoundID soundID, float multiplier);
     void SetFrequency(SoundID soundID, float frequency); //Do not use this if you're trying to use a small value!
     float GetFrequency(SoundID soundID);
