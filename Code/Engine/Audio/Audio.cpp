@@ -257,9 +257,9 @@ void AudioSystem::ValidateResult( FMOD_RESULT result )
 void AudioSystem::PrintTag(SoundID soundID)
 {
 	// TODO: support other non-standard tags (LAME tag, windows properties)
-	//TagLib::FileRef audioFile("IF.mp3");
-	//TagLib::String artist = audioFile.tag()->artist();
-	//printf("Artist: %s\n", artist.toCString());
+	TagLib::FileRef audioFile("IF.mp3");
+	TagLib::String artist = audioFile.tag()->artist();
+	printf("Artist: %s\n", artist.toCString());
 
 	unsigned int numSounds = m_registeredSounds.size();
 	if (soundID < 0 || soundID >= numSounds)

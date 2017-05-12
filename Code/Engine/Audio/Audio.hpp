@@ -4,10 +4,13 @@
 #undef PlaySound
 
 #pragma comment( lib, "ThirdParty/fmod/fmodex_vc" ) // Link in the fmodex_vc.lib static library
+#pragma comment( lib, "ThirdParty/taglib/lib/tag.lib" )
+//#pragma comment( lib, "ThirdParty/taglib/lib/libtag.a" ) // Link in the libtag.a static library
+//#pragma comment( lib, "ThirdParty/taglib/lib/libtag_c.a" ) // Link in the libtag_c.a static library
 #include "ThirdParty/fmod/fmod.hpp"
-//#include "ThirdParty/taglib/include/taglib/taglib.h" // Temporary
-//#include "ThirdParty/taglib/include/taglib/fileref.h"
-//#include "ThirdParty/taglib/include/taglib/tag.h"
+#include "ThirdParty/taglib/include/taglib/taglib.h" // Temporary
+#include "ThirdParty/taglib/include/taglib/fileref.h"
+#include "ThirdParty/taglib/include/taglib/tag.h"
 #include <string>
 #include <vector>
 #include <map>
