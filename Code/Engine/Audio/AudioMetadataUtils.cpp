@@ -10,5 +10,7 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
     //Then, grab the picture data (as demonstrated by my hacky code)
     //Pass the image data and size of the image data into CreateUnregisteredTextureFromData
     //Return the result
+
+    return nullptr;
 }
 

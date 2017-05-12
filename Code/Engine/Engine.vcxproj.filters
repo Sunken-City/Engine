@@ -372,6 +372,7 @@
       <Filter>Engine\Renderer\3D</Filter>
     </ClCompile>
     <ClCompile Include="Renderer\UniformBuffer.cpp" />
+    <ClCompile Include="Audio\AudioMetadataUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -708,5 +709,6 @@
       <Filter>Engine\Renderer\3D</Filter>
     </ClInclude>
     <ClInclude Include="Renderer\UniformBuffer.hpp" />
+    <ClInclude Include="Audio\AudioMetadataUtils.hpp" />
   </ItemGroup>
 </Project>
