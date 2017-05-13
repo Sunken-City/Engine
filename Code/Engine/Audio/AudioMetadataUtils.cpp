@@ -4,6 +4,8 @@
 #include "ThirdParty/taglib/include/taglib/id3v2tag.h"
 #include "ThirdParty/taglib/include/taglib/attachedpictureframe.h"
 #include "ThirdParty/taglib/include/taglib/flacfile.h"
+#include "ThirdParty/taglib/include/taglib/wavfile.h"
+#include "ThirdParty/taglib/include/taglib/rifffile.h"
 #include "Engine/Input/Console.hpp"
 
 //-----------------------------------------------------------------------------------
@@ -56,7 +58,7 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
 		TagLib::ID3v2::FrameList Frame;
 		TagLib::ID3v2::AttachedPictureFrame* PicFrame;
 
-		if (id3v2tag)
+		if (audioFile.hasID3v2Tag())
 		{
 			// picture frame
 			Frame = id3v2tag->frameListMap()[IdPicture];
@@ -102,8 +104,36 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
 	}
 	else if (fileExtension == "wav")
 	{
+        static const char* IdPicture = "APIC";
+        TagLib::RIFF::WAV::File audioFile(fileName.c_str());
+        TagLib::ID3v2::Tag* id3v2tag = audioFile.ID3v2Tag();
+        TagLib::ID3v2::FrameList Frame;
+        TagLib::ID3v2::AttachedPictureFrame* PicFrame;
 
-	}
+        if (audioFile.hasID3v2Tag())
+        {
+            // picture frame
+            Frame = id3v2tag->frameListMap()[IdPicture];
+            if (!Frame.isEmpty())
+            {
+                for (TagLib::ID3v2::FrameList::ConstIterator it = Frame.begin(); it != Frame.end(); ++it)
+                {
+                    PicFrame = (TagLib::ID3v2::AttachedPictureFrame *)(*it);
+                    if (PicFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover)
+                    {
+                        // extract image (in it’s compressed form)
+                        TagLib::ByteVector pictureData = PicFrame->picture();
+                        size = pictureData.size();
+                        srcImage = (unsigned char*)pictureData.data();
+                        if (srcImage)
+                        {
+                            return Texture::CreateUnregisteredTextureFromData(srcImage, size);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 	Console::instance->PrintLine("Could not load album art from song!", RGBA::RED);
     return nullptr;
