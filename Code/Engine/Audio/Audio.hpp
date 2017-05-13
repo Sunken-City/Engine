@@ -9,10 +9,8 @@
 #else
 #pragma comment( lib, "ThirdParty/taglib/lib/tag" )
 #endif
-//#pragma comment( lib, "ThirdParty/taglib/lib/libtaglib.a" ) // Link in the libtag.a static library
-//#pragma comment( lib, "ThirdParty/taglib/lib/libtag_c.a" ) // Link in the libtag_c.a static library
 #include "ThirdParty/fmod/fmod.hpp"
-#include "ThirdParty/taglib/include/taglib/taglib.h" // Temporary
+#include "ThirdParty/taglib/include/taglib/taglib.h"
 #include "ThirdParty/taglib/include/taglib/fileref.h"
 #include "ThirdParty/taglib/include/taglib/id3v2tag.h"
 #include "ThirdParty/taglib/include/taglib/id3v2frame.h"
