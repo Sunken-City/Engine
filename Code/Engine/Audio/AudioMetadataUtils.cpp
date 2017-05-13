@@ -4,7 +4,12 @@
 #include "ThirdParty/taglib/include/taglib/id3v2tag.h"
 #include "ThirdParty/taglib/include/taglib/attachedpictureframe.h"
 #include "ThirdParty/taglib/include/taglib/flacfile.h"
+#include "ThirdParty/taglib/include/taglib/unknownframe.h"
+#include "ThirdParty/taglib/include/taglib/tfile.h"
+#include "ThirdParty/taglib/include/taglib/tpropertymap.h"
+#include "ThirdParty/taglib/include/taglib/fileref.h"
 #include "Engine/Input/Console.hpp"
+#include <string>
 
 //-----------------------------------------------------------------------------------
 std::string GetFileExtension(const std::string& fileName)
@@ -31,6 +36,28 @@ std::string GetFileExtension(const std::string& fileName)
     }
 
     return "ERROR";
+}
+
+//-----------------------------------------------------------------------------------
+bool IncrementPlaycount(const std::string& fileName)
+{
+    static const char* PlaycountFrameId = "PCNT";
+    TagLib::FileRef audioFile(fileName.c_str());
+    TagLib::PropertyMap map = audioFile.file()->properties();
+    auto playcountPropertyIter = map.find(PlaycountFrameId);
+    if (playcountPropertyIter != map.end())
+    {
+        bool wasInt = false;
+        int currentPlaycount = playcountPropertyIter->second.toString().toInt(&wasInt);
+        ASSERT_OR_DIE(&wasInt, "Tried to grab the playcount, but found a non-integer value in the PCNT field.");
+        map.replace(PlaycountFrameId, TagLib::String(std::to_string(currentPlaycount)));
+    }
+    else
+    {
+        map.insert(PlaycountFrameId, TagLib::String(std::to_string(1)));
+    }
+    audioFile.file()->save();
+    return true;
 }
 
 //-----------------------------------------------------------------------------------
