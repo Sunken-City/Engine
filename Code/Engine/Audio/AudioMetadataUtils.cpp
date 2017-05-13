@@ -11,28 +11,28 @@
 //-----------------------------------------------------------------------------------
 std::string GetFileExtension(const std::string& fileName)
 {
-	// Find the file extension
-	unsigned extensionPos = fileName.rfind('.');
+    // Find the file extension
+    unsigned extensionPos = fileName.rfind('.');
 
-	if (extensionPos != std::string::npos && extensionPos != fileName.length())
-	{
-		std::string fileExtension = fileName.substr((extensionPos + 1), fileName.length());
-		char* fileExtensionChar = new char[fileName.length()];
-		strcpy(fileExtensionChar, fileExtension.c_str());
-		for (unsigned i = 0; i < fileExtension.length(); ++i)
-		{
-			if (!islower(fileExtensionChar[i]))
-			{
-				fileExtensionChar[i] = (char)tolower(fileExtensionChar[i]);
-			}
-		}
-		std::string lowerFileExtension = fileExtensionChar;
-		delete[] fileExtensionChar;
+    if (extensionPos != std::string::npos && extensionPos != fileName.length())
+    {
+        std::string fileExtension = fileName.substr((extensionPos + 1), fileName.length());
+        char* fileExtensionChar = new char[fileName.length()];
+        strcpy(fileExtensionChar, fileExtension.c_str());
+        for (unsigned i = 0; i < fileExtension.length(); ++i)
+        {
+            if (!islower(fileExtensionChar[i]))
+            {
+                fileExtensionChar[i] = (char)tolower(fileExtensionChar[i]);
+            }
+        }
+        std::string lowerFileExtension = fileExtensionChar;
+        delete[] fileExtensionChar;
 
-		return lowerFileExtension;
-	}
+        return lowerFileExtension;
+    }
 
-	return "ERROR";
+    return "ERROR";
 }
 
 //-----------------------------------------------------------------------------------
@@ -45,18 +45,18 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
     //Pass the image data and size of the image data into CreateUnregisteredTextureFromData
     //Return the result
 
-	unsigned char* srcImage = nullptr;
-	unsigned long size;
+    unsigned char* srcImage = nullptr;
+    unsigned long size;
 
-	// Find the file extension
-	std::string fileExtension = GetFileExtension(fileName);
-	if (fileExtension == "mp3")
-	{
-		static const char* IdPicture = "APIC";
-		TagLib::MPEG::File audioFile(fileName.c_str());
-		TagLib::ID3v2::Tag* id3v2tag = audioFile.ID3v2Tag();
-		TagLib::ID3v2::FrameList Frame;
-		TagLib::ID3v2::AttachedPictureFrame* PicFrame;
+    // Find the file extension
+    std::string fileExtension = GetFileExtension(fileName);
+    if (fileExtension == "mp3")
+    {
+        static const char* IdPicture = "APIC";
+        TagLib::MPEG::File audioFile(fileName.c_str());
+        TagLib::ID3v2::Tag* id3v2tag = audioFile.ID3v2Tag();
+        TagLib::ID3v2::FrameList Frame;
+        TagLib::ID3v2::AttachedPictureFrame* PicFrame;
 
 		if (audioFile.hasID3v2Tag())
 		{
@@ -135,7 +135,7 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
         }
     }
 
-	Console::instance->PrintLine("Could not load album art from song!", RGBA::RED);
+    Console::instance->PrintLine("Could not load album art from song!", RGBA::RED);
     return nullptr;
 }
 
