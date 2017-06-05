@@ -170,7 +170,7 @@ float XInputController::GetRightStickAngleDegrees()
 {
     float X = (float)m_state.Gamepad.sThumbRX / 32768.f;
     float Y = (float)m_state.Gamepad.sThumbRY / 32768.f;
-    return MathUtils::RadiansToDegrees(MathUtils::HALF_PI - CalculateStickAngleRadians(X, Y));
+    return RadiansToDegrees(MathUtils::HALF_PI - CalculateStickAngleRadians(X, Y));
 }
 
 //-----------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ float XInputController::GetLeftStickAngleDegrees()
 {
     float X = (float)m_state.Gamepad.sThumbLX / 32768.f;
     float Y = (float)m_state.Gamepad.sThumbLY / 32768.f;
-    return MathUtils::RadiansToDegrees(MathUtils::HALF_PI - CalculateStickAngleRadians(X, Y));
+    return RadiansToDegrees(MathUtils::HALF_PI - CalculateStickAngleRadians(X, Y));
 }
 
 //-----------------------------------------------------------------------------------

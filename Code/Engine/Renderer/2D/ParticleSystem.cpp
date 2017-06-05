@@ -161,7 +161,7 @@ void ParticleEmitter::BuildParticles(BufferedMeshRenderer& renderer)
         Matrix4x4::MatrixMakeScale(&scale, Vector3(particle.m_scale, 0.0f));
 
         //Rotate the bounding box
-        Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(particle.m_rotationDegrees));
+        Matrix4x4::MatrixMakeRotationAroundZ(&rotation, DegreesToRadians(particle.m_rotationDegrees));
 
         //Translate the bounding box
         Matrix4x4::MatrixMakeTranslation(&translation, Vector3(particle.m_position, 0.0f));
@@ -419,7 +419,7 @@ void ParticleEmitter::BuildRibbonParticles(BufferedMeshRenderer& renderer)
         //Scale the bounding box
         Matrix4x4::MatrixMakeScale(&scale, Vector3(particle.m_scale, 0.0f));
         //Rotate the bounding box
-        Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(particle.m_rotationDegrees));
+        Matrix4x4::MatrixMakeRotationAroundZ(&rotation, DegreesToRadians(particle.m_rotationDegrees));
         //Translate the bounding box
         Matrix4x4::MatrixMakeTranslation(&translation, Vector3(particle.m_position, 0.0f));
         //Apply our transformations

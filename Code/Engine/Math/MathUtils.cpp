@@ -4,14 +4,15 @@
 #include "Engine/Math/Vector3.hpp"
 #include "Engine/Math/Vector3Int.hpp"
 #include "Engine/Math/Vector4.hpp"
+#define _USE_MATH_DEFINES
 #include <cmath>
 #include <cstdlib>
 #include <stdint.h>
 #include "../Core/ErrorWarningAssert.hpp"
 
-const float MathUtils::PI = 3.14159265358f;
-const float MathUtils::TWO_PI = 3.14159265358f * 2.0f;
-const float MathUtils::HALF_PI = 3.14159265358f / 2.0f;
+const float MathUtils::PI = M_PI;
+const float MathUtils::TWO_PI = MathUtils::PI * 2.0f;
+const float MathUtils::HALF_PI = M_PI_2;
 
 //-----------------------------------------------------------------------------------
 int MathUtils::LerpInt(float fraction, int initialValue, int endValue)
@@ -66,15 +67,15 @@ bool MathUtils::CoinFlip()
 }
 
 //-----------------------------------------------------------------------------------
-float MathUtils::DegreesToRadians(float degrees)
+float DegreesToRadians(float degrees)
 {
-    return degrees * (PI / 180.0f);
+    return degrees * (M_PI / 180.0f);
 }
 
 //-----------------------------------------------------------------------------------
-float MathUtils::RadiansToDegrees(float radians)
+float RadiansToDegrees(float radians)
 {
-    return radians * (180.0f / PI);
+    return radians * (180.0f / M_PI);
 }
 
 //-----------------------------------------------------------------------------------
@@ -220,31 +221,31 @@ float MathUtils::GetRandomFloat(float minimum, float maximum)
 }
 
 //-----------------------------------------------------------------------------------
-float MathUtils::Dot(const Vector2& a, const Vector2& b)
+float Dot(const Vector2& a, const Vector2& b)
 {
     return(a.x * b.x) + (a.y * b.y);
 }
 
 //-----------------------------------------------------------------------------------
-float MathUtils::Dot(const Vector3& a, const Vector3& b)
+float Dot(const Vector3& a, const Vector3& b)
 {
     return(a.x * b.x) + (a.y * b.y) + (a.z * b.z);
 }
 
 //-----------------------------------------------------------------------------------
-float MathUtils::Dot(const Vector4& a, const Vector4& b)
+float Dot(const Vector4& a, const Vector4& b)
 {
     return(a.x * b.x) + (a.y * b.y) + (a.z * b.z) + (a.w * b.w);
 }
 
 //-----------------------------------------------------------------------------------
-float MathUtils::CosDegrees(float input)
+float CosDegrees(float input)
 {
     return cos(DegreesToRadians(input));
 }
 
 //-----------------------------------------------------------------------------------
-float MathUtils::SinDegrees(float input)
+float SinDegrees(float input)
 {
     return sin(DegreesToRadians(input));
 }

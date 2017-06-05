@@ -40,15 +40,6 @@ public:
     static bool CoinFlip();
     static Vector2 GetRandomVectorInCircle(float radius);
 
-    //TRIGONOMETRY//////////////////////////////////////////////////////////////////////////
-    static float Dot(const Vector2& a, const Vector2& b);
-    static float Dot(const Vector3& a, const Vector3& b);
-    static float Dot(const Vector4& a, const Vector4& b);
-    static float CosDegrees(float input);
-    static float SinDegrees(float input);
-    static float DegreesToRadians(float degrees);
-    static float RadiansToDegrees(float radians);
-
     //INTERPOLATION//////////////////////////////////////////////////////////////////////////
     static float SmoothStep(float inputZeroToOne);
     static float SmoothStart2(float inputZeroToOne);
@@ -61,6 +52,7 @@ public:
     static Vector2 GetRandomDirectionVector();
     //Returns Vector2(R, theta);
     static Vector2 MakePolar(const Vector2& xyVector);
+
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const float PI;
     static const float TWO_PI;
@@ -76,6 +68,15 @@ void ClearBit(uchar& bitFlags, uchar bitMask);
 void SetBitUint(unsigned int& bitFlags, uchar bitMask);
 bool IsBitSetUint(unsigned int bitFlags, uchar bitMask);
 void ClearBitUint(unsigned int& bitFlags, uchar bitMask);
+
+//TRIGONOMETRY//////////////////////////////////////////////////////////////////////////
+float Dot(const Vector2& a, const Vector2& b);
+float Dot(const Vector3& a, const Vector3& b);
+float Dot(const Vector4& a, const Vector4& b);
+float CosDegrees(float input);
+float SinDegrees(float input);
+float DegreesToRadians(float degrees);
+float RadiansToDegrees(float radians);
 
 int Mod(int a, int b);
 float Clamp01(float input);

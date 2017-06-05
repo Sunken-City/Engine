@@ -58,52 +58,52 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
         TagLib::ID3v2::FrameList Frame;
         TagLib::ID3v2::AttachedPictureFrame* PicFrame;
 
-		if (audioFile.hasID3v2Tag())
-		{
-			// picture frame
-			Frame = id3v2tag->frameListMap()[IdPicture];
-			if (!Frame.isEmpty())
-			{
-				for (TagLib::ID3v2::FrameList::ConstIterator it = Frame.begin(); it != Frame.end(); ++it)
-				{
-					PicFrame = (TagLib::ID3v2::AttachedPictureFrame *)(*it);
-					if (PicFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover)
-					{
-						// extract image (in it’s compressed form)
-						TagLib::ByteVector pictureData = PicFrame->picture();
-						size = pictureData.size();
-						srcImage = (unsigned char*)pictureData.data();
-						if (srcImage)
-						{
-							return Texture::CreateUnregisteredTextureFromData(srcImage, size);
-						}
-					}
-				}
-			}
-		}
-	}
-	else if (fileExtension == "flac")
-	{
-		TagLib::FLAC::File audioFile(fileName.c_str());
-		if (!audioFile.pictureList().isEmpty())
-		{
-			for (unsigned i = 0; i < audioFile.pictureList().size(); ++i)
-			{
-				if (audioFile.pictureList()[i]->type() == TagLib::FLAC::Picture::Type::FrontCover)
-				{
-					TagLib::ByteVector pictureData = audioFile.pictureList()[i]->data();
-					size = pictureData.size();
-					srcImage = (unsigned char*)pictureData.data();
-					if (srcImage)
-					{
-						return Texture::CreateUnregisteredTextureFromData(srcImage, size);
-					}
-				}
-			}
-		}
-	}
-	else if (fileExtension == "wav")
-	{
+        if (audioFile.hasID3v2Tag())
+        {
+            // picture frame
+            Frame = id3v2tag->frameListMap()[IdPicture];
+            if (!Frame.isEmpty())
+            {
+                for (TagLib::ID3v2::FrameList::ConstIterator it = Frame.begin(); it != Frame.end(); ++it)
+                {
+                    PicFrame = (TagLib::ID3v2::AttachedPictureFrame *)(*it);
+                    if (PicFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover)
+                    {
+                        // extract image (in it’s compressed form)
+                        TagLib::ByteVector pictureData = PicFrame->picture();
+                        size = pictureData.size();
+                        srcImage = (unsigned char*)pictureData.data();
+                        if (srcImage)
+                        {
+                            return Texture::CreateUnregisteredTextureFromData(srcImage, size);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else if (fileExtension == "flac")
+    {
+        TagLib::FLAC::File audioFile(fileName.c_str());
+        if (!audioFile.pictureList().isEmpty())
+        {
+            for (unsigned i = 0; i < audioFile.pictureList().size(); ++i)
+            {
+                if (audioFile.pictureList()[i]->type() == TagLib::FLAC::Picture::Type::FrontCover)
+                {
+                    TagLib::ByteVector pictureData = audioFile.pictureList()[i]->data();
+                    size = pictureData.size();
+                    srcImage = (unsigned char*)pictureData.data();
+                    if (srcImage)
+                    {
+                        return Texture::CreateUnregisteredTextureFromData(srcImage, size);
+                    }
+                }
+            }
+        }
+    }
+    else if (fileExtension == "wav")
+    {
         static const char* IdPicture = "APIC";
         TagLib::RIFF::WAV::File audioFile(fileName.c_str());
         TagLib::ID3v2::Tag* id3v2tag = audioFile.ID3v2Tag();

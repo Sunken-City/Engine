@@ -431,10 +431,10 @@ float Compute2dPerlinNoise( float posX, float posY, float scale, unsigned int nu
 		Vector2 displacementFromNW( currentPos.x - cellMins.x, currentPos.y - cellMaxs.y );
 		Vector2 displacementFromNE( currentPos.x - cellMaxs.x, currentPos.y - cellMaxs.y );
 
-		float dotSouthWest = MathUtils::Dot( gradientSW, displacementFromSW );
-		float dotSouthEast = MathUtils::Dot( gradientSE, displacementFromSE );
-		float dotNorthWest = MathUtils::Dot( gradientNW, displacementFromNW );
-		float dotNorthEast = MathUtils::Dot( gradientNE, displacementFromNE );
+		float dotSouthWest = Dot( gradientSW, displacementFromSW );
+		float dotSouthEast = Dot( gradientSE, displacementFromSE );
+		float dotNorthWest = Dot( gradientNW, displacementFromNW );
+		float dotNorthEast = Dot( gradientNE, displacementFromNE );
 
 		// Do a smoothed (nonlinear) weighted average of dot results
 		float weightEast = SmoothStep5( displacementFromSW.x );
@@ -537,14 +537,14 @@ float Compute3dPerlinNoise( float posX, float posY, float posZ, float scale, uns
 		Vector3 displacementFromAboveNW( currentPos.x - cellMins.x, currentPos.y - cellMaxs.y, currentPos.z - cellMaxs.z );
 		Vector3 displacementFromAboveNE( currentPos.x - cellMaxs.x, currentPos.y - cellMaxs.y, currentPos.z - cellMaxs.z );
 
-		float dotBelowSW = MathUtils::Dot( gradientBelowSW, displacementFromBelowSW );
-		float dotBelowSE = MathUtils::Dot( gradientBelowSE, displacementFromBelowSE );
-		float dotBelowNW = MathUtils::Dot( gradientBelowNW, displacementFromBelowNW );
-		float dotBelowNE = MathUtils::Dot( gradientBelowNE, displacementFromBelowNE );
-		float dotAboveSW = MathUtils::Dot( gradientAboveSW, displacementFromAboveSW );
-		float dotAboveSE = MathUtils::Dot( gradientAboveSE, displacementFromAboveSE );
-		float dotAboveNW = MathUtils::Dot( gradientAboveNW, displacementFromAboveNW );
-		float dotAboveNE = MathUtils::Dot( gradientAboveNE, displacementFromAboveNE );
+		float dotBelowSW = Dot( gradientBelowSW, displacementFromBelowSW );
+		float dotBelowSE = Dot( gradientBelowSE, displacementFromBelowSE );
+		float dotBelowNW = Dot( gradientBelowNW, displacementFromBelowNW );
+		float dotBelowNE = Dot( gradientBelowNE, displacementFromBelowNE );
+		float dotAboveSW = Dot( gradientAboveSW, displacementFromAboveSW );
+		float dotAboveSE = Dot( gradientAboveSE, displacementFromAboveSE );
+		float dotAboveNW = Dot( gradientAboveNW, displacementFromAboveNW );
+		float dotAboveNE = Dot( gradientAboveNE, displacementFromAboveNE );
 
 		// Do a smoothed (nonlinear) weighted average of dot results
 		float weightEast  = SmoothStep5( displacementFromBelowSW.x );
@@ -690,22 +690,22 @@ float Compute4dPerlinNoise( float posX, float posY, float posZ, float posT, floa
 		Vector4 displacementFromAfterANW( currentPos.x - cellMins.x, currentPos.y - cellMaxs.y, currentPos.z - cellMaxs.z, currentPos.w - cellMaxs.w );
 		Vector4 displacementFromAfterANE( currentPos.x - cellMaxs.x, currentPos.y - cellMaxs.y, currentPos.z - cellMaxs.z, currentPos.w - cellMaxs.w );
 
-		float dotBeforeBSW = MathUtils::Dot( gradientBeforeBSW, displacementFromBeforeBSW );
-		float dotBeforeBSE = MathUtils::Dot( gradientBeforeBSE, displacementFromBeforeBSE );
-		float dotBeforeBNW = MathUtils::Dot( gradientBeforeBNW, displacementFromBeforeBNW );
-		float dotBeforeBNE = MathUtils::Dot( gradientBeforeBNE, displacementFromBeforeBNE );
-		float dotBeforeASW = MathUtils::Dot( gradientBeforeASW, displacementFromBeforeASW );
-		float dotBeforeASE = MathUtils::Dot( gradientBeforeASE, displacementFromBeforeASE );
-		float dotBeforeANW = MathUtils::Dot( gradientBeforeANW, displacementFromBeforeANW );
-		float dotBeforeANE = MathUtils::Dot( gradientBeforeANE, displacementFromBeforeANE );
-		float dotAfterBSW =  MathUtils::Dot( gradientAfterBSW, displacementFromAfterBSW );
-		float dotAfterBSE =  MathUtils::Dot( gradientAfterBSE, displacementFromAfterBSE );
-		float dotAfterBNW =  MathUtils::Dot( gradientAfterBNW, displacementFromAfterBNW );
-		float dotAfterBNE =  MathUtils::Dot( gradientAfterBNE, displacementFromAfterBNE );
-		float dotAfterASW =  MathUtils::Dot( gradientAfterASW, displacementFromAfterASW );
-		float dotAfterASE =  MathUtils::Dot( gradientAfterASE, displacementFromAfterASE );
-		float dotAfterANW =  MathUtils::Dot( gradientAfterANW, displacementFromAfterANW );
-		float dotAfterANE =  MathUtils::Dot( gradientAfterANE, displacementFromAfterANE );
+		float dotBeforeBSW = Dot( gradientBeforeBSW, displacementFromBeforeBSW );
+		float dotBeforeBSE = Dot( gradientBeforeBSE, displacementFromBeforeBSE );
+		float dotBeforeBNW = Dot( gradientBeforeBNW, displacementFromBeforeBNW );
+		float dotBeforeBNE = Dot( gradientBeforeBNE, displacementFromBeforeBNE );
+		float dotBeforeASW = Dot( gradientBeforeASW, displacementFromBeforeASW );
+		float dotBeforeASE = Dot( gradientBeforeASE, displacementFromBeforeASE );
+		float dotBeforeANW = Dot( gradientBeforeANW, displacementFromBeforeANW );
+		float dotBeforeANE = Dot( gradientBeforeANE, displacementFromBeforeANE );
+		float dotAfterBSW =  Dot( gradientAfterBSW, displacementFromAfterBSW );
+		float dotAfterBSE =  Dot( gradientAfterBSE, displacementFromAfterBSE );
+		float dotAfterBNW =  Dot( gradientAfterBNW, displacementFromAfterBNW );
+		float dotAfterBNE =  Dot( gradientAfterBNE, displacementFromAfterBNE );
+		float dotAfterASW =  Dot( gradientAfterASW, displacementFromAfterASW );
+		float dotAfterASE =  Dot( gradientAfterASE, displacementFromAfterASE );
+		float dotAfterANW =  Dot( gradientAfterANW, displacementFromAfterANW );
+		float dotAfterANE =  Dot( gradientAfterANE, displacementFromAfterANE );
 
 		// Do a smoothed (nonlinear) weighted average of dot results
 		float weightEast  = SmoothStep( displacementFromBeforeBSW.x );
@@ -816,10 +816,10 @@ float ComputePerlinNoiseValueAtPosition2D( const Vector2& position, float perlin
 	Vector2 northeastNoiseGradient = GetPseudoRandomNoiseUnitVector2D( perlinCell.x + 1, perlinCell.y + 1 );
 	Vector2 northwestNoiseGradient = GetPseudoRandomNoiseUnitVector2D( perlinCell.x, perlinCell.y + 1 );
 
-	float southwestDot = MathUtils::Dot( southwestNoiseGradient, perlinPositionUV );
-	float southeastDot = MathUtils::Dot( southeastNoiseGradient, Vector2( perlinPositionAntiUV.x, perlinPositionUV.y ) );
-	float northeastDot = MathUtils::Dot( northeastNoiseGradient, perlinPositionAntiUV );
-	float northwestDot = MathUtils::Dot( northwestNoiseGradient, Vector2( perlinPositionUV.x, perlinPositionAntiUV.y ) );
+	float southwestDot = Dot( southwestNoiseGradient, perlinPositionUV );
+	float southeastDot = Dot( southeastNoiseGradient, Vector2( perlinPositionAntiUV.x, perlinPositionUV.y ) );
+	float northeastDot = Dot( northeastNoiseGradient, perlinPositionAntiUV );
+	float northwestDot = Dot( northwestNoiseGradient, Vector2( perlinPositionUV.x, perlinPositionAntiUV.y ) );
 
 	float southBlend = (eastWeight * southeastDot) + (westWeight * southwestDot);
 	float northBlend = (eastWeight * northeastDot) + (westWeight * northwestDot);

@@ -17,9 +17,12 @@ public:
     Vector3 GetForwardTwoComponent() const;
     Vector3 GetLeft() const;
     Matrix4x4 GetViewMatrix();
+    void LookAt(const Vector3& position);
 
     //CONSTANTS/////////////////////////////////////////////////////////////////////
     static constexpr float BASE_MOVE_SPEED = 4.5f;
+    static constexpr float CAMERA_PITCH_ANGLE_CLAMP_DEGREES = 90.0f;
+    static constexpr float MOUSE_ROTATION_SPEED = 0.05f;
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     Vector3 m_position;

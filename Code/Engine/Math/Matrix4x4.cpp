@@ -1,6 +1,7 @@
 #include "Engine/Math/Matrix4x4.hpp"
 #include "Engine/Math/MathUtils.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
+#include "EulerAngles.hpp"
 
 //-----------------------------------------------------------------------------------
 //Based off of Code by Christopher Forseth
@@ -42,7 +43,7 @@ void Matrix4x4::MatrixMakeTranslation(Matrix4x4* matrix, const Vector3& translat
 //-----------------------------------------------------------------------------------
 void Matrix4x4::MatrixMakePerspective(Matrix4x4* mat, float fovDegreesY, float aspect, float nz, float fz)
 {
-    float rads = MathUtils::DegreesToRadians(fovDegreesY);
+    float rads = DegreesToRadians(fovDegreesY);
     float size = 1.0f / tan(rads / 2.0f);
 
     float width = size;
@@ -349,24 +350,39 @@ void Matrix4x4::MatrixMakeRotationEuler(Matrix4x4 *mat, const float yaw, const f
 }
 
 //------------------------------------------------------------------------
-void Matrix4x4::MatrixMakeLookTo(Matrix4x4* matrix, const Vector3& position, const Vector3& directionToLook, const Vector3& upVector)
-{
-    Vector3 up = upVector;
-    Vector3 forward = directionToLook;
-
-    up.Normalize();
-    forward.Normalize();
-    Vector3 right = Vector3::Cross(up, forward);
-    up = Vector3::Cross(forward, right);
-    up.Normalize();
-
-    MatrixSetBasis(matrix, right, up, forward, position);
-}
+//This function didn't work when I tried to use it, taken out for now. Called from matrixmakelookat using MatrixMakeLookTo(matrix, from, to - from, up);
+// void Matrix4x4::MatrixMakeLookTo(Matrix4x4* matrix, const Vector3& position, const Vector3& directionToLook, const Vector3& upVector)
+// {
+//     Vector3 up = upVector;
+//     Vector3 forward = directionToLook;
+// 
+//     up.Normalize();
+//     forward.Normalize();
+//     Vector3 right = Vector3::Cross(up, forward);
+//     up = Vector3::Cross(forward, right);
+//     up.Normalize();
+// 
+//     MatrixSetBasis(matrix, right, up, forward, position);
+// }
 
 //------------------------------------------------------------------------
-void Matrix4x4::MatrixMakeLookAt(Matrix4x4* matrix, const Vector3& from, const Vector3& to, const Vector3& up)
+//Explanation from https://stackoverflow.com/a/6802424/2619871
+void Matrix4x4::MatrixMakeLookAt(Matrix4x4* matrix, const Vector3& from, const Vector3& to, const Vector3& upVector)
 {
-    MatrixMakeLookTo(matrix, from, to - from, up);
+    Vector3 forward = Vector3::GetNormalized(to - from);
+    Vector3 right = Vector3::GetNormalized(Vector3::Cross(upVector, forward));
+    Vector3 up = Vector3::Cross(forward, right);
+
+    //MatrixSetBasis(matrix, right, up, forward, from);
+    const float values[] = 
+    {
+        right.x,	right.y,	right.z,    Dot(right, -from),
+        up.x,	    up.y,	    up.z,       Dot(up, -from),
+        forward.x,	forward.y,	forward.z,  Dot(forward, -from),
+        0.0f,		0.0f,		0.0f,	    1.0f
+    };
+
+    memcpy(matrix->data, values, sizeof(values));
 }
 
 //-----------------------------------------------------------------------------------
@@ -450,6 +466,24 @@ Vector3 Matrix4x4::GetTranslation() const
 }
 
 //-----------------------------------------------------------------------------------
+//Helpful reminder from https://stackoverflow.com/a/15029416/2619871
+EulerAngles Matrix4x4::GetEulerRotation() const
+{
+    //Yaw = y
+    //Pitch = x
+    //Roll = z
+    EulerAngles angles;
+    float thetaX = atan2(data[6], data[10]);
+    float thetaY = atan2(-data[2], sqrt((data[6] * data[6]) + (data[10] * data[10])));
+    float thetaZ = atan2(data[1], data[0]);
+    angles.rollDegreesAboutX = RadiansToDegrees(thetaZ);
+    angles.pitchDegreesAboutY = RadiansToDegrees(-thetaX); //I'm seriously uncertain as to why this needs to be negated.
+    angles.yawDegreesAboutZ = RadiansToDegrees(-thetaY); //Yaw is inverted for the camera, but I'm not quite sure why, please answer future Pico.
+
+    return angles;
+}
+
+//-----------------------------------------------------------------------------------
 Vector3 Matrix4x4::MatrixGetForward(Matrix4x4* matrix)
 {
     return Vector3(matrix->data[9], matrix->data[10], matrix->data[11]);
@@ -515,8 +549,8 @@ void Matrix4x4::Rotate(float degrees, const Vector3& axis)
 {
     //From page 111 in Chapter 8 of 3D Math Primer for Graphics and Game Development
     Matrix4x4 rotation = Matrix4x4::IDENTITY;
-    float cosineDegrees = MathUtils::CosDegrees(degrees);
-    float sineDegrees = MathUtils::SinDegrees(degrees);
+    float cosineDegrees = CosDegrees(degrees);
+    float sineDegrees = SinDegrees(degrees);
     float oneMinusCosineDegrees = (1.0f - cosineDegrees);
     rotation.data[0] = (axis.x * axis.x) * oneMinusCosineDegrees + cosineDegrees;
     rotation.data[1] = (axis.x * axis.y) * oneMinusCosineDegrees - (axis.z * sineDegrees);
