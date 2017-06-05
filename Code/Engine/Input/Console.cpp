@@ -7,6 +7,7 @@
 #include "Engine/Fonts/BitmapFont.hpp"
 #include <cmath>
 #include "../Core/StringUtils.hpp"
+#include "InputOutputUtils.hpp"
 
 Console* Console::instance = nullptr;
 std::map<size_t, ConsoleCommandFunctionPointer, std::less<size_t>, UntrackedAllocator<std::pair<size_t, ConsoleCommandFunctionPointer>>>* g_consoleCommands = nullptr;
@@ -25,6 +26,7 @@ Console::Console()
     , m_timeSinceCursorBlink(0.0f)
     , m_font(BitmapFont::CreateOrGetFont("FixedSys"))
     , m_commandHistoryIndex(0)
+    , m_currentWorkingDirectory(RelativeToFullPath(L"."))
 {
 }
 
@@ -507,4 +509,40 @@ CONSOLE_COMMAND(changefont)
     {
         Console::instance->PrintLine("Font not found", RGBA::MAROON);
     }
+}
+
+//-----------------------------------------------------------------------------------
+CONSOLE_COMMAND(dir)
+{
+    std::wstring wideCWD = Console::instance->GetCurrentWorkingDirectory();
+    std::string cwd = std::string(wideCWD.begin(), wideCWD.end());
+    std::vector<std::string> files = EnumerateFiles(cwd, "*");
+
+    Console::instance->PrintLine(Stringf("Files in %s:", cwd.c_str()), RGBA::JOLTIK_YELLOW);
+    for (std::string& string : files)
+    {
+        Console::instance->PrintLine(string, RGBA::JOLTIK_PURPLE);
+    }
+}
+
+//-----------------------------------------------------------------------------------
+CONSOLE_COMMAND(ls)
+{
+    Console::instance->RunCommand("dir");
+}
+
+//-----------------------------------------------------------------------------------
+CONSOLE_COMMAND(cd)
+{
+    if (!args.HasArgs(1))
+    {
+        Console::instance->PrintLine("cd <newDirectory>", RGBA::GRAY);
+        return;
+    }
+    std::string newDirectory = args.GetStringArgument(0);
+
+    std::wstring cwd = Console::instance->GetCurrentWorkingDirectory();
+    std::wstring newCWD = cwd + L"\\" + std::wstring(newDirectory.begin(), newDirectory.end());
+    Console::instance->SetCurrentWorkingDirectory(newCWD);
+    Console::instance->PrintLine(Stringf("Changed directories to %s", std::string(newCWD.begin(), newCWD.end()).c_str()), RGBA::KHAKI);
 }
