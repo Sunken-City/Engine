@@ -12,6 +12,7 @@ public:
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void Update(float deltaTime);
     void Render();
+    void UpdateFromInput(float deltaTime);
     Vector3 GetForward() const;
     Vector3 GetForwardTwoComponent() const;
     Vector3 GetLeft() const;
@@ -23,4 +24,5 @@ public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     Vector3 m_position;
     EulerAngles m_orientation;
+    bool m_updateFromInput = false;
 };

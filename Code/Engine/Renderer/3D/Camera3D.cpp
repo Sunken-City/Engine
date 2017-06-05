@@ -55,7 +55,7 @@ void Camera3D::Render()
 }
 
 //-----------------------------------------------------------------------------------
-void Camera3D::Update(float deltaTime)
+void Camera3D::UpdateFromInput(float deltaTime)
 {
     float moveSpeed;
 
@@ -103,4 +103,13 @@ void Camera3D::Update(float deltaTime)
     m_orientation.yawDegreesAboutZ -= ((float)cursorDelta.x * 0.005f);
     float proposedPitch = m_orientation.pitchDegreesAboutY - ((float)cursorDelta.y * 0.005f);
     m_orientation.pitchDegreesAboutY = MathUtils::Clamp(proposedPitch, -3.14159f / 2.0f, 3.14159f / 2.0f);
+}
+
+//-----------------------------------------------------------------------------------
+void Camera3D::Update(float deltaTime)
+{
+    if (m_updateFromInput)
+    {
+        UpdateFromInput(deltaTime);
+    }
 }
