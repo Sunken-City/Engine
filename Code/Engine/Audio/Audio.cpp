@@ -260,7 +260,11 @@ void AudioSystem::PrintTag(SoundID soundID)
 {
     TagLib::FileRef audioFile("IF.mp3");
     TagLib::String artist = audioFile.tag()->artist();
+    TagLib::String album = audioFile.tag()->album();
+    int year = audioFile.tag()->year();
     Console::instance->PrintLine(Stringf("Artist: %s\n", artist.toCString()));
+    Console::instance->PrintLine(Stringf("Album: %s\n", album.toCString()));
+    Console::instance->PrintLine(Stringf("Year: %i\n", year));
 
     unsigned int numSounds = m_registeredSounds.size();
     if (soundID < 0 || soundID >= numSounds)
