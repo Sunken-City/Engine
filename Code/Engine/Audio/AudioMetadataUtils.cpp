@@ -52,14 +52,15 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
     std::string fileExtension = GetFileExtension(fileName);
     if (fileExtension == "mp3")
     {
-        static const char* IdPicture = "APIC";
         TagLib::MPEG::File audioFile(fileName.c_str());
-        TagLib::ID3v2::Tag* id3v2tag = audioFile.ID3v2Tag();
-        TagLib::ID3v2::FrameList Frame;
-        TagLib::ID3v2::AttachedPictureFrame* PicFrame;
 
         if (audioFile.hasID3v2Tag())
         {
+            static const char* IdPicture = "APIC";
+            TagLib::ID3v2::Tag* id3v2tag = audioFile.ID3v2Tag();
+            TagLib::ID3v2::FrameList Frame;
+            TagLib::ID3v2::AttachedPictureFrame* PicFrame;
+
             // picture frame
             Frame = id3v2tag->frameListMap()[IdPicture];
             if (!Frame.isEmpty())
@@ -97,6 +98,34 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
                     if (srcImage)
                     {
                         return Texture::CreateUnregisteredTextureFromData(srcImage, size);
+                    }
+                }
+            }
+        }
+        else if (audioFile.hasID3v2Tag())
+        {
+            static const char* IdPicture = "APIC";
+            TagLib::ID3v2::Tag* id3v2tag = audioFile.ID3v2Tag();
+            TagLib::ID3v2::FrameList Frame;
+            TagLib::ID3v2::AttachedPictureFrame* PicFrame;
+
+            // picture frame
+            Frame = id3v2tag->frameListMap()[IdPicture];
+            if (!Frame.isEmpty())
+            {
+                for (TagLib::ID3v2::FrameList::ConstIterator it = Frame.begin(); it != Frame.end(); ++it)
+                {
+                    PicFrame = (TagLib::ID3v2::AttachedPictureFrame *)(*it);
+                    if (PicFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover)
+                    {
+                        // extract image (in it’s compressed form)
+                        TagLib::ByteVector pictureData = PicFrame->picture();
+                        size = pictureData.size();
+                        srcImage = (unsigned char*)pictureData.data();
+                        if (srcImage)
+                        {
+                            return Texture::CreateUnregisteredTextureFromData(srcImage, size);
+                        }
                     }
                 }
             }
