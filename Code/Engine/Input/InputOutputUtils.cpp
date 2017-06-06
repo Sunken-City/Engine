@@ -270,3 +270,12 @@ bool FileExists(const std::string& filename)
     std::ifstream ifile(filename);
     return (bool)ifile;
 }
+
+//-----------------------------------------------------------------------------------
+//Modified from https://stackoverflow.com/a/6218445/2619871
+bool DirectoryExists(const std::wstring& directoryPath)
+{
+    LPCWSTR wideDirectoryPath = directoryPath.c_str();
+    DWORD dwAttrib = GetFileAttributes(wideDirectoryPath);
+    return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+}

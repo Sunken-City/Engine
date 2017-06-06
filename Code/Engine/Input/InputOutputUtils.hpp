@@ -12,6 +12,7 @@ std::vector<std::string> EnumerateFiles(const std::wstring& baseFolder, const st
 std::vector<std::string> EnumerateDirectories(const std::string& baseFolder, bool recurseSubfolders = false);
 std::vector<std::string> EnumerateDirectories(const std::wstring& baseFolder, bool recurseSubfolders = false);
 bool FileExists(const std::string& filename);
+bool DirectoryExists(const std::wstring& directoryPath);
 std::wstring RelativeToFullPath(const std::wstring& relativePath);
 
 //-----------------------------------------------------------------------------------

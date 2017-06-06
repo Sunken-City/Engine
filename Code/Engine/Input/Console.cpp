@@ -534,15 +534,23 @@ CONSOLE_COMMAND(ls)
 //-----------------------------------------------------------------------------------
 CONSOLE_COMMAND(cd)
 {
-    if (!args.HasArgs(1))
+    if (args.HasArgs(0))
     {
         Console::instance->PrintLine("cd <newDirectory>", RGBA::GRAY);
         return;
     }
-    std::string newDirectory = args.GetStringArgument(0);
+    std::string newDirectory = args.GetAllArguments();
 
     std::wstring cwd = Console::instance->GetCurrentWorkingDirectory();
-    std::wstring newCWD = cwd + L"\\" + std::wstring(newDirectory.begin(), newDirectory.end());
-    Console::instance->SetCurrentWorkingDirectory(newCWD);
-    Console::instance->PrintLine(Stringf("Changed directories to %s", std::string(newCWD.begin(), newCWD.end()).c_str()), RGBA::KHAKI);
+    std::wstring wideNewCWD = cwd + L"\\" + std::wstring(newDirectory.begin(), newDirectory.end());
+
+    if (!DirectoryExists(wideNewCWD))
+    {
+        Console::instance->PrintLine("Directory doesn't exist.", RGBA::RED);
+        return;
+    }
+
+    wideNewCWD = RelativeToFullPath(wideNewCWD); //Lazily remove any /.. we append to the path.
+    Console::instance->SetCurrentWorkingDirectory(wideNewCWD);
+    Console::instance->PrintLine(Stringf("Changed directories to %s", std::string(wideNewCWD.begin(), wideNewCWD.end()).c_str()), RGBA::KHAKI);
 }
