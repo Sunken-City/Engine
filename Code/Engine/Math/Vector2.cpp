@@ -134,7 +134,7 @@ Vector2 Vector2::CalculateCorrectionVector(const Vector2& position, const Vector
 Vector2 Vector2::DegreesToDirection(float rotationDegrees, float rotationalOffset)
 {
     float degrees = rotationDegrees + rotationalOffset;
-    return Vector2(MathUtils::CosDegrees(degrees), MathUtils::SinDegrees(degrees));
+    return Vector2(CosDegrees(degrees), SinDegrees(degrees));
 }
 
 //-----------------------------------------------------------------------------------
@@ -152,7 +152,7 @@ float Vector2::Dot(const Vector2& a, const Vector2& b)
 //-----------------------------------------------------------------------------------
 float Vector2::CalculateThetaDegrees()
 {
-    return MathUtils::RadiansToDegrees(atan2(y, x));
+    return RadiansToDegrees(atan2(y, x));
 }
 
 //-----------------------------------------------------------------------------------
@@ -224,5 +224,5 @@ Vector2 Vector2::CreateFromString(const char* xmlString)
 //-----------------------------------------------------------------------------------
 Vector2 Vector2::CreateFromPolar(float radius, float degrees)
 {
-    return Vector2(radius * MathUtils::CosDegrees(degrees), radius * MathUtils::SinDegrees(degrees));
+    return Vector2(radius * CosDegrees(degrees), radius * SinDegrees(degrees));
 }

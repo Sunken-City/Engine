@@ -92,7 +92,7 @@ Matrix4x4 Transform3D::GetModelMatrix()
 
     Matrix4x4::MatrixMakeScale(&scale, GetWorldScale());
     Vector3 rotationVector = GetWorldRotationDegrees();
-    Matrix4x4::MatrixMakeRotationEuler(&rotation, MathUtils::DegreesToRadians(rotationVector.y), MathUtils::DegreesToRadians(rotationVector.x), MathUtils::DegreesToRadians(rotationVector.z), GetWorldPosition());
+    Matrix4x4::MatrixMakeRotationEuler(&rotation, DegreesToRadians(rotationVector.y), DegreesToRadians(rotationVector.x), DegreesToRadians(rotationVector.z), GetWorldPosition());
     //Matrix4x4::MatrixMakeTranslation(&translation, GetWorldPosition());
 
     //Apply our transformations

@@ -54,6 +54,8 @@ public:
         m_timeSinceCursorBlink = 0;
         m_renderCursor = true;
     };
+    inline std::wstring GetCurrentWorkingDirectory() { return m_currentWorkingDirectory; };
+    inline void SetCurrentWorkingDirectory(const std::wstring& newDirectory) { m_currentWorkingDirectory = newDirectory; };
 
     //VARIABLES//////////////////////////////////////////////////////////////////////////
     static Console* instance;
@@ -84,6 +86,7 @@ private:
     unsigned int m_commandHistoryIndex;
     std::vector<ColoredText*> m_consoleHistory;
     std::vector<std::string> m_commandHistory;
+    std::wstring m_currentWorkingDirectory;
 };
 
 //----------------------------------------------------------------------------------------------

@@ -8,8 +8,11 @@ bool EnsureDirectoryExists(const std::string& directoryPath);
 bool ReadTextFileIntoVector(std::vector<std::string>& outBuffer, const std::string& filePath);
 char* FileReadIntoNewBuffer(const std::string& filePath);
 std::vector<std::string> EnumerateFiles(const std::string& baseFolder, const std::string& filePattern, bool recurseSubfolders = false, const char* eventToFire = nullptr);
+std::vector<std::string> EnumerateFiles(const std::wstring& baseFolder, const std::wstring& filePattern, bool recurseSubfolders = false, const char* eventToFire = nullptr);
 std::vector<std::string> EnumerateDirectories(const std::string& baseFolder, bool recurseSubfolders = false);
+std::vector<std::string> EnumerateDirectories(const std::wstring& baseFolder, bool recurseSubfolders = false);
 bool FileExists(const std::string& filename);
+bool DirectoryExists(const std::wstring& directoryPath);
 std::wstring RelativeToFullPath(const std::wstring& relativePath);
 
 //-----------------------------------------------------------------------------------

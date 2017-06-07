@@ -42,7 +42,7 @@ void TextRenderable2D::Render(BufferedMeshRenderer& renderer)
     Matrix4x4 rotation = Matrix4x4::IDENTITY;
     Matrix4x4 translation = Matrix4x4::IDENTITY;
     Matrix4x4::MatrixMakeScale(&scale, Vector3(worldScale, 0.0f));
-    Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(m_transform.GetWorldRotationDegrees()));
+    Matrix4x4::MatrixMakeRotationAroundZ(&rotation, DegreesToRadians(m_transform.GetWorldRotationDegrees()));
     Matrix4x4::MatrixMakeTranslation(&translation, Vector3(0.0f));
     renderer.SetModelMatrix(scale * rotation * translation);
 

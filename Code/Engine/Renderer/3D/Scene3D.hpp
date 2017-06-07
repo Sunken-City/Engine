@@ -15,6 +15,7 @@ public:
     void Update(float deltaSeconds);
     void Render() const;
     void RegisterRenderable(Renderable3D* renderable) { m_renderables.push_back(renderable); };
+    void UnregisterRenderable(Renderable3D* renderable);
 
     //CONSTANTS/////////////////////////////////////////////////////////////////////
     static constexpr int MAX_NUM_LIGHTS = 8;

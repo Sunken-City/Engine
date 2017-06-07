@@ -14,26 +14,26 @@ Camera3D::Camera3D()
 //-----------------------------------------------------------------------------------
 Vector3 Camera3D::GetForward() const
 {
-    float cosYaw = cos(m_orientation.yawDegreesAboutZ);
-    float sinYaw = sin(m_orientation.yawDegreesAboutZ);
-    float cosPitch = cos(m_orientation.pitchDegreesAboutY);
-    float sinPitch = sin(m_orientation.pitchDegreesAboutY);
+    float cosYaw = cos(m_orientation.GetYawRadiansAboutZ());
+    float sinYaw = sin(m_orientation.GetYawRadiansAboutZ());
+    float cosPitch = cos(m_orientation.GetPitchRadiansAboutY());
+    float sinPitch = sin(m_orientation.GetPitchRadiansAboutY());
     return Vector3(cosYaw * cosPitch, -sinPitch, sinYaw * cosPitch);
 }
 
 //-----------------------------------------------------------------------------------
 Vector3 Camera3D::GetForwardTwoComponent() const
 {
-    float cosYaw = cos(m_orientation.yawDegreesAboutZ);
-    float sinYaw = sin(m_orientation.yawDegreesAboutZ);
+    float cosYaw = cos(m_orientation.GetYawRadiansAboutZ());
+    float sinYaw = sin(m_orientation.GetYawRadiansAboutZ());
     return (Vector3::FORWARD * cosYaw) + (Vector3::RIGHT * -sinYaw);
 }
 
 //-----------------------------------------------------------------------------------
 Vector3 Camera3D::GetLeft() const
 {
-    float cosYaw = cos(m_orientation.yawDegreesAboutZ);
-    float sinYaw = sin(m_orientation.yawDegreesAboutZ);
+    float cosYaw = cos(m_orientation.GetYawRadiansAboutZ());
+    float sinYaw = sin(m_orientation.GetYawRadiansAboutZ());
     return (Vector3::RIGHT * -cosYaw) + (Vector3::FORWARD * -sinYaw);
 }
 
@@ -43,9 +43,18 @@ Matrix4x4 Camera3D::GetViewMatrix()
     //Set up view from camera
     Matrix4x4 view;
     Matrix4x4::MatrixMakeIdentity(&view);
-    Matrix4x4::MatrixMakeRotationEuler(&view, -m_orientation.yawDegreesAboutZ, m_orientation.pitchDegreesAboutY, m_orientation.rollDegreesAboutX, m_position);
+    //Negative on the yaw prevents left-right motion from being inverted.
+    Matrix4x4::MatrixMakeRotationEuler(&view, -m_orientation.GetYawRadiansAboutZ(), m_orientation.GetPitchRadiansAboutY(), m_orientation.GetRollRadiansAboutX(), m_position);
     Matrix4x4::MatrixInvertOrthogonal(&view);
     return view;
+}
+
+//-----------------------------------------------------------------------------------
+void Camera3D::LookAt(const Vector3& position)
+{
+    Matrix4x4 lookAtMat;
+    Matrix4x4::MatrixMakeLookAt(&lookAtMat, m_position, position, Vector3::UP);
+    m_orientation = lookAtMat.GetEulerRotation();
 }
 
 //-----------------------------------------------------------------------------------
@@ -55,7 +64,7 @@ void Camera3D::Render()
 }
 
 //-----------------------------------------------------------------------------------
-void Camera3D::Update(float deltaTime)
+void Camera3D::UpdateFromInput(float deltaTime)
 {
     float moveSpeed;
 
@@ -100,7 +109,16 @@ void Camera3D::Update(float deltaTime)
     Vector2Int cursorDelta = InputSystem::instance->GetDeltaMouse();
 
     //Prevents pitch from going above 89.9
-    m_orientation.yawDegreesAboutZ -= ((float)cursorDelta.x * 0.005f);
-    float proposedPitch = m_orientation.pitchDegreesAboutY - ((float)cursorDelta.y * 0.005f);
-    m_orientation.pitchDegreesAboutY = MathUtils::Clamp(proposedPitch, -3.14159f / 2.0f, 3.14159f / 2.0f);
+    m_orientation.yawDegreesAboutZ -= ((float)cursorDelta.x * MOUSE_ROTATION_SPEED);
+    float proposedPitch = m_orientation.pitchDegreesAboutY - ((float)cursorDelta.y * MOUSE_ROTATION_SPEED);
+    m_orientation.pitchDegreesAboutY = MathUtils::Clamp(proposedPitch, -CAMERA_PITCH_ANGLE_CLAMP_DEGREES, CAMERA_PITCH_ANGLE_CLAMP_DEGREES);
+}
+
+//-----------------------------------------------------------------------------------
+void Camera3D::Update(float deltaTime)
+{
+    if (m_updateFromInput)
+    {
+        UpdateFromInput(deltaTime);
+    }
 }

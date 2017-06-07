@@ -67,7 +67,7 @@ void BarGraphRenderable2D::Render(BufferedMeshRenderer& renderer)
     Matrix4x4::MatrixMakeScale(&scale, Vector3(m_transform.GetWorldScale(), 0.0f));
 
     //Rotate the bounding box
-    Matrix4x4::MatrixMakeRotationAroundZ(&rotation, MathUtils::DegreesToRadians(m_transform.GetWorldRotationDegrees()));
+    Matrix4x4::MatrixMakeRotationAroundZ(&rotation, DegreesToRadians(m_transform.GetWorldRotationDegrees()));
 
     //Translate the bounding box
     Matrix4x4::MatrixMakeTranslation(&translation, Vector3(m_transform.GetWorldPosition(), 0.0f));

@@ -100,12 +100,18 @@ std::wstring RelativeToFullPath(const std::wstring& relativePath)
 //-----------------------------------------------------------------------------------
 std::vector<std::string> EnumerateFiles(const std::string& baseFolder, const std::string& filePattern, bool recurseSubfolders, const char* eventToFire)
 {
+    std::wstring filePatternWStr = std::wstring(filePattern.begin(), filePattern.end());
+    std::wstring baseDirectory = std::wstring(baseFolder.begin(), baseFolder.end());
+    return EnumerateFiles(baseDirectory, filePatternWStr, recurseSubfolders, eventToFire);
+}
+
+//-----------------------------------------------------------------------------------
+std::vector<std::string> EnumerateFiles(const std::wstring& baseDirectory, const std::wstring& filePatternWStr, bool recurseSubfolders, const char* eventToFire)
+{
     WIN32_FIND_DATA finder;
     HANDLE handleToResults = INVALID_HANDLE_VALUE;
     DWORD dwError = 0;
     TCHAR tcharFilePath[MAX_PATH];
-    std::wstring filePatternWStr = std::wstring(filePattern.begin(), filePattern.end());
-    std::wstring baseDirectory = std::wstring(baseFolder.begin(), baseFolder.end());
     std::vector<std::string> fileNames;
     fileNames.reserve(20);
     std::deque<std::wstring> directories;
@@ -113,7 +119,7 @@ std::vector<std::string> EnumerateFiles(const std::string& baseFolder, const std
 
     if (recurseSubfolders)
     {
-        std::vector<std::string> recursiveDirectories = EnumerateDirectories(baseFolder, true);
+        std::vector<std::string> recursiveDirectories = EnumerateDirectories(baseDirectory, true);
         for (std::string& directoryPath : recursiveDirectories)
         {
             std::wstring directoryWString = baseDirectory + L"\\" + std::wstring(directoryPath.begin(), directoryPath.end());
@@ -190,11 +196,17 @@ std::vector<std::string> EnumerateFiles(const std::string& baseFolder, const std
 //-----------------------------------------------------------------------------------
 std::vector<std::string> EnumerateDirectories(const std::string& baseFolder, bool recurseSubfolders /*= false*/)
 {
+    std::wstring baseDirectory = std::wstring(baseFolder.begin(), baseFolder.end());
+    return EnumerateDirectories(baseDirectory, recurseSubfolders);
+}
+
+//-----------------------------------------------------------------------------------
+std::vector<std::string> EnumerateDirectories(const std::wstring& baseDirectory, bool recurseSubfolders /*= false*/)
+{
     WIN32_FIND_DATA finder;
     HANDLE handleToResults = INVALID_HANDLE_VALUE;
     DWORD dwError = 0;
     TCHAR tcharFilePath[MAX_PATH];
-    std::wstring baseDirectory = std::wstring(baseFolder.begin(), baseFolder.end());
     std::vector<std::string> fileNames;
     fileNames.reserve(20);
     std::deque<std::wstring> directories;
@@ -257,4 +269,13 @@ bool FileExists(const std::string& filename)
 #pragma todo("check if Fopen fails here instead")
     std::ifstream ifile(filename);
     return (bool)ifile;
+}
+
+//-----------------------------------------------------------------------------------
+//Modified from https://stackoverflow.com/a/6218445/2619871
+bool DirectoryExists(const std::wstring& directoryPath)
+{
+    LPCWSTR wideDirectoryPath = directoryPath.c_str();
+    DWORD dwAttrib = GetFileAttributes(wideDirectoryPath);
+    return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 }

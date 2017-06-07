@@ -5,6 +5,8 @@
 #include <string.h>
 #include <algorithm>
 
+class EulerAngles;
+
 class Matrix4x4
 {
 public:
@@ -16,7 +18,6 @@ public:
     static void MatrixMakeIdentity(Matrix4x4* matrix);
     static void MatrixMakeTranslation(Matrix4x4* matrix, const Vector3& translate);
     static void MatrixMakeRotationEuler(Matrix4x4 *mat, const float yaw, const float pitch, const float roll, const Vector3 &o);
-    static void MatrixMakeLookTo(Matrix4x4 *matrix, const Vector3& position, const Vector3& directionToLook, const Vector3& upVector);
     static void MatrixMakeLookAt(Matrix4x4 *mat, const Vector3& from, const Vector3& to, const Vector3& up);
     static void MatrixInvertOrthogonal(Matrix4x4* matrix);
     static void MatrixGetColumn(const Matrix4x4* matrix, int column, Vector4* out);
@@ -39,16 +40,18 @@ public:
     static Vector3 MatrixGetOffset(Matrix4x4 const *matrix);
     static void MatrixTranspose(Matrix4x4* matrix);
     static void MatrixSetOffset(Matrix4x4* m, const Vector3& offset);
-
-    //MEMBER FUNCTIONS//////////////////////////////////////////////////////////////////////////
-    void SetTranslation(const Vector3& offset);
-    Vector3 GetTranslation() const;
     static Vector3 MatrixGetForward(Matrix4x4* matrix);
     static void MatrixSetForward(Matrix4x4* matrix, Vector3 forward);
     static Matrix4x4 MatrixFromBasis(const Vector3& right, const Vector3& up, const Vector3& forward, const Vector3& t);
     static Matrix4x4 MatrixLerp(const Matrix4x4& a, const Matrix4x4& b, const float t);
     static void GetBasis(const Matrix4x4& a, Vector3& b1, Vector3& b2, Vector3& b3, Vector3& b4);
+
+    //MEMBER FUNCTIONS//////////////////////////////////////////////////////////////////////////
+    void SetTranslation(const Vector3& offset);
+    Vector3 GetTranslation() const;
+    EulerAngles GetEulerRotation() const;
     void Rotate(float angle, const Vector3& Axis);
+
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const Matrix4x4 IDENTITY;
 

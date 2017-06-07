@@ -29,3 +29,18 @@ void Scene3D::Render() const
         renderable->Render();
     }
 }
+
+//-----------------------------------------------------------------------------------
+void Scene3D::UnregisterRenderable(Renderable3D* renderable)
+{
+    for (unsigned int i = 0; i < m_renderables.size(); ++i)
+    {
+        if (m_renderables[i] == renderable)
+        {
+            m_renderables[i] = m_renderables[m_renderables.size() - 1];
+            m_renderables.pop_back();
+            return;
+        }
+    }
+    ERROR_RECOVERABLE("Couldn't find renderable to unregister");
+}
