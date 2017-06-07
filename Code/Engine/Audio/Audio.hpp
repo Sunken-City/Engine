@@ -38,7 +38,7 @@ public:
     void Update(float deltaSeconds); // Must be called at regular intervals (e.g. every frame)
     void StopChannel(AudioChannelHandle channel);
     void StopSound(SoundID soundID);
-    void PrintTag(SoundID soundID);
+    void PrintTag(TagLib::FileName songFileName);
     void MultiplyCurrentFrequency(SoundID soundID, float multiplier);
     void SetFrequency(SoundID soundID, float frequency); //Do not use this if you're trying to use a small value!
     float GetFrequency(SoundID soundID);

@@ -37,7 +37,7 @@ CONSOLE_COMMAND(getsongmetadata)
         Console::instance->PrintLine("Could not find file.", RGBA::RED);
         return;
     }
-    AudioSystem::instance->PrintTag(song);
+    AudioSystem::instance->PrintTag(filepath.c_str());
 }
 
 //---------------------------------------------------------------------------
@@ -256,56 +256,15 @@ void AudioSystem::ValidateResult( FMOD_RESULT result )
 }
 
 //-----------------------------------------------------------------------------------
-void AudioSystem::PrintTag(SoundID soundID)
+void AudioSystem::PrintTag(TagLib::FileName songFileName)
 {
-    TagLib::FileRef audioFile("IF.mp3");
+    TagLib::FileRef audioFile(songFileName);
     TagLib::String artist = audioFile.tag()->artist();
     TagLib::String album = audioFile.tag()->album();
     int year = audioFile.tag()->year();
     Console::instance->PrintLine(Stringf("Artist: %s\n", artist.toCString()));
     Console::instance->PrintLine(Stringf("Album: %s\n", album.toCString()));
     Console::instance->PrintLine(Stringf("Year: %i\n", year));
-
-    unsigned int numSounds = m_registeredSounds.size();
-    if (soundID < 0 || soundID >= numSounds)
-        return;
-
-    FMOD::Sound* sound = m_registeredSounds[soundID];
-    if (!sound)
-        return;
-
-    int numTags;
-    sound->getNumTags(&numTags, NULL);
-
-    FMOD_TAG** fileTags = new FMOD_TAG*[numTags];
-    for (int i = 0; i < numTags; ++i)
-    {
-        fileTags[i] = new FMOD_TAG();
-    }
-
-    for (int i = 0; i < numTags; ++i)
-    {
-        FMOD_RESULT result = sound->getTag(NULL, i, fileTags[i]);
-        Console::instance->PrintLine(fileTags[i]->name, RGBA::MUDKIP_ORANGE);
-        if (fileTags[i]->datatype == FMOD_TAGDATATYPE_STRING)
-        {
-            Console::instance->PrintLine((const char*)fileTags[i]->data, RGBA::MUDKIP_ORANGE);
-        }
-        else if (fileTags[i]->datatype == FMOD_TAGDATATYPE_INT)
-        {
-            Console::instance->PrintLine((const char*)((const int*)fileTags[i]->data), RGBA::MUDKIP_ORANGE);
-        }
-        else if (fileTags[i]->datatype == FMOD_TAGDATATYPE_FLOAT)
-        {
-            Console::instance->PrintLine((const char*)((const float*)fileTags[i]->data), RGBA::MUDKIP_ORANGE);
-        }
-    }
-
-    for (int i = 0; i < numTags; ++i)
-    {
-        delete fileTags[i];
-    }
-    delete fileTags;
 }
 
 //-----------------------------------------------------------------------------------
