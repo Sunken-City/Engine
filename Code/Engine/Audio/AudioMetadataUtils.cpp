@@ -10,6 +10,7 @@
 #include "ThirdParty/taglib/include/taglib/fileref.h"
 #include "ThirdParty/taglib/include/taglib/wavfile.h"
 #include "ThirdParty/taglib/include/taglib/rifffile.h"
+#include "ThirdParty/taglib/include/taglib/oggflacfile.h"
 #include "Engine/Input/Console.hpp"
 #include <string>
 
@@ -44,21 +45,34 @@ std::string GetFileExtension(const std::string& fileName)
 bool IncrementPlaycount(const std::string& fileName)
 {
     static const char* PlaycountFrameId = "PCNT";
-    TagLib::FileRef audioFile(fileName.c_str());
-    TagLib::PropertyMap map = audioFile.file()->properties();
-    auto playcountPropertyIter = map.find(PlaycountFrameId);
-    if (playcountPropertyIter != map.end())
+
+    if (fileName.find("FLAC") != std::string::npos || fileName.find("flac") != std::string::npos)
     {
-        bool wasInt = false;
-        int currentPlaycount = playcountPropertyIter->second.toString().toInt(&wasInt);
-        ASSERT_OR_DIE(&wasInt, "Tried to grab the playcount, but found a non-integer value in the PCNT field.");
-        map.replace(PlaycountFrameId, TagLib::String(std::to_string(currentPlaycount)));
+        TagLib::FLAC::File flacFile(fileName.c_str());
+        TagLib::PropertyMap map = flacFile.properties();
+        auto playcountPropertyIter = map.find(PlaycountFrameId);
+        if (playcountPropertyIter != map.end())
+        {
+            bool wasInt = false;
+            int currentPlaycount = playcountPropertyIter->second.toString().toInt(&wasInt);
+            ASSERT_OR_DIE(&wasInt, "Tried to grab the playcount, but found a non-integer value in the PCNT field.");
+            map.replace(PlaycountFrameId, TagLib::String(std::to_string(currentPlaycount + 1)));
+        }
+        else
+        {
+            map.insert(PlaycountFrameId, TagLib::String("1"));
+        }
+
+        if (!flacFile.hasXiphComment())
+        {
+            flacFile.xiphComment(1);
+        }
+
+        TagLib::Ogg::XiphComment* flacTags = flacFile.xiphComment();
+        flacTags->setProperties(map);
+        flacFile.save();
     }
-    else
-    {
-        map.insert(PlaycountFrameId, TagLib::String(std::to_string(1)));
-    }
-    audioFile.file()->save();
+
     return true;
 }
 
