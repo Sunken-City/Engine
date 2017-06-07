@@ -17,13 +17,16 @@
 //-----------------------------------------------------------------------------------
 std::string GetFileExtension(const std::string& fileName)
 {
-    //Find the file extension
+    //Find the file extension.
+	//Use fileName.rfind to find the first period, marking the extension.
+	//Get the rest of the characters after the period and return a lowercase string.
+
     unsigned extensionPos = fileName.rfind('.');
 
     if (extensionPos != std::string::npos && extensionPos != fileName.length())
     {
         std::string fileExtension = fileName.substr((extensionPos + 1), fileName.length());
-        char* fileExtensionChar = new char[fileName.length()];
+        char* fileExtensionChar = new char[fileExtension.length() + 1];
         strcpy(fileExtensionChar, fileExtension.c_str());
         for (unsigned i = 0; i < fileExtension.length(); ++i)
         {
@@ -44,9 +47,16 @@ std::string GetFileExtension(const std::string& fileName)
 //-----------------------------------------------------------------------------------
 bool IncrementPlaycount(const std::string& fileName)
 {
-    static const char* PlaycountFrameId = "PCNT";
+	//Increment the playcount for each file type. 
+	//Since the default implementation of setProperties (by using a generic TagLib::FileRef)
+	//only supports writing a few common tags, we need to use each file type's specific setProperties method.
+	//Grab the property map from the file and try to find the PCNT frame. If it doesn't exist, insert it with
+	//an initial value. Set the properties on the file and save.
 
-    if (fileName.find("FLAC") != std::string::npos || fileName.find("flac") != std::string::npos)
+    static const char* PlaycountFrameId = "PCNT";
+	std::string fileExtension = GetFileExtension(fileName);
+
+    if (fileExtension == "flac")
     {
         TagLib::FLAC::File flacFile(fileName.c_str());
         TagLib::PropertyMap map = flacFile.properties();
@@ -63,6 +73,7 @@ bool IncrementPlaycount(const std::string& fileName)
             map.insert(PlaycountFrameId, TagLib::String("1"));
         }
 
+		//Create the Xiph comment if it doesn't already exist
         if (!flacFile.hasXiphComment())
         {
             flacFile.xiphComment(1);
