@@ -4,20 +4,29 @@
 #include "ThirdParty/taglib/include/taglib/id3v2tag.h"
 #include "ThirdParty/taglib/include/taglib/attachedpictureframe.h"
 #include "ThirdParty/taglib/include/taglib/flacfile.h"
+#include "ThirdParty/taglib/include/taglib/unknownframe.h"
+#include "ThirdParty/taglib/include/taglib/tfile.h"
+#include "ThirdParty/taglib/include/taglib/tpropertymap.h"
+#include "ThirdParty/taglib/include/taglib/fileref.h"
 #include "ThirdParty/taglib/include/taglib/wavfile.h"
 #include "ThirdParty/taglib/include/taglib/rifffile.h"
+#include "ThirdParty/taglib/include/taglib/oggflacfile.h"
 #include "Engine/Input/Console.hpp"
+#include <string>
 
 //-----------------------------------------------------------------------------------
 std::string GetFileExtension(const std::string& fileName)
 {
-    //Find the file extension
+    //Find the file extension.
+	//Use fileName.rfind to find the first period, marking the extension.
+	//Get the rest of the characters after the period and return a lowercase string.
+
     unsigned extensionPos = fileName.rfind('.');
 
     if (extensionPos != std::string::npos && extensionPos != fileName.length())
     {
         std::string fileExtension = fileName.substr((extensionPos + 1), fileName.length());
-        char* fileExtensionChar = new char[fileName.length()];
+        char* fileExtensionChar = new char[fileExtension.length() + 1];
         strcpy(fileExtensionChar, fileExtension.c_str());
         for (unsigned i = 0; i < fileExtension.length(); ++i)
         {
@@ -33,6 +42,49 @@ std::string GetFileExtension(const std::string& fileName)
     }
 
     return "ERROR";
+}
+
+//-----------------------------------------------------------------------------------
+bool IncrementPlaycount(const std::string& fileName)
+{
+	//Increment the playcount for each file type. 
+	//Since the default implementation of setProperties (by using a generic TagLib::FileRef)
+	//only supports writing a few common tags, we need to use each file type's specific setProperties method.
+	//Grab the property map from the file and try to find the PCNT frame. If it doesn't exist, insert it with
+	//an initial value. Set the properties on the file and save.
+
+    static const char* PlaycountFrameId = "PCNT";
+	std::string fileExtension = GetFileExtension(fileName);
+
+    if (fileExtension == "flac")
+    {
+        TagLib::FLAC::File flacFile(fileName.c_str());
+        TagLib::PropertyMap map = flacFile.properties();
+        auto playcountPropertyIter = map.find(PlaycountFrameId);
+        if (playcountPropertyIter != map.end())
+        {
+            bool wasInt = false;
+            int currentPlaycount = playcountPropertyIter->second.toString().toInt(&wasInt);
+            ASSERT_OR_DIE(&wasInt, "Tried to grab the playcount, but found a non-integer value in the PCNT field.");
+            map.replace(PlaycountFrameId, TagLib::String(std::to_string(currentPlaycount + 1)));
+        }
+        else
+        {
+            map.insert(PlaycountFrameId, TagLib::String("1"));
+        }
+
+		//Create the Xiph comment if it doesn't already exist
+        if (!flacFile.hasXiphComment())
+        {
+            flacFile.xiphComment(1);
+        }
+
+        TagLib::Ogg::XiphComment* flacTags = flacFile.xiphComment();
+        flacTags->setProperties(map);
+        flacFile.save();
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------------
