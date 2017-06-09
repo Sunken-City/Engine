@@ -23,6 +23,7 @@
     <ClCompile Include="..\ThirdParty\stb_image.c" />
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Audio\AudioMetadataUtils.cpp" />
+    <ClCompile Include="Audio\Song.cpp" />
     <ClCompile Include="Core\ErrorWarningAssert.cpp" />
     <ClCompile Include="Core\Events\EventSystem.cpp" />
     <ClCompile Include="Core\Events\NamedProperties.cpp" />
@@ -127,6 +128,7 @@
     <ClInclude Include="..\ThirdParty\Parsers\XMLParser.hpp" />
     <ClInclude Include="Audio\Audio.hpp" />
     <ClInclude Include="Audio\AudioMetadataUtils.hpp" />
+    <ClInclude Include="Audio\Song.hpp" />
     <ClInclude Include="Core\BuildConfig.hpp" />
     <ClInclude Include="Core\ErrorWarningAssert.hpp" />
     <ClInclude Include="Core\Events\Event.hpp" />
