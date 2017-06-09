@@ -23,23 +23,6 @@ CONSOLE_COMMAND(playsound)
     AudioSystem::instance->PlaySound(song);
 }
 
-CONSOLE_COMMAND(getsongmetadata)
-{
-    if (!args.HasArgs(1))
-    {
-        Console::instance->PrintLine("getsongmetadata <filename>", RGBA::RED);
-        return;
-    }
-    std::string filepath = args.GetStringArgument(0);
-    SoundID song = AudioSystem::instance->CreateOrGetSound(filepath);
-    if (song == MISSING_SOUND_ID)
-    {
-        Console::instance->PrintLine("Could not find file.", RGBA::RED);
-        return;
-    }
-    AudioSystem::instance->PrintTag(filepath.c_str());
-}
-
 //---------------------------------------------------------------------------
 AudioSystem::AudioSystem()
     : m_fmodSystem( nullptr )
@@ -253,18 +236,6 @@ void AudioSystem::ValidateResult( FMOD_RESULT result )
         DebuggerPrintf( "AUDIO SYSTEM ERROR: Got error result code %d.\n", result );
         __debugbreak();
     }
-}
-
-//-----------------------------------------------------------------------------------
-void AudioSystem::PrintTag(TagLib::FileName songFileName)
-{
-    TagLib::FileRef audioFile(songFileName);
-    TagLib::String artist = audioFile.tag()->artist();
-    TagLib::String album = audioFile.tag()->album();
-    int year = audioFile.tag()->year();
-    Console::instance->PrintLine(Stringf("Artist: %s\n", artist.toCString()));
-    Console::instance->PrintLine(Stringf("Album: %s\n", album.toCString()));
-    Console::instance->PrintLine(Stringf("Year: %i\n", year));
 }
 
 //-----------------------------------------------------------------------------------
