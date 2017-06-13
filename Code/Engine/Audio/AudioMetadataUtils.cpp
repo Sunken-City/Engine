@@ -18,8 +18,8 @@
 std::string GetFileExtension(const std::string& fileName)
 {
     //Find the file extension.
-	//Use fileName.rfind to find the first period, marking the extension.
-	//Get the rest of the characters after the period and return a lowercase string.
+    //Use fileName.rfind to find the first period, marking the extension.
+    //Get the rest of the characters after the period and return a lowercase string.
 
     unsigned extensionPos = fileName.rfind('.');
 
@@ -80,14 +80,14 @@ std::string GetFileName(const std::string& filePath)
 //-----------------------------------------------------------------------------------
 bool IncrementPlaycount(const std::string& fileName)
 {
-	//Increment the playcount for each file type. 
-	//Since the default implementation of setProperties (by using a generic TagLib::FileRef)
-	//only supports writing a few common tags, we need to use each file type's specific setProperties method.
-	//Grab the property map from the file and try to find the PCNT frame. If it doesn't exist, insert it with
-	//an initial value. Set the properties on the file and save.
+    //Increment the playcount for each file type. 
+    //Since the default implementation of setProperties (by using a generic TagLib::FileRef)
+    //only supports writing a few common tags, we need to use each file type's specific setProperties method.
+    //Grab the property map from the file and try to find the PCNT frame. If it doesn't exist, insert it with
+    //an initial value. Set the properties on the file and save.
 
     static const char* PlaycountFrameId = "PCNT";
-	std::string fileExtension = GetFileExtension(fileName);
+    std::string fileExtension = GetFileExtension(fileName);
 
     if (fileExtension == "flac")
     {
@@ -106,7 +106,7 @@ bool IncrementPlaycount(const std::string& fileName)
             map.insert(PlaycountFrameId, TagLib::String("1"));
         }
 
-		//Create the Xiph comment if it doesn't already exist
+        //Create the Xiph comment if it doesn't already exist
         if (!flacFile.hasXiphComment())
         {
             flacFile.xiphComment(1);
@@ -171,7 +171,7 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
     else if (fileExtension == "flac")
     {
         TagLib::FLAC::File audioFile(fileName.c_str());
-		auto pictureList = audioFile.pictureList();
+        auto pictureList = audioFile.pictureList();
 
         if (!pictureList.isEmpty())
         {

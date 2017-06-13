@@ -387,9 +387,39 @@ Command::Command(std::string fullCommandStr)
             m_fullArgsString = m_fullCommandStr.substr(m_fullCommandStr.find(" ") + 1);
         }
 
+        bool isInQuotes = false;
         while (token != nullptr)
         {
-            m_argsList.push_back(std::string(token));
+            if (isInQuotes)
+            {
+                int tokenLength = strlen(token);
+                unsigned int size = m_argsList.size();
+                std::string currentString = m_argsList[size - 1];
+                std::string addition = std::string(token);
+
+                if (token[tokenLength - 1] == '"')
+                {
+                    isInQuotes = false;
+                    addition = addition.substr(0, addition.length() - 1);
+                }
+
+                m_argsList[size - 1] = currentString + " " + addition;
+                token = strtok_s(NULL, delimiters, &context);
+
+                continue;
+            }
+
+            if (token[0] == '"')
+            {
+                isInQuotes = true;
+                std::string tokenString(token);
+                tokenString = tokenString.substr(1);
+                m_argsList.push_back(tokenString);
+            }
+            else
+            {
+                m_argsList.push_back(std::string(token));
+            }
             token = strtok_s(NULL, delimiters, &context);
         }
     }
