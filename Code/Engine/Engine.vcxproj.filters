@@ -373,7 +373,6 @@
     </ClCompile>
     <ClCompile Include="Renderer\UniformBuffer.cpp" />
     <ClCompile Include="Audio\AudioMetadataUtils.cpp" />
-    <ClCompile Include="Audio\Song.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -711,6 +710,5 @@
     </ClInclude>
     <ClInclude Include="Renderer\UniformBuffer.hpp" />
     <ClInclude Include="Audio\AudioMetadataUtils.hpp" />
-    <ClInclude Include="Audio\Song.hpp" />
   </ItemGroup>
 </Project>
