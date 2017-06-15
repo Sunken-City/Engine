@@ -121,7 +121,7 @@ public:
     inline void SetNormalizedGlyphCoords(const Vector2& ngc) { m_stamp.normalizedGlyphPosition = ngc; };
     inline void SetNormalizedStringCoords(const Vector2& nsc) { m_stamp.normalizedStringPosition = nsc; }
     inline void SetNormalizedFragCoords(float nfc) { m_stamp.normalizedFragPosition = nfc; }
-    inline void SetMaterialName(const char* materialName) { m_materialName = materialName; };
+    void SetMaterialName(const char* materialName);
     inline void SetMaskBit(const MeshDataFlag flag) { m_dataMask |= (1 << flag); };
     inline void ClearMaskBit(const MeshDataFlag flag) { m_dataMask &= ~(1 << flag); };
 

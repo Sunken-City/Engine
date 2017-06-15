@@ -58,6 +58,7 @@ CONSOLE_COMMAND(loadmesh)
     Mesh* currentMesh = new Mesh();
     g_loadedMeshes.push(currentMesh);
     g_loadedMeshBuilder->CopyToMesh(currentMesh, &Vertex_SkinnedPCTN::Copy, sizeof(Vertex_SkinnedPCTN), &Vertex_SkinnedPCTN::BindMeshToVAO);
+    delete g_loadedMeshBuilder;
 }
 
 //-----------------------------------------------------------------------------------
@@ -76,6 +77,10 @@ MeshBuilder::MeshBuilder()
 MeshBuilder::~MeshBuilder()
 {
     ClearVertsAndIndices();
+    if (m_materialName)
+    {
+        delete m_materialName;
+    }
 }
 
 //-----------------------------------------------------------------------------------
@@ -90,6 +95,10 @@ Mesh* MeshBuilder::LoadMesh(const std::string& filePath)
 
     Mesh* currentMesh = new Mesh();
     g_loadedMeshBuilder->CopyToMesh(currentMesh, &Vertex_SkinnedPCTN::Copy, sizeof(Vertex_SkinnedPCTN), &Vertex_SkinnedPCTN::BindMeshToVAO);
+    
+    delete g_loadedMeshBuilder;
+    g_loadedMeshBuilder = nullptr;
+
     return currentMesh;
 }
 
@@ -916,6 +925,7 @@ void MeshBuilder::ReadFromStream(IBinaryReader& reader)
     ASSERT_OR_DIE(reader.Read<uint32_t>(fileVersion), "Failed to read file version");
     reader.ReadString(materialName, 64);
     SetMaterialName(materialName);
+    delete materialName;
     m_dataMask = ReadDataMask(reader);
     ASSERT_OR_DIE(reader.Read<uint32_t>(vertexCount), "Failed to read vertex count");
     for (unsigned int i = 0; i < vertexCount; ++i)
@@ -977,6 +987,15 @@ void MeshBuilder::ClearBoneWeights()
 bool MeshBuilder::IsSkinned() const
 {
     return m_isSkinned;
+}
+
+//-----------------------------------------------------------------------------------
+void MeshBuilder::SetMaterialName(const char* materialName)
+{
+    size_t numChars = strlen(materialName) + 1;
+    char* newName = new char[numChars];
+    strcpy_s(newName, sizeof(char) * numChars, (char*)materialName);
+    m_materialName = newName;
 }
 
 //-----------------------------------------------------------------------------------
