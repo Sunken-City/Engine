@@ -219,6 +219,13 @@ void AudioSystem::PlayLoopingSound(SoundID soundID, float volumeLevel)
     channelAssignedToSound->setMode(FMOD_LOOP_NORMAL);
 }
 
+//-----------------------------------------------------------------------------------
+void AudioSystem::SetLooping(SoundID soundID, bool isLooping)
+{
+    FMOD::Channel* channelAssignedToSound = static_cast<FMOD::Channel*>(m_channels[soundID]);
+    channelAssignedToSound->setMode(isLooping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+}
+
 //---------------------------------------------------------------------------
 void AudioSystem::Update( float deltaSeconds )
 {
