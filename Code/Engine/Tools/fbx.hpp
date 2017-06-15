@@ -2,6 +2,7 @@
 #include "Engine/Renderer/MeshBuilder.hpp"
 #include <vector>
 #include <queue>
+#include "../Core/Memory/UntrackedAllocator.hpp"
 
 class Mesh;
 class Matrix4x4;

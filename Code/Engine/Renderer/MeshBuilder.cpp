@@ -79,7 +79,7 @@ MeshBuilder::~MeshBuilder()
     ClearVertsAndIndices();
     if (m_materialName)
     {
-        delete m_materialName;
+        delete[] m_materialName;
     }
 }
 

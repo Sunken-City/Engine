@@ -35,7 +35,7 @@ std::string GetFileExtension(const std::string& fileName)
                 fileExtensionChar[i] = (char)tolower(fileExtensionChar[i]);
             }
         }
-        std::string lowerFileExtension = fileExtensionChar;
+        std::string lowerFileExtension(fileExtensionChar);
         delete[] fileExtensionChar;
 
         return lowerFileExtension;
@@ -47,34 +47,34 @@ std::string GetFileExtension(const std::string& fileName)
 //-----------------------------------------------------------------------------------
 std::string GetFileName(const std::string& filePath)
 {
-	//Finds the file name.
-	//Use filePath.rfind to find the first period, which marks the stopping position for the substring.
-	//Use filePath.rfind to find the first slash (/ or \) marking the start position.
-	//Returns the file name (case sensitive)
+    //Finds the file name.
+    //Use filePath.rfind to find the first period, which marks the stopping position for the substring.
+    //Use filePath.rfind to find the first slash (/ or \) marking the start position.
+    //Returns the file name (case sensitive)
 
-	unsigned extensionPos = filePath.rfind('.');
+    unsigned extensionPos = filePath.rfind('.');
 
-	if (extensionPos != std::string::npos && extensionPos != filePath.length())
-	{
-		//If we end up using \ to escape characters in the console this will not work, in this case for windows directories
-		unsigned directoryPos = filePath.rfind('\\');
-		if (directoryPos != std::string::npos && directoryPos != filePath.length())
-		{
-			std::string fileName = filePath.substr((directoryPos + 1), (extensionPos + 1));
-			return fileName;
-		}
-		else
-		{
-			directoryPos = filePath.rfind('/');
-			if (directoryPos != std::string::npos && directoryPos != filePath.length())
-			{
-				std::string fileName = filePath.substr((directoryPos + 1), (extensionPos + 1));
-				return fileName;
-			}
-		}
-	}
+    if (extensionPos != std::string::npos && extensionPos != filePath.length())
+    {
+        //If we end up using \ to escape characters in the console this will not work, in this case for windows directories
+        unsigned directoryPos = filePath.rfind('\\');
+        if (directoryPos != std::string::npos && directoryPos != filePath.length())
+        {
+            std::string fileName = filePath.substr((directoryPos + 1), (extensionPos + 1));
+            return fileName;
+        }
+        else
+        {
+            directoryPos = filePath.rfind('/');
+            if (directoryPos != std::string::npos && directoryPos != filePath.length())
+            {
+                std::string fileName = filePath.substr((directoryPos + 1), (extensionPos + 1));
+                return fileName;
+            }
+        }
+    }
 
-	return "ERROR";
+    return "ERROR";
 }
 
 //-----------------------------------------------------------------------------------
