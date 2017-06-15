@@ -44,6 +44,7 @@ public:
     float GetFrequency(SoundID soundID);
     AudioChannelHandle GetChannel(SoundID m_currentlyPlayingSong);
     bool IsPlaying(AudioChannelHandle channel);
+    unsigned int GetPlaybackPositionMS(AudioChannelHandle channel);
 
     static AudioSystem* instance;
 

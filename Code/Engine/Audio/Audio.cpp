@@ -260,6 +260,17 @@ bool AudioSystem::IsPlaying(AudioChannelHandle channel)
 }
 
 //-----------------------------------------------------------------------------------
+unsigned int AudioSystem::GetPlaybackPositionMS(AudioChannelHandle channel)
+{
+    unsigned int outTimestampMS = 0;
+    ASSERT_OR_DIE(channel, "Channel passed to GetPlaybackPositionMS was null.");
+
+    FMOD::Channel* channelAssignedToSound = static_cast<FMOD::Channel*>(channel);
+    channelAssignedToSound->getPosition(&outTimestampMS, FMOD_TIMEUNIT_MS);
+    return outTimestampMS;
+}
+
+//-----------------------------------------------------------------------------------
 AudioChannelHandle AudioSystem::GetChannel(SoundID songHandle)
 {
     AudioChannelHandle channelHandle = nullptr;
