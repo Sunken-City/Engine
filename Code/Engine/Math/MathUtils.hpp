@@ -35,6 +35,7 @@ public:
     static int GetRandomInt(int minimum, int maximum);
     static float GetRandom();
     static float GetRandomFloat(float minimum, float maximum);
+    static float GetRandomFloatInRange(float minimumInclusive, float maximumInclusive);
     static int GetRandomIntFromZeroTo(int maximum);
     static float GetRandomFloatFromZeroTo(float maximum);
     static bool CoinFlip();
@@ -52,6 +53,9 @@ public:
     static Vector2 GetRandomDirectionVector();
     //Returns Vector2(R, theta);
     static Vector2 MakePolar(const Vector2& xyVector);
+
+    //Here for compilation reasons :T
+    static float SinDegrees(float input);
 
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
     static const float PI;
@@ -74,7 +78,6 @@ float Dot(const Vector2& a, const Vector2& b);
 float Dot(const Vector3& a, const Vector3& b);
 float Dot(const Vector4& a, const Vector4& b);
 float CosDegrees(float input);
-float SinDegrees(float input);
 float DegreesToRadians(float degrees);
 float RadiansToDegrees(float radians);
 

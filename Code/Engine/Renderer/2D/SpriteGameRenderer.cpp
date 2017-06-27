@@ -12,7 +12,7 @@
 #include "Engine/Renderer/Framebuffer.hpp"
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Time/Time.hpp"
-#include "../../Math/MathUtilities.hpp"
+#include "Engine/Math/MathUtils.hpp"
 #include "../../Input/InputSystem.hpp"
 #include <gl/GL.h>
 #include "../../Core/ProfilingUtils.h"
@@ -369,8 +369,8 @@ void SpriteGameRenderer::RenderView(const ViewportDefinition& renderArea)
 //-----------------------------------------------------------------------------------
 void SpriteGameRenderer::CalculateScreenshakeForViewport(const ViewportDefinition &renderArea)
 {
-    float x = GetRandomFloatInRange(-renderArea.m_viewportScreenshakeMagnitude, renderArea.m_viewportScreenshakeMagnitude);
-    float y = GetRandomFloatInRange(-renderArea.m_viewportScreenshakeMagnitude, renderArea.m_viewportScreenshakeMagnitude);
+    float x = MathUtils::GetRandomFloatInRange(-renderArea.m_viewportScreenshakeMagnitude, renderArea.m_viewportScreenshakeMagnitude);
+    float y = MathUtils::GetRandomFloatInRange(-renderArea.m_viewportScreenshakeMagnitude, renderArea.m_viewportScreenshakeMagnitude);
     m_screenshakeOffset = Vector2(x, y) + renderArea.m_screenshakeKnockbackBias;
 }
 
@@ -776,7 +776,7 @@ void SpriteGameRenderer::AddScreenshakeMagnitude(float magnitude, const Vector2&
 {
     //TODO: This is a horrible, HORRIBLE thesis week hack. Please remove this.
     viewportNumber = GetViewportNumberForPlayerNumber(viewportNumber);
-    if (viewportNumber == -1 || viewportNumber > m_numSplitscreenViews)
+    if (viewportNumber == -1 || (unsigned int)viewportNumber > m_numSplitscreenViews)
     {
         return;
     }

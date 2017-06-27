@@ -4,12 +4,14 @@
 #undef PlaySound
 
 #pragma comment( lib, "ThirdParty/fmod/fmodex_vc" ) // Link in the fmodex_vc.lib static library
+
+#ifdef TAGLIB_INCLUDED
 #ifdef _DEBUG
 #pragma comment( lib, "ThirdParty/taglib/lib/tag_debug" )
 #else
 #pragma comment( lib, "ThirdParty/taglib/lib/tag" )
 #endif
-#include "ThirdParty/fmod/fmod.hpp"
+
 #include "ThirdParty/taglib/include/taglib/taglib.h"
 #include "ThirdParty/taglib/include/taglib/fileref.h"
 #include "ThirdParty/taglib/include/taglib/id3v2tag.h"
@@ -18,6 +20,9 @@
 #include "ThirdParty/taglib/include/taglib/mpegfile.h"
 #include "ThirdParty/taglib/include/taglib/attachedpictureframe.h"
 #include "ThirdParty/taglib/include/taglib/tag.h"
+#endif
+
+#include "ThirdParty/fmod/fmod.hpp"
 #include <string>
 #include <vector>
 #include <map>

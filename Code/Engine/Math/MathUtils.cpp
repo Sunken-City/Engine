@@ -221,6 +221,13 @@ float MathUtils::GetRandomFloat(float minimum, float maximum)
 }
 
 //-----------------------------------------------------------------------------------
+float MathUtils::GetRandomFloatInRange(float minimumInclusive, float maximumInclusive)
+{
+    const float randomZeroToOne = GetRandomFloatFromZeroTo(1.0f);
+    return minimumInclusive + (randomZeroToOne * (maximumInclusive - minimumInclusive));
+}
+
+//-----------------------------------------------------------------------------------
 float Dot(const Vector2& a, const Vector2& b)
 {
     return(a.x * b.x) + (a.y * b.y);
@@ -245,7 +252,7 @@ float CosDegrees(float input)
 }
 
 //-----------------------------------------------------------------------------------
-float SinDegrees(float input)
+float MathUtils::SinDegrees(float input)
 {
     return sin(DegreesToRadians(input));
 }

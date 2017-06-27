@@ -550,7 +550,7 @@ void Matrix4x4::Rotate(float degrees, const Vector3& axis)
     //From page 111 in Chapter 8 of 3D Math Primer for Graphics and Game Development
     Matrix4x4 rotation = Matrix4x4::IDENTITY;
     float cosineDegrees = CosDegrees(degrees);
-    float sineDegrees = SinDegrees(degrees);
+    float sineDegrees = MathUtils::SinDegrees(degrees);
     float oneMinusCosineDegrees = (1.0f - cosineDegrees);
     rotation.data[0] = (axis.x * axis.x) * oneMinusCosineDegrees + cosineDegrees;
     rotation.data[1] = (axis.x * axis.y) * oneMinusCosineDegrees - (axis.z * sineDegrees);

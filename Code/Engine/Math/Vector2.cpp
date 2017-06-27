@@ -134,7 +134,7 @@ Vector2 Vector2::CalculateCorrectionVector(const Vector2& position, const Vector
 Vector2 Vector2::DegreesToDirection(float rotationDegrees, float rotationalOffset)
 {
     float degrees = rotationDegrees + rotationalOffset;
-    return Vector2(CosDegrees(degrees), SinDegrees(degrees));
+    return Vector2(CosDegrees(degrees), MathUtils::SinDegrees(degrees));
 }
 
 //-----------------------------------------------------------------------------------
@@ -224,5 +224,5 @@ Vector2 Vector2::CreateFromString(const char* xmlString)
 //-----------------------------------------------------------------------------------
 Vector2 Vector2::CreateFromPolar(float radius, float degrees)
 {
-    return Vector2(radius * CosDegrees(degrees), radius * SinDegrees(degrees));
+    return Vector2(radius * CosDegrees(degrees), radius * MathUtils::SinDegrees(degrees));
 }
