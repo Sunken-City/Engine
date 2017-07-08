@@ -89,6 +89,8 @@ public:
     static const RGBA JOLTIK_DARK_PURPLE;
     static const RGBA PURPLE;
     static const RGBA CLEAR;
+    static const RGBA EARTHBOUND_BLUE;
+    static const RGBA EARTHBOUND_GREEN;
     static const int SHIFT_RED = 6 * 4;
     static const int SHIFT_GREEN = 4 * 4;
     static const int SHIFT_BLUE = 2 * 4;
