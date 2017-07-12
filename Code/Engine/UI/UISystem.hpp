@@ -13,8 +13,8 @@ public:
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     void Update(float deltaSeconds);
     void Render() const;
-    void LoadAndParseUIXML();
-    void ReloadUI();
+    void LoadAndParseUIXML(const char* xmlRelativeFilePath = "Data/UI/Widget.xml");
+    void ReloadUI(const char* xmlRelativeFilePath = "Data/UI/Widget.xml");
     void DeleteWidget(WidgetBase* widgetToDelete);
     void DeleteAllUI();
     WidgetBase* CreateWidget(const std::string& widgetTypeName);
