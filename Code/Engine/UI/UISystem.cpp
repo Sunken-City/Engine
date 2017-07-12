@@ -32,10 +32,6 @@ void UISystem::Update(float deltaSeconds)
         isHidden = !isHidden;
         SetWidgetHidden("Window Widget", isHidden);
     }
-    if (InputSystem::instance->WasKeyJustPressed('U'))
-    {
-        //ReloadUI();
-    }
 
     WidgetBase* newHighlightedWidget = FindHighlightedWidget();
     if (newHighlightedWidget != m_highlightedWidget)
@@ -99,9 +95,9 @@ void UISystem::Render() const
 }
 
 //-----------------------------------------------------------------------------------
-void UISystem::LoadAndParseUIXML()
+void UISystem::LoadAndParseUIXML(const char* xmlRelativeFilePath)
 {
-    XMLNode root = XMLUtils::OpenXMLDocument("Data/UI/Widget.xml");
+    XMLNode root = XMLUtils::OpenXMLDocument(xmlRelativeFilePath);
     std::vector<XMLNode> children = XMLUtils::GetChildren(root);
     for (XMLNode& node : children)
     {
@@ -113,10 +109,10 @@ void UISystem::LoadAndParseUIXML()
 }
 
 //-----------------------------------------------------------------------------------
-void UISystem::ReloadUI()
+void UISystem::ReloadUI(const char* xmlRelativeFilePath)
 {
     DeleteAllUI();
-    LoadAndParseUIXML();
+    LoadAndParseUIXML(xmlRelativeFilePath);
 }
 
 //-----------------------------------------------------------------------------------
