@@ -13,6 +13,7 @@ UISystem* UISystem::instance = nullptr;
 
 //-----------------------------------------------------------------------------------
 UISystem::UISystem()
+    : m_isHidden(false)
 {
 
 }
@@ -26,13 +27,6 @@ UISystem::~UISystem()
 //-----------------------------------------------------------------------------------
 void UISystem::Update(float deltaSeconds)
 {
-    if (InputSystem::instance->WasKeyJustPressed('G'))
-    {
-        static bool isHidden = false;
-        isHidden = !isHidden;
-        SetWidgetHidden("Window Widget", isHidden);
-    }
-
     WidgetBase* newHighlightedWidget = FindHighlightedWidget();
     if (newHighlightedWidget != m_highlightedWidget)
     {
@@ -75,6 +69,11 @@ void UISystem::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void UISystem::Render() const
 {
+    if (m_isHidden)
+    {
+        return;
+    }
+
     Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::OFF;
     Renderer::instance->BeginOrtho(Vector2::ZERO, Vector2(1600, 900)); //Assuming a virtual coordinate system.
     {

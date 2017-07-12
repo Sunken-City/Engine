@@ -17,6 +17,9 @@ public:
     void ReloadUI(const char* xmlRelativeFilePath = "Data/UI/Widget.xml");
     void DeleteWidget(WidgetBase* widgetToDelete);
     void DeleteAllUI();
+    inline void HideAllUI() { m_isHidden = true; };
+    inline void ShowAllUI() { m_isHidden = false; };
+    inline void ToggleAllUI() { m_isHidden = !m_isHidden; };
     WidgetBase* CreateWidget(const std::string& widgetTypeName);
     WidgetBase* CreateWidget(XMLNode& node);
     WidgetBase* FindWidgetByName(const char* widgetName);
@@ -33,4 +36,7 @@ public:
     static UISystem* instance;
     std::vector<WidgetBase*> m_childWidgets;
     WidgetBase* m_highlightedWidget = nullptr;
+
+private:
+    bool m_isHidden = false;
 };
