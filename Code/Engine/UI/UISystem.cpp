@@ -240,6 +240,23 @@ Vector2 UISystem::GetCursorVirtualPos()
 }
 
 //-----------------------------------------------------------------------------------
+WidgetBase* UISystem::FindWidgetByName(const char* widgetName)
+{
+    WidgetBase* foundWidget = nullptr;
+
+    for (WidgetBase* widget : m_childWidgets)
+    {
+        if (widget->m_name == widgetName)
+        {
+            foundWidget = widget;
+            break;
+        }
+    }
+
+    return foundWidget;
+}
+
+//-----------------------------------------------------------------------------------
 void UISystem::AddWidget(WidgetBase* newWidget)
 {
     ASSERT_OR_DIE(newWidget, "Attempted to add a nullptr as a widget.");

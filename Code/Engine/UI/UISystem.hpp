@@ -19,6 +19,7 @@ public:
     void DeleteAllUI();
     WidgetBase* CreateWidget(const std::string& widgetTypeName);
     WidgetBase* CreateWidget(XMLNode& node);
+    WidgetBase* FindWidgetByName(const char* widgetName);
     void AddWidget(WidgetBase* newWidget);
     bool SetWidgetHidden(const std::string& name, bool setHidden = true);
     static Vector2 ScreenToUIVirtualCoords(const Vector2& cursorPos);
