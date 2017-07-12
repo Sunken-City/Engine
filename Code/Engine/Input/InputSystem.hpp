@@ -79,7 +79,7 @@ public:
     inline unsigned int GetFrameNumber() { return m_frameCounter; };
 
     //GETTERS//////////////////////////////////////////////////////////////////////////
-    int GetScrollAmountThisFrame();
+    int GetScrollDeltaThisFrame();
     Vector2Int GetDeltaMouse();
     Vector2Int GetMousePos();
     void SetLastPressedChar(unsigned char asKey);

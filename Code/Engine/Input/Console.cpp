@@ -53,6 +53,12 @@ void Console::Update(float deltaSeconds)
             m_timeSinceCursorBlink = 0.0f;
             m_renderCursor = !m_renderCursor;
         }
+
+        int mousewheelDelta = InputSystem::instance->GetScrollDeltaThisFrame();
+        if(mousewheelDelta != 0)
+        {
+            m_consoleHistoryIndex = Clamp<int>(m_consoleHistoryIndex - mousewheelDelta, 0, m_consoleHistory.size() - 1);
+        }
     }
 }
 
@@ -64,6 +70,7 @@ void Console::ParseKey(char currentChar)
 
     if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::TAB))
     {
+        //TODO: Make this work later.
 //         std::string commandLine(m_currentLine);
 //         std::vector<std::string>* tokenizedString = SplitString(commandLine, " ");
 //         if (tokenizedString->size() == 1)
@@ -76,7 +83,6 @@ void Console::ParseKey(char currentChar)
 
     if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::ESC))
     {
-        *m_cursorPointer = m_characterAtCursor;
         if (IsEmpty())
         {
             DeactivateConsole();
@@ -131,6 +137,7 @@ void Console::ParseKey(char currentChar)
             m_consoleHistory.push_back(new ColoredText("Invalid Command.", RGBA::MAROON));
         }
         m_cursorPointer = m_currentLine;
+        m_consoleHistoryIndex = m_consoleHistory.size() - 1;
         memset(m_currentLine, 0x00, MAX_LINE_LENGTH);
         BlinkCursor();
     }
@@ -272,10 +279,14 @@ void Console::Render() const
                 Renderer::instance->DrawLine(cursorBottom, cursorTop, RGBA::WHITE, 2.0f);
             }
 
-            unsigned int index = m_consoleHistory.size() - 1;
+            int index = m_consoleHistoryIndex;
             unsigned int numberOfLinesPrinted = 0;
             for (auto reverseIterator = m_consoleHistory.rbegin(); reverseIterator != m_consoleHistory.rend(); ++reverseIterator, --index)
             {
+                if (index < 0)
+                {
+                    break;
+                }
                 currentBaseline += Vector2(0.0f, (float)m_font->m_maxHeight);
                 Renderer::instance->DrawText2D(currentBaseline, m_consoleHistory[index]->text, 1.0f, m_consoleHistory[index]->color, true, m_font);
                 numberOfLinesPrinted++;
@@ -316,6 +327,7 @@ void Console::ClearConsoleHistory()
         delete text;
     }
     m_consoleHistory.clear();
+    m_consoleHistoryIndex = 0;
     m_consoleClear.Trigger();
 }
 

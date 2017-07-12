@@ -172,7 +172,7 @@ bool InputSystem::IsScrolling()
 }
 
 //-----------------------------------------------------------------------------------
-int InputSystem::GetScrollAmountThisFrame()
+int InputSystem::GetScrollDeltaThisFrame()
 {
     return m_linesScrolled;
 }

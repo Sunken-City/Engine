@@ -73,20 +73,20 @@ private:
     static const float CURSOR_BLINK_RATE_SECONDS;
 
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
-    bool m_isActive;
-    bool m_isCursorShowing;
-    bool m_renderCursor = false;
+    std::vector<ColoredText*> m_consoleHistory;
+    std::vector<std::string> m_commandHistory;
+    std::wstring m_currentWorkingDirectory;
     char* m_currentLine;
     char* m_cursorPointer;
     char* m_leftmostSelectionCharacter = NULL;
     char* m_rightmostSelectionCharacter = NULL;
-    char m_characterAtCursor;
     float m_timeSinceCursorBlink;
     float m_timeSinceRepeatHeld = 0.0f;
-    unsigned int m_commandHistoryIndex;
-    std::vector<ColoredText*> m_consoleHistory;
-    std::vector<std::string> m_commandHistory;
-    std::wstring m_currentWorkingDirectory;
+    int m_commandHistoryIndex = 0;
+    int m_consoleHistoryIndex = 0;
+    bool m_isActive;
+    bool m_isCursorShowing;
+    bool m_renderCursor = false;
 };
 
 //----------------------------------------------------------------------------------------------
