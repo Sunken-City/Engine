@@ -343,12 +343,14 @@ void Console::RegisterCommand(const char* commandName, ConsoleCommandFunctionPoi
 void Console::PrintLine(std::string consoleLine, RGBA color)
 {
     m_consoleHistory.push_back(new ColoredText(consoleLine, color));
+    m_consoleHistoryIndex = m_consoleHistory.size() - 1;
 }
 
 //-----------------------------------------------------------------------------------
 ColoredText* Console::PrintDynamicLine(std::string consoleLine, RGBA color /*= RGBA::WHITE*/)
 {
     m_consoleHistory.push_back(new ColoredText(consoleLine, color));
+    m_consoleHistoryIndex = m_consoleHistory.size() - 1;
     return *(--m_consoleHistory.end());
 }
 
