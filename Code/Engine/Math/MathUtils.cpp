@@ -8,6 +8,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <stdint.h>
+#include <ctime>
 #include "../Core/ErrorWarningAssert.hpp"
 
 const float MathUtils::PI = M_PI;
@@ -343,4 +344,14 @@ int Mod(int a, int b)
 float Clamp01(float input)
 {
     return Clamp<float>(input, 0.0f, 1.0f);
+}
+
+//-----------------------------------------------------------------------------------
+void InitializeRand()
+{
+    std::time_t timeNow = std::time(nullptr);
+    //Supressed because localtime_s isn't actually accessible because I don't know why try for yourself. >:I
+#pragma warning(suppress: 4996)
+    std::tm time = *std::localtime(&timeNow);
+    srand((unsigned int)time.tm_sec + time.tm_min + time.tm_hour + time.tm_year);
 }

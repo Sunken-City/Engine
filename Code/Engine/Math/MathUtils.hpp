@@ -83,6 +83,7 @@ float RadiansToDegrees(float radians);
 
 int Mod(int a, int b);
 float Clamp01(float input);
+void InitializeRand();
 
 //INTERPOLATION//////////////////////////////////////////////////////////////////////////
 template <typename T>
