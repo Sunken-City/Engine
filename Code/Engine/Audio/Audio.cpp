@@ -271,6 +271,17 @@ unsigned int AudioSystem::GetPlaybackPositionMS(AudioChannelHandle channel)
 }
 
 //-----------------------------------------------------------------------------------
+unsigned int AudioSystem::GetSoundLengthMS(SoundID soundHandle)
+{
+    unsigned int outSoundLengthMS = 0;
+    FMOD::Sound* sound = m_registeredSounds[soundHandle];
+
+    sound->getLength(&outSoundLengthMS, FMOD_TIMEUNIT_MS);
+
+    return outSoundLengthMS;
+}
+
+//-----------------------------------------------------------------------------------
 AudioChannelHandle AudioSystem::GetChannel(SoundID songHandle)
 {
     AudioChannelHandle channelHandle = nullptr;

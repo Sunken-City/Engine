@@ -35,8 +35,11 @@ const unsigned int MISSING_SOUND_ID = 0xffffffff;
 class AudioSystem
 {
 public:
+    //CONSTRUCTORS/////////////////////////////////////////////////////////////////////
     AudioSystem();
     virtual ~AudioSystem();
+
+    //FUNCTIONS/////////////////////////////////////////////////////////////////////
     SoundID CreateOrGetSound( const std::string& soundFileName );
     void PlaySound(SoundID soundID, float volumeLevel = 1.f);
     void PlayLoopingSound(SoundID soundID, float volumeLevel = 1.f);
@@ -50,7 +53,9 @@ public:
     AudioChannelHandle GetChannel(SoundID m_currentlyPlayingSong);
     bool IsPlaying(AudioChannelHandle channel);
     unsigned int GetPlaybackPositionMS(AudioChannelHandle channel);
+    unsigned int GetSoundLengthMS(SoundID soundHandle);
 
+    //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
     static AudioSystem* instance;
 
     //CONSTANTS/////////////////////////////////////////////////////////////////////
