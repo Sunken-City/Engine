@@ -116,6 +116,62 @@ bool IncrementPlaycount(const std::string& fileName)
         flacTags->setProperties(map);
         flacFile.save();
     }
+    else if (fileExtension == "wav")
+    {
+        TagLib::RIFF::WAV::File wavFile(fileName.c_str());
+        TagLib::PropertyMap map = wavFile.properties();
+        auto playcountPropertyIter = map.find(PlaycountFrameId);
+        if (playcountPropertyIter != map.end())
+        {
+            bool wasInt = false;
+            int currentPlaycount = playcountPropertyIter->second.toString().toInt(&wasInt);
+            ASSERT_OR_DIE(&wasInt, "Tried to grab the playcount, but found a non-integer value in the PCNT field.");
+            map.replace(PlaycountFrameId, TagLib::String(std::to_string(currentPlaycount + 1)));
+        }
+        else
+        {
+            map.insert(PlaycountFrameId, TagLib::String("1"));
+        }
+
+        if (wavFile.hasInfoTag())
+        {
+            TagLib::RIFF::Info::Tag* wavTags = wavFile.InfoTag();
+            wavFile.setProperties(map);
+        }
+        else
+        {
+            TagLib::ID3v2::Tag* wavTags = wavFile.ID3v2Tag();
+            wavFile.setProperties(map);
+        }
+
+        wavFile.save();
+    }
+    else if (fileExtension == "mp3")
+    {
+        TagLib::MPEG::File mp3File(fileName.c_str());
+        TagLib::PropertyMap map = mp3File.properties();
+        auto playcountPropertyIter = map.find(PlaycountFrameId);
+        if (playcountPropertyIter != map.end())
+        {
+            bool wasInt = false;
+            int currentPlaycount = playcountPropertyIter->second.toString().toInt(&wasInt);
+            ASSERT_OR_DIE(&wasInt, "Tried to grab the playcount, but found a non-integer value in the PCNT field.");
+            map.replace(PlaycountFrameId, TagLib::String(std::to_string(currentPlaycount + 1)));
+        }
+        else
+        {
+            map.insert(PlaycountFrameId, TagLib::String("1"));
+        }
+
+        if (!mp3File.hasID3v2Tag())
+        {
+            mp3File.ID3v2Tag(1);
+        }
+
+        TagLib::ID3v2::Tag* mp3Tags = mp3File.ID3v2Tag();
+        mp3File.setProperties(map);
+        mp3File.save();
+    }
 
     return true;
 }
