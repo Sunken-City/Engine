@@ -54,6 +54,7 @@ public:
     AudioChannelHandle GetChannel(SoundID m_currentlyPlayingSong);
     bool IsPlaying(AudioChannelHandle channel);
     unsigned int GetPlaybackPositionMS(AudioChannelHandle channel);
+    void SetPlaybackPositionMS(AudioChannelHandle channel, unsigned int timestampMS);
     unsigned int GetSoundLengthMS(SoundID soundHandle);
 
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////

@@ -277,6 +277,15 @@ unsigned int AudioSystem::GetPlaybackPositionMS(AudioChannelHandle channel)
 }
 
 //-----------------------------------------------------------------------------------
+void AudioSystem::SetPlaybackPositionMS(AudioChannelHandle channel, unsigned int timestampMS)
+{
+    ASSERT_OR_DIE(channel, "Channel passed to SetPlaybackPositionMS was null.");
+
+    FMOD::Channel* channelAssignedToSound = static_cast<FMOD::Channel*>(channel);
+    channelAssignedToSound->setPosition(timestampMS, FMOD_TIMEUNIT_MS);
+}
+
+//-----------------------------------------------------------------------------------
 unsigned int AudioSystem::GetSoundLengthMS(SoundID soundHandle)
 {
     unsigned int outSoundLengthMS = 0;
