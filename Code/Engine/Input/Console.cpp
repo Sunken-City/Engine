@@ -132,7 +132,7 @@ void Console::ParseKey(char currentChar)
         }
         std::string currentLine = std::string(m_currentLine);
         m_consoleHistory.push_back(new ColoredText(currentLine, RGBA::GRAY));
-        if (!RunCommand(currentLine))
+        if (!RunCommand(currentLine, true))
         {
             m_consoleHistory.push_back(new ColoredText("Invalid Command.", RGBA::MAROON));
         }
@@ -356,10 +356,13 @@ ColoredText* Console::PrintDynamicLine(std::string consoleLine, RGBA color /*= R
 
 //-----------------------------------------------------------------------------------
 //Returns true if command was found and run, false if invalid.
-bool Console::RunCommand(const std::string& commandLine)
+bool Console::RunCommand(const std::string& commandLine, bool addToHistory /*= false*/)
 {
-    m_commandHistory.push_back(commandLine);
-    m_commandHistoryIndex = m_commandHistory.size();
+    if (addToHistory)
+    {
+        m_commandHistory.push_back(commandLine);
+        m_commandHistoryIndex = m_commandHistory.size();
+    }
     Command command(commandLine);
 
     size_t commandNameHash = std::hash<std::string>{}(command.GetCommandName());

@@ -45,7 +45,7 @@ public:
     void ClearConsoleHistory();
     void PrintLine(std::string consoleLine, RGBA color = RGBA::WHITE);
     ColoredText* PrintDynamicLine(std::string consoleLine, RGBA color = RGBA::WHITE);
-    bool RunCommand(const std::string& commandLine);
+    bool RunCommand(const std::string& commandLine, bool addToHistory = false);
     inline bool IsActive() { return m_isActive; };
     inline bool IsEmpty() { return (m_cursorPointer == m_currentLine && *m_cursorPointer == '\0'); };
     static void RegisterCommand(const char* commandName, ConsoleCommandFunctionPointer consoleFunction);
