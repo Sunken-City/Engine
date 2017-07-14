@@ -49,6 +49,7 @@ public:
     void StopSound(SoundID soundID);
     void MultiplyCurrentFrequency(SoundID soundID, float multiplier);
     void SetFrequency(SoundID soundID, float frequency); //Do not use this if you're trying to use a small value!
+    void SetVolume(AudioChannelHandle channel, float volume0to1);
     float GetFrequency(SoundID soundID);
     AudioChannelHandle GetChannel(SoundID m_currentlyPlayingSong);
     bool IsPlaying(AudioChannelHandle channel);

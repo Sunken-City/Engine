@@ -155,6 +155,12 @@ void AudioSystem::SetFrequency(SoundID soundID, float frequency)
 }
 
 //-----------------------------------------------------------------------------------
+void AudioSystem::SetVolume(AudioChannelHandle channel, float volume0to1)
+{
+    ((FMOD::Channel*)channel)->setVolume(volume0to1);
+}
+
+//-----------------------------------------------------------------------------------
 float AudioSystem::GetFrequency(SoundID soundID)
 {
     float frequency = -1.0f;
