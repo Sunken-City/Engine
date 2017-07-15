@@ -1061,7 +1061,6 @@ void Renderer::DrawTexturedAABB3(const AABB3& bounds, const RGBA& color, const V
 //-----------------------------------------------------------------------------------
 void Renderer::DrawTexturedAABB(const AABB2& bounds, const Vector2& texCoordMins, const Vector2& texCoordMaxs, Texture* texture, const RGBA& color)
 {
-    UNUSED(texture);
     Vertex_PCT vertexes[4];
     Vertex_PCT vertex;
     vertex.color = color;
@@ -1077,7 +1076,9 @@ void Renderer::DrawTexturedAABB(const AABB2& bounds, const Vector2& texCoordMins
     vertex.pos = Vector3(bounds.mins.x, bounds.maxs.y, 0.0f);
     vertex.texCoords = Vector2(texCoordMins.x, texCoordMaxs.y);
     vertexes[3] = vertex;
+    m_defaultMaterial->SetDiffuseTexture(texture);
     Renderer::instance->DrawVertexArray(vertexes, 4, DrawMode::QUADS);
+    m_defaultMaterial->SetDiffuseTexture(m_defaultTexture);
 }
 
 //-----------------------------------------------------------------------------------

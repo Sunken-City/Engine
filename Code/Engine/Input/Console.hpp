@@ -12,6 +12,7 @@
 
 class Command;
 class BitmapFont;
+class Texture;
 typedef void(*ConsoleCommandFunctionPointer)(Command&); 
 
 //Used for quitting the application, bound to our Main_Win32.cpp; remove this if we aren't using it anymore.
@@ -59,7 +60,8 @@ public:
 
     //VARIABLES//////////////////////////////////////////////////////////////////////////
     static Console* instance;
-    BitmapFont* m_font;
+    BitmapFont* m_font = nullptr;
+    Texture* m_backgroundTexture = nullptr;
     Event<> m_consoleUpdate;
     Event<> m_consoleClear;
 

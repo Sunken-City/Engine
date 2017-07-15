@@ -8,6 +8,7 @@
 #include <cmath>
 #include "../Core/StringUtils.hpp"
 #include "InputOutputUtils.hpp"
+#include "Engine/Renderer/Texture.hpp"
 
 Console* Console::instance = nullptr;
 std::map<size_t, ConsoleCommandFunctionPointer, std::less<size_t>, UntrackedAllocator<std::pair<size_t, ConsoleCommandFunctionPointer>>>* g_consoleCommands = nullptr;
@@ -262,7 +263,11 @@ void Console::Render() const
         Renderer::instance->BeginOrtho(Vector2(0.0f, 0.0f), Vector2(1600, 900));
         {
             Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::OFF;
-            Renderer::instance->DrawAABB(AABB2(Vector2(0, 0), Vector2(1600, 900)), RGBA(0x00000088));
+            Renderer::instance->DrawAABB(AABB2(Vector2(0, 0), Vector2(1600, 900)), RGBA(0x000000AA));
+            if (m_backgroundTexture)
+            {
+                Renderer::instance->DrawTexturedAABB(AABB2(Vector2(0, 0), Vector2(1600, 900)), Vector2(0.0f, 1.0f), Vector2(1.0f, 0.0f), m_backgroundTexture, RGBA::WHITE);
+            }
 
             Vector2 currentBaseline = Vector2::ONE * 10.0f;
             std::string currentLine = std::string(m_currentLine);
