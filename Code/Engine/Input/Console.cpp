@@ -9,6 +9,8 @@
 #include "../Core/StringUtils.hpp"
 #include "InputOutputUtils.hpp"
 #include "Engine/Renderer/Texture.hpp"
+#include "../Time/Time.hpp"
+#include "../Math/MathUtils.hpp"
 
 Console* Console::instance = nullptr;
 std::map<size_t, ConsoleCommandFunctionPointer, std::less<size_t>, UntrackedAllocator<std::pair<size_t, ConsoleCommandFunctionPointer>>>* g_consoleCommands = nullptr;
@@ -258,70 +260,80 @@ void Console::ParseKey(char currentChar)
 //-----------------------------------------------------------------------------------
 void Console::Render() const
 {
-    if (m_isActive)
-    {
-        Renderer::instance->BeginOrtho(Vector2(0.0f, 0.0f), Vector2(1600, 900));
+        float interpolationFactor = Clamp01((float)(GetCurrentTimeMilliseconds() - m_timeLastActivatedMS) / 100.0f);
+        if (!m_isActive)
+        {
+            interpolationFactor = 1.0f - interpolationFactor;
+        }
+        Vector2 bottomLeft = Lerp<Vector2>(interpolationFactor, Vector2(0.0f, 450.0f), Vector2::ZERO);
+        Vector2 topRight = Lerp<Vector2>(interpolationFactor, Vector2(1600.0f, 450.0f), Vector2(1600.0f, 900.0f));
+        Renderer::instance->BeginOrtho(Vector2::ZERO, Vector2(1600.0f, 900.0f));
         {
             Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::OFF;
-            Renderer::instance->DrawAABB(AABB2(Vector2(0, 0), Vector2(1600, 900)), RGBA(0x000000AA));
+            Renderer::instance->DrawAABB(AABB2(bottomLeft, topRight), RGBA(0x000000AA));
             if (m_backgroundTexture)
             {
-                Renderer::instance->DrawTexturedAABB(AABB2(Vector2(0, 0), Vector2(1600, 900)), Vector2(0.0f, 1.0f), Vector2(1.0f, 0.0f), m_backgroundTexture, RGBA::WHITE);
+                Renderer::instance->DrawTexturedAABB(AABB2(bottomLeft, topRight), Vector2(0.0f, 1.0f), Vector2(1.0f, 0.0f), m_backgroundTexture, RGBA::WHITE);
             }
 
-            Vector2 currentBaseline = Vector2::ONE * 10.0f;
-            std::string currentLine = std::string(m_currentLine);
-            Renderer::instance->DrawText2D(currentBaseline, currentLine, 1.0f, RGBA::WHITE, true, m_font);
-
-            if (m_renderCursor)
+            if (m_isActive && interpolationFactor > 0.9f)
             {
-                int numCharsIntoString = (m_cursorPointer - m_currentLine) / sizeof(char);
-                AABB2 textBounds = m_font->CalcTextBounds(currentLine.substr(0, numCharsIntoString), 1.0f);
-                float currentTextWidth = textBounds.GetWidth();
-                float currentTextHeight = textBounds.GetHeight();
-                Vector3 cursorBottom(currentBaseline.x + currentTextWidth, currentBaseline.y, 0.0f);
-                Vector3 cursorTop(currentBaseline.x + currentTextWidth, currentBaseline.y + currentTextHeight, 0.0f);
-                Renderer::instance->DrawLine(cursorBottom, cursorTop, RGBA::WHITE, 2.0f);
-            }
+                Vector2 currentBaseline = Vector2::ONE * 10.0f;
+                std::string currentLine = std::string(m_currentLine);
+                Renderer::instance->DrawText2D(currentBaseline, currentLine, 1.0f, RGBA::WHITE, true, m_font);
 
-            int index = m_consoleHistoryIndex;
-            unsigned int numberOfLinesPrinted = 0;
-            for (auto reverseIterator = m_consoleHistory.rbegin(); reverseIterator != m_consoleHistory.rend(); ++reverseIterator, --index)
-            {
-                if (index < 0)
+                if (m_renderCursor)
                 {
-                    break;
+                    int numCharsIntoString = (m_cursorPointer - m_currentLine) / sizeof(char);
+                    AABB2 textBounds = m_font->CalcTextBounds(currentLine.substr(0, numCharsIntoString), 1.0f);
+                    float currentTextWidth = textBounds.GetWidth();
+                    float currentTextHeight = textBounds.GetHeight();
+                    Vector3 cursorBottom(currentBaseline.x + currentTextWidth, currentBaseline.y, 0.0f);
+                    Vector3 cursorTop(currentBaseline.x + currentTextWidth, currentBaseline.y + currentTextHeight, 0.0f);
+                    Renderer::instance->DrawLine(cursorBottom, cursorTop, RGBA::WHITE, 2.0f);
                 }
-                currentBaseline += Vector2(0.0f, (float)m_font->m_maxHeight);
-                Renderer::instance->DrawText2D(currentBaseline, m_consoleHistory[index]->text, 1.0f, m_consoleHistory[index]->color, true, m_font);
-                numberOfLinesPrinted++;
-                if (numberOfLinesPrinted > MAX_CONSOLE_LINES)
+
+                int index = m_consoleHistoryIndex;
+                unsigned int numberOfLinesPrinted = 0;
+                for (auto reverseIterator = m_consoleHistory.rbegin(); reverseIterator != m_consoleHistory.rend(); ++reverseIterator, --index)
                 {
-                    break;
+                    if (index < 0)
+                    {
+                        break;
+                    }
+                    currentBaseline += Vector2(0.0f, (float)m_font->m_maxHeight);
+                    Renderer::instance->DrawText2D(currentBaseline, m_consoleHistory[index]->text, 1.0f, m_consoleHistory[index]->color, true, m_font);
+                    numberOfLinesPrinted++;
+                    if (numberOfLinesPrinted > MAX_CONSOLE_LINES)
+                    {
+                        break;
+                    }
                 }
             }
             Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::ON;
         }
         Renderer::instance->EndOrtho();
-    }
 }
 
 //-----------------------------------------------------------------------------------
 void Console::ToggleConsole()
 {
     m_isActive ? DeactivateConsole() : ActivateConsole();
+    m_timeLastActivatedMS = GetCurrentTimeMilliseconds();
 }
 
 //-----------------------------------------------------------------------------------
 void Console::ActivateConsole()
 {
     m_isActive = true;
+    m_timeLastActivatedMS = GetCurrentTimeMilliseconds();
 }
 
 //-----------------------------------------------------------------------------------
 void Console::DeactivateConsole()
 {
     m_isActive = false;
+    m_timeLastActivatedMS = GetCurrentTimeMilliseconds();
 }
 
 //-----------------------------------------------------------------------------------

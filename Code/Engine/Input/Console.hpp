@@ -84,6 +84,7 @@ private:
     char* m_rightmostSelectionCharacter = NULL;
     float m_timeSinceCursorBlink;
     float m_timeSinceRepeatHeld = 0.0f;
+    double m_timeLastActivatedMS = 0.0;
     int m_commandHistoryIndex = 0;
     int m_consoleHistoryIndex = 0;
     bool m_isActive;
