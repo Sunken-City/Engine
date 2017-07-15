@@ -6,7 +6,7 @@
 * 2 - Insanely Verbose (Every new, every free)
 * Not defined = no memory tracking
 */
-#define TRACK_MEMORY 1
+#define TRACK_MEMORY 0
 
 //Enable Profiling
 //#define PROFILING_ENABLED
@@ -21,7 +21,7 @@
 * 3 - Severe messages only
 * 4 - No messages are logged
 */
-#define LOG_LEVEL_THRESHOLD 1
+#define LOG_LEVEL_THRESHOLD 4
 
 //Maximum number of log files to keep. Adding another log over this amount will delete the oldest log.
 #define MAX_LOG_HISTORY 5
