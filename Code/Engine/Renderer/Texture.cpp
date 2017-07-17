@@ -45,24 +45,33 @@ Texture::Texture(const std::string& imageFilePath)
     ASSERT_OR_DIE(m_imageData != nullptr, Stringf("The texture at %s failed to load!", imageFilePath.c_str()));
 
     // Enable texturing
-    glEnable( GL_TEXTURE_2D );
+    //glEnable( GL_TEXTURE_2D );
+    GL_CHECK_ERROR();
 
     // Tell OpenGL that our pixel data is single-byte aligned
     glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+    GL_CHECK_ERROR();
 
     // Ask OpenGL for an unused texName (ID number) to use for this texture
     glGenTextures( 1, (GLuint*) &m_openglTextureID );
+    GL_CHECK_ERROR();
 
     // Tell OpenGL to bind (set) this as the currently active texture
     glBindTexture( GL_TEXTURE_2D, m_openglTextureID );
+    GL_CHECK_ERROR();
 
     // Set texture clamp vs. wrap (repeat)
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP ); // one of: GL_CLAMP or GL_REPEAT
-    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP ); // one of: GL_CLAMP or GL_REPEAT
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // one of: GL_CLAMP or GL_REPEAT
+    GL_CHECK_ERROR();
+    glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // one of: GL_CLAMP or GL_REPEAT
+    GL_CHECK_ERROR();
+
 
     // Set magnification (texel > pixel) and minification (texel < pixel) filters
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST ); // one of: GL_NEAREST, GL_LINEAR
+    GL_CHECK_ERROR();
     glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );  // one of: GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_LINEAR
+    GL_CHECK_ERROR();
 
     GLenum bufferFormat = GL_RGBA; // the format our source pixel data is currently in; any of: GL_RGB, GL_RGBA, GL_LUMINANCE, GL_LUMINANCE_ALPHA, ...
     if (numComponents == 3)
@@ -84,8 +93,10 @@ Texture::Texture(const std::string& imageFilePath)
         bufferFormat,		// Pixel format describing the composition of the pixel data in buffer
         GL_UNSIGNED_BYTE,	// Pixel color components are unsigned bytes (one byte per color/alpha channel)
         m_imageData );		// Location of the actual pixel data bytes/buffer
+    GL_CHECK_ERROR();
 
-    glDisable(GL_TEXTURE_2D);
+    //glDisable(GL_TEXTURE_2D);
+    GL_CHECK_ERROR();
 }
 
 //-----------------------------------------------------------------------------------
@@ -99,24 +110,32 @@ Texture::Texture(unsigned char* textureData, int numColorComponents, const Vecto
     int numComponents = numColorComponents; // Filled in for us to indicate how many color/alpha components the image had (e.g. 3=RGB, 4=RGBA)
 
     // Enable texturing
-    glEnable(GL_TEXTURE_2D);
+    //glEnable(GL_TEXTURE_2D);
+    GL_CHECK_ERROR();
 
     // Tell OpenGL that our pixel data is single-byte aligned
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    GL_CHECK_ERROR();
 
     // Ask OpenGL for an unused texName (ID number) to use for this texture
     glGenTextures(1, (GLuint*)&m_openglTextureID);
+    GL_CHECK_ERROR();
 
     // Tell OpenGL to bind (set) this as the currently active texture
     glBindTexture(GL_TEXTURE_2D, m_openglTextureID);
+    GL_CHECK_ERROR();
 
     // Set texture clamp vs. wrap (repeat)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP); // one of: GL_CLAMP or GL_REPEAT
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP); // one of: GL_CLAMP or GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // one of: GL_CLAMP or GL_REPEAT
+    GL_CHECK_ERROR();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // one of: GL_CLAMP or GL_REPEAT
+    GL_CHECK_ERROR();
 
     // Set magnification (texel > pixel) and minification (texel < pixel) filters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // one of: GL_NEAREST, GL_LINEAR
+    GL_CHECK_ERROR();
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);  // one of: GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_LINEAR
+    GL_CHECK_ERROR();
 
     GLenum bufferFormat = GL_RGBA; // the format our source pixel data is currently in; any of: GL_RGB, GL_RGBA, GL_LUMINANCE, GL_LUMINANCE_ALPHA, ...
     if (numComponents == 3)
@@ -136,8 +155,10 @@ Texture::Texture(unsigned char* textureData, int numColorComponents, const Vecto
         bufferFormat,		// Pixel format describing the composition of the pixel data in buffer
         GL_UNSIGNED_BYTE,	// Pixel color components are unsigned bytes (one byte per color/alpha channel)
         m_imageData);		// Location of the actual pixel data bytes/buffer
+    GL_CHECK_ERROR();
 
-    glDisable(GL_TEXTURE_2D);
+    //glDisable(GL_TEXTURE_2D);
+    GL_CHECK_ERROR();
 }
 
 Texture::Texture(uint32_t width, uint32_t height, TextureFormat format)
@@ -200,23 +221,32 @@ Texture::Texture(unsigned char* textureData, size_t bufferSize)
 
     // Enable texturing
     glEnable(GL_TEXTURE_2D);
+    GL_CHECK_ERROR();
 
     // Tell OpenGL that our pixel data is single-byte aligned
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    GL_CHECK_ERROR();
 
     // Ask OpenGL for an unused texName (ID number) to use for this texture
     glGenTextures(1, (GLuint*)&m_openglTextureID);
+    GL_CHECK_ERROR();
 
     // Tell OpenGL to bind (set) this as the currently active texture
     glBindTexture(GL_TEXTURE_2D, m_openglTextureID);
+    GL_CHECK_ERROR();
 
     // Set texture clamp vs. wrap (repeat)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP); // one of: GL_CLAMP or GL_REPEAT
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP); // one of: GL_CLAMP or GL_REPEAT
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // one of: GL_CLAMP or GL_REPEAT
+    GL_CHECK_ERROR();
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // one of: GL_CLAMP or GL_REPEAT
+    GL_CHECK_ERROR();
 
-                                                                 // Set magnification (texel > pixel) and minification (texel < pixel) filters
+    // Set magnification (texel > pixel) and minification (texel < pixel) filters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); // one of: GL_NEAREST, GL_LINEAR
+    GL_CHECK_ERROR();
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);  // one of: GL_NEAREST, GL_LINEAR, GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST_MIPMAP_LINEAR, GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR_MIPMAP_LINEAR
+    GL_CHECK_ERROR();
 
     GLenum bufferFormat = GL_RGBA; // the format our source pixel data is currently in; any of: GL_RGB, GL_RGBA, GL_LUMINANCE, GL_LUMINANCE_ALPHA, ...
     if (numComponents == 3)
@@ -238,8 +268,10 @@ Texture::Texture(unsigned char* textureData, size_t bufferSize)
         bufferFormat,		// Pixel format describing the composition of the pixel data in buffer
         GL_UNSIGNED_BYTE,	// Pixel color components are unsigned bytes (one byte per color/alpha channel)
         m_imageData);		// Location of the actual pixel data bytes/buffer
+    GL_CHECK_ERROR();
 
-    glDisable(GL_TEXTURE_2D);
+    //glDisable(GL_TEXTURE_2D);
+    GL_CHECK_ERROR();
 }
 
 //-----------------------------------------------------------------------------------

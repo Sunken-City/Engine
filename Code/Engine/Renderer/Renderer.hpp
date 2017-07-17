@@ -46,6 +46,7 @@ public:
         LINE_LOOP,
         POLYGON,
         TRIANGLES,
+        TRIANGLE_STRIP,
         NUM_DRAW_MODES
     };
 
@@ -93,8 +94,6 @@ public:
     void BeginPerspective(float fovDegreesY, float aspect, float nearDist, float farDist);
     void EndPerspective();
     void SetViewport(GLint x, GLint y, GLsizei width, GLsizei height);
-    void SetColor(float red, float green, float blue, float alpha);
-    void SetColor(const RGBA& color);
     void SetPointSize(float size);
     void SetLineWidth(float width);
 
@@ -103,9 +102,9 @@ public:
     void DeleteBuffers(int vboID);
     void BindAndBufferVBOData(int vboID, const Vertex_PCT* vertexes, int numVerts);
     void BindAndBufferVBOData(int vboID, const Vertex_PCUTB* vertexes, int numVerts);
-    void DrawVertexArray(const Vertex_PCT* vertexes, int numVertexes, DrawMode drawMode = DrawMode::QUADS);
-    void DrawVBO_PCT(unsigned int vboID, int numVerts, DrawMode drawMode = DrawMode::QUADS, Texture* texture = nullptr);
-    void DrawVBO_PCUTB(unsigned int vboID, int numVerts, DrawMode drawMode = DrawMode::QUADS, Texture* texture = nullptr);
+    void DrawVertexArray(const Vertex_PCT* vertexes, int numVertexes, DrawMode drawMode = DrawMode::TRIANGLE_STRIP);
+    void DrawVBO_PCT(unsigned int vboID, int numVerts, DrawMode drawMode = DrawMode::TRIANGLE_STRIP, Texture* texture = nullptr);
+    void DrawVBO_PCUTB(unsigned int vboID, int numVerts, DrawMode drawMode = DrawMode::TRIANGLE_STRIP, Texture* texture = nullptr);
 
     //DRAWING//////////////////////////////////////////////////////////////////////////
     void DrawPoint(const Vector2& point, const RGBA& color = RGBA::WHITE, float pointSize = 1.0f);

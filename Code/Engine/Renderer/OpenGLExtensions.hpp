@@ -75,4 +75,6 @@ extern PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers;
 extern PFNGLDRAWBUFFERSPROC glDrawBuffers;
 extern PFNGLBLITFRAMEBUFFERPROC glBlitFramebuffer;
 
-void hookUpOpenGLPointers();
+extern PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB;
+
+void HookUpOpenGLPointers();
