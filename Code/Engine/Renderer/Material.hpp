@@ -99,8 +99,8 @@ public:
     RenderState m_renderState;
 
     unsigned int m_samplerID;
-    unsigned int m_diffuseID;
-    unsigned int m_normalID;
-    unsigned int m_emissiveID;
-    unsigned int m_noiseID;
+    unsigned int m_diffuseID = 0;
+    unsigned int m_normalID = 0;
+    unsigned int m_emissiveID = 0;
+    unsigned int m_noiseID = 0;
 };

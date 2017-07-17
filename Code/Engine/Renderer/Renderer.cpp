@@ -38,6 +38,9 @@ Renderer* Renderer::instance = nullptr;
 
 const unsigned char Renderer::plainWhiteTexel[3] = { 255, 255, 255 };
 
+extern HDC g_displayDeviceContext;
+extern HGLRC g_openGLRenderingContext;
+
 //TEMP
 static GLuint gVBO = NULL;
 static GLuint gVAO = NULL;
@@ -47,8 +50,7 @@ static GLuint gDiffuseTex = NULL;
 
 //-----------------------------------------------------------------------------------
 Renderer::Renderer(const Vector2Int& windowSize) 
-    : m_defaultTexture(Texture::CreateTextureFromData("PlainWhite", const_cast<uchar*>(plainWhiteTexel), 3, Vector2Int::ONE))
-    , m_fbo(nullptr)
+    : m_fbo(nullptr)
     , m_fboFullScreenEffectQuad(nullptr)
     , m_defaultMaterial(nullptr)
     , m_defaultShader(nullptr)
@@ -57,7 +59,9 @@ Renderer::Renderer(const Vector2Int& windowSize)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_LINE_SMOOTH);
-    hookUpOpenGLPointers();
+    HookUpOpenGLPointers();
+
+    m_defaultTexture = Texture::CreateTextureFromData("PlainWhite", const_cast<uchar*>(plainWhiteTexel), 3, Vector2Int::ONE);
     m_defaultFont = BitmapFont::CreateOrGetFont("SquirrelFixedFont");
     m_defaultShader = new ShaderProgram("Data/Shaders/fixedVertexFormat.vert", "Data/Shaders/fixedVertexFormat.frag");
     m_defaultMaterial = new Material(m_defaultShader, RenderState(RenderState::DepthTestingMode::ON, RenderState::FaceCullingMode::RENDER_BACK_FACES, RenderState::BlendMode::ALPHA_BLEND));
@@ -236,7 +240,7 @@ void Renderer::DrawPoint(const Vector3& point, const RGBA& color /*= RGBA::WHITE
 //-----------------------------------------------------------------------------------
 void Renderer::DrawLine(const Vector2& start, const Vector2& end, const RGBA& color/* = RGBA::WHITE*/, float lineThickness /*= 1.0f*/)
 {
-    glLineWidth(lineThickness);
+    //glLineWidth(lineThickness);
     Vertex_PCT vertexes[2];
     vertexes[0].pos = start;
     vertexes[1].pos = end;
@@ -248,25 +252,13 @@ void Renderer::DrawLine(const Vector2& start, const Vector2& end, const RGBA& co
 //-----------------------------------------------------------------------------------
 void Renderer::DrawLine(const Vector3& start, const Vector3& end, const RGBA& color /*= RGBA::WHITE*/, float lineThickness /*= 1.0f*/)
 {
-    glLineWidth(lineThickness);
+    //glLineWidth(lineThickness);
     Vertex_PCT vertexes[2];
     vertexes[0].pos = start;
     vertexes[1].pos = end;
     vertexes[0].color = color;
     vertexes[1].color = color;
     DrawVertexArray(vertexes, 2, DrawMode::LINES);
-}
-
-//-----------------------------------------------------------------------------------
-void Renderer::SetColor(float red, float green, float blue, float alpha)
-{
-    glColor4f(red, green, blue, alpha);
-}
-
-//-----------------------------------------------------------------------------------
-void Renderer::SetColor(const RGBA& color)
-{
-    glColor4ub(color.red, color.green, color.blue, color.alpha);
 }
 
 //-----------------------------------------------------------------------------------
@@ -287,7 +279,7 @@ void Renderer::SetLineWidth(float width)
     {
         return;
     }
-    glLineWidth(width);
+    //glLineWidth(width);
     m_lineWidth = width;
 }
 
@@ -457,7 +449,7 @@ void Renderer::BindAndBufferVBOData(int vboID, const Vertex_PCUTB* vertexes, int
 }
 
 //-----------------------------------------------------------------------------------
-void Renderer::DrawVertexArray(const Vertex_PCT* vertexes, int numVertexes, DrawMode drawMode /*= DrawMode::QUADS*/)
+void Renderer::DrawVertexArray(const Vertex_PCT* vertexes, int numVertexes, DrawMode drawMode /*= DrawMode::TRIANGLE_STRIP*/)
 {
     if (numVertexes == 0)
     {
@@ -487,7 +479,7 @@ void Renderer::DrawVertexArray(const Vertex_PCT* vertexes, int numVertexes, Draw
 }
 
 //-----------------------------------------------------------------------------------
-void Renderer::DrawVBO_PCT(unsigned int vboID, int numVerts, DrawMode drawMode /*= QUADS*/, Texture* texture /*= nullptr*/)
+void Renderer::DrawVBO_PCT(unsigned int vboID, int numVerts, DrawMode drawMode /*= TRIANGLE_STRIP*/, Texture* texture /*= nullptr*/)
 {
     if (!texture)
     {
@@ -514,7 +506,7 @@ void Renderer::DrawVBO_PCT(unsigned int vboID, int numVerts, DrawMode drawMode /
     UnbindTexture();
 }
 
-void Renderer::DrawVBO_PCUTB(unsigned int vboID, int numVerts, DrawMode drawMode /*= QUADS*/, Texture* texture /*= nullptr*/)
+void Renderer::DrawVBO_PCUTB(unsigned int vboID, int numVerts, DrawMode drawMode /*= TRIANGLE_STRIP*/, Texture* texture /*= nullptr*/)
 {
     if (!texture)
     {
@@ -678,6 +670,8 @@ unsigned char Renderer::GetDrawMode(DrawMode mode) const
         return GL_POLYGON;
     case DrawMode::TRIANGLES:
         return GL_TRIANGLES;
+    case DrawMode::TRIANGLE_STRIP:
+        return GL_TRIANGLE_STRIP;
     default:
         return GL_POINTS;
     }
@@ -886,7 +880,6 @@ void Renderer::DrawPolygon(const Vector2& center, float radius, int numSides, fl
 void Renderer::DrawAABB(const AABB2& bounds, const RGBA& color)
 {
     const int NUM_VERTS = 4;
-    SetColor(color);
     Vertex_PCT vertexes[NUM_VERTS];
     vertexes[0].color = color;
     vertexes[1].color = color;
@@ -896,14 +889,13 @@ void Renderer::DrawAABB(const AABB2& bounds, const RGBA& color)
     vertexes[1].pos = Vector3(bounds.maxs.x, bounds.mins.y, 0.0f);
     vertexes[2].pos = Vector3(bounds.maxs.x, bounds.maxs.y, 0.0f);
     vertexes[3].pos = Vector3(bounds.mins.x, bounds.maxs.y, 0.0f);
-    DrawVertexArray(vertexes, NUM_VERTS, DrawMode::QUADS);
+    DrawVertexArray(vertexes, NUM_VERTS, DrawMode::TRIANGLE_STRIP);
 }
 
 //-----------------------------------------------------------------------------------
 void Renderer::DrawAABB(const AABB3& bounds, const RGBA& color)
 {
     const int NUM_VERTS = 24;
-    SetColor(color);
     Vertex_PCT vertexes[NUM_VERTS];
     for (int i = 0; i < NUM_VERTS; i++)
     {
@@ -945,14 +937,13 @@ void Renderer::DrawAABB(const AABB3& bounds, const RGBA& color)
     vertexes[22].pos = Vector3(bounds.mins.x, bounds.maxs.y, bounds.maxs.z);
     vertexes[23].pos = Vector3(bounds.mins.x, bounds.maxs.y, bounds.mins.z);
 
-    DrawVertexArray(vertexes, NUM_VERTS, DrawMode::QUADS);
+    DrawVertexArray(vertexes, NUM_VERTS, DrawMode::TRIANGLE_STRIP);
 }
 
 //-----------------------------------------------------------------------------------
 void Renderer::DrawAABBBoundingBox(const AABB3& bounds, const RGBA& color)
 {
     const int NUM_VERTS = 20;
-    SetColor(color);
     Vertex_PCT vertexes[NUM_VERTS];
     for (int i = 0; i < NUM_VERTS; i++)
     {
@@ -999,7 +990,6 @@ void Renderer::DrawTexturedAABB3(const AABB3& bounds, const RGBA& color, const V
         texture = m_defaultTexture;
     }
     const int NUM_VERTS = 20;
-    SetColor(color);
     Vertex_PCT vertexes[NUM_VERTS];
     for (int i = 0; i < NUM_VERTS; i++)
     {
@@ -1055,7 +1045,7 @@ void Renderer::DrawTexturedAABB3(const AABB3& bounds, const RGBA& color, const V
     vertexes[18].texCoords = texCoordMaxs;
     vertexes[19].texCoords = Vector2(texCoordMins.x, texCoordMaxs.y);
 
-    DrawVertexArray(vertexes, NUM_VERTS, DrawMode::QUADS);
+    DrawVertexArray(vertexes, NUM_VERTS, DrawMode::TRIANGLE_STRIP);
 }
 
 //-----------------------------------------------------------------------------------
@@ -1077,7 +1067,7 @@ void Renderer::DrawTexturedAABB(const AABB2& bounds, const Vector2& texCoordMins
     vertex.texCoords = Vector2(texCoordMins.x, texCoordMaxs.y);
     vertexes[3] = vertex;
     m_defaultMaterial->SetDiffuseTexture(texture);
-    Renderer::instance->DrawVertexArray(vertexes, 4, DrawMode::QUADS);
+    Renderer::instance->DrawVertexArray(vertexes, 4, DrawMode::TRIANGLE_STRIP);
     m_defaultMaterial->SetDiffuseTexture(m_defaultTexture);
 }
 
@@ -1100,7 +1090,7 @@ void Renderer::DrawTexturedFace(const Face& face, const Vector2& texCoordMins, c
     vertex.pos = face.verts[3];
     vertex.texCoords = Vector2(texCoordMins.x, texCoordMaxs.y);
     vertexes[3] = vertex;
-    Renderer::instance->DrawVertexArray(vertexes, 4, DrawMode::QUADS);
+    Renderer::instance->DrawVertexArray(vertexes, 4, DrawMode::TRIANGLE_STRIP);
 }
 
 //-----------------------------------------------------------------------------------

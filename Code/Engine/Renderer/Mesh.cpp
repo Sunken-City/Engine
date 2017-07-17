@@ -64,11 +64,15 @@ void Mesh::RenderFromIBO(GLuint vaoID, Material* material) const
 {
     ProfilingSystem::instance->PushSample("RenderFromIBO");
     glBindVertexArray(vaoID);
+    GL_CHECK_ERROR();
     material->SetUpRenderState();
+    GL_CHECK_ERROR();
     //Draw with IBO
     glDrawElements(Renderer::instance->GetDrawMode(m_drawMode), m_numIndices, GL_UNSIGNED_INT, (GLvoid*)0);
+    GL_CHECK_ERROR();
     //material->CleanUpRenderState();
     glBindVertexArray(NULL);
+    GL_CHECK_ERROR();
     ProfilingSystem::instance->PopSample("RenderFromIBO");
 }
 
@@ -106,6 +110,7 @@ void Mesh::Update(void* vertexData, unsigned int numVertices, unsigned int sizeo
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
         GL_CHECK_ERROR();
         glBufferSubData(GL_ARRAY_BUFFER, 0, requiredVBOBufferSize, vertexData);
+        GL_CHECK_ERROR();
         glBindBuffer(GL_ARRAY_BUFFER, NULL);
     }
 

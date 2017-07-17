@@ -41,6 +41,7 @@ MeshRenderer::~MeshRenderer()
 void MeshRenderer::BindToVAO() const
 {
     m_mesh->BindToVAO(m_vaoID, m_material->m_shaderProgram);
+    GL_CHECK_ERROR();
 //     if (m_lastVertexBindFunctionPointer != m_mesh->m_vertexBindFunctionPointer)
 //     {
 //         m_lastVertexBindFunctionPointer = m_mesh->m_vertexBindFunctionPointer;
@@ -61,7 +62,6 @@ void MeshRenderer::Render() const
     //ProfilingSystem::instance->PushSample("BindToVAO");
     BindToVAO();
     //ProfilingSystem::instance->PopSample("BindToVAO");
-    GL_CHECK_ERROR();
 
     m_mesh->RenderFromIBO(m_vaoID, m_material);
     GL_CHECK_ERROR();

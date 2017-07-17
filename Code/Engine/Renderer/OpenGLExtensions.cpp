@@ -66,8 +66,10 @@ PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers = nullptr;
 PFNGLDRAWBUFFERSPROC glDrawBuffers = nullptr;
 PFNGLBLITFRAMEBUFFERPROC glBlitFramebuffer = nullptr;
 
+PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = nullptr;
+
 //-----------------------------------------------------------------------------------
-void hookUpOpenGLPointers()
+void HookUpOpenGLPointers()
 {
     glGenBuffers = (PFNGLGENBUFFERSPROC)wglGetProcAddress("glGenBuffers");
     glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)wglGetProcAddress("glDeleteBuffers");
@@ -134,4 +136,6 @@ void hookUpOpenGLPointers()
     glDrawBuffers = (PFNGLDRAWBUFFERSPROC)wglGetProcAddress("glDrawBuffers");
 
     glBlitFramebuffer = (PFNGLBLITFRAMEBUFFERPROC)wglGetProcAddress("glBlitFramebuffer");
+
+    wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
 }
