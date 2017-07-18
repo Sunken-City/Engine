@@ -886,9 +886,9 @@ void Renderer::DrawAABB(const AABB2& bounds, const RGBA& color)
     vertexes[2].color = color;
     vertexes[3].color = color;
     vertexes[0].pos = Vector3(bounds.mins.x, bounds.mins.y, 0.0f);
-    vertexes[1].pos = Vector3(bounds.maxs.x, bounds.mins.y, 0.0f);
-    vertexes[2].pos = Vector3(bounds.maxs.x, bounds.maxs.y, 0.0f);
-    vertexes[3].pos = Vector3(bounds.mins.x, bounds.maxs.y, 0.0f);
+    vertexes[1].pos = Vector3(bounds.mins.x, bounds.maxs.y, 0.0f);
+    vertexes[2].pos = Vector3(bounds.maxs.x, bounds.mins.y, 0.0f);
+    vertexes[3].pos = Vector3(bounds.maxs.x, bounds.maxs.y, 0.0f);
     DrawVertexArray(vertexes, NUM_VERTS, DrawMode::TRIANGLE_STRIP);
 }
 
@@ -1057,14 +1057,14 @@ void Renderer::DrawTexturedAABB(const AABB2& bounds, const Vector2& texCoordMins
     vertex.pos = Vector3(bounds.mins.x, bounds.mins.y, 0.0f);
     vertex.texCoords = texCoordMins;
     vertexes[0] = vertex;
-    vertex.pos = Vector3(bounds.maxs.x, bounds.mins.y, 0.0f);
-    vertex.texCoords = Vector2(texCoordMaxs.x, texCoordMins.y);
-    vertexes[1] = vertex;
-    vertex.pos = Vector3(bounds.maxs.x, bounds.maxs.y, 0.0f);
-    vertex.texCoords = texCoordMaxs;
-    vertexes[2] = vertex;
     vertex.pos = Vector3(bounds.mins.x, bounds.maxs.y, 0.0f);
     vertex.texCoords = Vector2(texCoordMins.x, texCoordMaxs.y);
+    vertexes[1] = vertex;
+    vertex.pos = Vector3(bounds.maxs.x, bounds.mins.y, 0.0f);
+    vertex.texCoords = Vector2(texCoordMaxs.x, texCoordMins.y);
+    vertexes[2] = vertex;
+    vertex.pos = Vector3(bounds.maxs.x, bounds.maxs.y, 0.0f);
+    vertex.texCoords = texCoordMaxs;
     vertexes[3] = vertex;
     m_defaultMaterial->SetDiffuseTexture(texture);
     Renderer::instance->DrawVertexArray(vertexes, 4, DrawMode::TRIANGLE_STRIP);
