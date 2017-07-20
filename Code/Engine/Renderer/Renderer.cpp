@@ -474,6 +474,8 @@ void Renderer::DrawVertexArray(const Vertex_PCT* vertexes, int numVertexes, Draw
     m_defaultMaterial->SetMatrices(Matrix4x4::IDENTITY, m_viewStack.GetTop(), m_projStack.GetTop());
     GL_CHECK_ERROR();
     thingToRender->Render();
+    GL_CHECK_ERROR();
+    glFinish(); //TODO: this causes an explicit flush to ensure that we've actually sync'd with the gpu before deleting the memory. Remove/refactor this code to not throw away meshes anymore.
     delete mesh;
     delete thingToRender;
 }
@@ -595,59 +597,26 @@ void Renderer::DrawText2D(const Vector2& position, const std::string& asciiText,
     //To be used when I expand this method to 3D text
     UNUSED(up);
     UNUSED(right);
-    if (asciiText.empty())
+    MeshBuilder builder;
+    builder.Begin();
+    builder.AddText2D(position, asciiText, scale, tint, drawShadow, font);
+    builder.End();
+
+    if (builder.m_vertices.size() == 0)
     {
         return;
     }
-    if (font == nullptr)
-    {
-        font = m_defaultFont;
-    }
-    int stringLength = asciiText.size();
-    Vector2 cursorPosition = position + (Vector2::UNIT_Y * (float)font->m_maxHeight * scale);
-    const Glyph* previousGlyph = nullptr;
-    MeshBuilder builder;
-    builder.Begin();
-    for (int i = 0; i < stringLength; i++)
-    {
-        unsigned char currentCharacter = asciiText[i];
-        const Glyph* glyph = font->GetGlyph(currentCharacter);
-        float glyphWidth = static_cast<float>(glyph->width) * scale;
-        float glyphHeight = static_cast<float>(glyph->height) * scale;
-
-        if (previousGlyph)
-        {
-            const Vector2 kerning = font->GetKerning(*previousGlyph, *glyph);
-            cursorPosition += (kerning * scale);
-        }
-        Vector2 offset = Vector2(glyph->xOffset * scale, -glyph->yOffset * scale);
-        Vector2 topRight = cursorPosition + offset + Vector2(glyphWidth, 0.0f);
-        Vector2 bottomLeft = cursorPosition + offset - Vector2(0.0f, glyphHeight);
-        AABB2 quadBounds = AABB2(bottomLeft, topRight);
-        AABB2 glyphBounds = font->GetTexCoordsForGlyph(*glyph);
-        if (drawShadow)
-        {
-            float shadowWidthOffset = glyphWidth / 10.0f;
-            float shadowHeightOffset = glyphHeight / -10.0f;
-            Vector2 shadowOffset = Vector2(shadowWidthOffset, shadowHeightOffset);
-            AABB2 shadowBounds = AABB2(bottomLeft + shadowOffset, topRight + shadowOffset);
-            RGBA shadowColor = RGBA::BLACK;
-            shadowColor.alpha = tint.alpha;
-            builder.AddTexturedAABB(shadowBounds, glyphBounds.mins, glyphBounds.maxs, shadowColor);
-        }
-        builder.AddTexturedAABB(quadBounds, glyphBounds.mins, glyphBounds.maxs, tint);
-        cursorPosition.x += glyph->xAdvance * scale;
-        previousGlyph = glyph;
-    }
-    builder.End();
 
     Mesh* mesh = new Mesh();
-    builder.CopyToMesh(mesh, &Vertex_PCUTB::Copy, sizeof(Vertex_PCUTB), &Vertex_PCUTB::BindMeshToVAO);
+    builder.CopyToMesh(mesh, &Vertex_PCT::Copy, sizeof(Vertex_PCT), &Vertex_PCT::BindMeshToVAO);
     mesh->m_drawMode = DrawMode::TRIANGLES;
-    MeshRenderer* thingToRender = new MeshRenderer(mesh, font->GetMaterial());
-    m_defaultMaterial->SetMatrices(Matrix4x4::IDENTITY, m_viewStack.GetTop(), m_projStack.GetTop());
+    Material* fontMaterial = font->GetMaterial();
+    MeshRenderer* thingToRender = new MeshRenderer(mesh, fontMaterial);
+    fontMaterial->SetMatrices(Matrix4x4::IDENTITY, m_viewStack.GetTop(), m_projStack.GetTop());
     GL_CHECK_ERROR();
     thingToRender->Render();
+    GL_CHECK_ERROR();
+    glFinish(); //TODO: this causes an explicit flush to ensure that we've actually sync'd with the gpu before deleting the memory. Remove/refactor this code to not throw away meshes anymore.
     delete mesh;
     delete thingToRender;
 }

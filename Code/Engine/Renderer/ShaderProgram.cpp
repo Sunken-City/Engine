@@ -123,6 +123,7 @@ GLuint ShaderProgram::LoadShaderFromString(const char* shaderCode, GLuint shader
         std::string formattedErrorString = bufferString.substr(secondSemicolon + 1);
 
         std::vector<std::string>* inParenthesis = ExtractStringsBetween(bufferString, "(", ")");
+        ASSERT_OR_DIE(inParenthesis->size() > 0, bufferString); //In case we can't parse out the file/line, dump it out anyway.
         int lineNumber = std::stoi(inParenthesis->at(0));
         delete inParenthesis;
         DebuggerPrintf("%s(%d): %s", filePath, lineNumber, formattedErrorString.c_str());
