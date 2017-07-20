@@ -67,13 +67,13 @@ void WidgetBase::Render() const
     bgColor.alpha = (uchar)((((float)bgColor.alpha / 255.0f) * opacity) * 255.0f);
     borderColor.alpha = (uchar)((((float)borderColor.alpha / 255.0f) * opacity) * 255.0f);
 
-    if (borderWidth > 0.0f)
+    if (borderWidth > 0.0f && borderColor.alpha != 0x00)
     {
-        Renderer::instance->DrawAABB(m_borderedBounds, borderColor);
+        Renderer::instance->DrawTexturedAABB(m_borderedBounds, Vector2::ZERO, Vector2::ONE, Renderer::instance->m_defaultTexture, borderColor);
     }
-    if (bgColor.alpha > 0.0f)
+    if (bgColor.alpha != 0x00)
     {
-        Renderer::instance->DrawAABB(m_borderlessBounds, bgColor);
+        Renderer::instance->DrawTexturedAABB(m_borderlessBounds, Vector2::ZERO, Vector2::ONE, Renderer::instance->m_defaultTexture, bgColor);
     }
 }
 

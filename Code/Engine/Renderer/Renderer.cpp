@@ -468,7 +468,7 @@ void Renderer::DrawVertexArray(const Vertex_PCT* vertexes, int numVertexes, Draw
     builder.End();
 
     Mesh* mesh = new Mesh();
-    builder.CopyToMesh(mesh, &Vertex_PCUTB::Copy, sizeof(Vertex_PCUTB), &Vertex_PCUTB::BindMeshToVAO);
+    builder.CopyToMesh(mesh, &Vertex_PCT::Copy, sizeof(Vertex_PCT), &Vertex_PCT::BindMeshToVAO);
     mesh->m_drawMode = drawMode;
     MeshRenderer* thingToRender = new MeshRenderer(mesh, m_defaultMaterial);
     m_defaultMaterial->SetMatrices(Matrix4x4::IDENTITY, m_viewStack.GetTop(), m_projStack.GetTop());
@@ -586,6 +586,7 @@ void Renderer::DrawText2D
     m_defaultMaterial->SetMatrices(Matrix4x4::IDENTITY, m_viewStack.GetTop(), m_projStack.GetTop());
     GL_CHECK_ERROR();
     thingToRender.Render();
+    GL_CHECK_ERROR();
 }
 
 //-----------------------------------------------------------------------------------

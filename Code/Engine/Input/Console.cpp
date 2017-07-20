@@ -11,6 +11,7 @@
 #include "Engine/Renderer/Texture.hpp"
 #include "../Time/Time.hpp"
 #include "../Math/MathUtils.hpp"
+#include "../Renderer/BufferedMeshRenderer.hpp"
 
 Console* Console::instance = nullptr;
 std::map<size_t, ConsoleCommandFunctionPointer, std::less<size_t>, UntrackedAllocator<std::pair<size_t, ConsoleCommandFunctionPointer>>>* g_consoleCommands = nullptr;
@@ -280,8 +281,6 @@ void Console::Render() const
             {
                 Vector2 currentBaseline = Vector2::ONE * 10.0f;
                 std::string currentLine = std::string(m_currentLine);
-                Renderer::instance->DrawText2D(currentBaseline, currentLine, 1.0f, RGBA::WHITE, true, m_font);
-
                 if (m_renderCursor)
                 {
                     int numCharsIntoString = (m_cursorPointer - m_currentLine) / sizeof(char);
@@ -293,6 +292,10 @@ void Console::Render() const
                     Renderer::instance->DrawLine(cursorBottom, cursorTop, RGBA::WHITE, 2.0f);
                 }
 
+                BufferedMeshRenderer bufferedMeshRenderer;
+                bufferedMeshRenderer.SetMaterial(m_font->GetMaterial());
+                bufferedMeshRenderer.m_builder.AddText2D(currentBaseline, currentLine, 1.0f, RGBA::WHITE, true, m_font);
+
                 int index = m_consoleHistoryIndex;
                 unsigned int numberOfLinesPrinted = 0;
                 for (auto reverseIterator = m_consoleHistory.rbegin(); reverseIterator != m_consoleHistory.rend(); ++reverseIterator, --index)
@@ -302,13 +305,14 @@ void Console::Render() const
                         break;
                     }
                     currentBaseline += Vector2(0.0f, (float)m_font->m_maxHeight);
-                    Renderer::instance->DrawText2D(currentBaseline, m_consoleHistory[index]->text, 1.0f, m_consoleHistory[index]->color, true, m_font);
+                    bufferedMeshRenderer.m_builder.AddText2D(currentBaseline, m_consoleHistory[index]->text, 1.0f, m_consoleHistory[index]->color, true, m_font);
                     numberOfLinesPrinted++;
                     if (numberOfLinesPrinted > MAX_CONSOLE_LINES)
                     {
                         break;
                     }
                 }
+                bufferedMeshRenderer.FlushAndRender();
             }
             Renderer::instance->m_defaultMaterial->m_renderState.depthTestingMode = RenderState::DepthTestingMode::ON;
         }
