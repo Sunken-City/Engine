@@ -220,7 +220,7 @@ Texture::Texture(unsigned char* textureData, size_t bufferSize)
     ASSERT_OR_DIE(m_imageData != nullptr, "The texture failed to load!");
 
     // Enable texturing
-    glEnable(GL_TEXTURE_2D);
+    //glEnable(GL_TEXTURE_2D);
     GL_CHECK_ERROR();
 
     // Tell OpenGL that our pixel data is single-byte aligned
