@@ -12,6 +12,7 @@
 #include "../Time/Time.hpp"
 #include "../Math/MathUtils.hpp"
 #include "../Renderer/BufferedMeshRenderer.hpp"
+#include "../Audio/Audio.hpp"
 
 Console* Console::instance = nullptr;
 std::map<size_t, ConsoleCommandFunctionPointer, std::less<size_t>, UntrackedAllocator<std::pair<size_t, ConsoleCommandFunctionPointer>>>* g_consoleCommands = nullptr;
@@ -85,6 +86,16 @@ void Console::ParseKey(char currentChar)
 //         delete tokenizedString;
     }
 
+    if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::TILDE))
+    {
+        //TODO: MAKE THIS WORK LATER
+//         if (IsEmpty())
+//         {
+//             DeactivateConsole();
+//             return;
+//         }
+    }
+
     if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::ESC))
     {
         if (IsEmpty())
@@ -98,6 +109,7 @@ void Console::ParseKey(char currentChar)
             memset(m_currentLine, 0x00, MAX_LINE_LENGTH);
         }
     }
+
     if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::BACKSPACE) && m_cursorPointer != m_currentLine)
     {
         --m_cursorPointer;
@@ -331,6 +343,15 @@ void Console::ActivateConsole()
 {
     m_isActive = true;
     m_timeLastActivatedMS = GetCurrentTimeMilliseconds();
+
+    if (AudioSystem::instance)
+    {
+        static SoundID sound = AudioSystem::instance->CreateOrGetSound("Data/SFX/uiOpen.ogg");
+        if (sound != MISSING_SOUND_ID)
+        {
+            AudioSystem::instance->PlaySound(sound);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------------
@@ -338,6 +359,15 @@ void Console::DeactivateConsole()
 {
     m_isActive = false;
     m_timeLastActivatedMS = GetCurrentTimeMilliseconds();
+
+    if (AudioSystem::instance)
+    {
+        static SoundID sound = AudioSystem::instance->CreateOrGetSound("Data/SFX/uiClose.ogg");
+        if (sound != MISSING_SOUND_ID)
+        {
+            AudioSystem::instance->PlaySound(sound);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------------
