@@ -12,70 +12,8 @@
 #include "ThirdParty/taglib/include/taglib/rifffile.h"
 #include "ThirdParty/taglib/include/taglib/oggflacfile.h"
 #include "Engine/Input/Console.hpp"
+#include "Engine/Input/InputOutputUtils.hpp"
 #include <string>
-
-//-----------------------------------------------------------------------------------
-std::string GetFileExtension(const std::string& fileName)
-{
-    //Find the file extension.
-    //Use fileName.rfind to find the first period, marking the extension.
-    //Get the rest of the characters after the period and return a lowercase string.
-
-    unsigned extensionPos = fileName.rfind('.');
-
-    if (extensionPos != std::string::npos && extensionPos != fileName.length())
-    {
-        std::string fileExtension = fileName.substr((extensionPos + 1), fileName.length());
-        char* fileExtensionChar = new char[fileExtension.length() + 1];
-        strcpy(fileExtensionChar, fileExtension.c_str());
-        for (unsigned i = 0; i < fileExtension.length(); ++i)
-        {
-            if (!islower(fileExtensionChar[i]))
-            {
-                fileExtensionChar[i] = (char)tolower(fileExtensionChar[i]);
-            }
-        }
-        std::string lowerFileExtension(fileExtensionChar);
-        delete[] fileExtensionChar;
-
-        return lowerFileExtension;
-    }
-
-    return "ERROR";
-}
-
-//-----------------------------------------------------------------------------------
-std::string GetFileName(const std::string& filePath)
-{
-    //Finds the file name.
-    //Use filePath.rfind to find the first period, which marks the stopping position for the substring.
-    //Use filePath.rfind to find the first slash (/ or \) marking the start position.
-    //Returns the file name (case sensitive)
-
-    unsigned extensionPos = filePath.rfind('.');
-
-    if (extensionPos != std::string::npos && extensionPos != filePath.length())
-    {
-        //If we end up using \ to escape characters in the console this will not work, in this case for windows directories
-        unsigned directoryPos = filePath.rfind('\\');
-        if (directoryPos != std::string::npos && directoryPos != filePath.length())
-        {
-            std::string fileName = filePath.substr((directoryPos + 1), (extensionPos + 1));
-            return fileName;
-        }
-        else
-        {
-            directoryPos = filePath.rfind('/');
-            if (directoryPos != std::string::npos && directoryPos != filePath.length())
-            {
-                std::string fileName = filePath.substr((directoryPos + 1), (extensionPos + 1));
-                return fileName;
-            }
-        }
-    }
-
-    return "ERROR";
-}
 
 //-----------------------------------------------------------------------------------
 bool IncrementPlaycount(const std::string& fileName)
@@ -305,6 +243,28 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
                 }
             }
         }
+    }
+
+
+    //Attempt to grab the first image file in the folder to use as album art
+    std::string directoryName = GetFileDirectory(fileName);
+
+    std::vector<std::string> pngFiles = EnumerateFiles(directoryName, "*.png");
+    if (pngFiles.size() > 0)
+    {
+        return Texture::CreateOrGetTexture(std::string(directoryName + pngFiles[0]));
+    }
+
+    std::vector<std::string> jpgFiles = EnumerateFiles(directoryName, "*.jpg");
+    if (jpgFiles.size() > 0)
+    {
+        return Texture::CreateOrGetTexture(std::string(directoryName + jpgFiles[0]));
+    }
+
+    std::vector<std::string> jpegFiles = EnumerateFiles(directoryName, "*.jpeg");
+    if (jpegFiles.size() > 0)
+    {
+        return Texture::CreateOrGetTexture(std::string(directoryName + jpegFiles[0]));
     }
 
     Console::instance->PrintLine("Could not load album art from song!", RGBA::RED);

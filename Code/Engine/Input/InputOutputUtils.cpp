@@ -279,3 +279,94 @@ bool DirectoryExists(const std::wstring& directoryPath)
     DWORD dwAttrib = GetFileAttributes(wideDirectoryPath);
     return (dwAttrib != INVALID_FILE_ATTRIBUTES && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 }
+
+//-----------------------------------------------------------------------------------
+std::string GetFileExtension(const std::string& fileName)
+{
+    //Find the file extension.
+    //Use fileName.rfind to find the first period, marking the extension.
+    //Get the rest of the characters after the period and return a lowercase string.
+
+    unsigned extensionPos = fileName.rfind('.');
+
+    if (extensionPos != std::string::npos && extensionPos != fileName.length())
+    {
+        std::string fileExtension = fileName.substr((extensionPos + 1), fileName.length());
+        char* fileExtensionChar = new char[fileExtension.length() + 1];
+        strcpy(fileExtensionChar, fileExtension.c_str());
+        for (unsigned i = 0; i < fileExtension.length(); ++i)
+        {
+            if (!islower(fileExtensionChar[i]))
+            {
+                fileExtensionChar[i] = (char)tolower(fileExtensionChar[i]);
+            }
+        }
+        std::string lowerFileExtension(fileExtensionChar);
+        delete[] fileExtensionChar;
+
+        return lowerFileExtension;
+    }
+
+    return "ERROR";
+}
+
+//-----------------------------------------------------------------------------------
+std::string GetFileName(const std::string& filePath)
+{
+    //Finds the file name.
+    //Use filePath.rfind to find the first period, which marks the stopping position for the substring.
+    //Use filePath.rfind to find the first slash (/ or \) marking the start position.
+    //Returns the file name (case sensitive)
+
+    unsigned extensionPos = filePath.rfind('.');
+
+    if (extensionPos != std::string::npos && extensionPos != filePath.length())
+    {
+        //If we end up using \ to escape characters in the console this will not work, in this case for windows directories
+        unsigned directoryPos = filePath.rfind('\\');
+        if (directoryPos != std::string::npos && directoryPos != filePath.length())
+        {
+            std::string fileName = filePath.substr((directoryPos + 1), (extensionPos + 1));
+            return fileName;
+        }
+        else
+        {
+            directoryPos = filePath.rfind('/');
+            if (directoryPos != std::string::npos && directoryPos != filePath.length())
+            {
+                std::string fileName = filePath.substr((directoryPos + 1), (extensionPos + 1));
+                return fileName;
+            }
+        }
+    }
+
+    return "ERROR";
+}
+
+//-----------------------------------------------------------------------------------
+std::string GetFileDirectory(const std::string& filePath)
+{
+    unsigned extensionPos = filePath.rfind('.');
+
+    if (extensionPos != std::string::npos && extensionPos != filePath.length())
+    {
+        //If we end up using \ to escape characters in the console this will not work, in this case for windows directories
+        unsigned directoryPos = filePath.rfind('\\');
+        if (directoryPos != std::string::npos && directoryPos != filePath.length())
+        {
+            std::string directoryPath = filePath.substr(0, (directoryPos + 1));
+            return directoryPath;
+        }
+        else
+        {
+            directoryPos = filePath.rfind('/');
+            if (directoryPos != std::string::npos && directoryPos != filePath.length())
+            {
+                std::string directoryPath = filePath.substr(0, (directoryPos + 1));
+                return directoryPath;
+            }
+        }
+    }
+
+    return "ERROR";
+}

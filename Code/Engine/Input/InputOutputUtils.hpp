@@ -14,6 +14,9 @@ std::vector<std::string> EnumerateDirectories(const std::wstring& baseFolder, bo
 bool FileExists(const std::string& filename);
 bool DirectoryExists(const std::wstring& directoryPath);
 std::wstring RelativeToFullPath(const std::wstring& relativePath);
+std::string GetFileExtension(const std::string& fileName);
+std::string GetFileName(const std::string& filePath);
+std::string GetFileDirectory(const std::string& filePath);
 
 //-----------------------------------------------------------------------------------
 template<typename T>
