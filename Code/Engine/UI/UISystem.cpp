@@ -250,6 +250,12 @@ WidgetBase* UISystem::FindWidgetByName(const char* widgetName)
             foundWidget = widget;
             break;
         }
+
+        foundWidget = widget->FindWidgetByName(widgetName);
+        if (foundWidget)
+        {
+            break;
+        }
     }
 
     return foundWidget;

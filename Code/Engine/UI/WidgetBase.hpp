@@ -90,6 +90,7 @@ public:
     virtual void BuildFromXMLNode(XMLNode& node);
     virtual void OnClick();
     virtual WidgetBase* GetWidgetPointIsInside(const Vector2& point); //Is this inside you or any of your children?
+    virtual WidgetBase* FindWidgetByName(const char* widgetName);
     virtual void SetHighlighted() { m_previousState = m_currentState; m_currentState = HIGHLIGHTED_WIDGET_STATE; };
     virtual void UnsetHighlighted() { m_currentState = m_previousState; };
     virtual void SetPressed() { m_currentState = PRESSED_WIDGET_STATE; };

@@ -299,3 +299,25 @@ WidgetBase* WidgetBase::GetWidgetPointIsInside(const Vector2& point)
     }
     return m_bounds.IsPointOnOrInside(point) ? this : nullptr;
 }
+
+//-----------------------------------------------------------------------------------
+WidgetBase* WidgetBase::FindWidgetByName(const char* widgetName)
+{
+    WidgetBase* foundWidget = nullptr;
+
+    for (WidgetBase* widget : m_children)
+    {
+        if (widget->m_name == widgetName)
+        {
+            foundWidget = widget;
+            break;
+        }
+
+        foundWidget = widget->FindWidgetByName(widgetName);
+        if (foundWidget)
+        {
+            break;
+        }
+    }
+    return foundWidget;
+}
