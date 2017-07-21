@@ -173,6 +173,18 @@ float AudioSystem::GetFrequency(SoundID soundID)
     return frequency;
 }
 
+//-----------------------------------------------------------------------------------
+void AudioSystem::SetMIDISpeed(SoundID soundID, float speedMultiplier)
+{
+    FMOD::Sound* sound = m_registeredSounds[soundID];
+    if (!sound)
+    {
+        return;
+    }
+
+    sound->setMusicSpeed(speedMultiplier);
+}
+
 //---------------------------------------------------------------------------
 SoundID AudioSystem::CreateOrGetSound( const std::string& soundFileName )
 {
