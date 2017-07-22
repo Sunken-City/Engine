@@ -6,6 +6,8 @@
 
 class Matrix4x4;
 class Vector2;
+class Texture;
+class Material;
 
 //-----------------------------------------------------------------------------------
 enum WidgetState
@@ -111,9 +113,12 @@ public:
     mutable NamedProperties m_propertiesForState[NUM_WIDGET_STATES];
     std::vector<WidgetBase*> m_children;
     std::string m_name;
+    std::string m_textureName;
     AABB2 m_bounds;
     AABB2 m_borderlessBounds;
     AABB2 m_borderedBounds;
+    Texture* m_texture = nullptr;
+    Material* m_material = nullptr;
     WidgetBase* m_parent = nullptr;
     WidgetState m_previousState = ACTIVE_WIDGET_STATE;
     WidgetState m_currentState = ACTIVE_WIDGET_STATE;

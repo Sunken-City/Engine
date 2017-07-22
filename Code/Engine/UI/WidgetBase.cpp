@@ -67,13 +67,25 @@ void WidgetBase::Render() const
     bgColor.alpha = (uchar)((((float)bgColor.alpha / 255.0f) * opacity) * 255.0f);
     borderColor.alpha = (uchar)((((float)borderColor.alpha / 255.0f) * opacity) * 255.0f);
 
+    Texture* texture = Renderer::instance->m_defaultTexture;
+
+    if (m_texture)
+    {
+        texture = m_texture;
+    }
+
+    if (m_material)
+    {
+        //TODO: Once we redo how drawing works, add support for materials!
+    }
+
     if (borderWidth > 0.0f && borderColor.alpha != 0x00)
     {
         Renderer::instance->DrawTexturedAABB(m_borderedBounds, Vector2::ZERO, Vector2::ONE, Renderer::instance->m_defaultTexture, borderColor);
     }
     if (bgColor.alpha != 0x00)
     {
-        Renderer::instance->DrawTexturedAABB(m_borderlessBounds, Vector2::ZERO, Vector2::ONE, Renderer::instance->m_defaultTexture, bgColor);
+        Renderer::instance->DrawTexturedAABB(m_borderlessBounds, Vector2::ZERO, Vector2::ONE, texture, bgColor);
     }
 }
 
@@ -126,6 +138,8 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     const char* sizeAttribute = node.getAttribute("Size");
     const char* offsetAttribute = node.getAttribute("Offset");
     const char* paddingAttribute = node.getAttribute("Padding");
+    const char* textureAttribute = node.getAttribute("Texture");
+    const char* materialAttribute = node.getAttribute("Material");
 
     Vector2 offset = m_propertiesForAllStates.Get<Vector2>("Offset");
     RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
@@ -181,6 +195,20 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     {
         Vector2 size = Vector2::CreateFromString(sizeAttribute);
         m_propertiesForAllStates.Set<Vector2>("Size", size);
+    }
+    if (textureAttribute)
+    {
+        m_texture = Texture::CreateOrGetTexture(std::string(textureAttribute));
+    }
+    if (materialAttribute)
+    {
+        if (m_material)
+        {
+            delete m_material->m_shaderProgram;
+            delete m_material;
+        }
+        //TODO: Have materials load from a file that says what links in. For now they just load a custom fragment shader.
+        m_material = new Material(new ShaderProgram("Data/Shaders/fixedVertexFormat.vert", materialAttribute), Renderer::instance->m_defaultMaterial->m_renderState);
     }
 
     m_propertiesForAllStates.Set<Vector2>("Offset", offset);
