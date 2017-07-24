@@ -111,10 +111,16 @@ void WidgetBase::AddChild(WidgetBase* child)
 AABB2 WidgetBase::GetSmallestBoundsAroundChildren()
 {
     AABB2 smallestBounds = m_children.size() > 0 ? m_children.at(0)->m_bounds : AABB2(Vector2::ZERO, Vector2::ZERO);
+    Vector2 currentOffset = GetProperty<Vector2>("Offset");
+    smallestBounds.mins -= currentOffset; //Correct for any offsets they've gotten from this parent.
+    smallestBounds.maxs -= currentOffset;
 
     for (WidgetBase* child : m_children)
     {
         AABB2 childBounds = child->GetBounds();
+        childBounds.mins -= currentOffset; //Correct for any offsets they've gotten from this parent.
+        childBounds.maxs -= currentOffset;
+
         smallestBounds.mins.x = (childBounds.mins.x < smallestBounds.mins.x) ? childBounds.mins.x : smallestBounds.mins.x;
         smallestBounds.mins.y = (childBounds.mins.y < smallestBounds.mins.y) ? childBounds.mins.y : smallestBounds.mins.y;
         smallestBounds.maxs.x = (childBounds.maxs.x > smallestBounds.maxs.x) ? childBounds.maxs.x : smallestBounds.maxs.x;
@@ -130,7 +136,7 @@ void WidgetBase::ApplySizeProperty()
     //If our innards aren't big enough to meet the minimum size requirement, stretch to fit that.
 
     Vector2 boundsSize = Vector2(m_bounds.GetWidth(), m_bounds.GetHeight());
-    Vector2 minimumSize = m_propertiesForAllStates.Get<Vector2>("Size");
+    Vector2 minimumSize = GetProperty<Vector2>("Size");
 
     Vector2 sizeDifference = minimumSize - boundsSize;
     //if (sizeDifference.x > 0.0f)
