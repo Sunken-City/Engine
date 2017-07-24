@@ -89,6 +89,10 @@ public:
     virtual AABB2 GetBounds() { return m_bounds; };
     virtual AABB2 GetSmallestBoundsAroundChildren();
     virtual void RecalculateBounds() = 0;
+    virtual void ApplySizeProperty();
+    virtual void ApplyPaddingProperty();
+    virtual inline void ApplyOffsetProperty() { m_bounds += GetTotalOffset(); };
+
     virtual void BuildFromXMLNode(XMLNode& node);
     virtual void OnClick();
     virtual WidgetBase* GetWidgetPointIsInside(const Vector2& point); //Is this inside you or any of your children?

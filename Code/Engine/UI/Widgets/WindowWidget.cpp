@@ -38,10 +38,13 @@ void WindowWidget::RecalculateBounds()
 {
     float borderWidth = GetProperty<float>("BorderWidth");
     m_bounds = GetSmallestBoundsAroundChildren();
+    ApplyOffsetProperty();
+    ApplySizeProperty();
     m_borderlessBounds = m_bounds;
+
     m_bounds.mins += Vector2(-borderWidth);
     m_bounds.maxs += Vector2(borderWidth);
     m_borderedBounds = m_bounds;
-    m_bounds.mins -= m_propertiesForAllStates.Get<Vector2>("Padding");
-    m_bounds.maxs += m_propertiesForAllStates.Get<Vector2>("Padding");
+
+    ApplyPaddingProperty();
 }

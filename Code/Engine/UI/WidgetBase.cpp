@@ -81,11 +81,11 @@ void WidgetBase::Render() const
 
     if (borderWidth > 0.0f && borderColor.alpha != 0x00)
     {
-        Renderer::instance->DrawTexturedAABB(m_borderedBounds, Vector2::ZERO, Vector2::ONE, Renderer::instance->m_defaultTexture, borderColor);
+        Renderer::instance->DrawTexturedAABB(m_borderedBounds, Vector2(0, 1), Vector2(1, 0), Renderer::instance->m_defaultTexture, borderColor);
     }
     if (bgColor.alpha != 0x00)
     {
-        Renderer::instance->DrawTexturedAABB(m_borderlessBounds, Vector2::ZERO, Vector2::ONE, texture, bgColor);
+        Renderer::instance->DrawTexturedAABB(m_borderlessBounds, Vector2(0, 1), Vector2(1, 0), texture, bgColor);
     }
 }
 
@@ -122,6 +122,37 @@ AABB2 WidgetBase::GetSmallestBoundsAroundChildren()
     }
 
     return smallestBounds;
+}
+
+//-----------------------------------------------------------------------------------
+void WidgetBase::ApplySizeProperty()
+{
+    //If our innards aren't big enough to meet the minimum size requirement, stretch to fit that.
+
+    Vector2 boundsSize = Vector2(m_bounds.GetWidth(), m_bounds.GetHeight());
+    Vector2 minimumSize = m_propertiesForAllStates.Get<Vector2>("Size");
+
+    Vector2 sizeDifference = minimumSize - boundsSize;
+    //if (sizeDifference.x > 0.0f)
+    {
+        float halfSizeDifference = sizeDifference.x * 0.5f;
+        m_bounds.mins.x -= halfSizeDifference;
+        m_bounds.maxs.x += halfSizeDifference;
+    }
+    //if (sizeDifference.y > 0.0f)
+    {
+        float halfSizeDifference = sizeDifference.y * 0.5f;
+        m_bounds.mins.y -= halfSizeDifference;
+        m_bounds.maxs.y += halfSizeDifference;
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void WidgetBase::ApplyPaddingProperty()
+{
+    //This modifies the bounds after the border has been set.
+    m_bounds.mins -= m_propertiesForAllStates.Get<Vector2>("Padding");
+    m_bounds.maxs += m_propertiesForAllStates.Get<Vector2>("Padding");
 }
 
 //-----------------------------------------------------------------------------------
@@ -212,7 +243,6 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     }
 
     m_propertiesForAllStates.Set<Vector2>("Offset", offset);
-    m_propertiesForAllStates.Set<Vector2>("Size", Vector2::ONE);
 
     std::vector<XMLNode> children = XMLUtils::GetChildren(node);
     for (XMLNode& child : children)
