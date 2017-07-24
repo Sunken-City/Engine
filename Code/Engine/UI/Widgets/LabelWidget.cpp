@@ -37,7 +37,10 @@ void LabelWidget::BuildFromXMLNode(XMLNode& node)
     const char* textOpacityAttribute = node.getAttribute("TextOpacity");
     const char* textOffsetAttribute = node.getAttribute("TextOffset");
 
-    ASSERT_OR_DIE(textAttribute != nullptr, "No text was supplied on Label node.");
+    if (textAttribute == nullptr)
+    {
+        textAttribute = "";
+    }
 
     std::string text = textAttribute;
     RGBA textColor = textColorAttribute ? RGBA::CreateFromString(textColorAttribute) : RGBA::WHITE;
@@ -65,13 +68,15 @@ void LabelWidget::RecalculateBounds()
     float borderWidth = GetProperty<float>("BorderWidth");
 
     m_bounds = BitmapFont::CreateOrGetFont("Runescape")->CalcTextBounds(text, fontSize);
-    m_bounds += GetTotalOffset();
+    ApplyOffsetProperty();
+    ApplySizeProperty();
     m_borderlessBounds = m_bounds;
-    m_bounds.mins += Vector2(-borderWidth);
+
+    m_bounds.mins -= Vector2(borderWidth);
     m_bounds.maxs += Vector2(borderWidth);
     m_borderedBounds = m_bounds;
-    m_bounds.mins -= m_propertiesForAllStates.Get<Vector2>("Padding");
-    m_bounds.maxs += m_propertiesForAllStates.Get<Vector2>("Padding");
+
+    ApplyPaddingProperty();
 }
 
 //-----------------------------------------------------------------------------------
