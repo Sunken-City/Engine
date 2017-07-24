@@ -26,6 +26,13 @@ ButtonWidget::~ButtonWidget()
 //-----------------------------------------------------------------------------------
 void ButtonWidget::Update(float deltaSeconds)
 {
+    static Vector2 lastSize = GetProperty<Vector2>("Size");
+    Vector2 currentSize = GetProperty<Vector2>("Size");
+    if (lastSize != currentSize)
+    {
+        lastSize = currentSize;
+        RecalculateBounds();
+    }
     LabelWidget::Update(deltaSeconds);
     UpdateChildren(deltaSeconds);
 }
@@ -46,9 +53,13 @@ void ButtonWidget::BuildFromXMLNode(XMLNode& node)
     const char* h_borderColorAttribute = node.getAttribute("H_BorderColor");
     const char* p_backgroundColorAttribute = node.getAttribute("P_BackgroundColor");
     const char* p_borderColorAttribute = node.getAttribute("P_BorderColor");
+    const char* h_sizeAttribute = node.getAttribute("H_Size");
+    const char* p_sizeAttribute = node.getAttribute("P_Size");
 
     RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
     RGBA edgeColor = m_propertiesForAllStates.Get<RGBA>("BorderColor");
+    Vector2 h_size = m_propertiesForAllStates.Get<Vector2>("Size") * 1.25f;
+    Vector2 p_size = m_propertiesForAllStates.Get<Vector2>("Size") * 0.75f;
 
     if (h_backgroundColorAttribute)
     {
@@ -89,6 +100,17 @@ void ButtonWidget::BuildFromXMLNode(XMLNode& node)
         RGBA pressedColor = edgeColor - RGBA(0x22222200);
         SetProperty("BorderColor", pressedColor, PRESSED_WIDGET_STATE);
     }
+
+    if (h_sizeAttribute)
+    {
+        h_size = Vector2::CreateFromString(h_sizeAttribute);
+    }
+    if (p_sizeAttribute)
+    {
+        p_size = Vector2::CreateFromString(p_sizeAttribute);
+    }
+    SetProperty("Size", h_size, HIGHLIGHTED_WIDGET_STATE);
+    SetProperty("Size", p_size, PRESSED_WIDGET_STATE);
 
     RecalculateBounds();
 }

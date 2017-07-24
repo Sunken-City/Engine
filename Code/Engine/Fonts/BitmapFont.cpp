@@ -122,6 +122,11 @@ int BitmapFont::GetCharacterWidth()
 AABB2 BitmapFont::CalcTextBounds(const std::string& textToWrite, float scale) const
 {
     AABB2 bounds = AABB2(Vector2::ZERO, Vector2::ZERO);
+    if (textToWrite.empty())
+    {
+        return bounds;
+    }
+
     bounds.maxs.x = CalcTextWidth(textToWrite, scale) * scale;
     bounds.maxs.y = m_maxHeight * scale;
     return bounds;

@@ -53,8 +53,6 @@ void LabelWidget::BuildFromXMLNode(XMLNode& node)
     m_propertiesForAllStates.Set<float>("TextSize", textSize);
     m_propertiesForAllStates.Set<float>("TextOpacity", textOpacity);
     SetProperty<Vector2>("TextOffset", textOffset);
-    
-    RecalculateBounds();
 }
 
 //-----------------------------------------------------------------------------------
