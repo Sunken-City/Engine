@@ -16,3 +16,4 @@ RGBA GetColorFromHexString(const std::string& hexString);
 void TrimBeginning(std::string& toTrim);
 void TrimEnd(std::string& toTrim);
 void Trim(std::string& toTrim);
+void ToLower(std::string& stringToLower);
