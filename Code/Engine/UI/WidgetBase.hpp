@@ -22,6 +22,17 @@ enum WidgetState
 };
 
 //-----------------------------------------------------------------------------------
+enum DockPosition
+{
+    NOT_DOCKED,
+    BOTTOM_DOCKED,
+    TOP_DOCKED,
+    LEFT_DOCKED,
+    RIGHT_DOCKED,
+    NUM_DOCKING_POSITIONS
+};
+
+//-----------------------------------------------------------------------------------
 class WidgetBase
 {
 public:
@@ -91,6 +102,8 @@ public:
     virtual void RecalculateBounds() = 0;
     virtual void ApplySizeProperty();
     virtual void ApplyPaddingProperty();
+    virtual void ApplyMarginProperty();
+    virtual void ApplyDockingProperty();
     virtual inline void ApplyOffsetProperty() { m_bounds += GetTotalOffset(); };
 
     virtual void BuildFromXMLNode(XMLNode& node);
@@ -127,4 +140,5 @@ public:
     WidgetState m_previousState = ACTIVE_WIDGET_STATE;
     WidgetState m_currentState = ACTIVE_WIDGET_STATE;
     const bool m_isInteractive = true;
+    DockPosition m_dockType = NOT_DOCKED;
 };

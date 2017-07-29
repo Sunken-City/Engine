@@ -14,6 +14,7 @@ WidgetBase::WidgetBase()
     m_propertiesForAllStates.Set<Vector2>("Offset", Vector2::ZERO);
     m_propertiesForAllStates.Set<Vector2>("Size", Vector2::ONE);
     m_propertiesForAllStates.Set<Vector2>("Padding", Vector2::ZERO);
+    m_propertiesForAllStates.Set<Vector2>("Margin", Vector2::ZERO);
     m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::LIGHT_GRAY);
     m_propertiesForAllStates.Set<RGBA>("BorderColor", RGBA::GRAY);
     m_propertiesForAllStates.Set<float>("Opacity", 1.0f);
@@ -131,6 +132,25 @@ AABB2 WidgetBase::GetSmallestBoundsAroundChildren()
 }
 
 //-----------------------------------------------------------------------------------
+//Fun fact: You CAN implement a pure virtual function. This is here to keep the base functionality 
+//consistent for recalculating bounds if a subclass doesn't need to override it.
+void WidgetBase::RecalculateBounds()
+{
+    float borderWidth = GetProperty<float>("BorderWidth");
+    ApplyOffsetProperty();
+    ApplySizeProperty();
+    ApplyDockingProperty();
+    ApplyPaddingProperty();
+    m_borderlessBounds = m_bounds;
+
+    m_bounds.mins += Vector2(-borderWidth);
+    m_bounds.maxs += Vector2(borderWidth);
+    m_borderedBounds = m_bounds;
+
+    ApplyMarginProperty();
+}
+
+//-----------------------------------------------------------------------------------
 void WidgetBase::ApplySizeProperty()
 {
     //If our innards aren't big enough to meet the minimum size requirement, stretch to fit that.
@@ -139,26 +159,59 @@ void WidgetBase::ApplySizeProperty()
     Vector2 minimumSize = GetProperty<Vector2>("Size");
 
     Vector2 sizeDifference = minimumSize - boundsSize;
-    //if (sizeDifference.x > 0.0f)
-    {
-        float halfSizeDifference = sizeDifference.x * 0.5f;
-        m_bounds.mins.x -= halfSizeDifference;
-        m_bounds.maxs.x += halfSizeDifference;
-    }
-    //if (sizeDifference.y > 0.0f)
-    {
-        float halfSizeDifference = sizeDifference.y * 0.5f;
-        m_bounds.mins.y -= halfSizeDifference;
-        m_bounds.maxs.y += halfSizeDifference;
-    }
+    float halfSizeDifferenceX = sizeDifference.x * 0.5f;
+    m_bounds.mins.x -= halfSizeDifferenceX;
+    m_bounds.maxs.x += halfSizeDifferenceX;
+    float halfSizeDifferenceY = sizeDifference.y * 0.5f;
+    m_bounds.mins.y -= halfSizeDifferenceY;
+    m_bounds.maxs.y += halfSizeDifferenceY;
 }
 
 //-----------------------------------------------------------------------------------
 void WidgetBase::ApplyPaddingProperty()
 {
-    //This modifies the bounds after the border has been set.
     m_bounds.mins -= m_propertiesForAllStates.Get<Vector2>("Padding");
     m_bounds.maxs += m_propertiesForAllStates.Get<Vector2>("Padding");
+}
+
+//-----------------------------------------------------------------------------------
+void WidgetBase::ApplyMarginProperty()
+{
+    //This modifies the bounds after the border has been set.
+    m_bounds.mins -= m_propertiesForAllStates.Get<Vector2>("Margin");
+    m_bounds.maxs += m_propertiesForAllStates.Get<Vector2>("Margin");
+}
+
+//-----------------------------------------------------------------------------------
+void WidgetBase::ApplyDockingProperty()
+{
+    switch (m_dockType)
+    {
+    case BOTTOM_DOCKED:
+        m_bounds.mins.x = 0;
+        m_bounds.maxs.x = 1600;
+        m_bounds.mins.y = 0;
+        break;
+    case TOP_DOCKED:
+        m_bounds.mins.x = 0;
+        m_bounds.maxs.x = 1600;
+        m_bounds.maxs.y = 0;
+        break;
+    case LEFT_DOCKED:
+        m_bounds.mins.x = 0;
+        m_bounds.mins.y = 0;
+        m_bounds.maxs.y = 900;
+        break;
+    case RIGHT_DOCKED:
+        m_bounds.maxs.x = 1600;
+        m_bounds.mins.y = 0;
+        m_bounds.maxs.y = 900;
+        break;
+    case NOT_DOCKED:
+    case NUM_DOCKING_POSITIONS:
+    default:
+        break;
+    }
 }
 
 //-----------------------------------------------------------------------------------
@@ -175,8 +228,10 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     const char* sizeAttribute = node.getAttribute("Size");
     const char* offsetAttribute = node.getAttribute("Offset");
     const char* paddingAttribute = node.getAttribute("Padding");
+    const char* marginAttribute = node.getAttribute("Margin");
     const char* textureAttribute = node.getAttribute("Texture");
     const char* materialAttribute = node.getAttribute("Material");
+    const char* dockAttribute = node.getAttribute("Dock");
 
     Vector2 offset = m_propertiesForAllStates.Get<Vector2>("Offset");
     RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
@@ -186,6 +241,11 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     {
         Vector2 padding = Vector2::CreateFromString(paddingAttribute);
         m_propertiesForAllStates.Set<Vector2>("Padding", padding);
+    }
+    if (marginAttribute)
+    {
+        Vector2 margin = Vector2::CreateFromString(marginAttribute);
+        m_propertiesForAllStates.Set<Vector2>("Margin", margin);
     }
     if (offsetAttribute)
     {
@@ -246,6 +306,31 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
         }
         //TODO: Have materials load from a file that says what links in. For now they just load a custom fragment shader.
         m_material = new Material(new ShaderProgram("Data/Shaders/fixedVertexFormat.vert", materialAttribute), Renderer::instance->m_defaultMaterial->m_renderState);
+    }
+    if (dockAttribute)
+    {
+        std::string dockType = std::string(dockAttribute);
+        ToLower(dockType);
+        if (dockType == "bottom")
+        {
+            m_dockType = BOTTOM_DOCKED;
+        }
+        else if (dockType == "top")
+        {
+            m_dockType = TOP_DOCKED;
+        }
+        else if (dockType == "left")
+        {
+            m_dockType = LEFT_DOCKED;
+        }
+        else if (dockType == "right")
+        {
+            m_dockType = RIGHT_DOCKED;
+        }
+        else
+        {
+            ERROR_RECOVERABLE("Warning: Dock label was detected in a widget with an invalid value. Valid values include Top, Bottom, Left, Right");
+        }
     }
 
     m_propertiesForAllStates.Set<Vector2>("Offset", offset);
