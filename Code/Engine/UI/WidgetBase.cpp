@@ -18,7 +18,7 @@ WidgetBase::WidgetBase()
     m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::LIGHT_GRAY);
     m_propertiesForAllStates.Set<RGBA>("BorderColor", RGBA::GRAY);
     m_propertiesForAllStates.Set<float>("Opacity", 1.0f);
-    m_propertiesForAllStates.Set<float>("BorderWidth", 5.0f);
+    m_propertiesForAllStates.Set<float>("BorderWidth", 0.0f);
     SetProperty("BorderColor", RGBA::BLACK, DISABLED_WIDGET_STATE);
     SetProperty("TextColor", RGBA::GRAY, DISABLED_WIDGET_STATE);
     SetProperty("BackgroundColor", RGBA::DARK_GRAY, DISABLED_WIDGET_STATE);
@@ -82,11 +82,11 @@ void WidgetBase::Render() const
 
     if (borderWidth > 0.0f && borderColor.alpha != 0x00)
     {
-        Renderer::instance->DrawTexturedAABB(m_borderedBounds, Vector2(0, 1), Vector2(1, 0), Renderer::instance->m_defaultTexture, borderColor);
+        Renderer::instance->DrawTexturedAABB(m_borderedBounds + m_position, Vector2(0, 1), Vector2(1, 0), Renderer::instance->m_defaultTexture, borderColor);
     }
     if (bgColor.alpha != 0x00)
     {
-        Renderer::instance->DrawTexturedAABB(m_borderlessBounds, Vector2(0, 1), Vector2(1, 0), texture, bgColor);
+        Renderer::instance->DrawTexturedAABB(m_borderlessBounds + m_position, Vector2(0, 1), Vector2(1, 0), texture, bgColor);
     }
 }
 
@@ -112,16 +112,10 @@ void WidgetBase::AddChild(WidgetBase* child)
 AABB2 WidgetBase::GetSmallestBoundsAroundChildren()
 {
     AABB2 smallestBounds = m_children.size() > 0 ? m_children.at(0)->m_bounds : AABB2(Vector2::ZERO, Vector2::ZERO);
-    Vector2 currentOffset = GetProperty<Vector2>("Offset");
-    smallestBounds.mins -= currentOffset; //Correct for any offsets they've gotten from this parent.
-    smallestBounds.maxs -= currentOffset;
 
     for (WidgetBase* child : m_children)
     {
         AABB2 childBounds = child->GetBounds();
-        childBounds.mins -= currentOffset; //Correct for any offsets they've gotten from this parent.
-        childBounds.maxs -= currentOffset;
-
         smallestBounds.mins.x = (childBounds.mins.x < smallestBounds.mins.x) ? childBounds.mins.x : smallestBounds.mins.x;
         smallestBounds.mins.y = (childBounds.mins.y < smallestBounds.mins.y) ? childBounds.mins.y : smallestBounds.mins.y;
         smallestBounds.maxs.x = (childBounds.maxs.x > smallestBounds.maxs.x) ? childBounds.maxs.x : smallestBounds.maxs.x;
@@ -136,18 +130,24 @@ AABB2 WidgetBase::GetSmallestBoundsAroundChildren()
 //consistent for recalculating bounds if a subclass doesn't need to override it.
 void WidgetBase::RecalculateBounds()
 {
-    float borderWidth = GetProperty<float>("BorderWidth");
     ApplyOffsetProperty();
     ApplySizeProperty();
     ApplyDockingProperty();
     ApplyPaddingProperty();
     m_borderlessBounds = m_bounds;
 
-    m_bounds.mins += Vector2(-borderWidth);
-    m_bounds.maxs += Vector2(borderWidth);
+    ApplyBorderProperty();
     m_borderedBounds = m_bounds;
 
     ApplyMarginProperty();
+}
+
+//-----------------------------------------------------------------------------------
+void WidgetBase::ApplyBorderProperty()
+{
+    float borderWidth = GetProperty<float>("BorderWidth");
+    m_bounds.mins += Vector2(-borderWidth);
+    m_bounds.maxs += Vector2(borderWidth);
 }
 
 //-----------------------------------------------------------------------------------
@@ -156,7 +156,7 @@ void WidgetBase::ApplySizeProperty()
     //If our innards aren't big enough to meet the minimum size requirement, stretch to fit that.
 
     Vector2 boundsSize = Vector2(m_bounds.GetWidth(), m_bounds.GetHeight());
-    Vector2 minimumSize = GetProperty<Vector2>("Size");
+    Vector2 minimumSize = m_dimensions.GetMinSize();
 
     Vector2 sizeDifference = minimumSize - boundsSize;
     float halfSizeDifferenceX = sizeDifference.x * 0.5f;
@@ -205,6 +205,12 @@ void WidgetBase::ApplyDockingProperty()
         break;
     case RIGHT_DOCKED:
         m_bounds.mins.x += 1600;
+        m_bounds.maxs.x = 1600;
+        m_bounds.mins.y = 0;
+        m_bounds.maxs.y = 900;
+        break;
+    case FILL_DOCKED:
+        m_bounds.mins.x = 0;
         m_bounds.maxs.x = 1600;
         m_bounds.mins.y = 0;
         m_bounds.maxs.y = 900;
@@ -294,6 +300,7 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     {
         Vector2 size = Vector2::CreateFromString(sizeAttribute);
         m_propertiesForAllStates.Set<Vector2>("Size", size);
+        m_dimensions.SetMinSize(size);
     }
     if (textureAttribute)
     {
@@ -328,6 +335,10 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
         else if (dockType == "right")
         {
             m_dockType = RIGHT_DOCKED;
+        }
+        else if (dockType == "fill")
+        {
+            m_dockType = FILL_DOCKED;
         }
         else
         {

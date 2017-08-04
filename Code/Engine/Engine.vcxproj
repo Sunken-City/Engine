@@ -114,6 +114,7 @@
     <ClCompile Include="TextRendering\TextEffect.cpp" />
     <ClCompile Include="Time\Time.cpp" />
     <ClCompile Include="Tools\fbx.cpp" />
+    <ClCompile Include="UI\Dimensions.cpp" />
     <ClCompile Include="UI\UISystem.cpp" />
     <ClCompile Include="UI\WidgetBase.cpp" />
     <ClCompile Include="UI\Widgets\ButtonWidget.cpp" />
@@ -229,6 +230,7 @@
     <ClInclude Include="TextRendering\TextEffect.hpp" />
     <ClInclude Include="Time\Time.hpp" />
     <ClInclude Include="Tools\fbx.hpp" />
+    <ClInclude Include="UI\Dimensions.hpp" />
     <ClInclude Include="UI\UISystem.hpp" />
     <ClInclude Include="UI\WidgetBase.hpp" />
     <ClInclude Include="UI\Widgets\ButtonWidget.hpp" />

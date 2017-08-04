@@ -60,21 +60,20 @@ void LabelWidget::RecalculateBounds()
 {
     std::string text;
     float fontSize;
-
     PropertyGetResult textGet = m_propertiesForAllStates.Get<std::string>("Text", text);
     PropertyGetResult fontSizeGet = m_propertiesForAllStates.Get<float>("TextSize", fontSize);
-    float borderWidth = GetProperty<float>("BorderWidth");
 
     m_bounds = BitmapFont::CreateOrGetFont("Runescape")->CalcTextBounds(text, fontSize);
-    ApplyOffsetProperty();
-    ApplySizeProperty();
-    m_borderlessBounds = m_bounds;
+    Vector2 minSize = Vector2(m_bounds.GetWidth(), m_bounds.GetHeight());
+    Vector2 currentMinSize = m_dimensions.GetMinSize();
+    
+    //If the user has defined a Size already, we want the bigger of the two sizes so the text is guaranteed to be wrapped.
+    float x = std::max(minSize.x, currentMinSize.x);
+    float y = std::max(minSize.y, currentMinSize.y);
+    Vector2 maxOfMinSizes = Vector2(x, y);
+    m_dimensions.SetMinSize(maxOfMinSizes);
 
-    m_bounds.mins -= Vector2(borderWidth);
-    m_bounds.maxs += Vector2(borderWidth);
-    m_borderedBounds = m_bounds;
-
-    ApplyPaddingProperty();
+    WidgetBase::RecalculateBounds();
 }
 
 //-----------------------------------------------------------------------------------

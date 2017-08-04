@@ -3,6 +3,8 @@
 #include "Engine/Input/XMLUtils.hpp"
 #include "Engine/Core/Events/NamedProperties.hpp"
 #include "Engine/Renderer/AABB2.hpp"
+#include "../Math/Transform2D.hpp"
+#include "Dimensions.hpp"
 
 class Matrix4x4;
 class Vector2;
@@ -29,6 +31,7 @@ enum DockPosition
     TOP_DOCKED,
     LEFT_DOCKED,
     RIGHT_DOCKED,
+    FILL_DOCKED,
     NUM_DOCKING_POSITIONS
 };
 
@@ -100,11 +103,12 @@ public:
     virtual AABB2 GetBounds() { return m_bounds; };
     virtual AABB2 GetSmallestBoundsAroundChildren();
     virtual void RecalculateBounds() = 0;
+    virtual void ApplyBorderProperty();
     virtual void ApplySizeProperty();
     virtual void ApplyPaddingProperty();
     virtual void ApplyMarginProperty();
     virtual void ApplyDockingProperty();
-    virtual inline void ApplyOffsetProperty() { m_bounds += GetTotalOffset(); };
+    virtual inline void ApplyOffsetProperty() { m_position = GetTotalOffset(); };
 
     virtual void BuildFromXMLNode(XMLNode& node);
     virtual void OnClick();
@@ -131,9 +135,11 @@ public:
     std::vector<WidgetBase*> m_children;
     std::string m_name;
     std::string m_textureName;
+    Dimensions2D m_dimensions;
+    Vector2 m_position = Vector2::ZERO;
     AABB2 m_bounds;
-    AABB2 m_borderlessBounds;
     AABB2 m_borderedBounds;
+    AABB2 m_borderlessBounds;
     Texture* m_texture = nullptr;
     Material* m_material = nullptr;
     WidgetBase* m_parent = nullptr;
