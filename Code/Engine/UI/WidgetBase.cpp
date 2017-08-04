@@ -195,7 +195,8 @@ void WidgetBase::ApplyDockingProperty()
     case TOP_DOCKED:
         m_bounds.mins.x = 0;
         m_bounds.maxs.x = 1600;
-        m_bounds.maxs.y = 0;
+        m_bounds.maxs.y = 900;
+        m_bounds.mins.y += 900;
         break;
     case LEFT_DOCKED:
         m_bounds.mins.x = 0;
@@ -203,6 +204,7 @@ void WidgetBase::ApplyDockingProperty()
         m_bounds.maxs.y = 900;
         break;
     case RIGHT_DOCKED:
+        m_bounds.mins.x += 1600;
         m_bounds.maxs.x = 1600;
         m_bounds.mins.y = 0;
         m_bounds.maxs.y = 900;
