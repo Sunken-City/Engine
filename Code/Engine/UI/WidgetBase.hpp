@@ -128,6 +128,7 @@ public:
     Vector2 GetParentOffsets() const;
     float GetParentOpacities() const;
     Matrix4x4 GetModelMatrix() const;
+    AABB2 GetWorldBounds() const { return m_bounds + m_position; };
 
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     mutable NamedProperties m_propertiesForAllStates;
