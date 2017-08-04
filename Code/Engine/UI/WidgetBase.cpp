@@ -459,7 +459,7 @@ WidgetBase* WidgetBase::GetWidgetPointIsInside(const Vector2& point)
             return widget;
         }
     }
-    return m_bounds.IsPointOnOrInside(point) ? this : nullptr;
+    return GetWorldBounds().IsPointOnOrInside(point) ? this : nullptr;
 }
 
 //-----------------------------------------------------------------------------------
