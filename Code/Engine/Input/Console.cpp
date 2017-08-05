@@ -456,39 +456,40 @@ Command::Command(std::string fullCommandStr)
         }
 
         bool isInQuotes = false;
+        std::string argument = "";
         while (token != nullptr)
         {
-            if (isInQuotes)
-            {
-                int tokenLength = strlen(token);
-                unsigned int size = m_argsList.size();
-                std::string currentString = m_argsList[size - 1];
-                std::string addition = std::string(token);
-
-                if (token[tokenLength - 1] == '"')
-                {
-                    isInQuotes = false;
-                    addition = addition.substr(0, addition.length() - 1);
-                }
-
-                m_argsList[size - 1] = currentString + " " + addition;
-                token = strtok_s(NULL, delimiters, &context);
-
-                continue;
-            }
+            int tokenLength = strlen(token);
+            std::string tokenString(token);
 
             if (token[0] == '"')
             {
                 isInQuotes = true;
-                std::string tokenString(token);
                 tokenString = tokenString.substr(1);
-                m_argsList.push_back(tokenString);
+            }
+
+            if (token[tokenLength - 1] == '"')
+            {
+                isInQuotes = false;
+                tokenString = tokenString.substr(0, strlen(tokenString.c_str()) - 1);
+                argument += tokenString;
+                m_argsList.push_back(argument);
+                token = strtok_s(NULL, delimiters, &context);
+                continue;
             }
             else
             {
-                m_argsList.push_back(std::string(token));
-            }
-            token = strtok_s(NULL, delimiters, &context);
+                if (isInQuotes)
+                {
+                    argument += tokenString + " ";
+                }
+                else
+                {
+                    argument += tokenString;
+                    m_argsList.push_back(argument);
+                }
+				token = strtok_s(NULL, delimiters, &context);
+			}
         }
     }
 }
