@@ -13,6 +13,7 @@ std::vector<std::string>* SplitString(const std::string& inputString, const std:
 std::vector<std::string>* SplitStringOnMultipleDelimiters(const std::string& inputString, int numDelimiters, ...);
 std::vector<std::string>* ExtractStringsBetween(const std::string& inputString, const std::string& beginStringDelimiter, const std::string& endStringDelimiter);
 RGBA GetColorFromHexString(const std::string& hexString);
+float GetFloatFromString(const char* floatString);
 void TrimBeginning(std::string& toTrim);
 void TrimEnd(std::string& toTrim);
 void Trim(std::string& toTrim);

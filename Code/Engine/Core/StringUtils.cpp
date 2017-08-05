@@ -176,6 +176,19 @@ RGBA GetColorFromHexString(const std::string& hexString)
     }
 }
 
+//-----------------------------------------------------------------------------------
+float GetFloatFromString(const char* floatString)
+{
+    if (strchr(floatString, '%') != NULL)
+    {
+        //stof automatically ignores the % sign so long as it's at the end. http://en.cppreference.com/w/cpp/string/basic_string/stof
+        return std::stof(floatString) / 100.0f;
+    }
+    else
+    {
+        return std::stof(floatString);
+    }
+}
 
 //-----------------------------------------------------------------------------------------------
 void TrimBeginning(std::string& toTrim)

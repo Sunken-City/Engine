@@ -50,6 +50,7 @@ void UISystem::Update(float deltaSeconds)
         if (m_highlightedWidget && m_highlightedWidget->IsClickable())
         {
             m_highlightedWidget->OnClick();
+            m_highlightedWidget->SetHighlighted();
         }
     }
 

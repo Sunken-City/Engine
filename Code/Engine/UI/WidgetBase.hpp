@@ -114,10 +114,10 @@ public:
     virtual void OnClick();
     virtual WidgetBase* GetWidgetPointIsInside(const Vector2& point); //Is this inside you or any of your children?
     virtual WidgetBase* FindWidgetByName(const char* widgetName);
-    virtual void SetHighlighted() { m_previousState = m_currentState; m_currentState = HIGHLIGHTED_WIDGET_STATE; };
-    virtual void UnsetHighlighted() { m_currentState = m_previousState; };
-    virtual void SetPressed() { m_currentState = PRESSED_WIDGET_STATE; };
-    virtual void UnsetPressed() { m_currentState = m_previousState; };
+    virtual void SetHighlighted() { SetState(HIGHLIGHTED_WIDGET_STATE); };
+    virtual void UnsetHighlighted() { RevertToPreviousState(); };
+    virtual void SetPressed() { SetState(PRESSED_WIDGET_STATE, false); };
+    virtual void UnsetPressed() { RevertToPreviousState(); };
     inline bool IsHighlighted() const { return m_currentState == HIGHLIGHTED_WIDGET_STATE; };
     inline bool IsHidden() const { return m_currentState == HIDDEN_WIDGET_STATE; };
     void SetHidden();
@@ -130,6 +130,11 @@ public:
     Matrix4x4 GetModelMatrix() const;
     AABB2 GetWorldBounds() const { return m_bounds + m_position; };
 
+private:
+    void SetState(WidgetState newState, bool updatePreviousState = true);
+    void RevertToPreviousState();
+
+public:
     //MEMBER VARIABLES/////////////////////////////////////////////////////////////////////
     mutable NamedProperties m_propertiesForAllStates;
     mutable NamedProperties m_propertiesForState[NUM_WIDGET_STATES];
@@ -146,6 +151,8 @@ public:
     WidgetBase* m_parent = nullptr;
     WidgetState m_previousState = ACTIVE_WIDGET_STATE;
     WidgetState m_currentState = ACTIVE_WIDGET_STATE;
-    const bool m_isInteractive = true;
     DockPosition m_dockType = NOT_DOCKED;
+    float m_timeInState = 0.0f;
+    mutable float m_currentScale = 1.0f;
+    const bool m_isInteractive = true;
 };

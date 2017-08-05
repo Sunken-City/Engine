@@ -17,6 +17,7 @@ WidgetBase::WidgetBase()
     m_propertiesForAllStates.Set<Vector2>("Margin", Vector2::ZERO);
     m_propertiesForAllStates.Set<RGBA>("BackgroundColor", RGBA::LIGHT_GRAY);
     m_propertiesForAllStates.Set<RGBA>("BorderColor", RGBA::GRAY);
+    m_propertiesForAllStates.Set<float>("Scale", 1.0f);
     m_propertiesForAllStates.Set<float>("Opacity", 1.0f);
     m_propertiesForAllStates.Set<float>("BorderWidth", 0.0f);
     SetProperty("BorderColor", RGBA::BLACK, DISABLED_WIDGET_STATE);
@@ -46,6 +47,7 @@ void WidgetBase::Update(float deltaSeconds)
 //-----------------------------------------------------------------------------------
 void WidgetBase::UpdateChildren(float deltaSeconds)
 {
+    m_timeInState += deltaSeconds;
     for (WidgetBase* child : m_children)
     {
         child->Update(deltaSeconds);
@@ -80,13 +82,20 @@ void WidgetBase::Render() const
         //TODO: Once we redo how drawing works, add support for materials!
     }
 
+    float targetScale = GetProperty<float>("Scale");
+    m_currentScale = Lerp<float>(Clamp01(m_timeInState * 8.0f), m_currentScale, targetScale);
+
     if (borderWidth > 0.0f && borderColor.alpha != 0x00)
     {
-        Renderer::instance->DrawTexturedAABB(m_borderedBounds + m_position, Vector2(0, 1), Vector2(1, 0), Renderer::instance->m_defaultTexture, borderColor);
+        AABB2 finalBounds = m_borderedBounds * m_currentScale;
+        finalBounds = finalBounds + m_position;
+        Renderer::instance->DrawTexturedAABB(finalBounds, Vector2(0, 1), Vector2(1, 0), Renderer::instance->m_defaultTexture, borderColor);
     }
     if (bgColor.alpha != 0x00)
     {
-        Renderer::instance->DrawTexturedAABB(m_borderlessBounds + m_position, Vector2(0, 1), Vector2(1, 0), texture, bgColor);
+        AABB2 finalBounds = m_borderlessBounds * m_currentScale;
+        finalBounds = finalBounds + m_position;
+        Renderer::instance->DrawTexturedAABB(finalBounds, Vector2(0, 1), Vector2(1, 0), texture, bgColor);
     }
 }
 
@@ -154,7 +163,6 @@ void WidgetBase::ApplyBorderProperty()
 void WidgetBase::ApplySizeProperty()
 {
     //If our innards aren't big enough to meet the minimum size requirement, stretch to fit that.
-
     Vector2 boundsSize = Vector2(m_bounds.GetWidth(), m_bounds.GetHeight());
     Vector2 minimumSize = m_dimensions.GetMinSize();
 
@@ -261,11 +269,11 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     }
     if (horizontalOffset)
     {
-        offset.x = std::stof(horizontalOffset);
+        offset.x = GetFloatFromString(horizontalOffset);
     }
     if (verticalOffset)
     {
-        offset.y = std::stof(verticalOffset);
+        offset.y = GetFloatFromString(verticalOffset);
     }
     if (backgroundColorAttribute)
     {
@@ -279,7 +287,7 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     }
     if (borderWidthAttribute)
     {
-        m_propertiesForAllStates.Set<float>("BorderWidth", std::stof(borderWidthAttribute));
+        m_propertiesForAllStates.Set<float>("BorderWidth", GetFloatFromString(borderWidthAttribute));
     }
     if (onClickAttribute)
     {
@@ -294,7 +302,7 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
     }
     if (opacityAttribute)
     {
-        m_propertiesForAllStates.Set<float>("Opacity", std::stof(opacityAttribute));
+        m_propertiesForAllStates.Set<float>("Opacity", GetFloatFromString(opacityAttribute));
     }
     if (sizeAttribute)
     {
@@ -402,6 +410,24 @@ Matrix4x4 WidgetBase::GetModelMatrix() const
     Matrix4x4 model = Matrix4x4::IDENTITY;
     Matrix4x4::MatrixMakeTranslation(&model, Vector3(m_propertiesForAllStates.Get<Vector2>("Offset"), 0.0f));
     return model;
+}
+
+//-----------------------------------------------------------------------------------
+void WidgetBase::SetState(WidgetState newState, bool updatePreviousState)
+{
+    if (updatePreviousState)
+    {
+        m_previousState = m_currentState;
+    }
+    m_currentState = newState;
+    m_timeInState = 0.0f;
+}
+
+//-----------------------------------------------------------------------------------
+void WidgetBase::RevertToPreviousState()
+{
+    m_currentState = m_previousState;
+    m_timeInState = 0.0f;
 }
 
 //-----------------------------------------------------------------------------------
