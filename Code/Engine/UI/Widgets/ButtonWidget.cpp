@@ -15,6 +15,8 @@ ButtonWidget::ButtonWidget()
     SetProperty("BackgroundColor", RGBA::GRAY, PRESSED_WIDGET_STATE);
     SetProperty("BorderColor", RGBA::WHITE, HIGHLIGHTED_WIDGET_STATE);
     SetProperty("BorderColor", RGBA::DARK_GRAY, PRESSED_WIDGET_STATE);
+    SetProperty("Scale", 1.1f, HIGHLIGHTED_WIDGET_STATE);
+    SetProperty("Scale", 0.9f, PRESSED_WIDGET_STATE);
 }
 
 //-----------------------------------------------------------------------------------
@@ -53,13 +55,13 @@ void ButtonWidget::BuildFromXMLNode(XMLNode& node)
     const char* h_borderColorAttribute = node.getAttribute("H_BorderColor");
     const char* p_backgroundColorAttribute = node.getAttribute("P_BackgroundColor");
     const char* p_borderColorAttribute = node.getAttribute("P_BorderColor");
-    const char* h_sizeAttribute = node.getAttribute("H_Size");
-    const char* p_sizeAttribute = node.getAttribute("P_Size");
+    const char* hoverScaleAttribute = node.getAttribute("HoverScale");
+    const char* pressedScaleAttribute = node.getAttribute("PressedScale");
 
     RGBA bgColor = m_propertiesForAllStates.Get<RGBA>("BackgroundColor");
     RGBA edgeColor = m_propertiesForAllStates.Get<RGBA>("BorderColor");
-    Vector2 h_size = m_propertiesForAllStates.Get<Vector2>("Size") * 1.25f;
-    Vector2 p_size = m_propertiesForAllStates.Get<Vector2>("Size") * 0.75f;
+    float hoverScale = 1.1f;
+    float pressedScale = 0.9f;
 
     if (h_backgroundColorAttribute)
     {
@@ -101,16 +103,16 @@ void ButtonWidget::BuildFromXMLNode(XMLNode& node)
         SetProperty("BorderColor", pressedColor, PRESSED_WIDGET_STATE);
     }
 
-    if (h_sizeAttribute)
+    if (hoverScaleAttribute)
     {
-        h_size = Vector2::CreateFromString(h_sizeAttribute);
+        hoverScale = GetFloatFromString(hoverScaleAttribute);
     }
-    if (p_sizeAttribute)
+    if (pressedScaleAttribute)
     {
-        p_size = Vector2::CreateFromString(p_sizeAttribute);
+        pressedScale = GetFloatFromString(pressedScaleAttribute);
     }
-    SetProperty("Size", h_size, HIGHLIGHTED_WIDGET_STATE);
-    SetProperty("Size", p_size, PRESSED_WIDGET_STATE);
+    SetProperty("Scale", hoverScale, HIGHLIGHTED_WIDGET_STATE);
+    SetProperty("Scale", pressedScale, PRESSED_WIDGET_STATE);
 
     RecalculateBounds();
 }
