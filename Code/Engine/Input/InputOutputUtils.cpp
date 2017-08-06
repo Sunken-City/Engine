@@ -65,10 +65,19 @@ bool EnsureFileExists(const std::string& fullFilePath)
     HANDLE outFileHandle = CreateFile(wideFilePathCStr, GENERIC_WRITE|GENERIC_READ, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
     if (outFileHandle == INVALID_HANDLE_VALUE)
     {
-        outFileHandle = CreateFile(wideFilePathCStr, GENERIC_WRITE | GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-        if (GetLastError() == ERROR_FILE_NOT_FOUND)
+        DWORD errorCode = GetLastError();
+        if (errorCode == ERROR_FILE_EXISTS)
         {
-            ERROR_RECOVERABLE("Attempted to ensure a file existed, but failed.");
+            success = true;
+        }
+        else if (errorCode == ERROR_FILE_NOT_FOUND)
+        {
+            ERROR_RECOVERABLE("Attempted to ensure a file existed, but file was not found.");
+            success = false;
+        }
+        else
+        {
+            ERROR_RECOVERABLE("Attempted to ensure a file existed, but failed. (Check the error code from GetLastError)");
             success = false;
         }
     }
