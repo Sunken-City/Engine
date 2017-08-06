@@ -11,7 +11,7 @@
 #include "ThirdParty/taglib/include/taglib/wavfile.h"
 #include "ThirdParty/taglib/include/taglib/rifffile.h"
 #include "ThirdParty/taglib/include/taglib/oggflacfile.h"
-#include "ThirdParty/taglib/include/taglib/mp4file.h"
+#include "ThirdParty/taglib/include/taglib/vorbisfile.h"
 #include "Engine/Input/Console.hpp"
 #include "Engine/Input/InputOutputUtils.hpp"
 #include <string>
@@ -110,6 +110,27 @@ bool IncrementPlaycount(const std::string& fileName)
         TagLib::ID3v2::Tag* mp3Tags = mp3File.ID3v2Tag();
         mp3File.setProperties(map);
         mp3File.save();
+    }
+    else if (fileExtension == "ogg")
+    {
+        TagLib::Ogg::Vorbis::File oggFile(fileName.c_str());
+        TagLib::PropertyMap map = oggFile.properties();
+        auto playcountPropertyIter = map.find(PlaycountFrameId);
+        if (playcountPropertyIter != map.end())
+        {
+            bool wasInt = false;
+            int currentPlaycount = playcountPropertyIter->second.toString().toInt(&wasInt);
+            ASSERT_OR_DIE(&wasInt, "Tried to grab the playcount, but found a non-integer value in the PCNT field.");
+            map.replace(PlaycountFrameId, TagLib::String(std::to_string(currentPlaycount + 1)));
+        }
+        else
+        {
+            map.insert(PlaycountFrameId, TagLib::String("1"));
+        }
+
+        TagLib::Ogg::XiphComment* oggTags = oggFile.tag();
+        oggTags->setProperties(map);
+        oggFile.save();
     }
 
     return true;
@@ -240,6 +261,28 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
                         {
                             return Texture::CreateUnregisteredTextureFromData(srcImage, size);
                         }
+                    }
+                }
+            }
+        }
+    }
+    else if (fileExtension == "ogg")
+    {
+        TagLib::Ogg::Vorbis::File audioFile(fileName.c_str());
+        auto pictureList = audioFile.tag()->pictureList();
+
+        if (!pictureList.isEmpty())
+        {
+            for (unsigned i = 0; i < pictureList.size(); ++i)
+            {
+                if (pictureList[i]->type() == TagLib::FLAC::Picture::Type::FrontCover)
+                {
+                    TagLib::ByteVector pictureData = pictureList[i]->data();
+                    size = pictureData.size();
+                    srcImage = (unsigned char*)pictureData.data();
+                    if (srcImage)
+                    {
+                        return Texture::CreateUnregisteredTextureFromData(srcImage, size);
                     }
                 }
             }
