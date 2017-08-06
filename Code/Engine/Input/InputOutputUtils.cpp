@@ -57,6 +57,26 @@ bool EnsureDirectoryExists(const std::string& directoryPath)
 }
 
 //-----------------------------------------------------------------------------------
+bool EnsureFileExists(const std::string& fullFilePath)
+{
+    bool success = true;
+    std::wstring wideFilePath = std::wstring(fullFilePath.begin(), fullFilePath.end());
+    LPCWSTR wideFilePathCStr = wideFilePath.c_str();
+    HANDLE outFileHandle = CreateFile(wideFilePathCStr, GENERIC_WRITE|GENERIC_READ, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (outFileHandle == INVALID_HANDLE_VALUE)
+    {
+        outFileHandle = CreateFile(wideFilePathCStr, GENERIC_WRITE | GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        if (GetLastError() == ERROR_FILE_NOT_FOUND)
+        {
+            ERROR_RECOVERABLE("Attempted to ensure a file existed, but failed.");
+            success = false;
+        }
+    }
+
+    return success;
+}
+
+//-----------------------------------------------------------------------------------
 bool ReadTextFileIntoVector(std::vector<std::string>& outBuffer, const std::string& filePath)
 {
     std::ifstream file(filePath);
