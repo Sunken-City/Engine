@@ -5,6 +5,7 @@
 bool LoadBufferFromBinaryFile(std::vector<unsigned char>& out_buffer, const std::string& filePath);
 bool SaveBufferToBinaryFile(const std::vector<unsigned char>& buffer, const std::string& filePath);
 bool EnsureDirectoryExists(const std::string& directoryPath);
+bool EnsureFileExists(const std::string& fullFilePath);
 bool ReadTextFileIntoVector(std::vector<std::string>& outBuffer, const std::string& filePath);
 char* FileReadIntoNewBuffer(const std::string& filePath);
 std::vector<std::string> EnumerateFiles(const std::string& baseFolder, const std::string& filePattern, bool recurseSubfolders = false, const char* eventToFire = nullptr);
