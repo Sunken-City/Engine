@@ -104,9 +104,6 @@
     <ClCompile Include="Renderer\Texture.cpp">
       <Filter>Engine\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\ThirdParty\stb_image.c">
-      <Filter>ThirdParty</Filter>
-    </ClCompile>
     <ClCompile Include="Renderer\SpriteSheet.cpp">
       <Filter>Engine\Renderer</Filter>
     </ClCompile>
@@ -712,5 +709,8 @@
     <ClInclude Include="Renderer\UniformBuffer.hpp" />
     <ClInclude Include="Audio\AudioMetadataUtils.hpp" />
     <ClInclude Include="UI\Dimensions.hpp" />
+    <ClInclude Include="..\ThirdParty\stb_image.h">
+      <Filter>ThirdParty</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
