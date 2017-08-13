@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\ThirdParty\Parsers\XMLParser.cpp" />
-    <ClCompile Include="..\ThirdParty\stb_image.c" />
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Audio\AudioMetadataUtils.cpp" />
     <ClCompile Include="Core\ErrorWarningAssert.cpp" />
@@ -126,6 +125,7 @@
     <ClInclude Include="..\ThirdParty\OpenGL\glext.h" />
     <ClInclude Include="..\ThirdParty\OpenGL\wglext.h" />
     <ClInclude Include="..\ThirdParty\Parsers\XMLParser.hpp" />
+    <ClInclude Include="..\ThirdParty\stb_image.h" />
     <ClInclude Include="Audio\Audio.hpp" />
     <ClInclude Include="Audio\AudioMetadataUtils.hpp" />
     <ClInclude Include="Core\BuildConfig.hpp" />

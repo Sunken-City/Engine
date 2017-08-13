@@ -13,8 +13,8 @@
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include "Engine/Renderer/Renderer.hpp"
 
-#define STBI_HEADER_FILE_ONLY
-#include "ThirdParty/stb_image.c"
+#define STB_IMAGE_IMPLEMENTATION
+#include "ThirdParty/stb_image.h"
 
 #define STATIC // Do-nothing indicator that method/member is static in class definition
 
