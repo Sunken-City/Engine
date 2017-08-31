@@ -71,7 +71,7 @@ void Console::Update(float deltaSeconds)
 void Console::ParseKey(char currentChar)
 {
     bool controlHeldDown = InputSystem::instance->IsKeyDown(InputSystem::ExtraKeys::CTRL);
-    bool isShiftDown = InputSystem::instance->IsKeyDown(InputSystem::ExtraKeys::SHIFT);
+    //bool isShiftDown = InputSystem::instance->IsKeyDown(InputSystem::ExtraKeys::SHIFT);
 
     if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::TAB))
     {
@@ -199,7 +199,7 @@ void Console::ParseKey(char currentChar)
         strcpy_s(m_currentLine, MAX_LINE_LENGTH, m_commandHistory[m_commandHistoryIndex].c_str());
         BlinkCursor();
     }
-    else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::DOWN) && m_commandHistoryIndex < m_commandHistory.size() - 1)
+    else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::DOWN) && ((unsigned int)m_commandHistoryIndex < m_commandHistory.size() - 1))
     {
         m_cursorPointer = m_currentLine;
         memset(m_currentLine, 0x00, MAX_LINE_LENGTH);
@@ -488,8 +488,8 @@ Command::Command(std::string fullCommandStr)
                     argument += tokenString;
                     m_argsList.push_back(argument);
                 }
-				token = strtok_s(NULL, delimiters, &context);
-			}
+                token = strtok_s(NULL, delimiters, &context);
+            }
         }
     }
 }
@@ -613,6 +613,7 @@ CONSOLE_COMMAND(changefont)
 //-----------------------------------------------------------------------------------
 CONSOLE_COMMAND(dir)
 {
+    UNUSED(args)
     std::wstring wideCWD = Console::instance->GetCurrentWorkingDirectory();
     std::string cwd = std::string(wideCWD.begin(), wideCWD.end());
     std::vector<std::string> files = EnumerateFiles(cwd, "*");
@@ -627,6 +628,7 @@ CONSOLE_COMMAND(dir)
 //-----------------------------------------------------------------------------------
 CONSOLE_COMMAND(ls)
 {
+    UNUSED(args)
     Console::instance->RunCommand("dir");
 }
 

@@ -71,7 +71,7 @@ CONSOLE_COMMAND(memorydebug)
 
 #else
 
-void MemoryOutputWindow::Update(float deltaSeconds) {};
+void MemoryOutputWindow::Update(float) {};
 void MemoryOutputWindow::Render() const {};
 
 #endif
