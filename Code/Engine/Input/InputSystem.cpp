@@ -128,7 +128,6 @@ void InputSystem::Update(float deltaSeconds)
                     SetCursorPos(m_mouseSnapBackX, m_mouseSnapBackY);
                 }
             }
-
         }
     }
 
@@ -309,4 +308,10 @@ void InputSystem::SetMouseDownStatus(unsigned char mouseButton, bool isNowDown)
         m_frameNumberMouseButtonLastChanged[mouseButton] = m_frameCounter;
     }
     m_isMouseDown[mouseButton] = isNowDown;
+}
+
+//-----------------------------------------------------------------------------------
+void InputSystem::SetCursorType(CursorType cursorType)
+{
+    SetSystemCursor(GetCursor(), (int)cursorType);
 }
