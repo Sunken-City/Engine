@@ -385,7 +385,7 @@ Vector2 WidgetBase::GetParentOffsets() const
     WidgetBase* parent = m_parent;
     while (parent)
     {
-        parentOffsets += parent->m_propertiesForAllStates.Get<Vector2>("Offset");
+        parentOffsets += parent->m_bounds.mins;
         parent = parent->m_parent;
     }
     return parentOffsets;
