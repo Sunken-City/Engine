@@ -127,6 +127,12 @@ std::wstring RelativeToFullPath(const std::wstring& relativePath)
 }
 
 //-----------------------------------------------------------------------------------
+std::string GetAppDataDirectory()
+{
+    return std::string(getenv("APPDATA"));
+}
+
+//-----------------------------------------------------------------------------------
 std::vector<std::string> EnumerateFiles(const std::string& baseFolder, const std::string& filePattern, bool recurseSubfolders, const char* eventToFire)
 {
     std::wstring filePatternWStr = std::wstring(filePattern.begin(), filePattern.end());
