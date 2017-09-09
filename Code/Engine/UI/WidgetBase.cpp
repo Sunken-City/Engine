@@ -356,6 +356,7 @@ void WidgetBase::BuildFromXMLNode(XMLNode& node)
 
     m_propertiesForAllStates.Set<Vector2>("Offset", offset);
 
+    RecalculateBounds();
     std::vector<XMLNode> children = XMLUtils::GetChildren(node);
     for (XMLNode& child : children)
     {

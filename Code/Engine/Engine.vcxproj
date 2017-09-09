@@ -120,6 +120,7 @@
     <ClCompile Include="UI\Widgets\ButtonWidget.cpp" />
     <ClCompile Include="UI\Widgets\CheckboxWidget.cpp" />
     <ClCompile Include="UI\Widgets\LabelWidget.cpp" />
+    <ClCompile Include="UI\Widgets\VerticalListWidget.cpp" />
     <ClCompile Include="UI\Widgets\WindowWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -236,6 +237,7 @@
     <ClInclude Include="UI\Widgets\ButtonWidget.hpp" />
     <ClInclude Include="UI\Widgets\CheckboxWidget.hpp" />
     <ClInclude Include="UI\Widgets\LabelWidget.hpp" />
+    <ClInclude Include="UI\Widgets\VerticalListWidget.hpp" />
     <ClInclude Include="UI\Widgets\WindowWidget.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

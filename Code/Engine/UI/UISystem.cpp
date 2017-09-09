@@ -8,6 +8,7 @@
 #include "Engine/Input/InputSystem.hpp"
 #include "Widgets/WindowWidget.hpp"
 #include "Widgets/CheckboxWidget.hpp"
+#include "Widgets/VerticalListWidget.hpp"
 
 UISystem* UISystem::instance = nullptr;
 
@@ -176,6 +177,10 @@ WidgetBase* UISystem::CreateWidget(const std::string& name)
     else if (name == "Window")
     {
         return static_cast<WidgetBase*>(new WindowWidget());
+    }
+    else if (name == "VerticalList")
+    {
+        return static_cast<WidgetBase*>(new VerticalListWidget());
     }
     else if (name == "Checkbox")
     {

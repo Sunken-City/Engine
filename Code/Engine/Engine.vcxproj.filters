@@ -374,6 +374,7 @@
     <ClCompile Include="Renderer\UniformBuffer.cpp" />
     <ClCompile Include="Audio\AudioMetadataUtils.cpp" />
     <ClCompile Include="UI\Dimensions.cpp" />
+    <ClCompile Include="UI\Widgets\VerticalListWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -712,5 +713,6 @@
     <ClInclude Include="Renderer\UniformBuffer.hpp" />
     <ClInclude Include="Audio\AudioMetadataUtils.hpp" />
     <ClInclude Include="UI\Dimensions.hpp" />
+    <ClInclude Include="UI\Widgets\VerticalListWidget.hpp" />
   </ItemGroup>
 </Project>
