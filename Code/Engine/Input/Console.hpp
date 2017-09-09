@@ -67,7 +67,7 @@ public:
 
 private:
     //CONSTANTS//////////////////////////////////////////////////////////////////////////
-    static const int MAX_LINE_LENGTH = 128;
+    static const int MAX_LINE_LENGTH = 1024;
     static const int MAX_CONSOLE_LINES = 30;
     static const char CURSOR_CHARACTER;
     static const float CHARACTER_HEIGHT;
