@@ -17,7 +17,7 @@
 #include <string>
 
 //-----------------------------------------------------------------------------------
-bool IncrementPlaycount(const std::string& fileName)
+bool IncrementPlaycount(const std::wstring& fileName)
 {
     //Increment the playcount for each file type. 
     //Since the default implementation of setProperties (by using a generic TagLib::FileRef)
@@ -26,7 +26,7 @@ bool IncrementPlaycount(const std::string& fileName)
     //an initial value. Set the properties on the file and save.
 
     static const char* PlaycountFrameId = "PCNT";
-    std::string fileExtension = GetFileExtension(fileName);
+    std::string fileExtension = GetFileExtension(std::string(fileName.begin(), fileName.end()));
 
     if (fileExtension == "flac")
     {
@@ -137,7 +137,7 @@ bool IncrementPlaycount(const std::string& fileName)
 }
 
 //-----------------------------------------------------------------------------------
-Texture* GetImageFromFileMetadata(const std::string& fileName)
+Texture* GetImageFromFileMetadata(const std::wstring& fileName)
 {
     //Determine the filetype of fileName
     //If that's an unsupported type (even unsupported for the current point in time), error and return nullptr
@@ -150,7 +150,7 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
     unsigned long size;
 
     //Find the file extension
-    std::string fileExtension = GetFileExtension(fileName);
+    std::string fileExtension = GetFileExtension(std::string(fileName.begin(), fileName.end()));
     if (fileExtension == "mp3")
     {
         TagLib::MPEG::File audioFile(fileName.c_str());
@@ -291,7 +291,7 @@ Texture* GetImageFromFileMetadata(const std::string& fileName)
 
 
     //Attempt to grab the first image file in the folder to use as album art
-    std::string directoryName = GetFileDirectory(fileName);
+    std::string directoryName = GetFileDirectory(std::string(fileName.begin(), fileName.end()));
 
     std::vector<std::string> pngFiles = EnumerateFiles(directoryName, "*.png");
     if (pngFiles.size() > 0)

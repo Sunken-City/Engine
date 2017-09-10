@@ -317,6 +317,36 @@ std::string GetFileExtension(const std::string& fileName)
 }
 
 //-----------------------------------------------------------------------------------
+std::wstring GetFileExtension(const std::wstring& fileName)
+{
+    //Find the file extension.
+    //Use fileName.rfind to find the first period, marking the extension.
+    //Get the rest of the characters after the period and return a lowercase string.
+
+    unsigned extensionPos = fileName.rfind('.');
+
+    if (extensionPos != std::wstring::npos && extensionPos != fileName.length())
+    {
+        std::wstring fileExtension = fileName.substr((extensionPos + 1), fileName.length());
+        wchar_t* fileExtensionChar = new wchar_t[fileExtension.length() + 1];
+        wcscpy(fileExtensionChar, fileExtension.c_str());
+        for (unsigned i = 0; i < fileExtension.length(); ++i)
+        {
+            if (!islower(fileExtensionChar[i]))
+            {
+                fileExtensionChar[i] = (wchar_t)tolower(fileExtensionChar[i]);
+            }
+        }
+        std::wstring lowerFileExtension(fileExtensionChar);
+        delete[] fileExtensionChar;
+
+        return lowerFileExtension;
+    }
+
+    return L"ERROR";
+}
+
+//-----------------------------------------------------------------------------------
 std::string GetFileName(const std::string& filePath)
 {
     //Finds the file name.
