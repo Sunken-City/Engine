@@ -47,6 +47,7 @@ public:
     void PrintLine(std::string consoleLine, RGBA color = RGBA::WHITE);
     ColoredText* PrintDynamicLine(std::string consoleLine, RGBA color = RGBA::WHITE);
     bool RunCommand(const std::string& commandLine, bool addToHistory = false);
+    bool RunCommand(const std::wstring& commandLine, bool addToHistory = false);
     inline bool IsActive() { return m_isActive; };
     inline bool IsEmpty() { return (m_cursorPointer == m_currentLine && *m_cursorPointer == '\0'); };
     static void RegisterCommand(const char* commandName, ConsoleCommandFunctionPointer consoleFunction);
@@ -76,7 +77,7 @@ private:
 
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
     std::vector<ColoredText*> m_consoleHistory;
-    std::vector<std::string> m_commandHistory;
+    std::vector<std::wstring> m_commandHistory;
     std::wstring m_currentWorkingDirectory;
     char* m_currentLine;
     char* m_cursorPointer;
@@ -97,18 +98,22 @@ class Command
 {
 public:
     Command(std::string fullCommandStr); //Split name and args into two buffers
-    inline std::string GetCommandName() const { return m_commandName; };
+    Command(std::wstring fullCommandStr); //Split name and args into two buffers
+    inline std::string GetCommandName() const { return std::string(m_commandName.begin(), m_commandName.end()); };
+    inline std::wstring GetWideCommandName() const { return m_commandName; };
     inline bool HasArgs(int argNumber) const { return m_argsList.size() == (unsigned int)argNumber; };
-    inline std::string GetStringArgument(int argNumber) const { return m_argsList[argNumber]; };
+    inline std::string GetStringArgument(int argNumber) const { std::wstring argument = m_argsList[argNumber]; return std::string(argument.begin(), argument.end()); };
+    inline std::wstring GetWStringArgument(int argNumber) const { return m_argsList[argNumber]; };
     inline int GetIntArgument(int argNumber) const { return std::stoi(m_argsList[argNumber]); };
     float GetFloatArgument(int argNumber) const { return std::stof(m_argsList[argNumber]); };
-    inline std::string GetAllArguments() const { return m_fullArgsString; };
+    inline std::string GetAllArguments() const { return std::string(m_fullArgsString.begin(), m_fullArgsString.end()); };
+    inline std::wstring GetAllArgumentsWide() const { return m_fullArgsString; };
 
 private:
-    const std::string m_fullCommandStr;
-    std::string m_commandName;
-    std::string m_fullArgsString;
-    std::vector<std::string> m_argsList;
+    const std::wstring m_fullCommandStr;
+    std::wstring m_commandName;
+    std::wstring m_fullArgsString;
+    std::vector<std::wstring> m_argsList;
 };
 
 //----------------------------------------------------------------------------------------------
