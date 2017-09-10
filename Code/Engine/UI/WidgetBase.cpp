@@ -173,6 +173,7 @@ void WidgetBase::ApplySizeProperty()
     float halfSizeDifferenceY = sizeDifference.y * 0.5f;
     m_bounds.mins.y -= halfSizeDifferenceY;
     m_bounds.maxs.y += halfSizeDifferenceY;
+    //m_bounds.maxs += sizeDifference; //Push upwards so it's still bottom-left-corner aligned.
 }
 
 //-----------------------------------------------------------------------------------
