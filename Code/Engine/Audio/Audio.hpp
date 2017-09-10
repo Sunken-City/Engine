@@ -40,7 +40,8 @@ public:
     virtual ~AudioSystem();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
-    SoundID CreateOrGetSound( const std::string& soundFileName );
+    SoundID CreateOrGetSound(const std::string& soundFileName);
+    SoundID CreateOrGetSound(const std::wstring& wideSoundFileName);
     void PlaySound(SoundID soundID, float volumeLevel = 1.f);
     void PlayLoopingSound(SoundID soundID, float volumeLevel = 1.f);
     void SetLooping(SoundID sound, bool isLooping = true);

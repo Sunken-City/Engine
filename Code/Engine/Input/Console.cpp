@@ -196,7 +196,8 @@ void Console::ParseKey(char currentChar)
         m_cursorPointer = m_currentLine;
         memset(m_currentLine, 0x00, MAX_LINE_LENGTH);
         --m_commandHistoryIndex;
-        strcpy_s(m_currentLine, MAX_LINE_LENGTH, m_commandHistory[m_commandHistoryIndex].c_str());
+        std::wstring wideCommand = m_commandHistory[m_commandHistoryIndex];
+        strcpy_s(m_currentLine, MAX_LINE_LENGTH, std::string(wideCommand.begin(), wideCommand.end()).c_str());
         BlinkCursor();
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::DOWN) && ((unsigned int)m_commandHistoryIndex < m_commandHistory.size() - 1))
@@ -204,7 +205,8 @@ void Console::ParseKey(char currentChar)
         m_cursorPointer = m_currentLine;
         memset(m_currentLine, 0x00, MAX_LINE_LENGTH);
         ++m_commandHistoryIndex;
-        strcpy_s(m_currentLine, MAX_LINE_LENGTH, m_commandHistory[m_commandHistoryIndex].c_str());
+        std::wstring wideCommand = m_commandHistory[m_commandHistoryIndex];
+        strcpy_s(m_currentLine, MAX_LINE_LENGTH, std::string(wideCommand.begin(), wideCommand.end()).c_str());
         BlinkCursor();
     }
     else if (InputSystem::instance->WasKeyJustPressed(InputSystem::ExtraKeys::HOME))
@@ -409,6 +411,12 @@ ColoredText* Console::PrintDynamicLine(std::string consoleLine, RGBA color /*= R
 //Returns true if command was found and run, false if invalid.
 bool Console::RunCommand(const std::string& commandLine, bool addToHistory /*= false*/)
 {
+    return RunCommand(std::wstring(commandLine.begin(), commandLine.end()), addToHistory);
+}
+
+//-----------------------------------------------------------------------------------
+bool Console::RunCommand(const std::wstring& commandLine, bool addToHistory /*= false*/)
+{
     if (addToHistory)
     {
         m_commandHistory.push_back(commandLine);
@@ -429,8 +437,8 @@ bool Console::RunCommand(const std::string& commandLine, bool addToHistory /*= f
 
 //-----------------------------------------------------------------------------------
 Command::Command(std::string fullCommandStr)
-    : m_fullCommandStr(fullCommandStr)
-    , m_fullArgsString("")
+    : m_fullCommandStr(std::wstring(fullCommandStr.begin(), fullCommandStr.end()))
+    , m_fullArgsString(L"")
 {
     char* charLine = (char*)fullCommandStr.c_str();
     char* token = nullptr;
@@ -441,18 +449,19 @@ Command::Command(std::string fullCommandStr)
     //First "arg" is the name
     if (token == nullptr)
     {
-        m_commandName = std::string("INVALID_COMMAND");
+        m_commandName = std::wstring(L"INVALID_COMMAND");
     }
     else
     {
-        m_commandName = std::string(token);
-        std::transform(m_commandName.begin(), m_commandName.end(), m_commandName.begin(), ::tolower);
+        std::string name = std::string(token);
+        std::transform(name.begin(), name.end(), name.begin(), ::tolower);
+        m_commandName = std::wstring(name.begin(), name.end());
         token = strtok_s(NULL, delimiters, &context);
 
         //Save off the full list of arguments in case we forward this command.
         if (token)
         {
-            m_fullArgsString = m_fullCommandStr.substr(m_fullCommandStr.find(" ") + 1);
+            m_fullArgsString = m_fullCommandStr.substr(m_fullCommandStr.find(L" ") + 1);
         }
 
         bool isInQuotes = false;
@@ -473,7 +482,7 @@ Command::Command(std::string fullCommandStr)
                 isInQuotes = false;
                 tokenString = tokenString.substr(0, strlen(tokenString.c_str()) - 1);
                 argument += tokenString;
-                m_argsList.push_back(argument);
+                m_argsList.push_back(std::wstring(argument.begin(), argument.end()));
                 token = strtok_s(NULL, delimiters, &context);
                 continue;
             }
@@ -486,9 +495,76 @@ Command::Command(std::string fullCommandStr)
                 else
                 {
                     argument += tokenString;
-                    m_argsList.push_back(argument);
+                    m_argsList.push_back(std::wstring(argument.begin(), argument.end()));
                 }
                 token = strtok_s(NULL, delimiters, &context);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------------
+Command::Command(std::wstring fullCommandStr)
+    : m_fullCommandStr(fullCommandStr)
+    , m_fullArgsString(L"")
+{
+    wchar_t* charLine = (wchar_t*)fullCommandStr.c_str();
+    wchar_t* token = nullptr;
+    wchar_t* context = nullptr;
+    wchar_t delimiters[] = L" ";
+
+    token = wcstok_s(charLine, delimiters, &context);
+    //First "arg" is the name
+    if (token == nullptr)
+    {
+        m_commandName = std::wstring(L"INVALID_COMMAND");
+    }
+    else
+    {
+        m_commandName = std::wstring(token);
+        std::transform(m_commandName.begin(), m_commandName.end(), m_commandName.begin(), ::tolower);
+        token = wcstok_s(NULL, delimiters, &context);
+
+        //Save off the full list of arguments in case we forward this command.
+        if (token)
+        {
+            m_fullArgsString = m_fullCommandStr.substr(m_fullCommandStr.find(L" ") + 1);
+        }
+
+        bool isInQuotes = false;
+        std::wstring argument = L"";
+        while (token != nullptr)
+        {
+            int tokenLength = wcslen(token);
+            std::wstring tokenString(token);
+
+            if (token[0] == L'"')
+            {
+                isInQuotes = true;
+                tokenString = tokenString.substr(1);
+            }
+
+            if (token[tokenLength - 1] == L'"')
+            {
+                isInQuotes = false;
+                tokenString = tokenString.substr(0, wcslen(tokenString.c_str()) - 1);
+                argument += tokenString;
+                m_argsList.push_back(argument);
+                token = wcstok_s(NULL, delimiters, &context);
+                continue;
+            }
+            else
+            {
+                if (isInQuotes)
+                {
+                    argument += tokenString + L" ";
+                }
+                else
+                {
+                    argument += tokenString;
+                    m_argsList.push_back(argument);
+                }
+                token = wcstok_s(NULL, delimiters, &context);
             }
         }
     }

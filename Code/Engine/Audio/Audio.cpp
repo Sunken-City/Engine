@@ -209,6 +209,34 @@ SoundID AudioSystem::CreateOrGetSound( const std::string& soundFileName )
     return MISSING_SOUND_ID;
 }
 
+//-----------------------------------------------------------------------------------
+SoundID AudioSystem::CreateOrGetSound(const std::wstring& wideSoundFileName)
+{
+    char fileName[MAX_PATH * 8];
+    WideCharToMultiByte(CP_UTF8, 0, wideSoundFileName.c_str(), -1, fileName, sizeof(fileName), NULL, NULL);
+
+    std::string soundFileName(fileName);
+    std::map<std::string, SoundID>::iterator found = m_registeredSoundIDs.find(soundFileName);
+    if (found != m_registeredSoundIDs.end())
+    {
+        return found->second;
+    }
+    else
+    {
+        FMOD::Sound* newSound = nullptr;
+        FMOD_RESULT result = m_fmodSystem->createSound((char*)wideSoundFileName.c_str(), FMOD_DEFAULT | FMOD_UNICODE, nullptr, &newSound);
+        if (newSound)
+        {
+            SoundID newSoundID = m_registeredSounds.size();
+            m_registeredSoundIDs[soundFileName] = newSoundID;
+            m_registeredSounds.push_back(newSound);
+            return newSoundID;
+        }
+    }
+
+    return MISSING_SOUND_ID;
+}
+
 //---------------------------------------------------------------------------
 void AudioSystem::PlaySound( SoundID soundID, float volumeLevel )
 {
