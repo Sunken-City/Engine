@@ -6,6 +6,16 @@
 
 AudioSystem* AudioSystem::instance = nullptr;
 
+//-----------------------------------------------------------------------------------
+FMOD_RESULT F_CALLBACK DefaultNonblockingCallback(FMOD_SOUND* newSound, FMOD_RESULT result)
+{
+//     SoundID newSoundID = AudioSystem::instance->m_registeredSoundIDs.size();
+//     AudioSystem::instance->m_registeredSoundIDs[soundFileName] = newSoundID;
+//     AudioSystem::instance->m_registeredSounds.push_back(newSound);
+    return result;
+}
+
+//-----------------------------------------------------------------------------------
 CONSOLE_COMMAND(playsound)
 {
     if (!args.HasArgs(1))
@@ -232,6 +242,34 @@ SoundID AudioSystem::CreateOrGetSound(const std::wstring& wideSoundFileName)
             m_registeredSounds.push_back(newSound);
             return newSoundID;
         }
+    }
+
+    return MISSING_SOUND_ID;
+}
+
+//-----------------------------------------------------------------------------------
+SoundID AudioSystem::CreateOrGetSoundAsync(const std::wstring& wideSoundFileName, FMOD_SOUND_NONBLOCKCALLBACK callback)
+{
+    char fileName[MAX_PATH * 8];
+    WideCharToMultiByte(CP_UTF8, 0, wideSoundFileName.c_str(), -1, fileName, sizeof(fileName), NULL, NULL);
+
+    std::string soundFileName(fileName);
+    std::map<std::string, SoundID>::iterator found = m_registeredSoundIDs.find(soundFileName);
+    if (found != m_registeredSoundIDs.end())
+    {
+        return found->second;
+    }
+    else
+    {
+        FMOD::Sound* newSound = nullptr; 
+        FMOD_CREATESOUNDEXINFO exInfo;
+        memset(&exInfo, 0, sizeof(FMOD_CREATESOUNDEXINFO));
+        exInfo.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
+        exInfo.nonblockcallback = callback;
+
+        FMOD_RESULT result = m_fmodSystem->createStream((char*)wideSoundFileName.c_str(), FMOD_DEFAULT | FMOD_UNICODE | FMOD_NONBLOCKING, &exInfo, &newSound);
+        int i = 38;
+        i++;
     }
 
     return MISSING_SOUND_ID;
