@@ -36,6 +36,13 @@ public:
         F8 = 0x77, //VK_F8
         F9 = 0x78, //VK_F9
         F10 = 0x79, //VK_F10
+        VOLUME_MUTE = 0xAD, //VK_VOLUME_MUTE
+        VOLUME_DOWN = 0xAE, //VK_VOLUME_DOWN
+        VOLUME_UP = 0xAF, //VK_VOLUME_UP
+        NEXT_TRACK = 0xB0, //VK_MEDIA_NEXT_TRACK
+        PREV_TRACK = 0xB1, //VK_MEDIA_PREV_TRACK
+        STOP = 0xB2, //VK_MEDIA_STOP
+        PLAY_PAUSE = 0xB3, //VK_MEDIA_PLAY_PAUSE
         COMMA = 0xBC, //VK_OEM_COMMA
         PERIOD = 0xBE, //VK_OEM_PERIOD
         TILDE = 0xC0, //VK_OEM_3
