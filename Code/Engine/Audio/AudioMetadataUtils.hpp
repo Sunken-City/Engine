@@ -9,5 +9,5 @@
 
 class Texture;
 
-Texture* GetImageFromFileMetadata(const std::string& fileName);
-bool IncrementPlaycount(const std::string& fileName);
+Texture* GetImageFromFileMetadata(const std::wstring& fileName);
+bool IncrementPlaycount(const std::wstring& fileName);

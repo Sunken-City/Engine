@@ -2,6 +2,7 @@
 #include "Engine/Core/ErrorWarningAssert.hpp"
 #include <stdarg.h>
 #include <algorithm>
+#include <wtypes.h>
 
 //-----------------------------------------------------------------------------------------------
 // Based on code written by Squirrel Eiserloh
@@ -54,6 +55,19 @@ const std::string Stringf( const int maxLength, const char* format, ... )
         delete[] textLiteral;
 
     return returnValue;
+}
+
+//-----------------------------------------------------------------------------------
+const std::wstring WStringf(const LPWSTR format, ...)
+{
+    wchar_t textLiteral[STRINGF_STACK_LOCAL_TEMP_LENGTH];
+    va_list variableArgumentList;
+    va_start(variableArgumentList, format);
+    _vsnwprintf_s(textLiteral, STRINGF_STACK_LOCAL_TEMP_LENGTH, _TRUNCATE, format, variableArgumentList);
+    va_end(variableArgumentList);
+    textLiteral[STRINGF_STACK_LOCAL_TEMP_LENGTH - 1] = '\0'; // In case vsnprintf overran (doesn't auto-terminate)
+
+    return std::wstring(textLiteral);
 }
 
 //-----------------------------------------------------------------------------------------------

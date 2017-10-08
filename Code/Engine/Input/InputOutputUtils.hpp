@@ -17,6 +17,7 @@ bool DirectoryExists(const std::wstring& directoryPath);
 std::wstring RelativeToFullPath(const std::wstring& relativePath);
 std::string GetAppDataDirectory();
 std::string GetFileExtension(const std::string& fileName);
+std::wstring GetFileExtension(const std::wstring& fileName);
 std::string GetFileName(const std::string& filePath);
 std::string GetFileDirectory(const std::string& filePath);
 
