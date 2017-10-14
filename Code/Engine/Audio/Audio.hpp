@@ -31,8 +31,6 @@ typedef unsigned int SoundID;
 typedef void* AudioChannelHandle;
 const unsigned int MISSING_SOUND_ID = 0xffffffff;
 
-FMOD_RESULT F_CALLBACK DefaultNonblockingCallback(FMOD_SOUND* sound, FMOD_RESULT result);
-
 //-----------------------------------------------------------------------------------
 class AudioSystem
 {
@@ -44,7 +42,7 @@ public:
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
     SoundID CreateOrGetSound(const std::string& soundFileName);
     SoundID CreateOrGetSound(const std::wstring& wideSoundFileName);
-    SoundID CreateOrGetSoundAsync(const std::wstring& wideSoundFileName, FMOD_SOUND_NONBLOCKCALLBACK callback = &DefaultNonblockingCallback);
+    void LoadAudioChannelAsync(const std::wstring& wideSoundFileName, FMOD_SOUND_NONBLOCKCALLBACK callback, void* userData = nullptr);
     void PlaySound(SoundID soundID, float volumeLevel = 1.f);
     void PlayLoopingSound(SoundID soundID, float volumeLevel = 1.f);
     void SetLooping(SoundID sound, bool isLooping = true);
