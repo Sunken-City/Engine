@@ -62,6 +62,7 @@ public:
     void SetPlaybackPositionMS(AudioChannelHandle channel, unsigned int timestampMS);
 
     //GETTERS/////////////////////////////////////////////////////////////////////
+    float GetVolume(AudioChannelHandle channel);
     float GetFrequency(SoundID soundID);
     AudioChannelHandle GetChannel(SoundID m_currentlyPlayingSong);
     unsigned int GetPlaybackPositionMS(AudioChannelHandle channel);
