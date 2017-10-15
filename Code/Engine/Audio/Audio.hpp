@@ -70,6 +70,7 @@ public:
 
     //QUERIES/////////////////////////////////////////////////////////////////////
     bool IsPlaying(AudioChannelHandle channel);
+    void ValidateResult(FMOD_RESULT result);
 
     //RAW FUNCTIONS/////////////////////////////////////////////////////////////////////
     //These functions are for any raw management of FMOD sounds outside of this system.
@@ -95,7 +96,7 @@ public:
 
 protected:
     void InitializeFMOD();
-    void ValidateResult( FMOD_RESULT result );
+
 protected:
     FMOD::System*							m_fmodSystem;
     std::map< std::string, SoundID >		m_registeredSoundIDs;
