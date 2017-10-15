@@ -166,6 +166,15 @@ void AudioSystem::SetFrequency(AudioChannelHandle channel, float frequency)
 }
 
 //-----------------------------------------------------------------------------------
+float AudioSystem::GetVolume(AudioChannelHandle channel)
+{
+    float volume0to1 = -1.0f;
+    ((FMOD::Channel*)channel)->getVolume(&volume0to1);
+    return volume0to1;
+}
+
+
+//-----------------------------------------------------------------------------------
 void AudioSystem::SetVolume(AudioChannelHandle channel, float volume0to1)
 {
     ((FMOD::Channel*)channel)->setVolume(volume0to1);
