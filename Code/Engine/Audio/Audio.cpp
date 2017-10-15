@@ -156,6 +156,16 @@ void AudioSystem::SetFrequency(SoundID soundID, float frequency)
 }
 
 //-----------------------------------------------------------------------------------
+void AudioSystem::SetFrequency(AudioChannelHandle channel, float frequency)
+{
+    if (channel != nullptr)
+    {
+        FMOD::Channel* fmodChannel = (FMOD::Channel*) channel;
+        fmodChannel->setFrequency(frequency);
+    }
+}
+
+//-----------------------------------------------------------------------------------
 void AudioSystem::SetVolume(AudioChannelHandle channel, float volume0to1)
 {
     ((FMOD::Channel*)channel)->setVolume(volume0to1);
@@ -178,6 +188,18 @@ float AudioSystem::GetFrequency(SoundID soundID)
 void AudioSystem::SetMIDISpeed(SoundID soundID, float speedMultiplier)
 {
     FMOD::Sound* sound = m_registeredSounds[soundID];
+    if (!sound)
+    {
+        return;
+    }
+
+    sound->setMusicSpeed(speedMultiplier);
+}
+
+//-----------------------------------------------------------------------------------
+void AudioSystem::SetMIDISpeed(RawSoundHandle songHandle, float speedMultiplier)
+{
+    FMOD::Sound* sound = static_cast<FMOD::Sound*>(songHandle);
     if (!sound)
     {
         return;
@@ -238,24 +260,6 @@ SoundID AudioSystem::CreateOrGetSound(const std::wstring& wideSoundFileName)
     return MISSING_SOUND_ID;
 }
 
-//-----------------------------------------------------------------------------------
-void AudioSystem::LoadAudioChannelAsync(const std::wstring& wideSoundFileName, FMOD_SOUND_NONBLOCKCALLBACK callback, void* userData)
-{
-    char fileName[MAX_PATH * 8];
-    WideCharToMultiByte(CP_UTF8, 0, wideSoundFileName.c_str(), -1, fileName, sizeof(fileName), NULL, NULL);
-
-    std::string soundFileName(fileName);
-
-    FMOD::Sound* newSound = nullptr; 
-    FMOD_CREATESOUNDEXINFO exInfo;
-    memset(&exInfo, 0, sizeof(FMOD_CREATESOUNDEXINFO));
-    exInfo.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
-    exInfo.nonblockcallback = callback;
-    exInfo.userdata = userData;
-
-    FMOD_RESULT result = m_fmodSystem->createStream((char*)wideSoundFileName.c_str(), FMOD_DEFAULT | FMOD_UNICODE | FMOD_NONBLOCKING, &exInfo, &newSound);
-}
-
 //---------------------------------------------------------------------------
 void AudioSystem::PlaySound( SoundID soundID, float volumeLevel )
 {
@@ -301,7 +305,7 @@ void AudioSystem::Update( float deltaSeconds )
 }
 
 //---------------------------------------------------------------------------
-void AudioSystem::ValidateResult( FMOD_RESULT result )
+void AudioSystem::ValidateResult(FMOD_RESULT result)
 {
     if( result != FMOD_OK )
     {
@@ -356,6 +360,17 @@ unsigned int AudioSystem::GetSoundLengthMS(SoundID soundHandle)
 }
 
 //-----------------------------------------------------------------------------------
+unsigned int AudioSystem::GetSoundLengthMS(RawSoundHandle songHandle)
+{
+    unsigned int outSoundLengthMS = 0;
+    FMOD::Sound* sound = static_cast<FMOD::Sound*>(songHandle);
+
+    sound->getLength(&outSoundLengthMS, FMOD_TIMEUNIT_MS);
+
+    return outSoundLengthMS;
+}
+
+//-----------------------------------------------------------------------------------
 AudioChannelHandle AudioSystem::GetChannel(SoundID songHandle)
 {
     AudioChannelHandle channelHandle = nullptr;
@@ -369,3 +384,42 @@ AudioChannelHandle AudioSystem::GetChannel(SoundID songHandle)
     return channelHandle;
 }
 
+//-----------------------------------------------------------------------------------
+void AudioSystem::LoadRawSoundAsync(const std::wstring& wideSoundFileName, FMOD_SOUND_NONBLOCKCALLBACK callback, void* userData)
+{
+    char fileName[MAX_PATH * 8];
+    WideCharToMultiByte(CP_UTF8, 0, wideSoundFileName.c_str(), -1, fileName, sizeof(fileName), NULL, NULL);
+
+    std::string soundFileName(fileName);
+
+    FMOD::Sound* newSound = nullptr;
+    FMOD_CREATESOUNDEXINFO exInfo;
+    memset(&exInfo, 0, sizeof(FMOD_CREATESOUNDEXINFO));
+    exInfo.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
+    exInfo.nonblockcallback = callback;
+    exInfo.userdata = userData;
+
+    FMOD_RESULT result = m_fmodSystem->createStream((char*)wideSoundFileName.c_str(), FMOD_DEFAULT | FMOD_UNICODE | FMOD_NONBLOCKING, &exInfo, &newSound);
+}
+
+//-----------------------------------------------------------------------------------
+AudioChannelHandle AudioSystem::PlayRawSong(RawSoundHandle songHandle, float volumeLevel /*= 1.f*/)
+{
+    FMOD::Sound* sound = (FMOD::Sound*)songHandle;
+    ASSERT_OR_DIE(sound, "Couldn't play the song handle from PlayRawSong");
+
+    FMOD::Channel* channelAssignedToSound = nullptr;
+    m_fmodSystem->playSound(FMOD_CHANNEL_FREE, sound, false, &channelAssignedToSound);
+    if (channelAssignedToSound)
+    {
+        channelAssignedToSound->setVolume(volumeLevel);
+    }
+    return channelAssignedToSound;
+}
+
+//-----------------------------------------------------------------------------------
+void AudioSystem::SetLooping(AudioChannelHandle rawSongChannel, bool isLooping)
+{
+    FMOD::Channel* channelAssignedToSound = static_cast<FMOD::Channel*>(rawSongChannel);
+    channelAssignedToSound->setMode(isLooping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
+}
