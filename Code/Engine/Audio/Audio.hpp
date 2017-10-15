@@ -29,6 +29,7 @@
 
 typedef unsigned int SoundID;
 typedef void* AudioChannelHandle;
+typedef void* RawSoundHandle;
 const unsigned int MISSING_SOUND_ID = 0xffffffff;
 
 //-----------------------------------------------------------------------------------
@@ -40,25 +41,44 @@ public:
     virtual ~AudioSystem();
 
     //FUNCTIONS/////////////////////////////////////////////////////////////////////
+    void Update(float deltaSeconds); // Must be called at regular intervals (e.g. every frame)
+    void MultiplyCurrentFrequency(SoundID soundID, float multiplier);
+
     SoundID CreateOrGetSound(const std::string& soundFileName);
     SoundID CreateOrGetSound(const std::wstring& wideSoundFileName);
-    void LoadAudioChannelAsync(const std::wstring& wideSoundFileName, FMOD_SOUND_NONBLOCKCALLBACK callback, void* userData = nullptr);
+
     void PlaySound(SoundID soundID, float volumeLevel = 1.f);
     void PlayLoopingSound(SoundID soundID, float volumeLevel = 1.f);
-    void SetLooping(SoundID sound, bool isLooping = true);
-    void Update(float deltaSeconds); // Must be called at regular intervals (e.g. every frame)
-    void StopChannel(AudioChannelHandle channel);
+
     void StopSound(SoundID soundID);
-    void MultiplyCurrentFrequency(SoundID soundID, float multiplier);
+    void StopChannel(AudioChannelHandle channel);
+
+    //SETTERS/////////////////////////////////////////////////////////////////////
+    void SetLooping(SoundID sound, bool isLooping = true);
     void SetFrequency(SoundID soundID, float frequency); //Do not use this if you're trying to use a small value!
+    void SetFrequency(AudioChannelHandle channel, float frequency); //Do not use this if you're trying to use a small value!
     void SetVolume(AudioChannelHandle channel, float volume0to1);
-    float GetFrequency(SoundID soundID);
     void SetMIDISpeed(SoundID soundID, float speedMultiplier);
-    AudioChannelHandle GetChannel(SoundID m_currentlyPlayingSong);
-    bool IsPlaying(AudioChannelHandle channel);
-    unsigned int GetPlaybackPositionMS(AudioChannelHandle channel);
     void SetPlaybackPositionMS(AudioChannelHandle channel, unsigned int timestampMS);
+
+    //GETTERS/////////////////////////////////////////////////////////////////////
+    float GetFrequency(SoundID soundID);
+    AudioChannelHandle GetChannel(SoundID m_currentlyPlayingSong);
+    unsigned int GetPlaybackPositionMS(AudioChannelHandle channel);
     unsigned int GetSoundLengthMS(SoundID soundHandle);
+
+    //QUERIES/////////////////////////////////////////////////////////////////////
+    bool IsPlaying(AudioChannelHandle channel);
+
+    //RAW FUNCTIONS/////////////////////////////////////////////////////////////////////
+    //These functions are for any raw management of FMOD sounds outside of this system.
+    //If you're making a game, you probably shouldn't be using these.
+    void LoadRawSoundAsync(const std::wstring& wideSoundFileName, FMOD_SOUND_NONBLOCKCALLBACK callback, void* userData = nullptr);
+    AudioChannelHandle PlayRawSong(RawSoundHandle songHandle, float volumeLevel = 1.f);
+    void SetLooping(AudioChannelHandle rawSongChannel, bool isLooping = true);
+    unsigned int GetSoundLengthMS(RawSoundHandle songHandle);
+    void SetMIDISpeed(RawSoundHandle songHandle, float speedMultiplier);
+
 
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////
     static AudioSystem* instance;

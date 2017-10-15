@@ -6,6 +6,7 @@ bool LoadBufferFromBinaryFile(std::vector<unsigned char>& out_buffer, const std:
 bool SaveBufferToBinaryFile(const std::vector<unsigned char>& buffer, const std::string& filePath);
 bool EnsureDirectoryExists(const std::string& directoryPath);
 bool EnsureFileExists(const std::string& fullFilePath);
+bool EnsureFileExists(const std::wstring& fullFilePath);
 bool ReadTextFileIntoVector(std::vector<std::string>& outBuffer, const std::string& filePath);
 char* FileReadIntoNewBuffer(const std::string& filePath);
 std::vector<std::string> EnumerateFiles(const std::string& baseFolder, const std::string& filePattern, bool recurseSubfolders = false, const char* eventToFire = nullptr);
@@ -13,6 +14,7 @@ std::vector<std::string> EnumerateFiles(const std::wstring& baseFolder, const st
 std::vector<std::string> EnumerateDirectories(const std::string& baseFolder, bool recurseSubfolders = false);
 std::vector<std::string> EnumerateDirectories(const std::wstring& baseFolder, bool recurseSubfolders = false);
 bool FileExists(const std::string& filename);
+bool FileExists(const std::wstring& filename);
 bool DirectoryExists(const std::wstring& directoryPath);
 std::wstring RelativeToFullPath(const std::wstring& relativePath);
 std::string GetAppDataDirectory();

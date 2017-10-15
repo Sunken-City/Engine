@@ -59,10 +59,15 @@ bool EnsureDirectoryExists(const std::string& directoryPath)
 //-----------------------------------------------------------------------------------
 bool EnsureFileExists(const std::string& fullFilePath)
 {
+    return EnsureFileExists(std::wstring(fullFilePath.begin(), fullFilePath.end()));
+}
+
+//-----------------------------------------------------------------------------------
+bool EnsureFileExists(const std::wstring& fullFilePath)
+{
     bool success = true;
-    std::wstring wideFilePath = std::wstring(fullFilePath.begin(), fullFilePath.end());
-    LPCWSTR wideFilePathCStr = wideFilePath.c_str();
-    HANDLE outFileHandle = CreateFile(wideFilePathCStr, GENERIC_WRITE|GENERIC_READ, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
+    LPCWSTR wideFilePathCStr = fullFilePath.c_str();
+    HANDLE outFileHandle = CreateFile(wideFilePathCStr, GENERIC_WRITE | GENERIC_READ, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
     if (outFileHandle == INVALID_HANDLE_VALUE)
     {
         DWORD errorCode = GetLastError();
@@ -300,6 +305,14 @@ std::vector<std::string> EnumerateDirectories(const std::wstring& baseDirectory,
 //-----------------------------------------------------------------------------------
 //Modified from http://www.cplusplus.com/forum/general/1796/
 bool FileExists(const std::string& filename)
+{
+#pragma todo("check if Fopen fails here instead")
+    std::ifstream ifile(filename);
+    return (bool)ifile;
+}
+
+//-----------------------------------------------------------------------------------
+bool FileExists(const std::wstring& filename)
 {
 #pragma todo("check if Fopen fails here instead")
     std::ifstream ifile(filename);
