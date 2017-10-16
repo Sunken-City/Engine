@@ -234,6 +234,92 @@ std::vector<std::string> EnumerateFiles(const std::wstring& baseDirectory, const
 }
 
 //-----------------------------------------------------------------------------------
+std::vector<std::wstring> EnumerateWideFiles(const std::wstring& baseDirectory, const std::wstring& filePatternWStr, bool recurseSubfolders, const char* eventToFire)
+{
+    WIN32_FIND_DATA finder;
+    HANDLE handleToResults = INVALID_HANDLE_VALUE;
+    DWORD dwError = 0;
+    TCHAR tcharFilePath[MAX_PATH];
+    std::vector<std::wstring> fileNames;
+    fileNames.reserve(20);
+    std::deque<std::wstring> directories;
+    directories.push_back(baseDirectory);
+
+    if (recurseSubfolders)
+    {
+        std::vector<std::wstring> recursiveDirectories = EnumerateWideDirectories(baseDirectory, true);
+        for (std::wstring& directoryPath : recursiveDirectories)
+        {
+            std::wstring directoryWString = baseDirectory + L"\\" + directoryPath;
+            directories.push_back(directoryWString);
+        }
+    }
+
+    while (!directories.empty())
+    {
+        std::wstring path = directories.back();
+        directories.pop_back();
+        std::wstring wideFilePath = path + L"\\" + filePatternWStr;
+        LPCWSTR wideFilePathCStr = wideFilePath.c_str();
+        StringCchCopy(tcharFilePath, MAX_PATH, wideFilePathCStr);
+
+        //Find the first file in the folder.
+        handleToResults = FindFirstFile(tcharFilePath, &finder);
+
+        if (INVALID_HANDLE_VALUE == handleToResults)
+        {
+            //Empty List
+            return fileNames;
+        }
+
+        do //Add each file name in the folder to the list
+        {
+            if (wcscmp(finder.cFileName, L".") == 0 || wcscmp(finder.cFileName, L"..") == 0)
+            {
+                continue;
+            }
+            std::wstring wideFileName = std::wstring(finder.cFileName);
+            std::wstring fullFileName;
+            if (path != baseDirectory)
+            {
+                auto uniquePathStringBegin = path.begin() + baseDirectory.length() + 1;
+                fullFileName = std::wstring(uniquePathStringBegin, path.end()) + L"\\" + wideFileName;
+                fileNames.push_back(fullFileName);
+            }
+            else
+            {
+                fileNames.push_back(wideFileName);
+            }
+            if (eventToFire)
+            {
+                auto fileExtensionLocation = wideFileName.find_last_of('.');
+                std::wstring fileNameWithoutExtension = wideFileName.substr(0, fileExtensionLocation);
+                std::wstring fileExtension = wideFileName.substr(fileExtensionLocation, wideFileName.size() - fileExtensionLocation);
+                std::wstring fullPathWStr = RelativeToFullPath(path + L"\\" + wideFileName);
+
+                NamedProperties properties;
+                properties.Set<std::wstring>("FileName", wideFileName);
+                properties.Set<std::wstring>("FileExtension", fileExtension);
+                properties.Set<std::wstring>("FileNameWithoutExtension", fileNameWithoutExtension);
+                properties.Set<std::wstring>("FileRelativePath", fullFileName);
+                properties.Set<std::wstring>("FileAbsolutePath", fullPathWStr);
+
+                EventSystem::FireEvent(eventToFire, properties);
+            }
+
+        } while (FindNextFile(handleToResults, &finder) != 0);
+
+        dwError = GetLastError();
+        if (dwError != ERROR_NO_MORE_FILES)
+        {
+            ERROR_AND_DIE("Error while reading files in folder, code: " + dwError);
+        }
+        FindClose(handleToResults);
+    }
+    return fileNames;
+}
+
+//-----------------------------------------------------------------------------------
 std::vector<std::string> EnumerateDirectories(const std::string& baseFolder, bool recurseSubfolders /*= false*/)
 {
     std::wstring baseDirectory = std::wstring(baseFolder.begin(), baseFolder.end());
@@ -287,6 +373,67 @@ std::vector<std::string> EnumerateDirectories(const std::wstring& baseDirectory,
                 else
                 {
                     fileNames.push_back(fileName);
+                }
+            }
+
+        } while (FindNextFile(handleToResults, &finder) != 0);
+
+        dwError = GetLastError();
+        if (dwError != ERROR_NO_MORE_FILES)
+        {
+            ERROR_AND_DIE("Error while reading files in folder, code: " + dwError);
+        }
+        FindClose(handleToResults);
+    }
+    return fileNames;
+}
+
+//-----------------------------------------------------------------------------------
+std::vector<std::wstring> EnumerateWideDirectories(const std::wstring& baseDirectory, bool recurseSubfolders /*= false*/)
+{
+    WIN32_FIND_DATA finder;
+    HANDLE handleToResults = INVALID_HANDLE_VALUE;
+    DWORD dwError = 0;
+    TCHAR tcharFilePath[MAX_PATH];
+    std::vector<std::wstring> fileNames;
+    fileNames.reserve(20);
+    std::deque<std::wstring> directories;
+    directories.push_back(baseDirectory);
+
+    while (!directories.empty())
+    {
+        std::wstring path = directories.back();
+        directories.pop_back();
+        std::wstring wideFilePath = path + L"\\*";
+        LPCWSTR wideFilePathCStr = wideFilePath.c_str();
+        StringCchCopy(tcharFilePath, MAX_PATH, wideFilePathCStr);
+
+        //Find the first file in the folder.
+        handleToResults = FindFirstFile(tcharFilePath, &finder);
+
+        if (INVALID_HANDLE_VALUE == handleToResults)
+        {
+            //Empty List
+            return fileNames;
+        }
+
+        do //Add each file name in the folder to the list
+        {
+            if (wcscmp(finder.cFileName, L".") != 0 && wcscmp(finder.cFileName, L"..") != 0 && (finder.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+            {
+                if (recurseSubfolders)
+                {
+                    directories.push_back(path + L"\\" + std::wstring(finder.cFileName));
+                }
+                std::wstring wideFileName = std::wstring(finder.cFileName);
+                if (path != baseDirectory)
+                {
+                    std::wstring fullFileName = path + L"\\" + wideFileName;
+                    fileNames.push_back(fullFileName);
+                }
+                else
+                {
+                    fileNames.push_back(wideFileName);
                 }
             }
 
