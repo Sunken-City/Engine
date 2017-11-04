@@ -77,12 +77,11 @@ void RenderState::ClearState() const
 }
 
 //-----------------------------------------------------------------------------------
-Material::Material(ShaderProgram* program, const RenderState& renderState) 
+Material::Material(ShaderProgram* program, const RenderState& renderState, unsigned int samplerID) 
     : m_shaderProgram(program)
-    , m_samplerID(Renderer::instance->CreateSampler(GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT))
     , m_renderState(renderState)
 {
-
+    m_samplerID = samplerID == 0 ? Renderer::instance->CreateSampler(GL_NEAREST, GL_NEAREST, GL_REPEAT, GL_REPEAT) : samplerID;
 }
 
 //-----------------------------------------------------------------------------------

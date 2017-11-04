@@ -99,6 +99,7 @@
     <ClCompile Include="Renderer\MeshBuilder.cpp" />
     <ClCompile Include="Renderer\MeshRenderer.cpp" />
     <ClCompile Include="Renderer\OpenGLExtensions.cpp" />
+    <ClCompile Include="Renderer\OpenGL\OGLRenderer.cpp" />
     <ClCompile Include="Renderer\Renderer.cpp" />
     <ClCompile Include="Renderer\RGBA.cpp" />
     <ClCompile Include="Renderer\ShaderProgram.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="Renderer\MeshBuilder.hpp" />
     <ClInclude Include="Renderer\MeshRenderer.hpp" />
     <ClInclude Include="Renderer\OpenGLExtensions.hpp" />
+    <ClInclude Include="Renderer\OpenGL\OGLRenderer.hpp" />
     <ClInclude Include="Renderer\Renderer.hpp" />
     <ClInclude Include="Renderer\RGBA.hpp" />
     <ClInclude Include="Renderer\ShaderProgram.hpp" />

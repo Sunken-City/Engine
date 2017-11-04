@@ -54,7 +54,7 @@ class Material
 public:
     //CONSTRUCTORS//////////////////////////////////////////////////////////////////////////
     Material() {};
-    Material(ShaderProgram* program, const RenderState& renderState);
+    Material(ShaderProgram* program, const RenderState& renderState, unsigned int samplerID = 0);
     ~Material();
 
     //FUNCTIONS//////////////////////////////////////////////////////////////////////////

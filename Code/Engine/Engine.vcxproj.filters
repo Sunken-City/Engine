@@ -371,6 +371,7 @@
     <ClCompile Include="Renderer\UniformBuffer.cpp" />
     <ClCompile Include="Audio\AudioMetadataUtils.cpp" />
     <ClCompile Include="UI\Dimensions.cpp" />
+    <ClCompile Include="Renderer\OpenGL\OGLRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\Vector2.hpp">
@@ -712,5 +713,6 @@
     <ClInclude Include="..\ThirdParty\stb_image.h">
       <Filter>ThirdParty</Filter>
     </ClInclude>
+    <ClInclude Include="Renderer\OpenGL\OGLRenderer.hpp" />
   </ItemGroup>
 </Project>
