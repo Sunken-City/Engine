@@ -88,6 +88,8 @@ public:
     static const RGBA JOLTIK_PURPLE;
     static const RGBA JOLTIK_DARK_PURPLE;
     static const RGBA PURPLE;
+    static const RGBA LIME;
+    static const RGBA LEMON_LIME;
     static const RGBA CLEAR;
     static const RGBA EARTHBOUND_BLUE;
     static const RGBA EARTHBOUND_GREEN;
