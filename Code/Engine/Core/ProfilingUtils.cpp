@@ -375,8 +375,8 @@ void ProfilingSystem::PushSample(const char*) {}
 void ProfilingSystem::PopSample(const char*) {}
 void ProfilingSystem::PrintTreeListView() {}
 ProfileSample* ProfilingSystem::GetLastFrame() { return nullptr; }
-uint64_t GetCurrentPerformanceCount() { return -1; }
-double PerformanceCountToSeconds(uint64_t&) { return -1; }
-ProfileLogSection::ProfileLogSection(const char* id) {};
+uint64_t GetCurrentPerformanceCount() { return static_cast<uint64_t>(-1); }
+double PerformanceCountToSeconds(uint64_t&) { return static_cast<uint64_t>(-1); }
+ProfileLogSection::ProfileLogSection(const char* id) { UNUSED(id) };
 ProfileLogSection::~ProfileLogSection() {};
 #endif // PROFILING_ENABLED

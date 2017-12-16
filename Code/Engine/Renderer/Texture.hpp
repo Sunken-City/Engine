@@ -36,7 +36,6 @@ public:
     //GETTERS//////////////////////////////////////////////////////////////////////////
     static Texture* GetTextureByName(const std::string& imageFilePath);
     unsigned char* GetImageData();
-    RGBA GetOrCalculateAverageColor();
 
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
     unsigned int m_openglTextureID;

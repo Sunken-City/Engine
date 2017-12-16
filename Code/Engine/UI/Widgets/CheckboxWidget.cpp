@@ -101,8 +101,8 @@ void CheckboxWidget::RecalculateBounds()
     std::string text;
     float fontSize;
 
-    PropertyGetResult textGet = m_propertiesForAllStates.Get<std::string>("Text", text);
-    PropertyGetResult fontSizeGet = m_propertiesForAllStates.Get<float>("TextSize", fontSize);
+    m_propertiesForAllStates.Get<std::string>("Text", text);
+    m_propertiesForAllStates.Get<float>("TextSize", fontSize);
     AABB2 checkboxSize = BitmapFont::CreateOrGetFont("Runescape")->CalcTextBounds("X", fontSize);
     float checkboxWidth = checkboxSize.GetWidth();
     float checkboxHeight = checkboxSize.GetHeight();

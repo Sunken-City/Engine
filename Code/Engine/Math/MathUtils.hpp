@@ -89,7 +89,7 @@ void InitializeRand();
 template <typename T>
 inline T Lerp(const float fraction, const T& initialValue, const T& endValue)
 {
-    return initialValue + fraction * (endValue - initialValue);
+    return initialValue + static_cast<T>(fraction * (endValue - initialValue));
 }
 
 //MIN/MAX/////////////////////////////////////////////////////////////////////

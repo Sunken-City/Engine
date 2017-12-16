@@ -72,17 +72,7 @@ bool IncrementPlaycount(const std::wstring& fileName)
             map.insert(PlaycountFrameId, TagLib::String("1"));
         }
 
-        if (wavFile.hasInfoTag())
-        {
-            TagLib::RIFF::Info::Tag* wavTags = wavFile.InfoTag();
-            wavFile.setProperties(map);
-        }
-        else
-        {
-            TagLib::ID3v2::Tag* wavTags = wavFile.ID3v2Tag();
-            wavFile.setProperties(map);
-        }
-
+        wavFile.setProperties(map);
         wavFile.save();
     }
     else if (fileExtension == "mp3")
@@ -107,7 +97,6 @@ bool IncrementPlaycount(const std::wstring& fileName)
             mp3File.ID3v2Tag(1);
         }
 
-        TagLib::ID3v2::Tag* mp3Tags = mp3File.ID3v2Tag();
         mp3File.setProperties(map);
         mp3File.save();
     }

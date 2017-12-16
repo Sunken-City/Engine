@@ -11,9 +11,9 @@
 #include <ctime>
 #include "../Core/ErrorWarningAssert.hpp"
 
-const float MathUtils::PI = M_PI;
+const float MathUtils::PI = static_cast<float>(M_PI);
 const float MathUtils::TWO_PI = MathUtils::PI * 2.0f;
-const float MathUtils::HALF_PI = M_PI_2;
+const float MathUtils::HALF_PI = static_cast<float>(M_PI_2);
 
 //-----------------------------------------------------------------------------------
 int MathUtils::LerpInt(float fraction, int initialValue, int endValue)
@@ -70,13 +70,13 @@ bool MathUtils::CoinFlip()
 //-----------------------------------------------------------------------------------
 float DegreesToRadians(float degrees)
 {
-    return degrees * (M_PI / 180.0f);
+    return degrees * (MathUtils::PI / 180.0f);
 }
 
 //-----------------------------------------------------------------------------------
 float RadiansToDegrees(float radians)
 {
-    return radians * (180.0f / M_PI);
+    return radians * (180.0f / MathUtils::PI);
 }
 
 //-----------------------------------------------------------------------------------
@@ -192,7 +192,7 @@ int MathUtils::GetRandomInt(int minimum, int maximum)
     {
         return 0;
     }
-    return Clamp(rand() % maximum + minimum, minimum, maximum);
+    return static_cast<int>(Clamp(rand() % maximum + minimum, minimum, maximum));
 }
 
 //-----------------------------------------------------------------------------------

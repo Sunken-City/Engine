@@ -95,15 +95,15 @@ void DebugRenderer::PointCommand::Render() const
 {
     bool depthTestOn = m_mode == DepthTestingMode::OFF ? false : true;
     Renderer::instance->EnableDepthTest(depthTestOn);
-    Renderer::instance->DrawLine(m_position - Vector3::UNIT_X, m_position + Vector3::UNIT_X, m_color, 4.0f);
-    Renderer::instance->DrawLine(m_position - Vector3::UNIT_Y, m_position + Vector3::UNIT_Y, m_color, 4.0f);
-    Renderer::instance->DrawLine(m_position - Vector3::UNIT_Z, m_position + Vector3::UNIT_Z, m_color, 4.0f);
+    Renderer::instance->DrawLine(m_position - Vector3::UNIT_X, m_position + Vector3::UNIT_X, m_color);
+    Renderer::instance->DrawLine(m_position - Vector3::UNIT_Y, m_position + Vector3::UNIT_Y, m_color);
+    Renderer::instance->DrawLine(m_position - Vector3::UNIT_Z, m_position + Vector3::UNIT_Z, m_color);
     if (m_mode == DepthTestingMode::XRAY)
     {
         Renderer::instance->EnableDepthTest(false);
-        Renderer::instance->DrawLine(m_position - Vector3::UNIT_X, m_position + Vector3::UNIT_X, m_color, 1.0f);
-        Renderer::instance->DrawLine(m_position - Vector3::UNIT_Y, m_position + Vector3::UNIT_Y, m_color, 1.0f);
-        Renderer::instance->DrawLine(m_position - Vector3::UNIT_Z, m_position + Vector3::UNIT_Z, m_color, 1.0f);
+        Renderer::instance->DrawLine(m_position - Vector3::UNIT_X, m_position + Vector3::UNIT_X, m_color);
+        Renderer::instance->DrawLine(m_position - Vector3::UNIT_Y, m_position + Vector3::UNIT_Y, m_color);
+        Renderer::instance->DrawLine(m_position - Vector3::UNIT_Z, m_position + Vector3::UNIT_Z, m_color);
     }
 }
 
@@ -122,11 +122,11 @@ void DebugRenderer::LineCommand::Render() const
 {
     bool depthTestOn = m_mode == DepthTestingMode::OFF ? false : true;
     Renderer::instance->EnableDepthTest(depthTestOn);
-    Renderer::instance->DrawLine(m_start, m_end, m_color, 6.0f);
+    Renderer::instance->DrawLine(m_start, m_end, m_color);
     if (m_mode == DepthTestingMode::XRAY)
     {
         Renderer::instance->EnableDepthTest(false);
-        Renderer::instance->DrawLine(m_start, m_end, m_color, 2.0f);
+        Renderer::instance->DrawLine(m_start, m_end, m_color);
     }
 }
 
@@ -145,12 +145,12 @@ void DebugRenderer::ArrowCommand::Render() const
 {
     bool depthTestOn = m_mode == DepthTestingMode::OFF ? false : true;
     Renderer::instance->EnableDepthTest(depthTestOn);
-    Renderer::instance->DrawLine(m_start, m_end, m_color, 6.0f);
+    Renderer::instance->DrawLine(m_start, m_end, m_color);
     Renderer::instance->DrawPoint(m_end - Vector3::GetNormalized(m_end), m_color, 20.0f);
     if (m_mode == DepthTestingMode::XRAY)
     {
         Renderer::instance->EnableDepthTest(false);
-        Renderer::instance->DrawLine(m_start, m_end, m_color, 2.0f);
+        Renderer::instance->DrawLine(m_start, m_end, m_color);
         Renderer::instance->DrawPoint(m_end - Vector3::GetNormalized(m_end), m_color, 10.0f);
     }
 }

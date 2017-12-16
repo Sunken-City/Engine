@@ -303,7 +303,7 @@ void Console::Render() const
                     float currentTextHeight = textBounds.GetHeight();
                     Vector3 cursorBottom(currentBaseline.x + currentTextWidth, currentBaseline.y, 0.0f);
                     Vector3 cursorTop(currentBaseline.x + currentTextWidth, currentBaseline.y + currentTextHeight, 0.0f);
-                    Renderer::instance->DrawLine(cursorBottom, cursorTop, RGBA::WHITE, 2.0f);
+                    Renderer::instance->DrawLine(cursorBottom, cursorTop, RGBA::WHITE);
                 }
 
                 BufferedMeshRenderer bufferedMeshRenderer;

@@ -487,8 +487,9 @@ std::string GetFileExtension(const std::string& fileName)
     if (extensionPos != std::string::npos && extensionPos != fileName.length())
     {
         std::string fileExtension = fileName.substr((extensionPos + 1), fileName.length());
-        char* fileExtensionChar = new char[fileExtension.length() + 1];
-        strcpy(fileExtensionChar, fileExtension.c_str());
+        const size_t numChars = fileExtension.length() + 1;
+        char* fileExtensionChar = new char[numChars];
+        strcpy_s(fileExtensionChar, numChars, fileExtension.c_str());
         for (unsigned i = 0; i < fileExtension.length(); ++i)
         {
             if (!islower(fileExtensionChar[i]))
@@ -517,8 +518,9 @@ std::wstring GetFileExtension(const std::wstring& fileName)
     if (extensionPos != std::wstring::npos && extensionPos != fileName.length())
     {
         std::wstring fileExtension = fileName.substr((extensionPos + 1), fileName.length());
-        wchar_t* fileExtensionChar = new wchar_t[fileExtension.length() + 1];
-        wcscpy(fileExtensionChar, fileExtension.c_str());
+        const size_t numChars = fileExtension.length() + 1;
+        wchar_t* fileExtensionChar = new wchar_t[numChars];
+        wcscpy_s(fileExtensionChar, numChars, fileExtension.c_str());
         for (unsigned i = 0; i < fileExtension.length(); ++i)
         {
             if (!islower(fileExtensionChar[i]))

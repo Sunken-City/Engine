@@ -110,8 +110,8 @@ public:
     void DrawPoint(const Vector2& point, const RGBA& color = RGBA::WHITE, float pointSize = 1.0f);
     void DrawPoint(const Vector3& point, const RGBA& color = RGBA::WHITE, float pointSize = 1.0f);
     void DrawPoint(float x, float y, const RGBA& color = RGBA::WHITE, float pointSize = 1.0f);
-    void DrawLine(const Vector2& start, const Vector2& end, const RGBA& color = RGBA::WHITE, float lineThickness = 1.0f);
-    void DrawLine(const Vector3& start, const Vector3& end, const RGBA& color = RGBA::WHITE, float lineThickness = 1.0f);
+    void DrawLine(const Vector2& start, const Vector2& end, const RGBA& color = RGBA::WHITE);
+    void DrawLine(const Vector3& start, const Vector3& end, const RGBA& color = RGBA::WHITE);
     void DrawAABB(const AABB2& bounds, const RGBA& color = RGBA::WHITE);
     void DrawAABB(const AABB3& bounds, const RGBA& color = RGBA::WHITE);
     void DrawAABBBoundingBox(const AABB3& bounds, const RGBA& color = RGBA::WHITE);

@@ -238,9 +238,8 @@ void Renderer::DrawPoint(const Vector3& point, const RGBA& color /*= RGBA::WHITE
 }
 
 //-----------------------------------------------------------------------------------
-void Renderer::DrawLine(const Vector2& start, const Vector2& end, const RGBA& color/* = RGBA::WHITE*/, float lineThickness /*= 1.0f*/)
+void Renderer::DrawLine(const Vector2& start, const Vector2& end, const RGBA& color/* = RGBA::WHITE*/)
 {
-    //glLineWidth(lineThickness);
     Vertex_PCT vertexes[2];
     vertexes[0].pos = start;
     vertexes[1].pos = end;
@@ -250,9 +249,8 @@ void Renderer::DrawLine(const Vector2& start, const Vector2& end, const RGBA& co
 }
 
 //-----------------------------------------------------------------------------------
-void Renderer::DrawLine(const Vector3& start, const Vector3& end, const RGBA& color /*= RGBA::WHITE*/, float lineThickness /*= 1.0f*/)
+void Renderer::DrawLine(const Vector3& start, const Vector3& end, const RGBA& color /*= RGBA::WHITE*/)
 {
-    //glLineWidth(lineThickness);
     Vertex_PCT vertexes[2];
     vertexes[0].pos = start;
     vertexes[1].pos = end;
@@ -792,6 +790,9 @@ void Renderer::GLCheckError(const char* file, size_t line)
         }
         ERROR_RECOVERABLE(Stringf("OpenGL Error: %s\n File Name: %s at %i : \n", errorText, file, line));
     }
+#else
+    UNUSED(file);
+    UNUSED(line);
 #endif
 }
 
@@ -1104,9 +1105,9 @@ void Renderer::SetRenderTargets(size_t colorCount, Texture** inColorTargets, Tex
             0); //Level - probably mipmap level
         GL_CHECK_ERROR();
     }
+    //Bind all unused color targets to NULL
     for (uint32_t i = colorCount; i < MAX_NUM_RENDER_TARGETS; i++)
     {
-        Texture* tex = inColorTargets[i];
         glFramebufferTexture(GL_FRAMEBUFFER, //What we're attaching
             GL_COLOR_ATTACHMENT0 + i, //Where we're attaching
             NULL, //OpenGL id

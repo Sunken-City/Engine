@@ -256,7 +256,7 @@ SoundID AudioSystem::CreateOrGetSound(const std::wstring& wideSoundFileName)
     else
     {
         FMOD::Sound* newSound = nullptr;
-        FMOD_RESULT result = m_fmodSystem->createSound((char*)wideSoundFileName.c_str(), FMOD_DEFAULT | FMOD_UNICODE, nullptr, &newSound);
+        m_fmodSystem->createSound((char*)wideSoundFileName.c_str(), FMOD_DEFAULT | FMOD_UNICODE, nullptr, &newSound);
         if (newSound)
         {
             SoundID newSoundID = m_registeredSounds.size();
@@ -408,7 +408,7 @@ void AudioSystem::LoadRawSoundAsync(const std::wstring& wideSoundFileName, FMOD_
     exInfo.nonblockcallback = callback;
     exInfo.userdata = userData;
 
-    FMOD_RESULT result = m_fmodSystem->createSound((char*)wideSoundFileName.c_str(), FMOD_DEFAULT | FMOD_UNICODE | FMOD_NONBLOCKING, &exInfo, &newSound);
+    m_fmodSystem->createSound((char*)wideSoundFileName.c_str(), FMOD_DEFAULT | FMOD_UNICODE | FMOD_NONBLOCKING, &exInfo, &newSound);
 }
 
 //-----------------------------------------------------------------------------------
