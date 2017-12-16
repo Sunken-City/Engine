@@ -80,6 +80,7 @@ public:
     void SetLooping(AudioChannelHandle rawSongChannel, bool isLooping = true);
     unsigned int GetSoundLengthMS(RawSoundHandle songHandle);
     void SetMIDISpeed(RawSoundHandle songHandle, float speedMultiplier);
+    void ReleaseRawSong(RawSoundHandle songHandle);
 
 
     //STATIC VARIABLES/////////////////////////////////////////////////////////////////////

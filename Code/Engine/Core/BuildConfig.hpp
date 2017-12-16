@@ -8,6 +8,10 @@
 */
 #define TRACK_MEMORY 1
 
+//How much memory leakage should trigger a warning.
+#define BYTES_THRESHOLD_FOR_LEAK_WARNING 2000
+
+//Report on startup allocations if not defined.
 #define IGNORE_STARTUP_ALLOCATIONS
 
 //Enable Profiling

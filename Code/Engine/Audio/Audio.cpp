@@ -217,6 +217,12 @@ void AudioSystem::SetMIDISpeed(RawSoundHandle songHandle, float speedMultiplier)
     sound->setMusicSpeed(speedMultiplier);
 }
 
+//-----------------------------------------------------------------------------------
+void AudioSystem::ReleaseRawSong(RawSoundHandle songHandle)
+{
+    ASSERT_OR_DIE(static_cast<FMOD::Sound*>(songHandle)->release() == FMOD_OK, "Failed to release a song.");
+}
+
 //---------------------------------------------------------------------------
 SoundID AudioSystem::CreateOrGetSound( const std::string& soundFileName )
 {

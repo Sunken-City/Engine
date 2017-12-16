@@ -235,7 +235,10 @@ void MemoryAnalyticsShutdown()
     //Can bucketize the callstacks into unique callstack hash lists, then print the # of reports you got
     if (g_memoryAnalytics.m_numberOfAllocations > g_memoryAnalytics.m_startupNumberOfAllocations)
     {
-        ERROR_RECOVERABLE(Stringf("Leaked a total of %i bytes, from %i individual leaks. %i of these were from before startup.\n[Press enter to continue]", g_memoryAnalytics.m_numberOfBytes, g_memoryAnalytics.m_numberOfAllocations, g_memoryAnalytics.m_startupNumberOfAllocations));
+        if (g_memoryAnalytics.m_numberOfBytes >= BYTES_THRESHOLD_FOR_LEAK_WARNING)
+        {
+            ERROR_RECOVERABLE(Stringf("Leaked a total of %i bytes, from %i individual leaks. %i of these were from before startup.\n[Press enter to continue]", g_memoryAnalytics.m_numberOfBytes, g_memoryAnalytics.m_numberOfAllocations, g_memoryAnalytics.m_startupNumberOfAllocations));
+        }
         MemoryMetadata::PrintAllMetadataInList();
     }
     if (g_memoryAnalytics.m_numberOfShaderAllocations != 0)
