@@ -56,6 +56,13 @@ void MemoryAnalytics::Startup()
     CallstackSystemInit();
     DebuggerPrintf("Number of allocations before startup: %i.  Total size: %luB\n", m_numberOfAllocations, m_numberOfBytes);
     m_startupNumberOfAllocations = m_numberOfAllocations;
+#ifdef IGNORE_STARTUP_ALLOCATIONS
+    DebuggerPrintf("However, we are ignoring them due to IGNORE_STARTUP_ALLOCATIONS being set. Dumping the current list.");
+    MemoryMetadata::RemoveAllMemoryMetadata();
+    m_numberOfAllocations = 0;
+    m_numberOfBytes = 0;
+    m_startupNumberOfAllocations = 0;
+#endif
 }
 
 //-----------------------------------------------------------------------------------
@@ -178,6 +185,15 @@ void MemoryMetadata::RemoveMemoryMetadataFromList(MemoryMetadata* stackToRemove)
     if (stackToRemove == g_memoryMetadataList)
     {
         g_memoryMetadataList = stackToRemove->next == stackToRemove ? nullptr : stackToRemove->next;
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void MemoryMetadata::RemoveAllMemoryMetadata()
+{
+    while (g_memoryMetadataList != nullptr)
+    {
+        RemoveMemoryMetadataFromList(g_memoryMetadataList);
     }
 }
 

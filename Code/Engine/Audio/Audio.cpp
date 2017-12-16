@@ -408,7 +408,7 @@ void AudioSystem::LoadRawSoundAsync(const std::wstring& wideSoundFileName, FMOD_
     exInfo.nonblockcallback = callback;
     exInfo.userdata = userData;
 
-    FMOD_RESULT result = m_fmodSystem->createStream((char*)wideSoundFileName.c_str(), FMOD_DEFAULT | FMOD_UNICODE | FMOD_NONBLOCKING, &exInfo, &newSound);
+    FMOD_RESULT result = m_fmodSystem->createSound((char*)wideSoundFileName.c_str(), FMOD_DEFAULT | FMOD_UNICODE | FMOD_NONBLOCKING, &exInfo, &newSound);
 }
 
 //-----------------------------------------------------------------------------------

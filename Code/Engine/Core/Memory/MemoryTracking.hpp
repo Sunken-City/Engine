@@ -27,6 +27,7 @@ public:
     //In place linked list methods.
     static void AddMemoryMetadataToList(MemoryMetadata* stackToAdd);
     static void RemoveMemoryMetadataFromList(MemoryMetadata* metadataToRemove);
+    static void RemoveAllMemoryMetadata();
     static void PrintAllMetadataInList();
 
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
