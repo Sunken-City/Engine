@@ -343,8 +343,9 @@ STATIC Texture* Texture::CreateOrGetTexture(const std::string& imageFilePath)
 }
 
 //-----------------------------------------------------------------------------------
-Texture* Texture::CreateUnregisteredTextureFromData(unsigned char* textureData, size_t bufferLength)
+Texture* Texture::CreateUnregisteredTextureFromImageFileData(unsigned char* textureData, size_t bufferLength)
 {
+    //Buffer Length in indices, not bytes.
     static int dataTextureIndex = 0;
     Texture* texture = new Texture(textureData, bufferLength);
     size_t textureNameHash = std::hash<std::string>{}(Stringf("DataTexture%i", dataTextureIndex++));
