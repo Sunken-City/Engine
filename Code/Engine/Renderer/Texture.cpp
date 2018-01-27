@@ -343,6 +343,19 @@ STATIC Texture* Texture::CreateOrGetTexture(const std::string& imageFilePath)
 }
 
 //-----------------------------------------------------------------------------------
+void Texture::RegisterTexture(const std::string& textureName, Texture* texture)
+{
+    //TODO: What happens when we have a collision? This will more than likely leak some memory.
+
+    Texture* foundTexture = GetTextureByName(textureName);
+    if (!foundTexture)
+    {
+        size_t stringHash = std::hash<std::string>{}(textureName);
+        Texture::s_textureRegistry[stringHash] = texture;
+    }
+}
+
+//-----------------------------------------------------------------------------------
 Texture* Texture::CreateUnregisteredTextureFromImageFileData(unsigned char* textureData, size_t bufferLength)
 {
     //Buffer Length in indices, not bytes.
