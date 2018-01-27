@@ -30,6 +30,8 @@
 typedef unsigned int SoundID;
 typedef void* AudioChannelHandle;
 typedef void* RawSoundHandle;
+typedef FMOD::DSP DSPHandle;
+typedef FMOD::DSPConnection DSPConnection;
 const unsigned int MISSING_SOUND_ID = 0xffffffff;
 
 //-----------------------------------------------------------------------------------
@@ -52,6 +54,8 @@ public:
 
     void StopSound(SoundID soundID);
     void StopChannel(AudioChannelHandle channel);
+
+    void CreateDSPByType(FMOD_DSP_TYPE type, FMOD::DSP** dsp);
 
     //SETTERS/////////////////////////////////////////////////////////////////////
     void SetLooping(SoundID sound, bool isLooping = true);

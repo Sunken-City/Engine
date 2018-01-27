@@ -438,3 +438,10 @@ void AudioSystem::SetLooping(AudioChannelHandle rawSongChannel, bool isLooping)
     FMOD::Channel* channelAssignedToSound = static_cast<FMOD::Channel*>(rawSongChannel);
     channelAssignedToSound->setMode(isLooping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF);
 }
+
+//-----------------------------------------------------------------------------------
+void AudioSystem::CreateDSPByType(FMOD_DSP_TYPE type, DSPHandle** dsp)
+{
+    FMOD_RESULT result = AudioSystem::instance->m_fmodSystem->createDSPByType(type, dsp);
+    ASSERT_RECOVERABLE(result, "Couldn't create DSP");
+}
