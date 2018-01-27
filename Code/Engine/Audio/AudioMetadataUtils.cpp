@@ -166,7 +166,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
                         srcImage = (unsigned char*)pictureData.data();
                         if (srcImage)
                         {
-                            return Texture::CreateUnregisteredTextureFromData(srcImage, size);
+                            return Texture::CreateUnregisteredTextureFromImageFileData(srcImage, size);
                         }
                     }
                 }
@@ -189,7 +189,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
                     srcImage = (unsigned char*)pictureData.data();
                     if (srcImage)
                     {
-                        return Texture::CreateUnregisteredTextureFromData(srcImage, size);
+                        return Texture::CreateUnregisteredTextureFromImageFileData(srcImage, size);
                     }
                 }
             }
@@ -216,7 +216,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
                         srcImage = (unsigned char*)pictureData.data();
                         if (srcImage)
                         {
-                            return Texture::CreateUnregisteredTextureFromData(srcImage, size);
+                            return Texture::CreateUnregisteredTextureFromImageFileData(srcImage, size);
                         }
                     }
                 }
@@ -248,7 +248,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
                         srcImage = (unsigned char*)pictureData.data();
                         if (srcImage)
                         {
-                            return Texture::CreateUnregisteredTextureFromData(srcImage, size);
+                            return Texture::CreateUnregisteredTextureFromImageFileData(srcImage, size);
                         }
                     }
                 }
@@ -271,7 +271,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
                     srcImage = (unsigned char*)pictureData.data();
                     if (srcImage)
                     {
-                        return Texture::CreateUnregisteredTextureFromData(srcImage, size);
+                        return Texture::CreateUnregisteredTextureFromImageFileData(srcImage, size);
                     }
                 }
             }

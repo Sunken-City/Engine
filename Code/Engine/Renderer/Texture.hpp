@@ -30,7 +30,7 @@ public:
     ~Texture();
     static Texture* CreateOrGetTexture(const std::string& imageFilePath);
     static Texture* CreateTextureFromData(const std::string& textureName, unsigned char* textureData, int numComponents, const Vector2Int& texelSize);
-    static Texture* CreateUnregisteredTextureFromData(unsigned char* textureData, size_t bufferLength);
+    static Texture* CreateUnregisteredTextureFromImageFileData(unsigned char* textureData, size_t bufferLength);
     static void CleanUpTextureRegistry();
 
     //GETTERS//////////////////////////////////////////////////////////////////////////
