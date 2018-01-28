@@ -300,7 +300,6 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
         return Texture::CreateOrGetTexture(std::string(directoryName + jpegFiles[0]));
     }
 
-    Console::instance->PrintLine("Could not load album art from song!", RGBA::RED);
     return nullptr;
 }
 
