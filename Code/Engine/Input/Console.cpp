@@ -561,7 +561,7 @@ Command::Command(std::wstring fullCommandStr)
                 }
                 else
                 {
-                    argument += tokenString;
+                    argument = tokenString;
                     m_argsList.push_back(argument);
                 }
                 token = wcstok_s(NULL, delimiters, &context);
