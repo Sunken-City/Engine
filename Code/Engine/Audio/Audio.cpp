@@ -400,21 +400,14 @@ AudioChannelHandle AudioSystem::GetChannel(SoundID songHandle)
 }
 
 //-----------------------------------------------------------------------------------
-void AudioSystem::LoadRawSoundAsync(const std::wstring& wideSoundFileName, FMOD_SOUND_NONBLOCKCALLBACK callback, void* userData)
+RawSoundHandle AudioSystem::LoadRawSound(const std::wstring& wideSoundFileName, unsigned int& errorValue)
 {
     char fileName[MAX_PATH * 8];
     WideCharToMultiByte(CP_UTF8, 0, wideSoundFileName.c_str(), -1, fileName, sizeof(fileName), NULL, NULL);
 
-    std::string soundFileName(fileName);
-
     FMOD::Sound* newSound = nullptr;
-    FMOD_CREATESOUNDEXINFO exInfo;
-    memset(&exInfo, 0, sizeof(FMOD_CREATESOUNDEXINFO));
-    exInfo.cbsize = sizeof(FMOD_CREATESOUNDEXINFO);
-    exInfo.nonblockcallback = callback;
-    exInfo.userdata = userData;
-
-    m_fmodSystem->createSound((char*)wideSoundFileName.c_str(), FMOD_DEFAULT | FMOD_UNICODE | FMOD_NONBLOCKING, &exInfo, &newSound);
+    errorValue = static_cast<unsigned int>(m_fmodSystem->createSound((char*)wideSoundFileName.c_str(), FMOD_DEFAULT | FMOD_UNICODE, nullptr, &newSound));
+    return newSound;
 }
 
 //-----------------------------------------------------------------------------------
