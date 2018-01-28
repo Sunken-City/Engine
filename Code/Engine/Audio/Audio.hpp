@@ -55,7 +55,7 @@ public:
     void StopSound(SoundID soundID);
     void StopChannel(AudioChannelHandle channel);
 
-    void CreateDSPByType(FMOD_DSP_TYPE type, FMOD::DSP** dsp);
+    void CreateDSPByType(FMOD_DSP_TYPE type, DSPHandle** dsp);
 
     //SETTERS/////////////////////////////////////////////////////////////////////
     void SetLooping(SoundID sound, bool isLooping = true);
