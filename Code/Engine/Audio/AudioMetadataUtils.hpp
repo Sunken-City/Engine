@@ -11,3 +11,4 @@ class Texture;
 
 Texture* GetImageFromFileMetadata(const std::wstring& fileName);
 bool IncrementPlaycount(const std::wstring& fileName);
+void SetRating(const std::string& fileName, const int rating);

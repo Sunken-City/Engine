@@ -126,6 +126,121 @@ bool IncrementPlaycount(const std::wstring& fileName)
 }
 
 //-----------------------------------------------------------------------------------
+void SetRating(const std::string& fileName, const int rating)
+{
+    bool invalidInt = false;
+    char ratingChar = rating;
+
+    if (rating < 0 || rating > 5)
+    {
+        invalidInt = true;
+        ASSERT_RECOVERABLE(invalidInt, "Cannot set a rating less than 0 or greater than 5.");
+        return;
+    }
+
+    static const char* RatingFrameID = "POPM";
+    std::string fileExtension = GetFileExtension(std::string(fileName.begin(), fileName.end()));
+
+    if (fileExtension == "flac")
+    {
+        TagLib::FLAC::File flacFile(fileName.c_str());
+        TagLib::PropertyMap map = flacFile.properties();
+        auto ratingPropertyIter = map.find(RatingFrameID);
+        if (ratingPropertyIter != map.end())
+        {
+            bool wasInt = false;
+            int currentPlaycount = ratingPropertyIter->second.toString().toInt(&wasInt);
+            ASSERT_OR_DIE(&wasInt, "Tried to grab the rating, but found a non-integer value in the POPM field.");
+            map.replace(RatingFrameID, TagLib::String(ratingChar));
+        }
+        else
+        {
+            bool success = map.insert(RatingFrameID, TagLib::String(ratingChar));
+            if (!success)
+            {
+                int wasInt = true;
+            }
+        }
+
+        //Create the Xiph comment if it doesn't already exist
+        if (!flacFile.hasXiphComment())
+        {
+            flacFile.xiphComment(1);
+        }
+
+        TagLib::Ogg::XiphComment* flacTags = flacFile.xiphComment();
+        flacTags->setProperties(map);
+        flacFile.save();
+    }
+    else if (fileExtension == "wav")
+    {
+        TagLib::RIFF::WAV::File wavFile(fileName.c_str());
+        TagLib::PropertyMap map = wavFile.properties();
+        auto ratingPropertyIter = map.find(RatingFrameID);
+        if (ratingPropertyIter != map.end())
+        {
+            bool wasInt = false;
+            int currentPlaycount = ratingPropertyIter->second.toString().toInt(&wasInt);
+            ASSERT_OR_DIE(&wasInt, "Tried to grab the rating, but found a non-integer value in the POPM field.");
+            map.replace(RatingFrameID, TagLib::String(ratingChar));
+        }
+        else
+        {
+            map.insert(RatingFrameID, TagLib::String(ratingChar));
+        }
+
+        wavFile.setProperties(map);
+        wavFile.save();
+    }
+    else if (fileExtension == "mp3")
+    {
+        TagLib::MPEG::File mp3File(fileName.c_str());
+        TagLib::PropertyMap map = mp3File.properties();
+        auto ratingPropertyIter = map.find(RatingFrameID);
+        if (ratingPropertyIter != map.end())
+        {
+            bool wasInt = false;
+            int currentPlaycount = ratingPropertyIter->second.toString().toInt(&wasInt);
+            ASSERT_OR_DIE(&wasInt, "Tried to grab the rating, but found a non-integer value in the POPM field.");
+            map.replace(RatingFrameID, TagLib::String(ratingChar));
+        }
+        else
+        {
+            map.insert(RatingFrameID, TagLib::String(ratingChar));
+        }
+
+        if (!mp3File.hasID3v2Tag())
+        {
+            mp3File.ID3v2Tag(1);
+        }
+
+        mp3File.setProperties(map);
+        mp3File.save();
+    }
+    else if (fileExtension == "ogg")
+    {
+        TagLib::Ogg::Vorbis::File oggFile(fileName.c_str());
+        TagLib::PropertyMap map = oggFile.properties();
+        auto ratingPropertyIter = map.find(RatingFrameID);
+        if (ratingPropertyIter != map.end())
+        {
+            bool wasInt = false;
+            int currentPlaycount = ratingPropertyIter->second.toString().toInt(&wasInt);
+            ASSERT_OR_DIE(&wasInt, "Tried to grab the rating, but found a non-integer value in the POPM field.");
+            map.replace(RatingFrameID, TagLib::String(ratingChar));
+        }
+        else
+        {
+            map.insert(RatingFrameID, TagLib::String(ratingChar));
+        }
+
+        TagLib::Ogg::XiphComment* oggTags = oggFile.tag();
+        oggTags->setProperties(map);
+        oggFile.save();
+    }
+}
+
+//-----------------------------------------------------------------------------------
 Texture* GetImageFromFileMetadata(const std::wstring& fileName)
 {
     //Determine the filetype of fileName
