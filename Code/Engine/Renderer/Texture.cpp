@@ -345,14 +345,15 @@ STATIC Texture* Texture::CreateOrGetTexture(const std::string& imageFilePath)
 //-----------------------------------------------------------------------------------
 void Texture::RegisterTexture(const std::string& textureName, Texture* texture)
 {
-    //TODO: What happens when we have a collision? This will more than likely leak some memory.
+    //TODO: If we have a collision and someone was using that texture, we're in trouble :T
 
     Texture* foundTexture = GetTextureByName(textureName);
-    if (!foundTexture)
+    if (foundTexture)
     {
-        size_t stringHash = std::hash<std::string>{}(textureName);
-        Texture::s_textureRegistry[stringHash] = texture;
+        delete foundTexture;
     }
+    size_t stringHash = std::hash<std::string>{}(textureName);
+    Texture::s_textureRegistry[stringHash] = texture;
 }
 
 //-----------------------------------------------------------------------------------
