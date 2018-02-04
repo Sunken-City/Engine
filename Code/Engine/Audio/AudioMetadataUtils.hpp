@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 //If we're using this header, we're using Taglib.
 #ifndef TAGLIB_INCLUDED
