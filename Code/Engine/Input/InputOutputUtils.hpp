@@ -24,7 +24,7 @@ std::string GetFileExtension(const std::string& fileName);
 std::wstring GetFileExtension(const std::wstring& fileName);
 std::string GetFileName(const std::string& filePath);
 std::string GetFileDirectory(const std::string& filePath);
-bool IsDirectory(const std::string& path);
+bool IsDirectory(const std::wstring& path);
 
 //-----------------------------------------------------------------------------------
 template<typename T>
