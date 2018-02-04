@@ -11,3 +11,4 @@ class Texture;
 
 Texture* GetImageFromFileMetadata(const std::wstring& fileName);
 bool IncrementPlaycount(const std::wstring& fileName);
+std::vector<std::wstring> GetSupportedFiles(const std::wstring& folder);
