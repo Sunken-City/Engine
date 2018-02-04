@@ -304,7 +304,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
 }
 
 //-----------------------------------------------------------------------------------
-std::vector<std::wstring> GetSupportedFiles(const std::wstring& folder)
+std::vector<std::wstring> GetSupportedAudioFiles(const std::wstring& folder)
 {
     std::vector<std::wstring> mp3s = EnumerateWideFiles(folder, L"*.mp3");
     std::vector<std::wstring> flacs = EnumerateWideFiles(folder, L"*.flac");

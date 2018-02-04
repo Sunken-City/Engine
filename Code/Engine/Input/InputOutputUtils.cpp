@@ -602,7 +602,7 @@ std::string GetFileDirectory(const std::string& filePath)
 bool IsDirectory(const std::wstring& path)
 {
     DWORD fileAttribute = GetFileAttributes(path.c_str());
-    if (fileAttribute == FILE_ATTRIBUTE_DIRECTORY)
+    if (fileAttribute & FILE_ATTRIBUTE_DIRECTORY)
     {
         return true;
     }
