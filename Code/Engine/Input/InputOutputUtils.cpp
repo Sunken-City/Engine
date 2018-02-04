@@ -597,3 +597,14 @@ std::string GetFileDirectory(const std::string& filePath)
 
     return "ERROR";
 }
+
+//-----------------------------------------------------------------------------------
+bool IsDirectory(const std::string& path)
+{
+    DWORD fileAttribute = GetFileAttributes(path);
+    if (fileAttribute == FILE_ATTRIBUTE_DIRECTORY)
+    {
+        return true;
+    }
+    return false;
+}
