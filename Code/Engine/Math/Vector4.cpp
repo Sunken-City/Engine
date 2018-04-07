@@ -18,6 +18,16 @@ Vector4::Vector4()
 }
 
 //-----------------------------------------------------------------------------------
+Vector4::Vector4(float initialValue)
+    : x(initialValue)
+    , y(initialValue)
+    , z(initialValue)
+    , w(initialValue)
+{
+
+}
+
+//-----------------------------------------------------------------------------------
 Vector4::Vector4(float initialX, float initialY, float initialZ, float initialW)
     : x(initialX)
     , y(initialY)
@@ -42,6 +52,16 @@ Vector4::Vector4(const Vector2& baseVector, float initialZ, float initialW)
     , y(baseVector.y)
     , z(initialZ)
     , w(initialW)
+{
+
+}
+
+//-----------------------------------------------------------------------------------
+Vector4::Vector4(const Vector2& baseVector, const Vector2& secondBaseVector)
+    : x(baseVector.x)
+    , y(baseVector.y)
+    , z(secondBaseVector.x)
+    , w(secondBaseVector.y)
 {
 
 }

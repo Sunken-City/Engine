@@ -13,6 +13,7 @@ InputSystem::InputSystem(void* hWnd, int maximumNumberOfControllers /*= 0*/, int
 : m_frameCounter(0)
 , m_cursorDelta(0, 0)
 , m_cursorPosition(0, 0)
+, m_lastClickedPosition(0, 0)
 , m_hasFocus(false)
 , m_hWnd(hWnd)
 , m_isScrolling(false)
@@ -189,6 +190,12 @@ Vector2Int InputSystem::GetMousePos()
 }
 
 //-----------------------------------------------------------------------------------
+Vector2Int InputSystem::GetMouseLastClickedPos()
+{
+    return m_lastClickedPosition;
+}
+
+//-----------------------------------------------------------------------------------
 void InputSystem::SetLastPressedChar(unsigned char asKey)
 {
     m_lastPressedChar = asKey;
@@ -308,6 +315,12 @@ void InputSystem::SetMouseDownStatus(unsigned char mouseButton, bool isNowDown)
         m_frameNumberMouseButtonLastChanged[mouseButton] = m_frameCounter;
     }
     m_isMouseDown[mouseButton] = isNowDown;
+
+    //Cache off the last clicked position for clicking and dragging.
+    if (isNowDown)
+    {
+        m_lastClickedPosition = m_cursorPosition;
+    }
 }
 
 //-----------------------------------------------------------------------------------
