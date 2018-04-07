@@ -5,13 +5,13 @@
 #include "Engine/Input/InputDevices/MouseInputDevice.hpp"
 #include "InputDevices/XInputDevice.hpp"
 #include "../Core/ProfilingUtils.h"
+#include "Engine/Time/Time.hpp"
 
 InputSystem* InputSystem::instance = nullptr;
 
 //-----------------------------------------------------------------------------------
 InputSystem::InputSystem(void* hWnd, int maximumNumberOfControllers /*= 0*/, int windowWidth /*= 1600*/, int windowHeight /*= 900*/) 
-: m_frameCounter(0)
-, m_cursorDelta(0, 0)
+: m_cursorDelta(0, 0)
 , m_cursorPosition(0, 0)
 , m_lastClickedPosition(0, 0)
 , m_hasFocus(false)
@@ -43,14 +43,14 @@ InputSystem::InputSystem(void* hWnd, int maximumNumberOfControllers /*= 0*/, int
     for (int keyIndex = 0; keyIndex < NUM_KEYS; ++keyIndex)
     {
         m_isKeyDown[keyIndex] = false;
-        m_frameNumberKeyLastChanged[keyIndex] = m_frameCounter;
+        m_frameNumberKeyLastChanged[keyIndex] = GetFrameNumber();
     }
 
     //Initialize all mouse buttons to up
     for (int mouseButtonIndex = 0; mouseButtonIndex < NUM_MOUSE_BUTTONS; ++mouseButtonIndex)
     {
         m_isMouseDown[mouseButtonIndex] = false;
-        m_frameNumberMouseButtonLastChanged[mouseButtonIndex] = m_frameCounter;
+        m_frameNumberMouseButtonLastChanged[mouseButtonIndex] = GetFrameNumber();
     }
     ShowCursor(TRUE);
 }
@@ -144,7 +144,7 @@ bool InputSystem::IsKeyDown(unsigned char keyCode)
 //-----------------------------------------------------------------------------------
 bool InputSystem::WasKeyJustPressed(unsigned char keyCode)
 {
-    return (m_isKeyDown[keyCode] && (m_frameNumberKeyLastChanged[keyCode] == m_frameCounter));
+    return (m_isKeyDown[keyCode] && (m_frameNumberKeyLastChanged[keyCode] == GetFrameNumber()));
 }
 
 //-----------------------------------------------------------------------------------
@@ -156,13 +156,13 @@ bool InputSystem::IsMouseButtonDown(unsigned char mouseButtonCode)
 //-----------------------------------------------------------------------------------
 bool InputSystem::WasMouseButtonJustPressed(unsigned char mouseButtonCode)
 {
-    return (m_isMouseDown[mouseButtonCode] && (m_frameNumberMouseButtonLastChanged[mouseButtonCode] == m_frameCounter));
+    return (m_isMouseDown[mouseButtonCode] && (m_frameNumberMouseButtonLastChanged[mouseButtonCode] == GetFrameNumber()));
 }
 
 //-----------------------------------------------------------------------------------
 bool InputSystem::WasMouseButtonJustReleased(unsigned char mouseButtonCode)
 {
-    return (!m_isMouseDown[mouseButtonCode] && (m_frameNumberMouseButtonLastChanged[mouseButtonCode] == m_frameCounter));
+    return (!m_isMouseDown[mouseButtonCode] && (m_frameNumberMouseButtonLastChanged[mouseButtonCode] == GetFrameNumber()));
 }
 
 //-----------------------------------------------------------------------------------
@@ -249,9 +249,9 @@ void InputSystem::SetMouseWheelStatus(short deltaMouseWheel)
 }
 
 //-----------------------------------------------------------------------------------
-void InputSystem::AdvanceFrameNumber()
+void InputSystem::AdvanceFrame()
 {
-    ++m_frameCounter;
+    AdvanceFrameNumber(); //TODO: This frame advancement PROBABLY SHOULD NOT GO HERE. This is here for legacy support atm.
     m_isScrolling = false;
     m_linesScrolled = 0;
     m_lastPressedChar = 0x00;
@@ -300,7 +300,7 @@ void InputSystem::SetKeyDownStatus(unsigned char keyCode, bool isNowDown)
     //If we are getting a keyboard repeat, ignore it when updating "just pressed" values.
     if (m_isKeyDown[keyCode] != isNowDown)
     {
-        m_frameNumberKeyLastChanged[keyCode] = m_frameCounter;
+        m_frameNumberKeyLastChanged[keyCode] = GetFrameNumber();
     }
     m_isKeyDown[keyCode] = isNowDown;
 }
@@ -312,7 +312,7 @@ void InputSystem::SetMouseDownStatus(unsigned char mouseButton, bool isNowDown)
     //If we are getting a keyboard repeat, ignore it when updating "just pressed" values.
     if (m_isMouseDown[mouseButton] != isNowDown)
     {
-        m_frameNumberMouseButtonLastChanged[mouseButton] = m_frameCounter;
+        m_frameNumberMouseButtonLastChanged[mouseButton] = GetFrameNumber();
     }
     m_isMouseDown[mouseButton] = isNowDown;
 

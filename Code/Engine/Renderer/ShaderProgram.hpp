@@ -90,7 +90,8 @@ public:
     GLuint m_shaderProgramID;
     std::map<size_t, Uniform> m_uniforms;
     std::map<size_t, GLint> m_attributes;
+    unsigned int m_frameCreated;
 
 private:
-    ShaderProgram(const ShaderProgram&);
+    ShaderProgram(const ShaderProgram&); //Shaders can't be copied.
 };

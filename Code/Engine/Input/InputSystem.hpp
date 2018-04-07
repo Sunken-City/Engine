@@ -76,7 +76,7 @@ public:
 
     //FUNCTIONS//////////////////////////////////////////////////////////////////////////
     void Update(float deltaTime);
-    void AdvanceFrameNumber();
+    void AdvanceFrame();
     void ClearAndRecreateInputDevices();
     void EnablePollingForXInputConnections();
     void DisablePollingForXInputConnections();
@@ -96,7 +96,6 @@ public:
     bool WasMouseButtonJustReleased(unsigned char mouseButtonCode);
     bool IsScrolling();
     bool HasFocus();
-    inline unsigned int GetFrameNumber() { return m_frameCounter; };
 
     //GETTERS//////////////////////////////////////////////////////////////////////////
     int GetScrollDeltaThisFrame();

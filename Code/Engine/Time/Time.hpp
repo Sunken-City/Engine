@@ -9,5 +9,7 @@
 double GetCurrentTimeSeconds();
 double GetCurrentTimeMilliseconds();
 int GetTimeBasedSeed();
+unsigned int GetFrameNumber();
+void AdvanceFrameNumber();
 
 #endif

@@ -6,6 +6,8 @@
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
+unsigned int g_frameCounter = 0;
+
 //---------------------------------------------------------------------------
 double InitializeTime( LARGE_INTEGER& out_initialTime )
 {
@@ -40,4 +42,16 @@ int GetTimeBasedSeed()
     LARGE_INTEGER currentCount;
     QueryPerformanceCounter(&currentCount);
     return static_cast<int>(currentCount.QuadPart);
+}
+
+//-----------------------------------------------------------------------------------
+unsigned int GetFrameNumber()
+{
+    return g_frameCounter;
+}
+
+//-----------------------------------------------------------------------------------
+void AdvanceFrameNumber()
+{
+    ++g_frameCounter;
 }

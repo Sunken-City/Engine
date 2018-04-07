@@ -10,16 +10,18 @@
 #include "Engine/Renderer/OpenGLExtensions.hpp"
 #include "Engine/Core/BuildConfig.hpp"
 #include "Engine/Core/Memory/MemoryTracking.hpp"
-#include "..\Math\Vector2.hpp"
+#include "Engine/Math/Vector2.hpp"
+#include "Engine/Renderer/Renderer.hpp"
+#include "Engine/Core/ProfilingUtils.h"
+#include "Engine/Time/Time.hpp"
 #include <xstddef>
-#include "Renderer.hpp"
-#include "../Core/ProfilingUtils.h"
 
 //-----------------------------------------------------------------------------------
 ShaderProgram::ShaderProgram()
     : m_vertexShaderID(0)
     , m_fragmentShaderID(0)
     , m_shaderProgramID(0)
+    , m_frameCreated(GetFrameNumber())
 {
 
 }
@@ -29,6 +31,7 @@ ShaderProgram::ShaderProgram(const char* vertShaderPath, const char* fragShaderP
     : m_vertexShaderID(LoadShader(vertShaderPath, GL_VERTEX_SHADER))
     , m_fragmentShaderID(LoadShader(fragShaderPath, GL_FRAGMENT_SHADER))
     , m_shaderProgramID(CreateAndLinkProgram(m_vertexShaderID, m_fragmentShaderID))
+    , m_frameCreated(GetFrameNumber())
 {
     FindAllAttributes();
     FindAllUniforms();
