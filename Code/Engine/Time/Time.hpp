@@ -11,5 +11,7 @@ double GetCurrentTimeMilliseconds();
 int GetTimeBasedSeed();
 unsigned int GetFrameNumber();
 void AdvanceFrameNumber();
+float GetCurrentFrameRate();
+void UpdateFrameRate(float deltaSeconds);
 
 #endif

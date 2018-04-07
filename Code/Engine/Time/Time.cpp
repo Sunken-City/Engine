@@ -7,6 +7,7 @@
 #include <Windows.h>
 
 unsigned int g_frameCounter = 0;
+float g_averageDeltaSeconds = 0.0f;
 
 //---------------------------------------------------------------------------
 double InitializeTime( LARGE_INTEGER& out_initialTime )
@@ -54,4 +55,16 @@ unsigned int GetFrameNumber()
 void AdvanceFrameNumber()
 {
     ++g_frameCounter;
+}
+
+//-----------------------------------------------------------------------------------
+void UpdateFrameRate(float deltaSeconds)
+{
+    g_averageDeltaSeconds = (deltaSeconds * 0.1f) + (g_averageDeltaSeconds * 0.9f);
+}
+
+//-----------------------------------------------------------------------------------
+float GetCurrentFrameRate()
+{
+    return 1.0f / g_averageDeltaSeconds;
 }
