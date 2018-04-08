@@ -73,7 +73,7 @@ public:
     //These functions look up the bind point every time, and will be removed in the future.
     bool SetVec2Uniform(const char* name, const Vector2& value);
     bool SetVec3Uniform(const char* name, const Vector3& value);
-    bool SetVec3Uniform(const char *name, const Vector3& value, unsigned int arrayIndex);
+    bool SetVec3Uniform(const char *name, const Vector3* value, unsigned int arraySize);
     bool SetVec4Uniform(const char* name, const Vector4& value);
     bool SetVec4Uniform(const char *name, const Vector4& value, unsigned int arrayIndex);
     bool SetMatrix4x4Uniform(const char* name, const Matrix4x4& value);
@@ -81,7 +81,7 @@ public:
     bool SetIntUniform(const char* name, int value);
     bool SetIntUniform(const char* name, int value, unsigned int arrayIndex);
     bool SetFloatUniform(const char* name, float value);
-    bool SetFloatUniform(const char* name, float value, unsigned int arrayIndex);
+    bool SetFloatUniform(const char* name, float* value, unsigned int arraySize);
 
 
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////

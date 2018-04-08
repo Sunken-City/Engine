@@ -90,8 +90,8 @@ public:
     //DO NOT USE THESE. They're not actually working. The function for an array expects multiple passed in by reference, and I'm NOT passing any more than 1.
     inline void SetMatrix4x4Uniform(const char* name, Matrix4x4& value, unsigned int arrayIndex) { m_shaderProgram->SetMatrix4x4Uniform(name, value, arrayIndex); };
     inline void SetVec4Uniform(const char* name, const Vector4& value, unsigned int arrayIndex) { m_shaderProgram->SetVec4Uniform(name, value, arrayIndex); };
-    inline void SetVec3Uniform(const char* name, const Vector3& value, unsigned int maxNumArrayIndexes) { m_shaderProgram->SetVec3Uniform(name, value, maxNumArrayIndexes); };
-    inline void SetFloatUniform(const char* name, float value, unsigned int arrayIndex) { m_shaderProgram->SetFloatUniform(name, value, arrayIndex); };
+    inline void SetVec3Uniform(const char* name, const Vector3& value, unsigned int maxNumArrayIndexes) { m_shaderProgram->SetVec3Uniform(name, &value, maxNumArrayIndexes); };
+    inline void SetFloatUniform(const char* name, float value, unsigned int arrayIndex) { m_shaderProgram->SetFloatUniform(name, &value, arrayIndex); };
     inline void SetIntUniform(const char* name, int value, unsigned int arrayIndex) { m_shaderProgram->SetIntUniform(name, value, arrayIndex); };
     
     //MEMBER VARIABLES//////////////////////////////////////////////////////////////////////////
