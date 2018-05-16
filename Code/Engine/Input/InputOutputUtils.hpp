@@ -24,6 +24,7 @@ std::string GetFileExtension(const std::string& fileName);
 std::wstring GetFileExtension(const std::wstring& fileName);
 std::string GetFileName(const std::string& filePath);
 std::string GetFileDirectory(const std::string& filePath);
+std::wstring GetFileDirectory(const std::wstring& filePath);
 bool IsDirectory(const std::wstring& path);
 
 //-----------------------------------------------------------------------------------
