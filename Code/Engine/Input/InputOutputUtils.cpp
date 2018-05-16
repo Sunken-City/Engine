@@ -599,6 +599,34 @@ std::string GetFileDirectory(const std::string& filePath)
 }
 
 //-----------------------------------------------------------------------------------
+std::wstring GetFileDirectory(const std::wstring& filePath)
+{
+	unsigned extensionPos = filePath.rfind('.');
+
+	if (extensionPos != std::string::npos && extensionPos != filePath.length())
+	{
+		//If we end up using \ to escape characters in the console this will not work, in this case for windows directories
+		unsigned directoryPos = filePath.rfind('\\');
+		if (directoryPos != std::string::npos && directoryPos != filePath.length())
+		{
+			std::wstring directoryPath = filePath.substr(0, (directoryPos + 1));
+			return directoryPath;
+		}
+		else
+		{
+			directoryPos = filePath.rfind('/');
+			if (directoryPos != std::wstring::npos && directoryPos != filePath.length())
+			{
+				std::wstring directoryPath = filePath.substr(0, (directoryPos + 1));
+				return directoryPath;
+			}
+		}
+	}
+
+	return L"ERROR";
+}
+
+//-----------------------------------------------------------------------------------
 bool IsDirectory(const std::wstring& path)
 {
     DWORD fileAttribute = GetFileAttributes(path.c_str());
