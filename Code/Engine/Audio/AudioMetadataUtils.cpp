@@ -415,7 +415,23 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
         return Texture::CreateOrGetTexture(std::string(directoryName + jpegFiles[0]));
     }
 
-    Console::instance->PrintLine("Could not load album art from song!", RGBA::RED);
     return nullptr;
 }
 
+//-----------------------------------------------------------------------------------
+std::vector<std::wstring> GetSupportedAudioFiles(const std::wstring& folder)
+{
+    std::vector<std::wstring> mp3s = EnumerateWideFiles(folder, L"*.mp3");
+    std::vector<std::wstring> flacs = EnumerateWideFiles(folder, L"*.flac");
+    std::vector<std::wstring> oggs = EnumerateWideFiles(folder, L"*.ogg");
+    std::vector<std::wstring> wavs = EnumerateWideFiles(folder, L"*.wav");
+
+    std::vector<std::wstring> songs;
+    songs.reserve(mp3s.size() + flacs.size() + oggs.size() + wavs.size());
+    songs.insert(songs.end(), mp3s.begin(), mp3s.end());
+    songs.insert(songs.end(), flacs.begin(), flacs.end());
+    songs.insert(songs.end(), oggs.begin(), oggs.end());
+    songs.insert(songs.end(), wavs.begin(), wavs.end());
+
+    return songs;
+}

@@ -8,9 +8,11 @@ class Vector4
 public:
     //CONSTRUCTORS//////////////////////////////////////////////////////////////////////////	
     Vector4();
+    Vector4(float initialValue);
     Vector4(float initialX, float initialY, float initialZ, float initialW);
     Vector4(const Vector3& baseVector, float initialW);
     Vector4(const Vector2& baseVector, float initialZ, float initialW);
+    Vector4(const Vector2& baseVector, const Vector2& secondBaseVector);
     Vector4(const Vector4& other) = default;
 
     //FUNCTIONS//////////////////////////////////////////////////////////////////////////

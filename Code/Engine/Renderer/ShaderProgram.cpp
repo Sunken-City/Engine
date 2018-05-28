@@ -10,16 +10,18 @@
 #include "Engine/Renderer/OpenGLExtensions.hpp"
 #include "Engine/Core/BuildConfig.hpp"
 #include "Engine/Core/Memory/MemoryTracking.hpp"
-#include "..\Math\Vector2.hpp"
+#include "Engine/Math/Vector2.hpp"
+#include "Engine/Renderer/Renderer.hpp"
+#include "Engine/Core/ProfilingUtils.h"
+#include "Engine/Time/Time.hpp"
 #include <xstddef>
-#include "Renderer.hpp"
-#include "../Core/ProfilingUtils.h"
 
 //-----------------------------------------------------------------------------------
 ShaderProgram::ShaderProgram()
     : m_vertexShaderID(0)
     , m_fragmentShaderID(0)
     , m_shaderProgramID(0)
+    , m_frameCreated(GetFrameNumber())
 {
 
 }
@@ -29,6 +31,7 @@ ShaderProgram::ShaderProgram(const char* vertShaderPath, const char* fragShaderP
     : m_vertexShaderID(LoadShader(vertShaderPath, GL_VERTEX_SHADER))
     , m_fragmentShaderID(LoadShader(fragShaderPath, GL_FRAGMENT_SHADER))
     , m_shaderProgramID(CreateAndLinkProgram(m_vertexShaderID, m_fragmentShaderID))
+    , m_frameCreated(GetFrameNumber())
 {
     FindAllAttributes();
     FindAllUniforms();
@@ -382,14 +385,14 @@ bool ShaderProgram::SetVec2Uniform(GLint bindPoint, const Vector2& value)
 }
 
 //-----------------------------------------------------------------------------------
-bool ShaderProgram::SetVec3Uniform(const char *name, const Vector3& value, unsigned int numElements)
+bool ShaderProgram::SetVec3Uniform(const char *name, const Vector3* value, unsigned int numElements)
 {
     Renderer::instance->UseShaderProgram(m_shaderProgramID);
     //"THIS IS A PROBLEM. This looks up the uniform location EVERY TIME, stalling out the pipeline."
     GLint loc = glGetUniformLocation(m_shaderProgramID, name);
     if (loc >= 0)
     {
-        glUniform3fv(loc, numElements, (GLfloat*)&value);
+        glUniform3fv(loc, numElements, (GLfloat*)value);
         return true;
     }
     return false;
@@ -536,13 +539,13 @@ bool ShaderProgram::SetIntUniform(GLint bindPoint, int value)
 }
 
 //-----------------------------------------------------------------------------------
-bool ShaderProgram::SetFloatUniform(const char* name, float value, unsigned int arrayIndex)
+bool ShaderProgram::SetFloatUniform(const char* name, float* value, unsigned int arraySize)
 {
     Renderer::instance->UseShaderProgram(m_shaderProgramID);
     GLint loc = glGetUniformLocation(m_shaderProgramID, name);
     if (loc >= 0)
     {
-        glUniform1fv(loc, arrayIndex, (GLfloat*)&value); //location, number of elements, do you want gl to transpose matrix?, matrix
+        glUniform1fv(loc, arraySize, value); //location, number of elements, do you want gl to transpose matrix?, matrix
         return true;
     }
     return false;

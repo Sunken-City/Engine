@@ -76,7 +76,7 @@ public:
 
     //FUNCTIONS//////////////////////////////////////////////////////////////////////////
     void Update(float deltaTime);
-    void AdvanceFrameNumber();
+    void AdvanceFrame();
     void ClearAndRecreateInputDevices();
     void EnablePollingForXInputConnections();
     void DisablePollingForXInputConnections();
@@ -96,12 +96,12 @@ public:
     bool WasMouseButtonJustReleased(unsigned char mouseButtonCode);
     bool IsScrolling();
     bool HasFocus();
-    inline unsigned int GetFrameNumber() { return m_frameCounter; };
 
     //GETTERS//////////////////////////////////////////////////////////////////////////
     int GetScrollDeltaThisFrame();
     Vector2Int GetDeltaMouse();
     Vector2Int GetMousePos();
+    Vector2Int GetMouseLastClickedPos();
     void SetLastPressedChar(unsigned char asKey);
     char GetLastPressedChar();
     bool WasButtonJustPressed(XboxButton button, int controllerIndex = -1);
@@ -136,6 +136,7 @@ private:
     char m_lastPressedChar;
     Vector2Int m_cursorDelta;
     Vector2Int m_cursorPosition;
+    Vector2Int m_lastClickedPosition;
     void* m_hWnd;
 
 public:

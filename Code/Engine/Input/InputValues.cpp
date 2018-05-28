@@ -7,7 +7,7 @@
 //--------------------------------------------------------------
 void InputValue::SetValue(const float value)
 {
-    m_lastUpdatedFrameValue = InputSystem::instance->GetFrameNumber();
+    m_lastUpdatedFrameValue = GetFrameNumber();
     if (value != m_currentValue)
     {
         m_previousValue = m_currentValue;

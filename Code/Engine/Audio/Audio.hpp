@@ -79,7 +79,7 @@ public:
     //RAW FUNCTIONS/////////////////////////////////////////////////////////////////////
     //These functions are for any raw management of FMOD sounds outside of this system.
     //If you're making a game, you probably shouldn't be using these.
-    void LoadRawSoundAsync(const std::wstring& wideSoundFileName, FMOD_SOUND_NONBLOCKCALLBACK callback, void* userData = nullptr);
+    RawSoundHandle LoadRawSound(const std::wstring& wideSoundFileName, unsigned int& errorValue);
     AudioChannelHandle PlayRawSong(RawSoundHandle songHandle, float volumeLevel = 1.f);
     void SetLooping(AudioChannelHandle rawSongChannel, bool isLooping = true);
     unsigned int GetSoundLengthMS(RawSoundHandle songHandle);

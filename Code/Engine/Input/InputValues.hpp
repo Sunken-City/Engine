@@ -1,4 +1,5 @@
 #pragma once
+#include "Engine/Time/Time.hpp"
 #include "Engine/Core/Events/Event.hpp"
 #include "../Math/Vector2.hpp"
 #include "InputSystem.hpp"
@@ -53,7 +54,7 @@ public:
     inline bool IsUp() const { return (m_currentValue < m_deadzoneValue); }
     inline bool DownLastFrame() const { return (m_previousValue > 1.0f - m_deadzoneValue); }
     inline bool UpLastFrame() const { return (m_previousValue < m_deadzoneValue); }
-    inline bool UpdatedThisFrame() const { return m_lastUpdatedFrameValue == InputSystem::instance->GetFrameNumber(); }
+    inline bool UpdatedThisFrame() const { return m_lastUpdatedFrameValue == GetFrameNumber(); }
     inline bool WasJustReleased() const { return !IsDown() && DownLastFrame() && UpdatedThisFrame(); }
     inline bool WasJustPressed() const { return !IsUp() && UpLastFrame() && UpdatedThisFrame(); }
     void SetValue(const float value);
