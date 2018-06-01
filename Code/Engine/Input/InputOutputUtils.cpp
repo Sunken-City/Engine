@@ -648,5 +648,6 @@ __int64 GetFileSizeBytes(const std::wstring& filePath)
         return fileSize.QuadPart;
     }
     ASSERT_RECOVERABLE(GetLastError() == ERROR_INVALID_HANDLE, "Could not get file size");
+    CloseHandle(file);
     return -1;
 }
