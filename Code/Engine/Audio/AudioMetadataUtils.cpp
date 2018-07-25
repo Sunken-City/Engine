@@ -12,6 +12,7 @@
 #include "ThirdParty/taglib/include/taglib/rifffile.h"
 #include "ThirdParty/taglib/include/taglib/oggflacfile.h"
 #include "ThirdParty/taglib/include/taglib/vorbisfile.h"
+#include "ThirdParty/taglib/include/taglib/oggfile.h"
 #include "Engine/Input/Console.hpp"
 #include "Engine/Input/InputOutputUtils.hpp"
 #include <string>
@@ -320,4 +321,58 @@ std::vector<std::wstring> GetSupportedAudioFiles(const std::wstring& folder)
     songs.insert(songs.end(), wavs.begin(), wavs.end());
 
     return songs;
+}
+
+//-----------------------------------------------------------------------------------
+unsigned int GetUncompressedFilesize(const std::wstring& fileName)
+{
+    std::string filePathStr = std::string(fileName.begin(), fileName.end());
+    std::string fileExtension = GetFileExtension(filePathStr);
+
+    if (fileExtension == "wav")
+    {
+        TagLib::RIFF::WAV::File wavFile(fileName.c_str());
+        TagLib::RIFF::WAV::Properties* audioProperties = wavFile.audioProperties();
+        int numChannels = audioProperties->channels();
+        int bitsPerSample = audioProperties->bitsPerSample();
+        int sampleRate = audioProperties->sampleRate();
+        int lengthInSeconds = audioProperties->lengthInSeconds();
+
+        return (numChannels * bitsPerSample * sampleRate * lengthInSeconds) / 8; //Divide by 8 to get bytes instead of bits
+    }
+    else if (fileExtension == "mp3")
+    {
+        TagLib::MPEG::File mp3File(fileName.c_str());
+        TagLib::MPEG::Properties* audioProperties = mp3File.audioProperties();
+        int numChannels = audioProperties->channels();
+        int bitsPerSample = 16; //This function doesn't exist in taglib for mp3, assume 16bit
+        int sampleRate = audioProperties->sampleRate();
+        int lengthInSeconds = audioProperties->lengthInSeconds();
+
+        return (numChannels * bitsPerSample * sampleRate * lengthInSeconds) / 8;
+    }
+    else if (fileExtension == "flac")
+    {
+        TagLib::FLAC::File flacFile(fileName.c_str());
+        TagLib::FLAC::Properties* audioProperties = flacFile.audioProperties();
+        int numChannels = audioProperties->channels();
+        int bitsPerSample = audioProperties->bitsPerSample();
+        int sampleRate = audioProperties->sampleRate();
+        int lengthInSeconds = audioProperties->lengthInSeconds();
+
+        return (numChannels * bitsPerSample * sampleRate * lengthInSeconds) / 8;
+    }
+    else if (fileExtension == "ogg")
+    {
+        TagLib::Ogg::Vorbis::File oggFile(fileName.c_str());
+        TagLib::Ogg::Vorbis::AudioProperties* audioProperties = oggFile.audioProperties();
+        int numChannels = audioProperties->channels();
+        int bitsPerSample = 16; //Same as for mp3; assume 16bit
+        int sampleRate = audioProperties->sampleRate();
+        int lengthInSeconds = audioProperties->lengthInSeconds();
+
+        return (numChannels * bitsPerSample * sampleRate * lengthInSeconds) / 8;
+    }
+
+    return 0; //File type isn't supported
 }
