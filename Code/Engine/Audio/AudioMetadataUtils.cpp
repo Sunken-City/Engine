@@ -126,7 +126,7 @@ bool IncrementPlaycount(const std::wstring& fileName)
 }
 
 //-----------------------------------------------------------------------------------
-Texture* GetImageFromFileMetadata(const std::wstring& fileName)
+Texture* GetImageFromFileMetadata(const std::wstring& filePath, const std::string& textureName)
 {
     //Determine the filetype of fileName
     //If that's an unsupported type (even unsupported for the current point in time), error and return nullptr
@@ -139,10 +139,11 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
     unsigned long size;
 
     //Find the file extension
-    std::string fileExtension = GetFileExtension(std::string(fileName.begin(), fileName.end()));
+    std::string strFileName = std::string(filePath.begin(), filePath.end());
+    std::string fileExtension = GetFileExtension(strFileName);
     if (fileExtension == "mp3")
     {
-        TagLib::MPEG::File audioFile(fileName.c_str());
+        TagLib::MPEG::File audioFile(filePath.c_str());
 
         if (audioFile.hasID3v2Tag())
         {
@@ -166,7 +167,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
                         srcImage = (unsigned char*)pictureData.data();
                         if (srcImage)
                         {
-                            return Texture::CreateUnregisteredTextureFromImageFileData(srcImage, size);
+                            return Texture::CreateTextureFromImageFileData(textureName, srcImage, size);
                         }
                     }
                 }
@@ -175,7 +176,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
     }
     else if (fileExtension == "flac")
     {
-        TagLib::FLAC::File audioFile(fileName.c_str());
+        TagLib::FLAC::File audioFile(filePath.c_str());
         auto pictureList = audioFile.pictureList();
 
         if (!pictureList.isEmpty())
@@ -189,7 +190,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
                     srcImage = (unsigned char*)pictureData.data();
                     if (srcImage)
                     {
-                        return Texture::CreateUnregisteredTextureFromImageFileData(srcImage, size);
+                        return Texture::CreateTextureFromImageFileData(textureName, srcImage, size);
                     }
                 }
             }
@@ -216,7 +217,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
                         srcImage = (unsigned char*)pictureData.data();
                         if (srcImage)
                         {
-                            return Texture::CreateUnregisteredTextureFromImageFileData(srcImage, size);
+                            return Texture::CreateTextureFromImageFileData(textureName, srcImage, size);
                         }
                     }
                 }
@@ -226,7 +227,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
     else if (fileExtension == "wav")
     {
         static const char* IdPicture = "APIC";
-        TagLib::RIFF::WAV::File audioFile(fileName.c_str());
+        TagLib::RIFF::WAV::File audioFile(filePath.c_str());
         TagLib::ID3v2::Tag* id3v2tag = audioFile.ID3v2Tag();
         TagLib::ID3v2::FrameList Frame;
         TagLib::ID3v2::AttachedPictureFrame* PicFrame;
@@ -248,7 +249,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
                         srcImage = (unsigned char*)pictureData.data();
                         if (srcImage)
                         {
-                            return Texture::CreateUnregisteredTextureFromImageFileData(srcImage, size);
+                            return Texture::CreateTextureFromImageFileData(textureName, srcImage, size);
                         }
                     }
                 }
@@ -257,7 +258,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
     }
     else if (fileExtension == "ogg")
     {
-        TagLib::Ogg::Vorbis::File audioFile(fileName.c_str());
+        TagLib::Ogg::Vorbis::File audioFile(filePath.c_str());
         auto pictureList = audioFile.tag()->pictureList();
 
         if (!pictureList.isEmpty())
@@ -271,7 +272,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
                     srcImage = (unsigned char*)pictureData.data();
                     if (srcImage)
                     {
-                        return Texture::CreateUnregisteredTextureFromImageFileData(srcImage, size);
+                        return Texture::CreateTextureFromImageFileData(textureName, srcImage, size);
                     }
                 }
             }
@@ -280,7 +281,7 @@ Texture* GetImageFromFileMetadata(const std::wstring& fileName)
 
 
     //Attempt to grab the first image file in the folder to use as album art
-    std::string directoryName = GetFileDirectory(std::string(fileName.begin(), fileName.end()));
+    std::string directoryName = GetFileDirectory(std::string(filePath.begin(), filePath.end()));
 
     std::vector<std::string> pngFiles = EnumerateFiles(directoryName, "*.png");
     if (pngFiles.size() > 0)

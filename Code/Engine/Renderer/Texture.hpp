@@ -30,8 +30,9 @@ public:
     ~Texture();
     static Texture* CreateOrGetTexture(const std::string& imageFilePath);
     static Texture* CreateTextureFromData(const std::string& textureName, unsigned char* textureData, int numComponents, const Vector2Int& texelSize);
-    static Texture* CreateUnregisteredTextureFromImageFileData(unsigned char* textureData, size_t bufferLength);
+    static Texture* CreateTextureFromImageFileData(const std::string& textureName, unsigned char* textureData, size_t bufferLength);
     static void RegisterTexture(const std::string& textureName, Texture* texture); //If you create a texture by rendering to an FBO, save it here so we can delete it safely later.
+    static bool CleanUpTexture(const std::string& textureName);
     static void CleanUpTextureRegistry();
 
     //GETTERS//////////////////////////////////////////////////////////////////////////

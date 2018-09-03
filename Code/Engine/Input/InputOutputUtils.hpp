@@ -26,6 +26,7 @@ std::string GetFileName(const std::string& filePath);
 std::string GetFileDirectory(const std::string& filePath);
 std::wstring GetFileDirectory(const std::wstring& filePath);
 bool IsDirectory(const std::wstring& path);
+__int64 GetFileSizeBytes(const std::wstring& filePath);
 
 //-----------------------------------------------------------------------------------
 template<typename T>

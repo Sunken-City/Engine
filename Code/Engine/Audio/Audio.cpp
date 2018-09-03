@@ -220,7 +220,10 @@ void AudioSystem::SetMIDISpeed(RawSoundHandle songHandle, float speedMultiplier)
 //-----------------------------------------------------------------------------------
 void AudioSystem::ReleaseRawSong(RawSoundHandle songHandle)
 {
-    ASSERT_OR_DIE(static_cast<FMOD::Sound*>(songHandle)->release() == FMOD_OK, "Failed to release a song.");
+    if (songHandle)
+    {
+        ASSERT_OR_DIE(static_cast<FMOD::Sound*>(songHandle)->release() == FMOD_OK, "Failed to release a song.");
+    }
 }
 
 //---------------------------------------------------------------------------
