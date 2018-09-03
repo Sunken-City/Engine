@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\MusicPlayer\Engine\Code\ThirdParty\CEF\cmake\CMakeFiles\3cae76ff8cab457a4ad75ae342eca92b\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{0C84C609-1BDC-3F41-BED6-78A14BBD2C06}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

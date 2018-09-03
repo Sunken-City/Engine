@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="D:\GitHub\MusicPlayer\Engine\Code\ThirdParty\CEF\tests\cefsimple\simple_app.cc">
+      <Filter>cefsimple</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\MusicPlayer\Engine\Code\ThirdParty\CEF\tests\cefsimple\simple_handler.cc">
+      <Filter>cefsimple</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\MusicPlayer\Engine\Code\ThirdParty\CEF\tests\cefsimple\cefsimple_win.cc">
+      <Filter>cefsimple</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\GitHub\MusicPlayer\Engine\Code\ThirdParty\CEF\tests\cefsimple\simple_handler_win.cc">
+      <Filter>cefsimple</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="D:\GitHub\MusicPlayer\Engine\Code\ThirdParty\CEF\tests\cefsimple\simple_app.h">
+      <Filter>cefsimple</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\MusicPlayer\Engine\Code\ThirdParty\CEF\tests\cefsimple\simple_handler.h">
+      <Filter>cefsimple</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\GitHub\MusicPlayer\Engine\Code\ThirdParty\CEF\tests\cefsimple\resource.h">
+      <Filter>cefsimple</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\GitHub\MusicPlayer\Engine\Code\ThirdParty\CEF\tests\cefsimple\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="D:\GitHub\MusicPlayer\Engine\Code\ThirdParty\CEF\tests\cefsimple\res\cefsimple.ico">
+      <Filter>cefsimple\res</Filter>
+    </None>
+    <None Include="D:\GitHub\MusicPlayer\Engine\Code\ThirdParty\CEF\tests\cefsimple\res\small.ico">
+      <Filter>cefsimple\res</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="D:\GitHub\MusicPlayer\Engine\Code\ThirdParty\CEF\tests\cefsimple\cefsimple.rc">
+      <Filter>cefsimple</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="cefsimple">
+      <UniqueIdentifier>{9231B625-304D-3FA2-9F21-F9376AD8444A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cefsimple\res">
+      <UniqueIdentifier>{BAD9C989-B6BF-3B74-8630-02CBE19BB77C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
