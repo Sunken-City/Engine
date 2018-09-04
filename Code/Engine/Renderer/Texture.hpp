@@ -26,7 +26,7 @@ public:
     };
 
     //CONSTRUCTORS//////////////////////////////////////////////////////////////////////////
-    Texture(uint32_t width, uint32_t height, TextureFormat format);
+    Texture(uint32_t width, uint32_t height, TextureFormat format, void* data = nullptr);
     ~Texture();
     static Texture* CreateOrGetTexture(const std::string& imageFilePath);
     static Texture* CreateTextureFromData(const std::string& textureName, unsigned char* textureData, int numComponents, const Vector2Int& texelSize);

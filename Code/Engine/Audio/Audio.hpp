@@ -74,6 +74,8 @@ public:
 
     //QUERIES/////////////////////////////////////////////////////////////////////
     bool IsPlaying(AudioChannelHandle channel);
+    void GetWaveData(AudioChannelHandle channel, float* waveData);
+    void GetSpectrumData(AudioChannelHandle channel, float* spectrum);
     void ValidateResult(FMOD_RESULT result);
 
     //RAW FUNCTIONS/////////////////////////////////////////////////////////////////////
@@ -97,6 +99,7 @@ public:
     static constexpr float RPM_33_AT_16_FREQUENCY_MULTIPLIER = 1.0f / RPM_16_AT_33_FREQUENCY_MULTIPLIER;
     static constexpr float RPM_16_AT_45_FREQUENCY_MULTIPLIER = 45.0f / 16.66666f;
     static constexpr float RPM_45_AT_16_FREQUENCY_MULTIPLIER = 1.0f / RPM_16_AT_45_FREQUENCY_MULTIPLIER;
+    static constexpr int SPECTRUM_SIZE = 512;
     //TODO: Add 76 and 80RPM
 
 protected:
