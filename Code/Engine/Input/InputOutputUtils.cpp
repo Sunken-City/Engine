@@ -636,3 +636,25 @@ bool IsDirectory(const std::wstring& path)
     }
     return false;
 }
+
+//-----------------------------------------------------------------------------------
+__int64 GetFileSizeBytes(const std::wstring& filePath)
+{
+    HANDLE file = CreateFile(filePath.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    while (file == INVALID_HANDLE_VALUE)
+    {
+        file = CreateFile(filePath.c_str(), GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    }
+    if (GetLastError() != ERROR_INVALID_HANDLE)
+    {
+        LARGE_INTEGER fileSize;
+        GetFileSizeEx(file, &fileSize);
+        CloseHandle(file);
+        DWORD error = GetLastError();
+        return fileSize.QuadPart;
+    }
+    ASSERT_RECOVERABLE(GetLastError() == ERROR_INVALID_HANDLE, "Could not get file size");
+    CloseHandle(file);
+    return -1;
+}

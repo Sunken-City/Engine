@@ -220,7 +220,10 @@ void AudioSystem::SetMIDISpeed(RawSoundHandle songHandle, float speedMultiplier)
 //-----------------------------------------------------------------------------------
 void AudioSystem::ReleaseRawSong(RawSoundHandle songHandle)
 {
-    ASSERT_OR_DIE(static_cast<FMOD::Sound*>(songHandle)->release() == FMOD_OK, "Failed to release a song.");
+    if (songHandle)
+    {
+        ASSERT_OR_DIE(static_cast<FMOD::Sound*>(songHandle)->release() == FMOD_OK, "Failed to release a song.");
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -342,6 +345,71 @@ bool AudioSystem::IsPlaying(AudioChannelHandle channel)
     channelAssignedToSound->isPlaying(&isPlaying);
     return isPlaying;
 }
+
+//-----------------------------------------------------------------------------------
+//Returns the current waveform data from FMOD ranged from 0 to 1
+void AudioSystem::GetWaveData(AudioChannelHandle channel, float* waveData)
+{
+    static const int LEFT_CHANNEL = 0;
+    static const int RIGHT_CHANNEL = 1;
+    float leftData[SPECTRUM_SIZE];
+    float rightData[SPECTRUM_SIZE];
+
+    //"This function allows retrieval of left and right data for a stereo sound individually. To combine them into one signal, simply add the entries of each seperate buffer together and then divide them by 2."
+    FMOD::Channel* channelAssignedToSound = static_cast<FMOD::Channel*>(channel);
+    FMOD_RESULT result = channelAssignedToSound->getWaveData(leftData, SPECTRUM_SIZE, LEFT_CHANNEL);
+    ValidateResult(result);
+    result = channelAssignedToSound->getWaveData(rightData, SPECTRUM_SIZE, RIGHT_CHANNEL);
+    ValidateResult(result);
+
+    //For each index, average the two together, then shift it up into the 0-1 range.
+    for (int i = 0; i < SPECTRUM_SIZE; ++i)
+    {
+        waveData[i] = (((leftData[i] + rightData[i]) * 0.5f) + 1.0f) * 0.5f;
+    }
+}
+
+//-----------------------------------------------------------------------------------
+void AudioSystem::GetSpectrumData(AudioChannelHandle channel, float* spectrum)
+{
+    static const int LEFT_CHANNEL = 0;
+    static const int RIGHT_CHANNEL = 1;
+    static const int DOUBLE_SPECTRUM_SIZE = SPECTRUM_SIZE * 2;
+    float leftData[DOUBLE_SPECTRUM_SIZE];
+    float rightData[DOUBLE_SPECTRUM_SIZE];
+
+    //"To get the spectrum for both channels of a stereo signal, call this function twice, once with channeloffset = 0, and again with channeloffset = 1."
+    FMOD::Channel* channelAssignedToSound = static_cast<FMOD::Channel*>(channel);
+    //"The functions Channel::getSpectrum and ChannelGroup::getSpectrum will give you a snapshot of the spectrum for the currently playing audio." ~ Fmod person from 2 hours of fourm digging
+    FMOD_RESULT result = channelAssignedToSound->getSpectrum(leftData, DOUBLE_SPECTRUM_SIZE, LEFT_CHANNEL, FMOD_DSP_FFT_WINDOW_TRIANGLE);
+    ValidateResult(result);
+    result = channelAssignedToSound->getSpectrum(rightData, DOUBLE_SPECTRUM_SIZE, RIGHT_CHANNEL, FMOD_DSP_FFT_WINDOW_TRIANGLE);
+    ValidateResult(result);
+
+    //"Then add the spectrums together and divide by 2 to get the average spectrum for both channels."
+    float biggestValue = 0.0f;
+    for (int i = 0; i < SPECTRUM_SIZE; ++i)
+    {
+        float averageValue = (leftData[i] + rightData[i]) * 0.5f;
+        spectrum[i] = averageValue;
+        biggestValue = biggestValue < averageValue ? averageValue : biggestValue;
+    }
+
+    //Normalize the data: "find the maximum value in the resulting spectrum, and scale all values in the array by 1 / max. (ie if the max was 0.5f, then it would become 1)"
+    float normalizingValue = (1.0f / biggestValue);
+    for (int i = 0; i < SPECTRUM_SIZE; ++i)
+    {
+        spectrum[i] *= normalizingValue;
+    }
+
+    for (int i = 0; i < SPECTRUM_SIZE; ++i)
+    {
+        spectrum[i] = 20.0f * (float)log10(spectrum[i]);
+        spectrum[i] = MathUtils::RangeMap(spectrum[i], -70.0f, 6.0f, 0.0f, 1.0f);
+        spectrum[i] = MathUtils::Clamp(spectrum[i], 0.0f, 1.0f);
+    }
+}
+
 
 //-----------------------------------------------------------------------------------
 unsigned int AudioSystem::GetPlaybackPositionMS(AudioChannelHandle channel)

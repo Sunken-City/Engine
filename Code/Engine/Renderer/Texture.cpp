@@ -140,6 +140,8 @@ Texture::Texture(unsigned char* textureData, int numColorComponents, const Vecto
     GLenum bufferFormat = GL_RGBA; // the format our source pixel data is currently in; any of: GL_RGB, GL_RGBA, GL_LUMINANCE, GL_LUMINANCE_ALPHA, ...
     if (numComponents == 3)
         bufferFormat = GL_RGB;
+    else if (numComponents == 1)
+        bufferFormat = GL_RED;
 
     // #FIXME: What happens if numComponents is neither 3 nor 4?
 
@@ -161,7 +163,7 @@ Texture::Texture(unsigned char* textureData, int numColorComponents, const Vecto
     GL_CHECK_ERROR();
 }
 
-Texture::Texture(uint32_t width, uint32_t height, TextureFormat format)
+Texture::Texture(uint32_t width, uint32_t height, TextureFormat format, void* data)
     : m_initializationMethod(TextureInitializationMethod::FROM_MEMORY)
     , m_texelSize(width, height)
     , m_textureFormat(format)
@@ -201,7 +203,7 @@ Texture::Texture(uint32_t width, uint32_t height, TextureFormat format)
         0, //border, again set to 0, we want not 0
         bufferChannels, //channels used by image pass in
         bufferFormat, //format of data of image passed in
-        NULL);	//no actual data passed in, defaults black/white
+        data);	//no actual data passed in, defaults black/white
 
     GL_CHECK_ERROR();
 }
@@ -357,12 +359,29 @@ void Texture::RegisterTexture(const std::string& textureName, Texture* texture)
 }
 
 //-----------------------------------------------------------------------------------
-Texture* Texture::CreateUnregisteredTextureFromImageFileData(unsigned char* textureData, size_t bufferLength)
+bool Texture::CleanUpTexture(const std::string& textureName)
+{
+    size_t textureNameHash = std::hash<std::string>{}(textureName);
+    auto iterator = Texture::s_textureRegistry.find(textureNameHash);
+    if (iterator == Texture::s_textureRegistry.end())
+    {
+        return false;
+    }
+    else
+    {
+        delete iterator->second;
+        Texture::s_textureRegistry.erase(iterator);
+        return true;
+    }
+}
+
+//-----------------------------------------------------------------------------------
+Texture* Texture::CreateTextureFromImageFileData(const std::string& textureName, unsigned char* textureData, size_t bufferLength)
 {
     //Buffer Length in indices, not bytes.
-    static int dataTextureIndex = 0;
     Texture* texture = new Texture(textureData, bufferLength);
-    size_t textureNameHash = std::hash<std::string>{}(Stringf("DataTexture%i", dataTextureIndex++));
+    texture->m_initializationMethod = TextureInitializationMethod::FROM_DISK; //Need to do the STBI cleanup.
+    size_t textureNameHash = std::hash<std::string>{}(textureName);
     Texture::s_textureRegistry[textureNameHash] = texture;
     return texture;
 }
