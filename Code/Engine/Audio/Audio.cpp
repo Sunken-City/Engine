@@ -405,7 +405,7 @@ void AudioSystem::GetSpectrumData(AudioChannelHandle channel, float* spectrum)
     for (int i = 0; i < SPECTRUM_SIZE; ++i)
     {
         spectrum[i] = 20.0f * (float)log10(spectrum[i]);
-        spectrum[i] = MathUtils::RangeMap(spectrum[i], -50.0f, 0.0f, 0.0f, 1.0f);
+        spectrum[i] = MathUtils::RangeMap(spectrum[i], -70.0f, 6.0f, 0.0f, 1.0f);
         spectrum[i] = MathUtils::Clamp(spectrum[i], 0.0f, 1.0f);
     }
 }
