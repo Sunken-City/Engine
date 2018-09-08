@@ -12,5 +12,6 @@ class Texture;
 
 Texture* GetImageFromFileMetadata(const std::wstring& filePath, const std::string& textureName);
 bool IncrementPlaycount(const std::wstring& fileName);
+long GetSongDurationSeconds(const std::wstring& fileName);
 std::vector<std::wstring> GetSupportedAudioFiles(const std::wstring& folder);
 unsigned int GetUncompressedFilesize(const std::wstring& fileName);

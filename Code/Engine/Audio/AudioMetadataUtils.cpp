@@ -127,6 +127,13 @@ bool IncrementPlaycount(const std::wstring& fileName)
 }
 
 //-----------------------------------------------------------------------------------
+long GetSongDurationSeconds(const std::wstring& fileName)
+{
+    TagLib::FileRef file(std::string(fileName.begin(), fileName.end()).c_str());
+    return file.audioProperties()->lengthInSeconds();
+}
+
+//-----------------------------------------------------------------------------------
 Texture* GetImageFromFileMetadata(const std::wstring& filePath, const std::string& textureName)
 {
     //Determine the filetype of fileName
