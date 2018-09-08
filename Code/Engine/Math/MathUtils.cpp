@@ -4,16 +4,17 @@
 #include "Engine/Math/Vector3.hpp"
 #include "Engine/Math/Vector3Int.hpp"
 #include "Engine/Math/Vector4.hpp"
-#define _USE_MATH_DEFINES
 #include <cmath>
 #include <cstdlib>
 #include <stdint.h>
 #include <ctime>
 #include "../Core/ErrorWarningAssert.hpp"
 
-const float MathUtils::PI = static_cast<float>(M_PI);
+const float MathUtils::PI = 3.14159265358979323846f;
 const float MathUtils::TWO_PI = MathUtils::PI * 2.0f;
-const float MathUtils::HALF_PI = static_cast<float>(M_PI_2);
+const float MathUtils::HALF_PI = MathUtils::PI * 0.5f;
+
+std::mt19937_64 MathUtils::s_randomGenerator;
 
 //-----------------------------------------------------------------------------------
 int MathUtils::LerpInt(float fraction, int initialValue, int endValue)
@@ -185,20 +186,30 @@ float MathUtils::CalcShortestAngularDisplacement(float fromDegrees, float toDegr
 }
 
 //-----------------------------------------------------------------------------------
+void MathUtils::SetRandomSeed()
+{
+    std::random_device seedGenerator;
+    s_randomGenerator.seed(seedGenerator());
+}
+
+//-----------------------------------------------------------------------------------
+void MathUtils::SetRandomSeed(size_t seed)
+{
+    s_randomGenerator.seed(seed);
+}
+
+//-----------------------------------------------------------------------------------
 //Inclusive random
 int MathUtils::GetRandomInt(int minimum, int maximum)
 {
-    if (minimum == 0 && maximum == 0)
-    {
-        return 0;
-    }
-    return static_cast<int>(Clamp(rand() % maximum + minimum, minimum, maximum));
+    std::uniform_int_distribution<int> distribution(minimum, maximum);
+    return distribution(s_randomGenerator);
 }
 
 //-----------------------------------------------------------------------------------
 float MathUtils::GetRandom()
 {
-    return static_cast <float> (rand()) / static_cast<float>(RAND_MAX);
+    return GetRandomFloatFromZeroTo(1.0f);
 }
 
 //-----------------------------------------------------------------------------------
@@ -206,19 +217,20 @@ float MathUtils::GetRandom()
 //AVOID USING, THIS CAN SOMETIMES BE INCLUSIVE, WTF?
 int MathUtils::GetRandomIntFromZeroTo(int maximum)
 {
-    return rand() % maximum;
+    return GetRandomInt(0, maximum);
 }
 
 //-----------------------------------------------------------------------------------
 float MathUtils::GetRandomFloatFromZeroTo(float maximum)
 {
-    return static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / maximum));
+    return GetRandomFloat(0.0f, maximum);
 }
 
 //-----------------------------------------------------------------------------------
 float MathUtils::GetRandomFloat(float minimum, float maximum)
 {
-    return minimum + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (maximum - minimum)));
+    std::uniform_real_distribution<float> distribution(minimum, maximum);
+    return distribution(s_randomGenerator);
 }
 
 //-----------------------------------------------------------------------------------

@@ -1,4 +1,5 @@
 #pragma once
+#include <random>
 
 class Vector2;
 class Vector2Int;
@@ -32,6 +33,8 @@ public:
     static float CalcShortestAngularDisplacement(float fromDegrees, float toDegrees);
 
     //RANDOM//////////////////////////////////////////////////////////////////////////
+    static void SetRandomSeed();
+    static void SetRandomSeed(size_t seed);
     static int GetRandomInt(int minimum, int maximum);
     static float GetRandom();
     static float GetRandomFloat(float minimum, float maximum);
@@ -61,6 +64,9 @@ public:
     static const float PI;
     static const float TWO_PI;
     static const float HALF_PI;
+
+private:
+    static std::mt19937_64 s_randomGenerator;
 };
 
 //Global functions. I'm planning on moving everything out of the MathUtils class as soon as I have time to refactor all the code the change will break.
