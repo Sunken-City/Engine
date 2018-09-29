@@ -188,8 +188,8 @@ float MathUtils::CalcShortestAngularDisplacement(float fromDegrees, float toDegr
 //-----------------------------------------------------------------------------------
 void MathUtils::SetRandomSeed()
 {
-    std::random_device seedGenerator;
-    s_randomGenerator.seed(seedGenerator());
+    auto const seed = std::random_device()();
+    s_randomGenerator.seed(seed);
 }
 
 //-----------------------------------------------------------------------------------
@@ -361,9 +361,5 @@ float Clamp01(float input)
 //-----------------------------------------------------------------------------------
 void InitializeRand()
 {
-    std::time_t timeNow = std::time(nullptr);
-    //Supressed because localtime_s isn't actually accessible because I don't know why try for yourself. >:I
-#pragma warning(suppress: 4996)
-    std::tm time = *std::localtime(&timeNow);
-    srand((unsigned int)time.tm_sec + time.tm_min + time.tm_hour + time.tm_year);
+    MathUtils::SetRandomSeed();
 }
