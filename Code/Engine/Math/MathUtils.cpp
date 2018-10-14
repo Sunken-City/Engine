@@ -213,9 +213,13 @@ float MathUtils::GetRandom()
 }
 
 //-----------------------------------------------------------------------------------
-//This function is NOT inclusive, as truncation occurs on the int.
-//AVOID USING, THIS CAN SOMETIMES BE INCLUSIVE, WTF?
 int MathUtils::GetRandomIntFromZeroTo(int maximum)
+{
+    return GetRandomInt(0, maximum - 1);
+}
+
+//-----------------------------------------------------------------------------------
+int MathUtils::GetRandomInclusiveIntFromZeroTo(int maximum)
 {
     return GetRandomInt(0, maximum);
 }

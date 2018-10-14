@@ -40,6 +40,7 @@ public:
     static float GetRandomFloat(float minimum, float maximum);
     static float GetRandomFloatInRange(float minimumInclusive, float maximumInclusive);
     static int GetRandomIntFromZeroTo(int maximum);
+    static int GetRandomInclusiveIntFromZeroTo(int maximum);
     static float GetRandomFloatFromZeroTo(float maximum);
     static bool CoinFlip();
     static Vector2 GetRandomVectorInCircle(float radius);
